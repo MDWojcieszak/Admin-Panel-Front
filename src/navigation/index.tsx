@@ -1,12 +1,7 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { SideMenu } from '~/navigation/SideMenu';
+import { MainNavigationContainer } from '~/navigation/MainNavigationContainer';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <SideMenu></SideMenu>,
-  },
-]);
+const router = createBrowserRouter([{ path: '*', Component: MainNavigationContainer }]);
 
 export const AppNavigation = () => {
   return <RouterProvider router={router} />;
