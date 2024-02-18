@@ -1,0 +1,154 @@
+import { CSSProperties, useState } from 'react';
+import { mkUseStyles, useTheme } from '~/utils/theme';
+import { AnimatePresence, motion } from 'framer-motion';
+import { FaChevronDown } from 'react-icons/fa6';
+type Option = {
+  label: string;
+  value: string;
+};
+
+type SelectProps = {
+  label: string;
+  options: Option[];
+  description?: string;
+  style?: CSSProperties;
+};
+
+export const Select = (p: SelectProps) => {
+  const [selectedOption, setSelectedOption] = useState(p.options[0].value);
+  const [isExtended, setIsExtended] = useState(false);
+  const [isOnList, setIsOnList] = useState(false);
+  const styles = useStyles();
+  const theme = useTheme();
+  const handlePress = () => setIsExtended((e) => !e);
+
+  const handleBlur = () => {
+    if (!isOnList) setIsExtended(false);
+  };
+
+  const renderOption = (option: Option) => (
+    <motion.li
+      whileHover={{
+        backgroundColor: theme.colors.blue,
+      }}
+      style={styles.option}
+      value={option.value}
+      onClick={() => {
+        setSelectedOption(option.value);
+        setIsExtended(false);
+      }}
+    >
+      {option.label}
+    </motion.li>
+  );
+
+  return (
+    <div style={{ ...styles.selectContainer, ...p.style }}>
+      <label style={styles.label}>{p.options.find((o) => o.value === selectedOption)?.label}</label>
+      <AnimatePresence mode='wait'>
+        {isExtended && (
+          <motion.ul
+            onMouseEnter={() => setIsOnList(true)}
+            onMouseLeave={() => setIsOnList(false)}
+            initial={{ opacity: 0, translateY: -20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: -20 }}
+            style={styles.optionsContainer}
+          >
+            <div>{p.options.map(renderOption)}</div>
+          </motion.ul>
+        )}
+      </AnimatePresence>
+      <input hidden readOnly value={selectedOption} />
+      <input style={styles.input} onClick={handlePress} onBlur={handleBlur} />
+      <motion.div
+        style={styles.chevron}
+        animate={{ rotate: isExtended ? '180deg' : 0 }}
+        transition={{ duration: 0.15 }}
+      >
+        <FaChevronDown size={20} fill={theme.colors.blue} />
+      </motion.div>
+      <AnimatePresence mode='wait'>
+        {isExtended && (
+          <motion.p
+            initial={{ opacity: 0, translateY: -5 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: -5 }}
+            style={styles.description}
+          >
+            {p.description}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const useStyles = mkUseStyles((t) => ({
+  selectContainer: {
+    position: 'relative',
+    marginBottom: t.spacing.l,
+  },
+  label: {
+    position: 'absolute',
+    left: t.spacing.m,
+    top: t.spacing.m,
+    fontSize: 18,
+    color: t.colors.white,
+    pointerEvents: 'none',
+    userSelect: 'none',
+  },
+  input: {
+    padding: t.spacing.m,
+    paddingTop: t.spacing.l + 4,
+    cursor: 'pointer',
+    fontSize: '16px',
+    border: 0,
+    borderRadius: t.borderRadius.default,
+    outline: 'none',
+    color: 'transparent',
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
+    userSelect: 'none',
+    webkitUserSelect: 'none',
+  },
+  optionsContainer: {
+    zIndex: 1,
+    listStyle: 'none',
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'column',
+    left: 0,
+    right: 0,
+    top: `calc(100% + ${t.spacing.l}px)`,
+    margin: 0,
+    padding: t.spacing.s,
+    gap: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray04,
+  },
+  option: {
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    cursor: 'pointer',
+  },
+  selectedOption: {
+    marginTop: '10px',
+    fontSize: '14px',
+    color: t.colors.dark02,
+  },
+  chevron: {
+    position: 'absolute',
+    right: t.spacing.m,
+    top: t.spacing.m + 4,
+    pointerEvents: 'none',
+  },
+  description: {
+    position: 'absolute',
+    left: t.spacing.m,
+    top: 60,
+    fontSize: '12px',
+    margin: 0,
+    color: t.colors.blue04,
+    opacity: 0,
+  },
+}));
