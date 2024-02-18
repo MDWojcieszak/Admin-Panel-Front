@@ -9,4 +9,5 @@ export default defineConfig({
       '~/': `${process.cwd()}/src/`,
     },
   },
+  server: { host: true },
 });
