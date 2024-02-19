@@ -44,7 +44,7 @@ export const Select = (p: SelectProps) => {
 
   return (
     <div style={{ ...styles.selectContainer, ...p.style }}>
-      <label style={styles.label}>{p.options.find((o) => o.value === selectedOption)?.label}</label>
+      <label style={styles.label}>{p.label}</label>
       <AnimatePresence mode='wait'>
         {isExtended && (
           <motion.ul
@@ -59,8 +59,13 @@ export const Select = (p: SelectProps) => {
           </motion.ul>
         )}
       </AnimatePresence>
-      <input hidden readOnly value={selectedOption} />
-      <input style={styles.input} onClick={handlePress} onBlur={handleBlur} />
+      <input
+        value={p.options.find((o) => o.value === selectedOption)?.label}
+        style={styles.input}
+        readOnly
+        onClick={handlePress}
+        onBlur={handleBlur}
+      />
       <motion.div
         style={styles.chevron}
         animate={{ rotate: isExtended ? '180deg' : 0 }}
@@ -92,11 +97,10 @@ const useStyles = mkUseStyles((t) => ({
   label: {
     position: 'absolute',
     left: t.spacing.m,
-    top: t.spacing.m,
-    fontSize: 18,
-    color: t.colors.white,
+    color: t.colors.blue04,
     pointerEvents: 'none',
-    userSelect: 'none',
+    top: 6,
+    fontSize: 12,
   },
   input: {
     padding: t.spacing.m,
@@ -106,8 +110,7 @@ const useStyles = mkUseStyles((t) => ({
     border: 0,
     borderRadius: t.borderRadius.default,
     outline: 'none',
-    color: 'transparent',
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
     userSelect: 'none',
     webkitUserSelect: 'none',
   },
