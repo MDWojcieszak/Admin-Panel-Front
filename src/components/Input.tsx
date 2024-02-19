@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 type InputProps = {
   label: string;
   description: string;
-  error?: string; // New prop for error message
+  error?: string;
   type?: HTMLInputTypeAttribute;
   style?: CSSProperties;
 };
@@ -78,7 +78,7 @@ const useStyles = mkUseStyles((t) => ({
     paddingTop: t.spacing.l + 4,
     fontSize: '16px',
     borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
     border: 0,
     outline: 'none',
   },
