@@ -13,12 +13,15 @@
   },
   "dependencies": {
     "@hassanmojab/react-modern-calendar-datepicker": "^3.1.7",
+    "@types/js-cookie": "^3.0.6",
     "framer-motion": "^10.16.16",
+    "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",
     "react-modern-calendar-datepicker": "^3.1.6",
-    "react-router-dom": "^6.20.1"
+    "react-router-dom": "^6.20.1",
+    "react-use-measure": "^2.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",
