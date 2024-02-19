@@ -23,9 +23,12 @@ export const baseTheme = {
   },
 };
 
+const colorOpacity = (value: number) => Math.round(value * 255).toString(16);
+
 export const theme = {
   ...baseTheme,
   colors,
+  colorOpacity: colorOpacity,
 };
 
 export type Theme = typeof theme;
