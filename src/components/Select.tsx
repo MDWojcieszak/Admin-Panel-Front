@@ -2,22 +2,31 @@ import { CSSProperties, useState } from 'react';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FaChevronDown } from 'react-icons/fa6';
+import { FieldValues, UseControllerProps, useController } from 'react-hook-form';
 type Option = {
   label: string;
   value: string;
 };
 
-type SelectProps = {
+type SelectProps<T extends FieldValues> = {
   label: string;
   options: Option[];
   description?: string;
   style?: CSSProperties;
+} & UseControllerProps<T>;
+
+export type SelectRef = {
+  value?: Option['value'];
 };
 
-export const Select = (p: SelectProps) => {
+export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
   const [selectedOption, setSelectedOption] = useState(p.options[0].value);
   const [isExtended, setIsExtended] = useState(false);
   const [isOnList, setIsOnList] = useState(false);
+  const {
+    field,
+    formState: { errors },
+  } = useController<T>({ name: p.name, control: p.control });
   const styles = useStyles();
   const theme = useTheme();
   const handlePress = () => setIsExtended((e) => !e);
@@ -60,6 +69,7 @@ export const Select = (p: SelectProps) => {
         )}
       </AnimatePresence>
       <input
+        {...field}
         value={p.options.find((o) => o.value === selectedOption)?.label}
         style={styles.input}
         readOnly

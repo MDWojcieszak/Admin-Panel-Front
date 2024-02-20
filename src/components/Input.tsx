@@ -1,17 +1,23 @@
 import { CSSProperties, HTMLInputTypeAttribute, useRef, useState } from 'react';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
-type InputProps = {
+import { FieldValues, UseControllerProps, useController } from 'react-hook-form';
+
+type InputProps<T extends FieldValues> = {
   label: string;
+  name: string;
   description: string;
-  error?: string;
   type?: HTMLInputTypeAttribute;
   style?: CSSProperties;
-};
+} & UseControllerProps<T>;
 
-export const Input = ({ label, description, error, type = 'text', ...p }: InputProps) => {
+export const Input = <T extends FieldValues>({ label, description, type = 'text', ...p }: InputProps<T>) => {
   const [showDescription, setShowDescription] = useState(false);
   const [showLabel, setShowLabel] = useState(true);
+  const {
+    field,
+    formState: { errors },
+  } = useController<T>({ name: p.name, control: p.control });
   const styles = useStyles();
   const theme = useTheme();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -19,11 +25,12 @@ export const Input = ({ label, description, error, type = 'text', ...p }: InputP
     setShowLabel(false);
     setShowDescription(true);
   };
-
   const handleBlur = () => {
-    if (!inputRef.current?.value) setShowLabel(true);
+    if (!inputRef?.current?.value) setShowLabel(true);
     setShowDescription(false);
   };
+
+  const renderDescription = errors[p.name] ? <>{errors[p.name]?.message}</> : description;
 
   return (
     <div style={{ ...styles.inputContainer, ...p.style }}>
@@ -38,21 +45,22 @@ export const Input = ({ label, description, error, type = 'text', ...p }: InputP
         {label}
       </motion.label>
       <motion.input
+        {...field}
         ref={inputRef}
-        style={error ? { ...styles.input, borderColor: 'red' } : styles.input}
+        style={false ? { ...styles.input, borderColor: 'red' } : styles.input}
         onFocus={handleFocus}
         onBlur={handleBlur}
         type={type}
       />
       <AnimatePresence mode='wait'>
-        {showDescription && (
+        {(showDescription || errors[p.name]) && (
           <motion.p
             initial={{ opacity: 0, translateY: -5 }}
-            animate={{ opacity: 1, translateY: 0 }}
+            animate={{ opacity: 1, translateY: 0, color: errors[p.name] ? theme.colors.red : theme.colors.blue04 }}
             exit={{ opacity: 0, translateY: -5 }}
             style={styles.description}
           >
-            {description}
+            {renderDescription}
           </motion.p>
         )}
       </AnimatePresence>
@@ -88,7 +96,6 @@ const useStyles = mkUseStyles((t) => ({
     top: 60,
     fontSize: '12px',
     margin: 0,
-    color: t.colors.blue04,
     opacity: 0,
   },
   error: {
