@@ -1,7 +1,7 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { MainNavigationContainer } from '~/navigation/MainNavigationContainer';
+import { CommonNavigation } from '~/navigation/CommonNavigation';
 
-const router = createBrowserRouter([{ path: '*', Component: MainNavigationContainer }]);
+const router = createBrowserRouter([{ path: '*', Component: CommonNavigation }]);
 
 export const AppNavigation = () => {
   return <RouterProvider router={router} />;

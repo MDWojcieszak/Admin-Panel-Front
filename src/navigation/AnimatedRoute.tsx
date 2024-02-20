@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 import { GlassCard } from '~/components/GlassCard';
 import { mkUseStyles } from '~/utils/theme';
 type AnimatedRouteProps = {
