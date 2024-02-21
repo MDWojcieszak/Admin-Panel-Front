@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button } from '~/components/Button';
 import { GlassCard } from '~/components/GlassCard';
 import { Input } from '~/components/Input';
@@ -8,6 +8,11 @@ import { z } from 'zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validatePassword } from '~/utils/validation/passwordValidation';
+import { AuthService } from '~/api/Auth';
+import { useUser } from '~/hooks/useUser';
+import { useNavigate } from 'react-router-dom';
+import { MainNavigationRoute } from '~/navigation/types';
+import { UserState } from '~/contexts/User/UserContext';
 
 const SignInSchema = z.object({
   email: z.string({ required_error: 'Email is required' }).email({ message: 'Incorrect email' }),
@@ -22,10 +27,25 @@ export const SignIn = () => {
   const styles = useStyles();
   const [loading, setLoading] = useState(false);
 
-  const handleSignIn = useCallback((data: any) => {
+  const navigate = useNavigate();
+  const user = useUser();
+  const handleSignIn = useCallback(async (data: SignInSchemaType) => {
     console.log(data);
     setLoading(true);
+    try {
+      const res = await AuthService.signIn({ ...data, platform: 'Windows' });
+      user.setTokens(res);
+    } catch (error: any) {
+      console.log(error.message);
+    }
   }, []);
+
+  console.log(user.userState);
+
+  useEffect(() => {
+    if (user.userState !== UserState.LOGGED_IN) return;
+    navigate('/' + MainNavigationRoute.DASHBOARD);
+  }, [user.userState]);
 
   const formMethods = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
