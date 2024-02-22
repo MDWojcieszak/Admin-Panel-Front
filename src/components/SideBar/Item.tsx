@@ -2,13 +2,13 @@ import { useNavigate } from 'react-router-dom';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MdAccountBox, MdDashboard, MdImage, MdSettings } from 'react-icons/md';
-import { MainNavigationRoutes } from '~/navigation/types';
+import { MainNavigationRoute } from '~/navigation/types';
 
 const ICON_SIZE = 24;
 
 export type SideBarItem = {
   label: string;
-  path: MainNavigationRoutes;
+  path: MainNavigationRoute;
   isActive: boolean;
 };
 
@@ -25,13 +25,13 @@ export const Item = (p: SideBarItem) => {
   const iconProps = { fill: color, size: ICON_SIZE };
   const renderIcon = () => {
     switch (p.path) {
-      case MainNavigationRoutes.DASHBOARD:
+      case MainNavigationRoute.DASHBOARD:
         return <MdDashboard {...iconProps} />;
-      case MainNavigationRoutes.ACCOUNTS:
+      case MainNavigationRoute.ACCOUNTS:
         return <MdAccountBox {...iconProps} />;
-      case MainNavigationRoutes.GALLERY:
+      case MainNavigationRoute.GALLERY:
         return <MdImage {...iconProps} />;
-      case MainNavigationRoutes.SETTINGS:
+      case MainNavigationRoute.SETTINGS:
         return <MdSettings {...iconProps} />;
     }
   };
