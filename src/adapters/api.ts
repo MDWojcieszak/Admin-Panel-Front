@@ -1,15 +1,15 @@
-import Cookies from 'js-cookie';
 import { ApiTag, Auth } from '~/api/types';
+import { getAccessToken, getRefreshToken } from '~/utils/accessToken';
 
-const getToken = (authType: Auth) =>
-  Cookies.get(
-    authType === Auth.DEFAULT
-      ? (import.meta.env.VITE_TOKEN_KEY as string)
-      : (import.meta.env.VITE_REFRESH_TOKEN_KEY as string),
-  );
+const getToken = (authType: Auth) => (authType === Auth.DEFAULT ? getAccessToken() : getRefreshToken());
 
-export const api = <T extends Object, P extends Object>(tag: ApiTag) => {
-  const request = async (endpoint: string, method: string, body?: T, auth: Auth = Auth.DEFAULT): Promise<P> => {
+type Params<T> = {
+  body?: T;
+  auth?: Auth;
+};
+
+export const api = <T extends Object>(tag: ApiTag) => {
+  const request = async (endpoint: string, method: string, body?: T, auth: Auth = Auth.DEFAULT): Promise<Response> => {
     const token = getToken(auth);
     const apiUrl = import.meta.env.VITE_API_URL as string;
     const headers: Record<string, string> = {
@@ -25,17 +25,20 @@ export const api = <T extends Object, P extends Object>(tag: ApiTag) => {
 
     const response = await fetch(`${apiUrl}/${tag}/${endpoint}`, options);
     if (!response.ok) throw new Error((await response.json()).message);
-
-    return response.json();
+    return response;
   };
 
   return {
-    get: async (endpoint: string, auth: Auth = Auth.DEFAULT, body?: T) => request(endpoint, 'GET', body, auth),
+    get: async (endpoint: string, params: Params<T> = { auth: Auth.DEFAULT }) =>
+      request(endpoint, 'GET', params.body, params.auth),
 
-    post: async (endpoint: string, body: T, auth: Auth = Auth.DEFAULT) => request(endpoint, 'POST', body, auth),
+    post: async (endpoint: string, params: Params<T> = { auth: Auth.DEFAULT }) =>
+      request(endpoint, 'POST', params.body, params.auth),
 
-    put: async (endpoint: string, body: T, auth: Auth = Auth.DEFAULT) => request(endpoint, 'PUT', body, auth),
+    put: async (endpoint: string, params: Params<T> = { auth: Auth.DEFAULT }) =>
+      request(endpoint, 'PUT', params.body, params.auth),
 
-    delete: async (endpoint: string, body: T, auth: Auth = Auth.DEFAULT) => request(endpoint, 'DELETE', body, auth),
+    delete: async (endpoint: string, params: Params<T> = { auth: Auth.DEFAULT }) =>
+      request(endpoint, 'DELETE', params.body, params.auth),
   };
 };
