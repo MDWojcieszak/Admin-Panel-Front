@@ -1,25 +1,34 @@
+import { z } from 'zod';
 import { api } from '~/adapters/api';
 import { ApiTag, Auth } from '~/api/types';
 
-interface AuthDto {
-  email: string;
-  password: string;
-  platform: string;
-  browser?: string;
-  os?: string;
-}
+const AuthDto = z.object({
+  email: z.string().email(),
+  password: z.string(),
+  platform: z.string(),
+  browser: z.string().optional(),
+  os: z.string().optional(),
+});
 
-interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-}
+type AuthDto = z.infer<typeof AuthDto>;
+
+const TokenResponse = z.object({
+  access_token: z.string(),
+  refresh_token: z.string(),
+});
+
+type TokenResponse = z.infer<typeof TokenResponse>;
 
 export const AuthService = {
   tag: ApiTag.AUTH,
 
   async signIn(signInData: AuthDto): Promise<TokenResponse> {
     try {
-      return await api<AuthDto, TokenResponse>(AuthService.tag).post('local/signin', signInData, Auth.PUBLIC);
+      const response = await api<AuthDto>(AuthService.tag).post('local/signin', {
+        body: signInData,
+        auth: Auth.PUBLIC,
+      });
+      return TokenResponse.parse(await response.json());
     } catch (error) {
       console.error('Error signing in:', error);
       throw error;
@@ -28,7 +37,7 @@ export const AuthService = {
 
   async logout(): Promise<void> {
     try {
-      await api<any, any>(AuthService.tag).post('logout', {});
+      await api(AuthService.tag).post('logout');
     } catch (error) {
       console.error('Error logging out:', error);
       throw error;
@@ -37,7 +46,8 @@ export const AuthService = {
 
   async refresh(): Promise<TokenResponse> {
     try {
-      return await api<any, TokenResponse>(AuthService.tag).post('refresh', {}, Auth.REFRESH);
+      const response = await api(AuthService.tag).post('refresh', { auth: Auth.REFRESH });
+      return TokenResponse.parse(await response.json());
     } catch (error) {
       console.error('Error refreshing token:', error);
       throw error;
