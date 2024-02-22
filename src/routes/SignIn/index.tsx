@@ -9,10 +9,10 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validatePassword } from '~/utils/validation/passwordValidation';
 import { AuthService } from '~/api/Auth';
-import { useUser } from '~/hooks/useUser';
+import { useAuth } from '~/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { MainNavigationRoute } from '~/navigation/types';
-import { UserState } from '~/contexts/User/UserContext';
+import { UserState } from '~/contexts/User/AuthContext';
 
 const SignInSchema = z.object({
   email: z.string({ required_error: 'Email is required' }).email({ message: 'Incorrect email' }),
@@ -28,24 +28,24 @@ export const SignIn = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const user = useUser();
+  const auth = useAuth();
   const handleSignIn = useCallback(async (data: SignInSchemaType) => {
     console.log(data);
     setLoading(true);
     try {
       const res = await AuthService.signIn({ ...data, platform: 'Windows' });
-      user.setTokens(res);
+      auth.setTokens(res);
     } catch (error: any) {
       console.log(error.message);
     }
   }, []);
 
-  console.log(user.userState);
+  console.log(auth.userState);
 
   useEffect(() => {
-    if (user.userState !== UserState.LOGGED_IN) return;
+    if (auth.userState !== UserState.LOGGED_IN) return;
     navigate('/' + MainNavigationRoute.DASHBOARD);
-  }, [user.userState]);
+  }, [auth.userState]);
 
   const formMethods = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
