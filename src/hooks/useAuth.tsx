@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 
-import { UserContext } from '~/contexts/User/UserContext';
+import { AuthContext } from '~/contexts/User/AuthContext';
 
-export const useUser = () => {
-  const ctx = useContext(UserContext);
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
 
   if (!ctx) throw Error('Use this hook in UserContextProvider scope');
 
