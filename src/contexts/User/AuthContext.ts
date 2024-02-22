@@ -1,5 +1,4 @@
 import { createContext } from 'react';
-import { F1 } from '~/types/types';
 
 export enum CookieKey {
   USER_VISIT = 'user_visit',
@@ -20,10 +19,11 @@ export type UserData = {
   avatarUrl?: string;
 };
 
-export type UserContextType = {
+export type AuthContextType = {
   userState: UserState;
   userData: UserData | undefined;
-  setTokens: F1<{ access_token: string; refresh_token: string }>;
+  setTokens: F1<{ access_token: string; refresh_token: string }, boolean>;
+  removeTokens: F0;
 };
 
-export const UserContext = createContext<UserContextType | null>(null);
+export const AuthContext = createContext<AuthContextType | null>(null);
