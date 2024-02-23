@@ -6,11 +6,12 @@ import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { MainNavigationRoute, MainRouteType } from '~/navigation/types';
 import { Accounts } from '~/routes/Accounts';
 import { Dashboard } from '~/routes/Dashboard';
+import { Gallery } from '~/routes/Images';
 
 export const mainNavigationRoutes: MainRouteType[] = [
   { path: MainNavigationRoute.DASHBOARD, label: 'Dashboard', component: <Dashboard /> },
   { path: MainNavigationRoute.ACCOUNTS, label: 'Accounts', component: <Accounts /> },
-  { path: MainNavigationRoute.GALLERY, label: 'Gallery', component: <Dashboard /> },
+  { path: MainNavigationRoute.GALLERY, label: 'Gallery', component: <Gallery /> },
   { path: MainNavigationRoute.SETTINGS, label: 'Setings', component: <Dashboard /> },
 ];
 
