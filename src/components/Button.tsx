@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Loader } from '~/components/Loader';
@@ -11,6 +11,8 @@ type ButtonProps = {
   style?: CSSProperties;
   variant?: ByttonVariant;
   loading?: boolean;
+  disabled?: boolean;
+  icon?: ReactNode;
 };
 
 export const Button = ({ label, onClick, variant = 'primary', ...p }: ButtonProps) => {
@@ -19,28 +21,36 @@ export const Button = ({ label, onClick, variant = 'primary', ...p }: ButtonProp
 
   const buttonColor = variant === 'primary' ? theme.colors.blue : theme.colors.gray02 + theme.colorOpacity(0.6);
 
+  const handleClick = () => {
+    if (p.disabled) return;
+    onClick?.();
+  };
+
   return (
     <motion.button
       whileTap={{ scaleY: 0.95, scaleX: 0.98 }}
       whileHover={{ scaleY: 1.05, scaleX: 1.02 }}
-      onClick={onClick}
+      onClick={handleClick}
+      animate={{ opacity: p.disabled ? 0.2 : 1 }}
       style={{
         ...styles.button,
         ...p.style,
         backgroundColor: buttonColor,
       }}
     >
+      <div style={styles.innerContainer}>
+        {p.icon} {label}
+      </div>
       <div style={styles.loaderContainer}>
         <AnimatePresence> {p.loading && <Loader />}</AnimatePresence>
       </div>
-      {label}
     </motion.button>
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
   button: {
-    padding: `${t.spacing.m}px ${t.spacing.l}px`,
+    padding: t.spacing.sm,
     color: t.colors.white,
     scale: 1,
     fontSize: '16px',
@@ -49,6 +59,12 @@ const useStyles = mkUseStyles((t) => ({
     outline: 'none',
     cursor: 'pointer',
     position: 'relative',
+  },
+  innerContainer: {
+    alignItmes: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: t.spacing.s,
   },
   loaderContainer: {
     position: 'absolute',
