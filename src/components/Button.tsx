@@ -69,7 +69,8 @@ const useStyles = mkUseStyles((t) => ({
   loaderContainer: {
     position: 'absolute',
     left: t.spacing.m,
+    top: 0,
     height: '100%',
-    alignItems: 'center',
+    justifyContent: 'center',
   },
 }));
