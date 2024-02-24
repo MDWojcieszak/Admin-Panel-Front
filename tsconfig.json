@@ -28,7 +28,9 @@
       "~/types/*": ["src/types/*"],
       "~/contexts/*": ["src/contexts/*"],
       "~/routes/*": ["src/routes/*"],
-      "~/utils/*": ["src/utils/*"]
+      "~/utils/*": ["src/utils/*"],
+      "~/adapters/*": ["src/adapters/*"],
+      "~/api/*": ["src/api/*"]
     }
   },
   "exclude": ["node_modules"],
