@@ -38,6 +38,7 @@ export const ImageInputWithPreview = <T extends FieldValues>(p: ImageInputWithPr
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setSelectedFile(imageUrl);
+      field.onChange(file);
     }
   };
 
