@@ -1,34 +1,62 @@
+import { z } from 'zod';
 import { api } from '~/adapters/api';
-import { ApiTag, Auth } from '~/api/types';
+import { ApiTag, Auth, PaginationDto } from '~/api/types';
+const ImageDataDto = z.object({
+  imageId: z.string(),
+  localization: z.string(),
+  dateTaken: z.coerce.date(),
+  title: z.string().optional().nullable(),
 
-interface ImageDataDto {
-  localization: string;
-  dateTaken: Date;
-  title: string;
-  description: string;
-  authorId: string;
-  imageId: string;
-}
+  description: z.string().optional().nullable(),
+  authorId: z.string().optional().nullable(),
+});
 
-interface ImageId {
-  id: string;
-}
+export type ImageDataDto = z.infer<typeof ImageDataDto>;
 
-const ImageService = {
+const ImageDataResponse = z.object({
+  total: z.number(),
+  images: z.array(ImageDataDto),
+  params: PaginationDto,
+});
+
+export type ImageDataResponse = z.infer<typeof ImageDataResponse>;
+
+const ImageId = z.object({
+  id: z.string(),
+});
+
+export type ImageId = z.infer<typeof ImageId>;
+
+export const ImageService = {
   tag: ApiTag.IMAGE,
 
   async create(data: ImageDataDto) {
     try {
-      return await api<ImageDataDto, ImageId>(ImageService.tag).post('/create', data);
+      await api(ImageService.tag).post('create', {
+        body: data,
+      });
     } catch (error) {
       console.error('Error creating image:', error);
       throw error;
     }
   },
 
+  async getList(data: PaginationDto): Promise<ImageDataResponse> {
+    try {
+      const response = await api<PaginationDto>(ImageService.tag).get('list', {
+        body: data,
+      });
+      return ImageDataResponse.parse(response);
+    } catch (error) {
+      console.error('Error getting images list:', error);
+      throw error;
+    }
+  },
+
   async getCover(data: ImageId) {
     try {
-      return await api<ImageId, any>(ImageService.tag).get('/cover', Auth.DEFAULT, data);
+      const response = await api<ImageId>(ImageService.tag).getBlob('cover', { body: data });
+      return response;
     } catch (error) {
       console.error('Error getting cover image:', error);
       throw error;
@@ -37,7 +65,11 @@ const ImageService = {
 
   async getLowRes(data: ImageId) {
     try {
-      return await api<ImageId, any>(ImageService.tag).get('/low-res', Auth.DEFAULT, data);
+      const response = await api<ImageId>(ImageService.tag).getBlob('low-res', {
+        body: data,
+        auth: Auth.PUBLIC,
+      });
+      return response;
     } catch (error) {
       console.error('Error getting low-res image:', error);
       throw error;
@@ -46,7 +78,8 @@ const ImageService = {
 
   async getOriginal(data: ImageId) {
     try {
-      return await api<ImageId, any>(ImageService.tag).get('/original', Auth.DEFAULT, data);
+      const response = await api<ImageId>(ImageService.tag).getBlob('original', { body: data, auth: Auth.PUBLIC });
+      return response;
     } catch (error) {
       console.error('Error getting original image:', error);
       throw error;
@@ -55,7 +88,8 @@ const ImageService = {
 
   async delete(data: ImageId) {
     try {
-      return await api<ImageId, ImageId>(ImageService.tag).delete('', data);
+      const response = await api<ImageId>(ImageService.tag).delete('original', { body: data });
+      return response;
     } catch (error) {
       console.error('Error deleting image:', error);
       throw error;
