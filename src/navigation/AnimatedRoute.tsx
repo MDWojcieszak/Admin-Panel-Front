@@ -17,6 +17,7 @@ export const AnimatedRoute = ({ children }: AnimatedRouteProps) => {
     >
       <GlassCard style={styles.contentContainer}>
         <motion.div
+          style={styles.motionContainer}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -41,5 +42,9 @@ const useStyles = mkUseStyles((t) => ({
     position: 'relative',
     height: '100%',
     padding: t.spacing.m,
+    overflow: 'hidden',
+  },
+  motionContainer: {
+    height: '100%',
   },
 }));
