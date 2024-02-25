@@ -64,7 +64,6 @@ export const Input = <T extends FieldValues>({ label, description, type = 'text'
           </motion.p>
         )}
       </AnimatePresence>
-      {/* {error && <p style={styles.error}>{error}</p>} */}
     </div>
   );
 };
