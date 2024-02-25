@@ -6,6 +6,7 @@ const AuthDto = z.object({
   email: z.string().email(),
   password: z.string(),
   platform: z.string(),
+
   browser: z.string().optional(),
   os: z.string().optional(),
 });
@@ -28,7 +29,7 @@ export const AuthService = {
         body: signInData,
         auth: Auth.PUBLIC,
       });
-      return TokenResponse.parse(await response.json());
+      return TokenResponse.parse(response);
     } catch (error) {
       console.error('Error signing in:', error);
       throw error;
@@ -47,7 +48,7 @@ export const AuthService = {
   async refresh(): Promise<TokenResponse> {
     try {
       const response = await api(AuthService.tag).post('refresh', { auth: Auth.REFRESH });
-      return TokenResponse.parse(await response.json());
+      return TokenResponse.parse(response);
     } catch (error) {
       console.error('Error refreshing token:', error);
       throw error;
