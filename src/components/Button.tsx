@@ -10,6 +10,7 @@ type ButtonProps = {
   onClick?: F0;
   style?: CSSProperties;
   variant?: ByttonVariant;
+  type?: HTMLButtonElement['type'];
   loading?: boolean;
   disabled?: boolean;
   icon?: ReactNode;
@@ -28,6 +29,7 @@ export const Button = ({ label, onClick, variant = 'primary', ...p }: ButtonProp
 
   return (
     <motion.button
+      type={p.type}
       whileTap={{ scaleY: 0.95, scaleX: 0.98 }}
       whileHover={{ scaleY: 1.05, scaleX: 1.02 }}
       onClick={handleClick}
