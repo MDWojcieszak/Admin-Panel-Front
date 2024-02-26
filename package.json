@@ -12,15 +12,17 @@
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
-    "@hassanmojab/react-modern-calendar-datepicker": "^3.1.7",
     "@hookform/resolvers": "^3.3.4",
     "@tanstack/react-table": "^8.12.0",
     "@types/js-cookie": "^3.0.6",
     "@types/jwt-decode": "^3.1.0",
+    "axios": "^1.6.7",
+    "date-fns": "^3.3.1",
     "framer-motion": "^10.16.16",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
+    "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
     "react-icons": "^5.0.1",
@@ -31,8 +33,11 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/date-fns": "^2.6.0",
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.37",
+    "@types/react-custom-scrollbars": "^4.0.13",
     "@types/react-dom": "^18.2.15",
     "@types/react-table": "^7.7.19",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
