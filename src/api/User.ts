@@ -1,27 +1,60 @@
+import { z } from 'zod';
 import { api } from '~/adapters/api';
-import { ApiTag, Auth, Role } from '~/api/types';
+import { ApiTag } from '~/api/types';
+import { PaginationDto } from '~/api/types';
+import { UserRole } from '~/types/user';
 
-interface UserDto {
-  email: string;
-  password: string;
-  role: Role;
-  firstName?: string;
-  lastName?: string;
-}
+const UserDto = z.object({
+  email: z.string().email(),
+  password: z.string(),
+  role: z.nativeEnum(UserRole),
+  firstName: z.string(),
+  lastName: z.string(),
+});
 
-interface UserId {
-  id: string;
-}
+export type UserDto = z.infer<typeof UserDto>;
 
-const User = {
-  basePath: '/image',
-  tag: ApiTag.IMAGE,
+const UserType = z.object({
+  id: z.string(),
+  createdAt: z.coerce.date(),
+  email: z.string().email(),
+  firstName: z.string(),
+  lastName: z.string(),
+  role: z.nativeEnum(UserRole),
+});
 
-  async create(imageData: UserDto, auth: Auth = Auth.DEFAULT) {
+export type UserType = z.infer<typeof UserType>;
+
+const UserDataResponse = z.object({
+  total: z.number(),
+  users: z.array(UserType),
+  params: PaginationDto,
+});
+
+export type UserDataResponse = z.infer<typeof UserDataResponse>;
+
+export const UserService = {
+  tag: ApiTag.USER,
+
+  async create(userData: UserDto) {
     try {
-      return await api<UserDto, UserId>(User.tag).post('/create', imageData, auth);
+      await api(UserService.tag).post('create', {
+        body: userData,
+      });
     } catch (error) {
-      console.error('Error creating image:', error);
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  },
+
+  async getList(data: PaginationDto): Promise<UserDataResponse> {
+    try {
+      const response = await api<PaginationDto>(UserService.tag).get('list', {
+        body: data,
+      });
+      return UserDataResponse.parse(response);
+    } catch (error) {
+      console.error('Error getting users list:', error);
       throw error;
     }
   },
