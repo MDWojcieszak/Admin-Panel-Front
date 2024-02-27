@@ -43,6 +43,7 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
       style={styles.option}
       value={option.value}
       onClick={() => {
+        field.onChange(option.value);
         setSelectedOption(option.value);
         setIsExtended(false);
       }}
@@ -50,6 +51,8 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
       {option.label}
     </motion.li>
   );
+
+  const renderDescription = errors[p.name] ? <>{errors[p.name]?.message}</> : p.description;
 
   return (
     <div style={{ ...styles.selectContainer, ...p.style }}>
@@ -84,14 +87,14 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
         <FaChevronDown size={20} fill={theme.colors.blue} />
       </motion.div>
       <AnimatePresence mode='wait'>
-        {isExtended && (
+        {(isExtended || errors[p.name]) && (
           <motion.p
             initial={{ opacity: 0, translateY: -5 }}
-            animate={{ opacity: 1, translateY: 0 }}
+            animate={{ opacity: 1, translateY: 0, color: errors[p.name] ? theme.colors.red : theme.colors.blue04 }}
             exit={{ opacity: 0, translateY: -5 }}
             style={styles.description}
           >
-            {p.description}
+            {renderDescription}
           </motion.p>
         )}
       </AnimatePresence>
