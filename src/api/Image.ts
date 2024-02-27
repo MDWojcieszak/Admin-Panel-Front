@@ -13,9 +13,22 @@ const ImageDataDto = z.object({
 
 export type ImageDataDto = z.infer<typeof ImageDataDto>;
 
+const ImageType = z.object({
+  id: z.string(),
+  imageId: z.string(),
+  localization: z.string(),
+  dateTaken: z.coerce.date(),
+  title: z.string().optional().nullable(),
+
+  description: z.string().optional().nullable(),
+  authorId: z.string().optional().nullable(),
+});
+
+export type ImageType = z.infer<typeof ImageType>;
+
 const ImageDataResponse = z.object({
   total: z.number(),
-  images: z.array(ImageDataDto),
+  images: z.array(ImageType),
   params: PaginationDto,
 });
 
