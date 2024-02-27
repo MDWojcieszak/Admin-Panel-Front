@@ -14,13 +14,6 @@ export enum Auth {
   REFRESH,
 }
 
-export enum Role {
-  USER,
-  MODERATOR,
-  ADMIN,
-  OWNER,
-}
-
 export const PaginationDto = z.object({
   take: z.number().min(1).max(20),
   skip: z.number().optional(),
