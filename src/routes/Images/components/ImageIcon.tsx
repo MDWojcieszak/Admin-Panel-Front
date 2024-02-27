@@ -18,11 +18,11 @@ export const ImageIcon = ({ id, handleOpenPreview }: ImageIcoinProps) => {
   }, []);
 
   return (
-    <button style={{ ...styles.container }} type='button' onClick={() => handleOpenPreview(id)}>
+    <div style={{ ...styles.container }} onClick={() => handleOpenPreview(id)}>
       {imageData && (
         <motion.img initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={styles.image} src={imageData} alt='' />
       )}
-    </button>
+    </div>
   );
 };
 
@@ -31,12 +31,12 @@ const useStyles = mkUseStyles((t) => ({
     margin: 0,
     border: 0,
     height: 40,
-    marginTop: 8,
     marginLeft: 10,
     width: 53,
     padding: 0,
     borderRadius: t.borderRadius.small,
     overflow: 'hidden',
+    cursor: 'pointer',
   },
   image: {
     width: '100%',
