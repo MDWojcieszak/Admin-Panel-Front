@@ -6,7 +6,6 @@ import { UserRole } from '~/types/user';
 
 const UserDto = z.object({
   email: z.string().email(),
-  password: z.string(),
   role: z.nativeEnum(UserRole),
   firstName: z.string(),
   lastName: z.string(),

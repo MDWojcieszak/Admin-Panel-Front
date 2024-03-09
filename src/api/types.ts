@@ -12,6 +12,7 @@ export enum Auth {
   PUBLIC,
   DEFAULT,
   REFRESH,
+  CUSTOM,
 }
 
 export const PaginationDto = z.object({
