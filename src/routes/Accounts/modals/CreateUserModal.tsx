@@ -5,7 +5,6 @@ import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { validatePassword } from '~/utils/validation/passwordValidation';
 import { UserRole } from '~/types/user';
 import { UserService } from '~/api/User';
 import { Input } from '~/components/Input';
@@ -15,10 +14,6 @@ type CreateUserModalProps = Partial<InternalModalProps>;
 
 const UserSchema = z.object({
   email: z.string({ required_error: 'Email is required' }).email({ message: 'Incorrect email' }),
-  password: z
-    .string({ required_error: 'Password is required' })
-    .min(8, 'Password requires at least 8 characters')
-    .superRefine(validatePassword),
   firstName: z.string(),
   lastName: z.string(),
   role: z.nativeEnum(UserRole),
@@ -69,7 +64,6 @@ export const CreateUserModal = (p: CreateUserModalProps) => {
       </div>
 
       <Input name='email' label='Email' description='Enter user e-mail address' type='email' />
-      <Input name='password' label='Password' description='Enter user password' type='password' />
       <Button label='Create' onClick={formMethods.handleSubmit(handleCreateUser)} loading={loading} />
     </FormProvider>
   );
