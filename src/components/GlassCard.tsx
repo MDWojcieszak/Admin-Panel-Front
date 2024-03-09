@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode, StyleHTMLAttributes } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import { mkUseStyles } from '~/utils/theme';
 
 type GlassCardProps = {
