@@ -10,6 +10,7 @@ export enum MainNavigationRoute {
 export enum CommonNavigationRoute {
   WELCOME = 'welcome',
   SIGN_IN = 'sign-in',
+  USER_REGISTRATION = 'register',
   MAIN_NAVIGATION = '*',
   NOT_FOUND = 'not-found',
 }
