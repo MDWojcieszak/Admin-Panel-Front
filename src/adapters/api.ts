@@ -8,13 +8,14 @@ type Params<T> = {
   body?: T;
   auth?: Auth;
   type?: RequestType;
+  token?: string;
   uploadProgressCallback?: F1<ProgressEvent>;
   downloadProgressCallback?: F1<ProgressEvent>;
 };
 
 export const api = <T extends Object>(tag: ApiTag) => {
   const request = async (endpoint: string, method: string, params?: Params<T>): Promise<Response> => {
-    const token = getToken(params?.auth || Auth.DEFAULT);
+    const token = params?.auth === Auth.CUSTOM ? params.token : getToken(params?.auth || Auth.DEFAULT);
     const apiUrl = import.meta.env.VITE_API_URL as string;
     const headers: Record<string, string> = {
       'Content-Type': params?.type === 'FormData' ? 'multipart/form-data' : 'application/json',
