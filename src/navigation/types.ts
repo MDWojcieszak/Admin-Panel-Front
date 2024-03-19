@@ -5,6 +5,7 @@ export enum MainNavigationRoute {
   ACCOUNTS = 'accounts',
   GALLERY = 'gallery',
   SETTINGS = 'settings',
+  SERVERS = 'servers',
 }
 
 export enum CommonNavigationRoute {
