@@ -3,7 +3,7 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MdAccountBox, MdDashboard, MdImage, MdSettings } from 'react-icons/md';
 import { MainNavigationRoute } from '~/navigation/types';
-
+import { FaServer } from 'react-icons/fa6';
 const ICON_SIZE = 24;
 
 export type SideBarItem = {
@@ -33,6 +33,8 @@ export const Item = (p: SideBarItem) => {
         return <MdImage {...iconProps} />;
       case MainNavigationRoute.SETTINGS:
         return <MdSettings {...iconProps} />;
+      case MainNavigationRoute.SERVERS:
+        return <FaServer {...iconProps} />;
     }
   };
   return (
@@ -63,6 +65,7 @@ const useStyles = mkUseStyles((t) => ({
     userSelect: 'none',
     alignItems: 'center',
     paddingRight: t.spacing.l,
+    height: 50,
   },
   box: {
     height: '25px',
