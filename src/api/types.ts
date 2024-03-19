@@ -6,6 +6,7 @@ export enum ApiTag {
   IMAGE = 'image',
   SESSION = 'session',
   FILE = 'file',
+  SERVER = 'server',
 }
 
 export enum Auth {
