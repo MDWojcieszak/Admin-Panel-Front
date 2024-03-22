@@ -47,7 +47,10 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
 
   const setTokens: AuthContextType['setTokens'] = (tokens) => {
     const { access_token: accessToken, refresh_token: refresfToken } = tokens;
-
+    setUserData({
+      email: 'test',
+      name: 'test',
+    });
     setAccessToken(accessToken);
     setRefreshToken(refresfToken);
 
