@@ -59,10 +59,11 @@ export const DiskTile = ({ diskInfo }: DiskTileProps) => {
 const useStyles = mkUseStyles((t) => ({
   container: {
     flex: 1,
+    maxWidth: 500,
+    minWidth: 350,
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.7),
     padding: t.spacing.m,
     borderRadius: t.borderRadius.default,
-    marginTop: t.spacing.s,
     marginBottom: t.spacing.s,
     flexDirection: 'row',
   },
