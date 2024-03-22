@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { TbPlayerPlayFilled } from 'react-icons/tb';
 import { mkUseStyles } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
-import { getMonth, getYear, isFuture, isSameMonth, startOfToday } from 'date-fns';
+import { getMonth, getYear, isSameMonth, startOfToday } from 'date-fns';
 import { months } from '~/components/Calendar/types';
 
 const variants = {
