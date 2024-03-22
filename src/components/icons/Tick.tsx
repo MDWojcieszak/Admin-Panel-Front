@@ -7,6 +7,7 @@ type AnimatedTickProps = {
 export const AnimatedTick = ({ size = 24 }: AnimatedTickProps) => {
   return (
     <motion.svg
+      width={size}
       animate={{ width: size }}
       xmlns='http://www.w3.org/2000/svg'
       fill='none'

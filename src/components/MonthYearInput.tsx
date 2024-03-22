@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'framer-motion';
-import { RefObject, useState } from 'react';
+import { useState } from 'react';
 import { FieldValues, UseControllerProps, useController } from 'react-hook-form';
 import { MonthYearSelector } from '~/components/Calendar/MonthYearSelector';
 import { mkUseStyles, useTheme } from '~/utils/theme';
