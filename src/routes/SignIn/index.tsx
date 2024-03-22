@@ -30,7 +30,6 @@ export const SignIn = () => {
   const navigate = useNavigate();
   const auth = useAuth();
   const handleSignIn = useCallback(async (data: SignInSchemaType) => {
-    console.log(data);
     setLoading(true);
     try {
       const res = await AuthService.signIn({ ...data, platform: 'Windows' });
@@ -39,8 +38,6 @@ export const SignIn = () => {
       console.log(error.message);
     }
   }, []);
-
-  console.log(auth.userState);
 
   useEffect(() => {
     if (auth.userState !== UserState.LOGGED_IN) return;
