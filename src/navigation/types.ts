@@ -16,14 +16,20 @@ export enum CommonNavigationRoute {
   NOT_FOUND = 'not-found',
 }
 
-export type CommonRouteType = {
-  path: CommonNavigationRoute;
+export enum ServerNavigationRoute {
+  SERVERS = '',
+  MANAGE = ':serverId',
+}
+
+type RouteType<T> = {
+  path: T;
   label: string;
   component: ReactNode;
+  nested?: true;
 };
 
-export type MainRouteType = {
-  path: MainNavigationRoute;
-  label: string;
-  component: ReactNode;
-};
+export type CommonRouteType = RouteType<CommonNavigationRoute>;
+
+export type MainRouteType = RouteType<MainNavigationRoute>;
+
+export type ServerRouteType = RouteType<ServerNavigationRoute>;
