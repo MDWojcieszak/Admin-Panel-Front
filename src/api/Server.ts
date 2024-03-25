@@ -39,6 +39,16 @@ const ServerPropertiesType = z.object({
 });
 export type ServerPropertiesType = z.infer<typeof ServerPropertiesType>;
 
+const ServerCategoriesType = z.object({
+  id: z.string(),
+  name: z.string().optional().nullable(),
+  value: z.string(),
+});
+export type ServerCategoriesType = z.infer<typeof ServerCategoriesType>;
+
+const CategoriesResponse = z.array(ServerCategoriesType);
+export type CategoriesResponse = z.infer<typeof CategoriesResponse>;
+
 const ServerType = z.object({
   id: z.string(),
   name: z.string(),
@@ -66,6 +76,16 @@ export const ServerService = {
       return ServerDataResponse.parse(response);
     } catch (error) {
       console.error('Error getting server list:', error);
+      throw error;
+    }
+  },
+
+  async getCategories(serverId: string): Promise<CategoriesResponse> {
+    try {
+      const response = await api(ServerService.tag).get('categories', { body: { id: serverId } });
+      return CategoriesResponse.parse(response);
+    } catch (error) {
+      console.error('Error getting server categories list:', error);
       throw error;
     }
   },
