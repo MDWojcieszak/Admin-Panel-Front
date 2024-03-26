@@ -5,6 +5,7 @@ import { useServerCategires } from '~/routes/Servers/hooks/useServerCategories';
 import { mkUseStyles } from '~/utils/theme';
 import { MdKeyboardCommandKey } from 'react-icons/md';
 import { MdOutlineDisplaySettings } from 'react-icons/md';
+import { CommandCard } from '~/routes/Servers/components/CommandCard';
 
 export const ManageServer = () => {
   const styles = useStyles();
@@ -38,33 +39,20 @@ export const ManageServer = () => {
           selected={selecredCard || categories[0].value}
         />
       )}
+      <div style={styles.contentContainer}>
+        <CommandCard categoryId={categories?.find((c) => c.value === selecredCard)?.id || ''} />
+      </div>
     </>
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
-  container: {},
   cards: {
     margin: -t.spacing.m,
     flexDirection: 'row',
   },
-  cardContainer: {
-    overflow: 'hidden',
-  },
-  card: {
-    padding: t.spacing.m,
-    borderRadius: t.borderRadius.large,
-    boxShadow: `${t.colors.gray03 + t.colorOpacity(0.8)} 0px -40px 0px 20px`,
-  },
-  cardDisabled: {
-    backgroundColor: t.colors.gray03,
-    opacity: 0.8,
-    color: t.colors.dark05,
-  },
-  separator: {
-    backgroundColor: t.colors.gray03,
-    opacity: 0.8,
-    height: '100%',
-    flex: 1,
+  contentContainer: {
+    flexDirection: 'row',
+    marginTop: t.spacing.xl,
   },
 }));
