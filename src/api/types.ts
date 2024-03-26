@@ -7,6 +7,7 @@ export enum ApiTag {
   SESSION = 'session',
   FILE = 'file',
   SERVER = 'server',
+  SERVER_COMMANDS = 'server/commands',
 }
 
 export enum Auth {
