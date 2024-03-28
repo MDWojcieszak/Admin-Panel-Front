@@ -3,6 +3,7 @@ import { ThemeProvider } from './contexts/Theme/ThemeProvider';
 import { Theme } from './utils/theme';
 import { ModalManagerProvider } from '~/contexts/ModalManager/ModalManagerProvider';
 import { AuthProvider } from '~/contexts/User/AuthProvider';
+import { WebSocketProvider } from '~/contexts/WebSocket/WebSocketProvider';
 
 type AppProviderProps = {
   theme: Theme;
@@ -13,7 +14,9 @@ export const AppProvider = (p: AppProviderProps) => {
   return (
     <ThemeProvider theme={p.theme}>
       <AuthProvider>
-        <ModalManagerProvider>{p.children}</ModalManagerProvider>
+        <WebSocketProvider>
+          <ModalManagerProvider>{p.children}</ModalManagerProvider>
+        </WebSocketProvider>
       </AuthProvider>
     </ThemeProvider>
   );
