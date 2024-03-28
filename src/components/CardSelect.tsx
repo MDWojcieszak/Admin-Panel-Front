@@ -29,7 +29,9 @@ export const CardSelect = ({ items, selected, handleSelect, style }: CardSelectP
           onClick={() => handleSelect(item.value)}
           style={styles.innerItemContainer}
           animate={{
-            backgroundColor: isSelected ? theme.colors.gray04 + theme.colorOpacity(0) : theme.colors.gray04,
+            backgroundColor: isSelected
+              ? theme.colors.gray04 + theme.colorOpacity(0)
+              : theme.colors.gray04 + theme.colorOpacity(0.7),
             borderRadius: `${theme.borderRadius.large}px ${theme.borderRadius.large}px ${
               selectedIndex - 1 === index ? theme.borderRadius.large : 0
             }px ${selectedIndex + 1 === index ? theme.borderRadius.large : 0}px`,
@@ -65,7 +67,7 @@ const useStyles = mkUseStyles((t) => ({
     userSelect: 'none',
   },
   innerItemContainer: {
-    boxShadow: `${t.colors.gray04} 0px -40px 0px 20px`,
+    boxShadow: `${t.colors.gray04 + t.colorOpacity(0.7)} 0px -40px 0px 20px`,
     padding: t.spacing.m,
     cursor: 'pointer',
     fontSize: 16,
@@ -76,7 +78,7 @@ const useStyles = mkUseStyles((t) => ({
   separator: {
     flex: 1,
     height: '100%',
-    backgroundColor: t.colors.gray04,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.7),
   },
   iconContainer: {
     marginRight: t.spacing.m,
