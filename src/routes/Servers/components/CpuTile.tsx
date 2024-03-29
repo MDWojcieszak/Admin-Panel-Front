@@ -20,6 +20,8 @@ export const CpuTile = ({ cpuInfo }: CpuTileProps) => {
         />
         <div style={styles.label}>{(cpuInfo.currentLoadUser * 100).toFixed(2)}</div>
       </div>
+      <div>{cpuInfo.cores}</div>
+      <div>{cpuInfo.physicalCores}</div>
       <div style={styles.progressContainer}>
         <CircularProgress
           progress={cpuInfo.currentLoadUser * 100}
@@ -33,7 +35,6 @@ export const CpuTile = ({ cpuInfo }: CpuTileProps) => {
 
 const useStyles = mkUseStyles((t) => ({
   container: {
-    flex: 1,
     gap: t.spacing.m,
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.7),
     padding: t.spacing.m,

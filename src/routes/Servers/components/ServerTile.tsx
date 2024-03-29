@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import { DiskType, ServerType } from '~/api/Server';
+import { Button } from '~/components/Button';
 import { CpuTile } from '~/routes/Servers/components/CpuTile';
 import { DiskTile } from '~/routes/Servers/components/DiskTile';
 import { mkUseStyles } from '~/utils/theme';
@@ -8,6 +10,7 @@ type ServerTileProps = {
 };
 export const ServerTile = ({ server }: ServerTileProps) => {
   const styles = useStyles();
+  const navigate = useNavigate();
 
   const renderDisks = (disk: DiskType) => {
     return <DiskTile diskInfo={disk} />;
@@ -24,6 +27,7 @@ export const ServerTile = ({ server }: ServerTileProps) => {
       </div>
       <div style={styles.diskContainer}>{server.properties.diskInfo.map(renderDisks)}</div>
       <CpuTile cpuInfo={server.properties.cpuInfo} />
+      <Button label='Manage' onClick={() => navigate(server.id)} />
     </div>
   );
 };
