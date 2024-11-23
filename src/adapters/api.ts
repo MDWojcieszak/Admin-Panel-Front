@@ -6,6 +6,7 @@ const getToken = (authType: Auth) => (authType === Auth.DEFAULT ? getAccessToken
 type RequestType = 'JSON' | 'FormData';
 type Params<T> = {
   body?: T;
+  id?: string;
   auth?: Auth;
   type?: RequestType;
   token?: string;
@@ -21,12 +22,14 @@ export const api = <T extends Object>(tag: ApiTag) => {
       'Content-Type': params?.type === 'FormData' ? 'multipart/form-data' : 'application/json',
       ...(params?.auth !== Auth.PUBLIC && { Authorization: `Bearer ${token}` }),
     };
+    const url = `${apiUrl}/${tag}` + (endpoint.length > 0 ? `/${endpoint}` : '');
     try {
       const response = await axios.request({
-        url: `${apiUrl}/${tag}/${endpoint}`,
+        url: url,
         method,
         headers,
-        params: method === 'GET' ? params?.body : undefined,
+        params:
+          method === 'GET' || method === 'DELETE' ? params?.body : method === 'PUT' ? { id: params?.id } : undefined,
         data: params?.body,
       });
       return response.data;
