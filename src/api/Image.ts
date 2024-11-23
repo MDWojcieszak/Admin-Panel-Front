@@ -54,6 +54,18 @@ export const ImageService = {
     }
   },
 
+  async get(data: ImageId): Promise<ImageType> {
+    try {
+      const response = await api<ImageId>(ImageService.tag).get('', {
+        body: data,
+      });
+      return ImageType.parse(response);
+    } catch (error) {
+      console.error('Error getting image:', error);
+      throw error;
+    }
+  },
+
   async getList(data: PaginationDto): Promise<ImageDataResponse> {
     try {
       const response = await api<PaginationDto>(ImageService.tag).get('list', {
@@ -101,7 +113,16 @@ export const ImageService = {
 
   async delete(data: ImageId) {
     try {
-      const response = await api<ImageId>(ImageService.tag).delete('original', { body: data });
+      const response = await api<ImageId>(ImageService.tag).delete('', { body: data });
+      return response;
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      throw error;
+    }
+  },
+  async update(id: string, data: Partial<ImageDataDto>) {
+    try {
+      const response = await api<Partial<ImageDataDto>>(ImageService.tag).put('', { body: data, id });
       return response;
     } catch (error) {
       console.error('Error deleting image:', error);
