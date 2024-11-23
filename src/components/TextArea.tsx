@@ -1,4 +1,4 @@
-import { CSSProperties, HTMLInputTypeAttribute, useRef, useState } from 'react';
+import { CSSProperties, HTMLInputTypeAttribute, useEffect, useRef, useState } from 'react';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FieldValues, UseControllerProps, useController } from 'react-hook-form';
@@ -32,6 +32,12 @@ export const TextArea = <T extends FieldValues>({ label, description, type = 'te
     if (!inputRef?.current?.value) setShowLabel(true);
     setShowDescription(false);
   };
+
+  useEffect(() => {
+    if (!p.defaultValue || !inputRef.current) return;
+    if (p.defaultValue?.length > 0) setShowLabel(false);
+    inputRef.current.value = p.defaultValue;
+  }, [p.defaultValue]);
 
   const renderDescription = errors[p.name] ? <>{errors[p.name]?.message}</> : description;
 

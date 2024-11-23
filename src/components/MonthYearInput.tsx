@@ -27,7 +27,7 @@ export const MonthYearInput = <T extends FieldValues>(p: MonthYearInputProps<T>)
       onHoverStart={() => setShowDescription(true)}
       onHoverEnd={() => setShowDescription(false)}
     >
-      <MonthYearSelector setDate={handleSetDate} />
+      <MonthYearSelector setDate={handleSetDate} defaultDate={p.defaultValue} />
       <input style={styles.input} {...field} />
       <AnimatePresence mode='wait'>
         {(showDescription || errors[p.name]) && (
@@ -52,6 +52,7 @@ const useStyles = mkUseStyles((t) => ({
     borderRadius: t.borderRadius.default,
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
     padding: t.spacing.s,
+    overflow: 'hidden',
   },
   label: {
     position: 'absolute',

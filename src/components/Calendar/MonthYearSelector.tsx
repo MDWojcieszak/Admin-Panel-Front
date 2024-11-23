@@ -22,6 +22,7 @@ const variants = {
 
 type MonthYearSelectorProps = {
   setDate: F1<Date>;
+  defaultDate?: Date;
 };
 
 export const MonthYearSelector = (p: MonthYearSelectorProps) => {
@@ -50,6 +51,13 @@ export const MonthYearSelector = (p: MonthYearSelectorProps) => {
     if (isSameMonth(date, startOfToday())) return setIsNextDisabled(true);
     setIsNextDisabled(false);
   }, [activeMonth, activeYear]);
+
+  useEffect(() => {
+    if (p.defaultDate) {
+      setActiveMonth(getMonth(p.defaultDate));
+      setActiveYear(getYear(p.defaultDate));
+    }
+  }, [p.defaultDate]);
 
   return (
     <div style={styles.container}>

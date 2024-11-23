@@ -1,6 +1,6 @@
 import { MdDelete, MdEdit } from 'react-icons/md';
-import { mkUseStyles } from '~/utils/theme';
-
+import { mkUseStyles, useTheme } from '~/utils/theme';
+import { motion } from 'framer-motion';
 type ActionButtonsProps = {
   id: string;
   onDelete?: F1<string>;
@@ -8,17 +8,27 @@ type ActionButtonsProps = {
 };
 export const ActionButtons = (p: ActionButtonsProps) => {
   const styles = useStyles();
+  const theme = useTheme();
+
+  const handleEdit = () => {
+    p.onEdit?.(p.id);
+  };
+
+  const handleDelete = () => {
+    p.onDelete?.(p.id);
+  };
+
   return (
     <div style={styles.container}>
       {p.onEdit && (
-        <button>
+        <motion.div onClick={handleEdit} style={styles.button} whileHover={{ backgroundColor: theme.colors.blue }}>
           <MdEdit />
-        </button>
+        </motion.div>
       )}
       {p.onDelete && (
-        <button>
+        <motion.div onClick={handleDelete} style={styles.button} whileHover={{ backgroundColor: theme.colors.red }}>
           <MdDelete />
-        </button>
+        </motion.div>
       )}
     </div>
   );
@@ -27,6 +37,15 @@ export const ActionButtons = (p: ActionButtonsProps) => {
 const useStyles = mkUseStyles((t) => ({
   container: {
     flexDirection: 'row',
-    gap: t.spacing.m,
+    gap: t.spacing.s,
+  },
+  button: {
+    backgroundColor: t.colors.gray05,
+    paddingLeft: t.spacing.m,
+    paddingRight: t.spacing.m,
+    paddingTop: t.spacing.s,
+    paddingBottom: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    cursor: 'pointer',
   },
 }));
