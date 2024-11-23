@@ -67,26 +67,33 @@ export const ImagesTable = (p: ImagesTableProps) => {
         cell: (info) => info.getValue(),
         accessorKey: 'localization',
       },
-
       {
-        id: 'fullName',
-        header: 'Name',
+        header: 'Description',
         footer: (props) => props.column.id,
-        accessorFn: (row) => `${row.authorId}`,
+        cell: (info) =>
+          info.getValue() ? (
+            <p>{(info.getValue() as string).slice(0, 10) + ' ...'}</p>
+          ) : (
+            <p style={{ color: theme.colors.yellow }}>Empty</p>
+          ),
+        accessorKey: 'description',
       },
       {
         header: '',
         id: 'actions',
         footer: (props) => props.column.id,
         cell: (info) => (
-          <ActionButtons
-            id={info.row.original.id}
-            key={info.row.original.id}
-            onDelete={p.handleDelete}
-            onEdit={p.handleEdit}
-          />
+          <div style={{ alignItems: 'flex-end', paddingRight: theme.spacing.m }}>
+            <ActionButtons
+              id={info.getValue() as string}
+              key={info.row.id}
+              onDelete={p.handleDelete}
+              onEdit={p.handleEdit}
+            />
+          </div>
         ),
-        maxSize: 80,
+        accessorKey: 'imageId',
+        maxSize: 180,
       },
     ],
     [],

@@ -18,7 +18,7 @@ export const CpuTile = ({ cpuInfo }: CpuTileProps) => {
           progress={cpuInfo.currentLoadUser * 100}
           icon={<BsCpu style={{ marginTop: -10 }} size={50} />}
         />
-        <div style={styles.label}>{(cpuInfo.currentLoadUser * 100).toFixed(2)}</div>
+        <div style={styles.label}>{(cpuInfo.currentLoadUser * 100).toFixed(2) + ' %'}</div>
       </div>
       <div>{cpuInfo.cores}</div>
       <div>{cpuInfo.physicalCores}</div>
@@ -27,7 +27,7 @@ export const CpuTile = ({ cpuInfo }: CpuTileProps) => {
           progress={cpuInfo.currentLoadUser * 100}
           icon={<FaMemory style={{ marginTop: -10 }} size={50} />}
         />
-        <div style={styles.label}>{(cpuInfo.currentLoadUser * 100).toFixed(2)}</div>
+        <div style={styles.label}>{(cpuInfo.currentLoadUser * 100).toFixed(2) + ' %'}</div>
       </div>
     </div>
   );
