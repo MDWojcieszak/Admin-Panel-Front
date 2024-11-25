@@ -31,6 +31,10 @@ export const Input = <T extends FieldValues>({ label, description, type = 'text'
   };
 
   useEffect(() => {
+    if (typeof field.value === 'string' && field.value.length > 0) setShowLabel(false);
+  }, [field]);
+
+  useEffect(() => {
     if (!p.defaultValue || !inputRef.current) return;
     if (p.defaultValue?.length > 0) setShowLabel(false);
     inputRef.current.value = p.defaultValue;

@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
 import { Theme, useTheme } from '~/utils/theme';
 
-type AnimatedTickProps = {
+type AnimatedXProps = {
   size?: number;
   color?: keyof Theme['colors'];
 };
 
-export const AnimatedTick = ({ size = 24, color = 'white' }: AnimatedTickProps) => {
+export const AnimatedCancel = ({ size = 24, color = 'white' }: AnimatedXProps) => {
   const theme = useTheme();
   return (
     <motion.svg
@@ -24,7 +24,15 @@ export const AnimatedTick = ({ size = 24, color = 'white' }: AnimatedTickProps) 
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
-        d='M4.5 12.75l6 6 9-13.5'
+        d='M6 6l12 12'
+      />
+      <motion.path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
+        d='M18 6l-12 12'
       />
     </motion.svg>
   );

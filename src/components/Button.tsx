@@ -20,7 +20,7 @@ export const Button = ({ label, onClick, variant = 'primary', ...p }: ButtonProp
   const styles = useStyles();
   const theme = useTheme();
 
-  const buttonColor = variant === 'primary' ? theme.colors.blue : theme.colors.gray02 + theme.colorOpacity(0.6);
+  const buttonColor = variant === 'primary' ? theme.colors.blue : theme.colors.gray01 + theme.colorOpacity(0.6);
 
   const handleClick = () => {
     if (p.disabled) return;
