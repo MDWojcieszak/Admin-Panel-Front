@@ -33,6 +33,20 @@ const RegisterDto = z.object({
 
 export type RegisterDto = z.infer<typeof RegisterDto>;
 
+const ResetPasswordRequestDto = z.object({
+  email: z.string().email(),
+  deleteSessions: z.boolean().optional(),
+});
+
+export type ResetPasswordRequestDto = z.infer<typeof ResetPasswordRequestDto>;
+
+const ResetPasswordDto = z.object({
+  newPassword: z.string().email(),
+  deleteSessions: z.boolean(),
+});
+
+export type ResetPasswordDto = z.infer<typeof ResetPasswordDto>;
+
 export const AuthService = {
   tag: ApiTag.AUTH,
 
@@ -91,6 +105,33 @@ export const AuthService = {
       return true;
     } catch (error) {
       console.error('Error registering user:', error);
+      throw error;
+    }
+  },
+
+  async resetPasswordRequest(dto: ResetPasswordRequestDto): Promise<boolean> {
+    try {
+      await api<ResetPasswordRequestDto>(AuthService.tag).post('reset-password-request', {
+        auth: Auth.PUBLIC,
+        body: dto,
+      });
+      return true;
+    } catch (error) {
+      console.error('Error reseting password:', error);
+      throw error;
+    }
+  },
+
+  async resetPassword(dto: ResetPasswordDto, token: string): Promise<boolean> {
+    try {
+      await api<ResetPasswordDto>(AuthService.tag).post('reset-password', {
+        auth: Auth.CUSTOM,
+        token,
+        body: dto,
+      });
+      return true;
+    } catch (error) {
+      console.error('Error reseting password:', error);
       throw error;
     }
   },
