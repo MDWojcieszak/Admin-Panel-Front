@@ -4,7 +4,7 @@ body {
   place-items: center;
   min-width: 100vw;
   min-height: 100vh;
-  background: url('/b6.JPG') no-repeat;
+  background: url('/background.webp') no-repeat;
   background-size: cover;
   background-position: center center;
 }
