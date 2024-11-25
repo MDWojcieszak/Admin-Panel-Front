@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  web-app:
+    build:
+      context: ${APP_CONTEXT}
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_TOKEN_KEY: ${VITE_TOKEN_KEY}
+        VITE_REFRESH_TOKEN_KEY: ${VITE_REFRESH_TOKEN_KEY}
+    ports:
+      - '7080:80'
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_TOKEN_KEY=${VITE_TOKEN_KEY}
+      - VITE_REFRESH_TOKEN_KEY=${VITE_REFRESH_TOKEN_KEY}
