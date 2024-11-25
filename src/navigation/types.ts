@@ -11,6 +11,7 @@ export enum MainNavigationRoute {
 export enum CommonNavigationRoute {
   WELCOME = 'welcome',
   SIGN_IN = 'sign-in',
+  RESET_PASSWORD = 'reset-password',
   USER_REGISTRATION = 'register',
   MAIN_NAVIGATION = '*',
   NOT_FOUND = 'not-found',
