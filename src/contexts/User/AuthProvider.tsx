@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { AuthService } from '~/api/Auth';
+import { AuthService } from '~/apiOld/Auth';
 import { AuthContext, AuthContextType, CookieKey, UserData, UserState } from '~/contexts/User/AuthContext';
 import {
   getAccessToken,
@@ -10,8 +10,8 @@ import {
   isTokenValid,
   removeAccessToken,
   removeRefreshToken,
-  setAccessToken,
-  setRefreshToken,
+  setAccessToken as setAccessTokenToCookie,
+  setRefreshToken as setRefreshTokenToCookie,
 } from '~/utils/accessToken';
 
 type UserProviderProps = {
@@ -21,9 +21,8 @@ type UserProviderProps = {
 export const AuthProvider = ({ children }: UserProviderProps) => {
   const [userState, setUserState] = useState<UserState>(UserState.UNKNOWN);
   const [userData, setUserData] = useState<UserData>();
-
+  const [accessToken, setAccessToken] = useState<string>();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const initializeAppCredentials = () => {
     const visitData = Cookies.get(CookieKey.USER_VISIT);
     if (!visitData) {
@@ -37,6 +36,7 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
     if (isTokenValid(refreshToken)) {
       const accessToken = getAccessToken();
       if (isTokenValid(accessToken)) {
+        setAccessToken(accessToken);
         setUserState(UserState.LOGGED_IN);
         return scheduleTokenRefresh(accessToken!);
       }
@@ -52,7 +52,8 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
       name: 'test',
     });
     setAccessToken(accessToken);
-    setRefreshToken(refresfToken);
+    setAccessTokenToCookie(accessToken);
+    setRefreshTokenToCookie(refresfToken);
 
     const accessTokenData = getTokenData(accessToken);
     if (!accessTokenData) {
@@ -76,7 +77,11 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
   const refreshTokens = async () => {
     try {
       const tokens = await AuthService.refresh();
-      setTokens(tokens);
+      if (!tokens.access_token || !tokens.refresh_token) throw new Error('Invalid tokens received');
+      setTokens({
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+      });
     } catch (error) {
       console.log(error);
       setUserState(UserState.REQUIRES_LOGIN);
@@ -102,6 +107,8 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ userState, userData, setTokens, removeTokens }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ userState, userData, accessToken, setTokens, removeTokens }}>
+      {children}
+    </AuthContext.Provider>
   );
 };

@@ -22,6 +22,7 @@ export type UserData = {
 export type AuthContextType = {
   userState: UserState;
   userData: UserData | undefined;
+  accessToken: string | undefined;
   setTokens: F1<{ access_token: string; refresh_token: string }, boolean>;
   removeTokens: F0;
 };

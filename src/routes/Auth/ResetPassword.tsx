@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AuthService } from '~/api/Auth';
+import { AuthService } from '~/apiOld/Auth';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { validatePassword } from '~/utils/validation/passwordValidation';
 

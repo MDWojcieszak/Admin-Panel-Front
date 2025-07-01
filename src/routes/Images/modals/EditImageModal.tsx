@@ -7,7 +7,7 @@ import { MonthYearInput } from '~/components/MonthYearInput';
 import { Input } from '~/components/Input';
 import { mkUseStyles } from '~/utils/theme';
 import { TextArea } from '~/components/TextArea';
-import { ImageService } from '~/api/Image';
+import { ImageService } from '~/apiOld/Image';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useImageData } from '~/routes/Images/hooks/useImageData';
 

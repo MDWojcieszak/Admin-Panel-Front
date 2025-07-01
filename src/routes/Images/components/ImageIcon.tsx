@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ImageService } from '~/api/Image';
+import { ImageService } from '~/apiOld/Image';
 import { mkUseStyles } from '~/utils/theme';
 import { motion } from 'framer-motion';
 type ImageIcoinProps = {

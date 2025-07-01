@@ -5,6 +5,7 @@ body {
   min-width: 100vw;
   min-height: 100vh;
   background: url('/background.webp') no-repeat;
+  /* background: linear-gradient(135deg, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 100%); */
   background-size: cover;
   background-position: center center;
 }

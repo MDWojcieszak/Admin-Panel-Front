@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { validatePassword } from '~/utils/validation/passwordValidation';
-import { AuthService } from '~/api/Auth';
+import { AuthService } from '~/apiOld/Auth';
 import { useAuth } from '~/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { CommonNavigationRoute, MainNavigationRoute } from '~/navigation/types';
@@ -39,7 +39,14 @@ export const SignIn = () => {
     setLoading(true);
     try {
       const res = await AuthService.signIn({ ...data, platform: 'Windows' });
-      auth.setTokens(res);
+      if (res.access_token && res.refresh_token) {
+        auth.setTokens({
+          access_token: res.access_token,
+          refresh_token: res.refresh_token,
+        });
+      } else {
+        setResult(Result.SIGN_IN_FAILED);
+      }
     } catch (error: any) {
       setResult(Result.SIGN_IN_FAILED);
     }

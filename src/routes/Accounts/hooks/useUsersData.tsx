@@ -1,6 +1,6 @@
 import { PaginationState } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
-import { UserDataResponse, UserService } from '~/api/User';
+import { UserDataResponse, UserService } from '~/apiOld/User';
 
 export const useUsersData = () => {
   const [data, setData] = useState<UserDataResponse>();

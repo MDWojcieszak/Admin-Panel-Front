@@ -12,13 +12,14 @@ type CircularProgressProps = {
 };
 
 export const CircularProgress = ({ progress, ...p }: CircularProgressProps) => {
+  console.log(progress);
   const styles = useStyles();
   const theme = useTheme();
   const innerRadius = RADIUS - WIDTH / 2;
   const progressColor = p.color || theme.colors.lightGreen;
   const circumfrence = 2 * Math.PI * innerRadius;
 
-  const strokeDashoffset = ((100 - progress) / 100) * circumfrence;
+  const strokeDashoffset = ((100 - progress / (360 / 240)) / 100) * circumfrence;
   const backgroundStrokeWidth = WIDTH - 0.8;
 
   return (
@@ -43,6 +44,7 @@ export const CircularProgress = ({ progress, ...p }: CircularProgressProps) => {
           />
           <motion.circle
             animate={{ strokeDashoffset: strokeDashoffset }}
+            initial={{ strokeDashoffset: circumfrence }}
             cx={RADIUS}
             cy={RADIUS}
             r={innerRadius}

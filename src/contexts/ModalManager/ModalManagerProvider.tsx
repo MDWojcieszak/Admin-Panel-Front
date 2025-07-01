@@ -2,7 +2,7 @@ import { FC, PropsWithChildren, useCallback, useMemo, useRef, useState } from 'r
 import { Modal } from '~/components/Modal';
 
 import { ERRORS, ModalManager, ModalManagerContext } from '~/contexts/ModalManager/ModalManagerContext';
-import { InternalModalProps, ModalType } from '~/contexts/ModalManager/types';
+import { InternalModalProps, ModalProps, ModalType } from '~/contexts/ModalManager/types';
 
 export const ModalManagerProvider = ({ children }: PropsWithChildren) => {
   const [collection, setCollection] = useState<ModalType<FC<Partial<InternalModalProps>>>[]>([]);
@@ -14,7 +14,7 @@ export const ModalManagerProvider = ({ children }: PropsWithChildren) => {
       id,
       component,
       config: config || {},
-      props: defaultProps || {},
+      props: (defaultProps as ModalProps<typeof component>) || ({} as ModalProps<typeof component>),
       visible: false,
     };
     setCollection((prev) => {

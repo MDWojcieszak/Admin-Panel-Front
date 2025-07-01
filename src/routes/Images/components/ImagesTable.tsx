@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useMemo } from 'react';
 
 import { PaginationState, useReactTable, getCoreRowModel, ColumnDef } from '@tanstack/react-table';
-import { ImageType } from '~/api/Image';
+import { ImageType } from '~/apiOld/Image';
 import { ImageIcon } from '~/routes/Images/components/ImageIcon';
 import { useTheme } from '~/utils/theme';
 import { format } from 'date-fns';

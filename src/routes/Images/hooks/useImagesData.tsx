@@ -1,6 +1,6 @@
 import { PaginationState } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
-import { ImageDataResponse, ImageService } from '~/api/Image';
+import { ImageDataResponse, ImageService } from '~/apiOld/Image';
 
 export const useImagesData = () => {
   const [data, setData] = useState<ImageDataResponse>();

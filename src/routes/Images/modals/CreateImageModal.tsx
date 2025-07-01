@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { FileService } from '~/api/File';
+import { FileService } from '~/apiOld/File';
 import { Button } from '~/components/Button';
 import { MonthYearInput } from '~/components/MonthYearInput';
 import { ImageInputWithPreview } from '~/components/ImageInputWithPreview';
@@ -11,7 +11,7 @@ import { SideMotionContainer, SideMotionContainerRef } from '~/components/SideMo
 import { mkUseStyles } from '~/utils/theme';
 import { validateFile } from '~/utils/validation/fileValidation';
 import { TextArea } from '~/components/TextArea';
-import { ImageService } from '~/api/Image';
+import { ImageService } from '~/apiOld/Image';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 
 const ImageSchema = z.object({

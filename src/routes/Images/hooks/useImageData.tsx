@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ImageService, ImageType } from '~/api/Image';
+import { ImageService, ImageType } from '~/apiOld/Image';
 
 export const useImageData = (id: string) => {
   const [data, setData] = useState<ImageType>();

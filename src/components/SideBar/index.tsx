@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { AuthService } from '~/api/Auth';
+import { AuthService } from '~/apiOld/Auth';
 import { Button } from '~/components/Button';
 import { GlassCard } from '~/components/GlassCard';
 import { Item, SideBarItem } from '~/components/SideBar/Item';

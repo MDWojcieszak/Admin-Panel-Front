@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserRole } from '~/types/user';
-import { UserService } from '~/api/User';
+import { UserService } from '~/apiOld/User';
 import { Input } from '~/components/Input';
 import { Select } from '~/components/Select';
 

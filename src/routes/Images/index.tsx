@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { FaPlus } from 'react-icons/fa6';
-import { ImageService } from '~/api/Image';
+import { ImageService } from '~/apiOld/Image';
 import { Button } from '~/components/Button';
 import { useModal } from '~/hooks/useModal';
 import { ImagesTable } from '~/routes/Images/components/ImagesTable';
@@ -37,7 +37,9 @@ export const Gallery = () => {
 
   const { data, pagination, setPagination, refresh } = useImagesData();
   const handleDelete = async (imageId: string) => {
-    await ImageService.delete({ id: imageId });
+    try {
+      await ImageService.delete({ id: imageId });
+    } catch (_) {}
     refresh();
   };
   const handleEdit = useCallback(

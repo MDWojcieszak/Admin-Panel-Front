@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
-import { AuthService, CheckRegisterToken } from '~/api/Auth';
+import { AuthService, CheckRegisterToken } from '~/apiOld/Auth';
 import { Button } from '~/components/Button';
 import { GlassCard } from '~/components/GlassCard';
 import { Input } from '~/components/Input';

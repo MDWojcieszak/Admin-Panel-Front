@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { ApiTag, Auth } from '~/api/types';
+import { ApiTag, Auth } from '~/apiOld/types';
 import { getAccessToken, getRefreshToken } from '~/utils/accessToken';
 
 const getToken = (authType: Auth) => (authType === Auth.DEFAULT ? getAccessToken() : getRefreshToken());

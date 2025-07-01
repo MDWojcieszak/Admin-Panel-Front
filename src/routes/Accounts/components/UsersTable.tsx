@@ -5,7 +5,7 @@ import { useTheme } from '~/utils/theme';
 import { format } from 'date-fns';
 import { ActionButtons } from '~/components/Table/ActionButtons';
 import { Table } from '~/components/Table';
-import { UserType } from '~/api/User';
+import { UserType } from '~/apiOld/User';
 
 type UsersTableProps = {
   pagination: PaginationState;
