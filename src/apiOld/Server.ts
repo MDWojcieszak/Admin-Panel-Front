@@ -1,15 +1,15 @@
 import { z } from 'zod';
 import { api } from '~/adapters/api';
-import { ApiTag } from '~/api/types';
+import { ApiTag } from '~/apiOld/types';
 
 const DiskType = z.object({
-  available: z.number(),
-  fs: z.string(),
+  available: z.number().optional().nullable(),
+  fs: z.string().optional().nullable(),
   id: z.string(),
   mediaType: z.string().optional().nullable(),
   name: z.string().optional().nullable(),
-  type: z.string(),
-  used: z.number(),
+  type: z.string().optional().nullable(),
+  used: z.number().optional().nullable(),
 });
 export type DiskType = z.infer<typeof DiskType>;
 

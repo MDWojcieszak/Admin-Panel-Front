@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { api } from '~/adapters/api';
-import { ApiTag } from '~/api/types';
-import { PaginationDto } from '~/api/types';
+import { ApiTag } from '~/apiOld/types';
+import { PaginationDto } from '~/apiOld/types';
 import { UserRole } from '~/types/user';
 
 const UserDto = z.object({

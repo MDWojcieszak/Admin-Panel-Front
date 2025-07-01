@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { api } from '~/adapters/api';
-import { ApiTag, Auth, PaginationDto } from '~/api/types';
+import { ApiTag, Auth, PaginationDto } from '~/apiOld/types';
 const ImageDataDto = z.object({
   imageId: z.string(),
   localization: z.string(),

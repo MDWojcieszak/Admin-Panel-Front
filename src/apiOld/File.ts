@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { api } from '~/adapters/api';
-import { ApiTag } from '~/api/types';
+import { ApiTag } from '~/apiOld/types';
 
 const UploadFileResponse = z.object({
   id: z.string(),

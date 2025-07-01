@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { api } from '~/adapters/api';
-import { ApiTag, Auth } from '~/api/types';
+import { ApiTag, Auth } from '~/apiOld/types';
 
 const AuthDto = z.object({
   email: z.string().email(),
