@@ -75,7 +75,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new UserApi(configuration);
 
-let take: number; // (default to undefined)
+let take: number; // (optional) (default to undefined)
 let skip: number; // (optional) (default to 0)
 
 const { status, data } = await apiInstance.userControllerGetList(
@@ -88,7 +88,7 @@ const { status, data } = await apiInstance.userControllerGetList(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **take** | [**number**] |  | defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
 | **skip** | [**number**] |  | (optional) defaults to 0|
 
 

@@ -25,7 +25,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new SessionApi(configuration);
 
-let take: number; // (default to undefined)
+let take: number; // (optional) (default to undefined)
 let skip: number; // (optional) (default to 0)
 
 const { status, data } = await apiInstance.sessionControllerGetAll(
@@ -38,7 +38,7 @@ const { status, data } = await apiInstance.sessionControllerGetAll(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **take** | [**number**] |  | defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
 | **skip** | [**number**] |  | (optional) defaults to 0|
 
 
@@ -78,7 +78,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new SessionApi(configuration);
 
-let take: number; // (default to undefined)
+let take: number; // (optional) (default to undefined)
 let skip: number; // (optional) (default to 0)
 
 const { status, data } = await apiInstance.sessionControllerGetAllForUser(
@@ -91,7 +91,7 @@ const { status, data } = await apiInstance.sessionControllerGetAllForUser(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **take** | [**number**] |  | defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
 | **skip** | [**number**] |  | (optional) defaults to 0|
 
 
@@ -132,7 +132,7 @@ const configuration = new Configuration();
 const apiInstance = new SessionApi(configuration);
 
 let userId: string; // (default to undefined)
-let take: number; // (default to undefined)
+let take: number; // (optional) (default to undefined)
 let skip: number; // (optional) (default to 0)
 
 const { status, data } = await apiInstance.sessionControllerGetAllForUserByAdmin(
@@ -147,7 +147,7 @@ const { status, data } = await apiInstance.sessionControllerGetAllForUserByAdmin
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **userId** | [**string**] |  | defaults to undefined|
-| **take** | [**number**] |  | defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
 | **skip** | [**number**] |  | (optional) defaults to 0|
 
 

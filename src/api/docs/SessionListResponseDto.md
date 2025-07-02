@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **sessions** | [**Array&lt;SessionResponseDto&gt;**](SessionResponseDto.md) |  | [default to undefined]
+**total** | **number** |  | [default to undefined]
 **params** | [**PaginationDto**](PaginationDto.md) |  | [optional] [default to undefined]
 
 ## Example
@@ -15,6 +16,7 @@ import { SessionListResponseDto } from './api';
 
 const instance: SessionListResponseDto = {
     sessions,
+    total,
     params,
 };
 ```

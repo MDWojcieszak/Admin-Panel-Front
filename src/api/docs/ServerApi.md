@@ -12,7 +12,7 @@ All URIs are relative to *http://localhost*
 |[**serverControllerGetDetails**](#servercontrollergetdetails) | **GET** /server/details/{serverId} | |
 |[**serverControllerPatchCategory**](#servercontrollerpatchcategory) | **PATCH** /server/catgory/{id} | |
 |[**serverControllerPatchDisk**](#servercontrollerpatchdisk) | **PATCH** /server/disk/{id} | |
-|[**serverProcessControllerGetAll**](#serverprocesscontrollergetall) | **GET** /server/process/list | |
+|[**serverProcessControllerGetAll**](#serverprocesscontrollergetall) | **GET** /server/process/all | |
 |[**serverProcessControllerGetAllLogs**](#serverprocesscontrollergetalllogs) | **GET** /server/process/{id}/logs | |
 |[**serverProcessControllerGetOne**](#serverprocesscontrollergetone) | **GET** /server/process/{id} | |
 |[**serverSettingsControllerGetSettings**](#serversettingscontrollergetsettings) | **GET** /server/settings | |
@@ -237,7 +237,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ServerApi(configuration);
 
-let take: number; // (default to undefined)
+let take: number; // (optional) (default to undefined)
 let skip: number; // (optional) (default to 0)
 
 const { status, data } = await apiInstance.serverControllerGetAll(
@@ -250,7 +250,7 @@ const { status, data } = await apiInstance.serverControllerGetAll(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **take** | [**number**] |  | defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
 | **skip** | [**number**] |  | (optional) defaults to 0|
 
 
@@ -448,7 +448,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ServerApi(configuration);
 
-let take: number; // (default to undefined)
+let take: number; // (optional) (default to undefined)
 let skip: number; // (optional) (default to 0)
 
 const { status, data } = await apiInstance.serverProcessControllerGetAll(
@@ -461,7 +461,7 @@ const { status, data } = await apiInstance.serverProcessControllerGetAll(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **take** | [**number**] |  | defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
 | **skip** | [**number**] |  | (optional) defaults to 0|
 
 
@@ -502,7 +502,7 @@ const configuration = new Configuration();
 const apiInstance = new ServerApi(configuration);
 
 let id: string; // (default to undefined)
-let take: number; // (default to undefined)
+let take: number; // (optional) (default to undefined)
 let skip: number; // (optional) (default to 0)
 
 const { status, data } = await apiInstance.serverProcessControllerGetAllLogs(
@@ -517,7 +517,7 @@ const { status, data } = await apiInstance.serverProcessControllerGetAllLogs(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **id** | [**string**] |  | defaults to undefined|
-| **take** | [**number**] |  | defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
 | **skip** | [**number**] |  | (optional) defaults to 0|
 
 

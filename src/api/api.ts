@@ -487,7 +487,7 @@ export interface PaginationDto {
      * @type {number}
      * @memberof PaginationDto
      */
-    'take': number;
+    'take'?: number;
     /**
      * 
      * @type {number}
@@ -906,6 +906,12 @@ export interface ServerListResponseDto {
     'servers': Array<ServerResponseDto>;
     /**
      * 
+     * @type {number}
+     * @memberof ServerListResponseDto
+     */
+    'total': number;
+    /**
+     * 
      * @type {PaginationDto}
      * @memberof ServerListResponseDto
      */
@@ -949,6 +955,18 @@ export interface ServerPropertiesDto {
     'status'?: ServerStatus;
     /**
      * 
+     * @type {string}
+     * @memberof ServerPropertiesDto
+     */
+    'lastSeenAt'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ServerPropertiesDto
+     */
+    'isOnline'?: boolean;
+    /**
+     * 
      * @type {UserDto}
      * @memberof ServerPropertiesDto
      */
@@ -970,7 +988,7 @@ export interface ServerPropertiesDto {
      * @type {Array<DiskInfoDto>}
      * @memberof ServerPropertiesDto
      */
-    'disk'?: Array<DiskInfoDto>;
+    'diskInfo'?: Array<DiskInfoDto>;
 }
 
 
@@ -1125,6 +1143,12 @@ export interface SessionListResponseDto {
      * @memberof SessionListResponseDto
      */
     'sessions': Array<SessionResponseDto>;
+    /**
+     * 
+     * @type {number}
+     * @memberof SessionListResponseDto
+     */
+    'total': number;
     /**
      * 
      * @type {PaginationDto}
@@ -1322,6 +1346,12 @@ export interface UserListResponseDto {
      * @memberof UserListResponseDto
      */
     'users': Array<UserResponseDto>;
+    /**
+     * 
+     * @type {number}
+     * @memberof UserListResponseDto
+     */
+    'total': number;
     /**
      * 
      * @type {PaginationDto}
@@ -2509,14 +2539,12 @@ export const ImageApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        imageControllerGetList: async (take: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'take' is not null or undefined
-            assertParamExists('imageControllerGetList', 'take', take)
+        imageControllerGetList: async (take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/image/list`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2724,12 +2752,12 @@ export const ImageApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async imageControllerGetList(take: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImageListResponseDto>> {
+        async imageControllerGetList(take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImageListResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.imageControllerGetList(take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ImageApi.imageControllerGetList']?.[localVarOperationServerIndex]?.url;
@@ -2823,7 +2851,7 @@ export const ImageApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        imageControllerGetList(requestParameters: ImageApiImageControllerGetListRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImageListResponseDto> {
+        imageControllerGetList(requestParameters: ImageApiImageControllerGetListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<ImageListResponseDto> {
             return localVarFp.imageControllerGetList(requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2923,7 +2951,7 @@ export interface ImageApiImageControllerGetListRequest {
      * @type {number}
      * @memberof ImageApiImageControllerGetList
      */
-    readonly take: number
+    readonly take?: number
 
     /**
      * 
@@ -3033,7 +3061,7 @@ export class ImageApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ImageApi
      */
-    public imageControllerGetList(requestParameters: ImageApiImageControllerGetListRequest, options?: RawAxiosRequestConfig) {
+    public imageControllerGetList(requestParameters: ImageApiImageControllerGetListRequest = {}, options?: RawAxiosRequestConfig) {
         return ImageApiFp(this.configuration).imageControllerGetList(requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -3238,14 +3266,12 @@ export const ServerApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        serverControllerGetAll: async (take: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'take' is not null or undefined
-            assertParamExists('serverControllerGetAll', 'take', take)
+        serverControllerGetAll: async (take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/server/all`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3406,15 +3432,13 @@ export const ServerApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        serverProcessControllerGetAll: async (take: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'take' is not null or undefined
-            assertParamExists('serverProcessControllerGetAll', 'take', take)
-            const localVarPath = `/server/process/list`;
+        serverProcessControllerGetAll: async (take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/server/process/all`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -3452,16 +3476,14 @@ export const ServerApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 
          * @param {string} id 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        serverProcessControllerGetAllLogs: async (id: string, take: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        serverProcessControllerGetAllLogs: async (id: string, take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('serverProcessControllerGetAllLogs', 'id', id)
-            // verify required parameter 'take' is not null or undefined
-            assertParamExists('serverProcessControllerGetAllLogs', 'take', take)
             const localVarPath = `/server/process/{id}/logs`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3684,12 +3706,12 @@ export const ServerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async serverControllerGetAll(take: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServerListResponseDto>> {
+        async serverControllerGetAll(take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServerListResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.serverControllerGetAll(take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ServerApi.serverControllerGetAll']?.[localVarOperationServerIndex]?.url;
@@ -3735,12 +3757,12 @@ export const ServerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async serverProcessControllerGetAll(take: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProcessListResponseDto>> {
+        async serverProcessControllerGetAll(take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProcessListResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.serverProcessControllerGetAll(take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ServerApi.serverProcessControllerGetAll']?.[localVarOperationServerIndex]?.url;
@@ -3749,12 +3771,12 @@ export const ServerApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async serverProcessControllerGetAllLogs(id: string, take: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProcessLogListResponseDto>> {
+        async serverProcessControllerGetAllLogs(id: string, take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProcessLogListResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.serverProcessControllerGetAllLogs(id, take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ServerApi.serverProcessControllerGetAllLogs']?.[localVarOperationServerIndex]?.url;
@@ -3850,7 +3872,7 @@ export const ServerApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        serverControllerGetAll(requestParameters: ServerApiServerControllerGetAllRequest, options?: RawAxiosRequestConfig): AxiosPromise<ServerListResponseDto> {
+        serverControllerGetAll(requestParameters: ServerApiServerControllerGetAllRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<ServerListResponseDto> {
             return localVarFp.serverControllerGetAll(requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
@@ -3886,7 +3908,7 @@ export const ServerApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        serverProcessControllerGetAll(requestParameters: ServerApiServerProcessControllerGetAllRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProcessListResponseDto> {
+        serverProcessControllerGetAll(requestParameters: ServerApiServerProcessControllerGetAllRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<ProcessListResponseDto> {
             return localVarFp.serverProcessControllerGetAll(requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4002,7 +4024,7 @@ export interface ServerApiServerControllerGetAllRequest {
      * @type {number}
      * @memberof ServerApiServerControllerGetAll
      */
-    readonly take: number
+    readonly take?: number
 
     /**
      * 
@@ -4079,7 +4101,7 @@ export interface ServerApiServerProcessControllerGetAllRequest {
      * @type {number}
      * @memberof ServerApiServerProcessControllerGetAll
      */
-    readonly take: number
+    readonly take?: number
 
     /**
      * 
@@ -4107,7 +4129,7 @@ export interface ServerApiServerProcessControllerGetAllLogsRequest {
      * @type {number}
      * @memberof ServerApiServerProcessControllerGetAllLogs
      */
-    readonly take: number
+    readonly take?: number
 
     /**
      * 
@@ -4231,7 +4253,7 @@ export class ServerApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ServerApi
      */
-    public serverControllerGetAll(requestParameters: ServerApiServerControllerGetAllRequest, options?: RawAxiosRequestConfig) {
+    public serverControllerGetAll(requestParameters: ServerApiServerControllerGetAllRequest = {}, options?: RawAxiosRequestConfig) {
         return ServerApiFp(this.configuration).serverControllerGetAll(requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -4275,7 +4297,7 @@ export class ServerApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ServerApi
      */
-    public serverProcessControllerGetAll(requestParameters: ServerApiServerProcessControllerGetAllRequest, options?: RawAxiosRequestConfig) {
+    public serverProcessControllerGetAll(requestParameters: ServerApiServerProcessControllerGetAllRequest = {}, options?: RawAxiosRequestConfig) {
         return ServerApiFp(this.configuration).serverProcessControllerGetAll(requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -4334,14 +4356,12 @@ export const SessionApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sessionControllerGetAll: async (take: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'take' is not null or undefined
-            assertParamExists('sessionControllerGetAll', 'take', take)
+        sessionControllerGetAll: async (take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/session/all`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -4379,14 +4399,12 @@ export const SessionApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sessionControllerGetAllForUser: async (take: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'take' is not null or undefined
-            assertParamExists('sessionControllerGetAllForUser', 'take', take)
+        sessionControllerGetAllForUser: async (take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/session/my`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -4425,16 +4443,14 @@ export const SessionApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 
          * @param {string} userId 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sessionControllerGetAllForUserByAdmin: async (userId: string, take: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        sessionControllerGetAllForUserByAdmin: async (userId: string, take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('sessionControllerGetAllForUserByAdmin', 'userId', userId)
-            // verify required parameter 'take' is not null or undefined
-            assertParamExists('sessionControllerGetAllForUserByAdmin', 'take', take)
             const localVarPath = `/session/user/{userId}`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4555,12 +4571,12 @@ export const SessionApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async sessionControllerGetAll(take: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SessionListResponseDto>> {
+        async sessionControllerGetAll(take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SessionListResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.sessionControllerGetAll(take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SessionApi.sessionControllerGetAll']?.[localVarOperationServerIndex]?.url;
@@ -4568,12 +4584,12 @@ export const SessionApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async sessionControllerGetAllForUser(take: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SessionListResponseDto>> {
+        async sessionControllerGetAllForUser(take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SessionListResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.sessionControllerGetAllForUser(take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SessionApi.sessionControllerGetAllForUser']?.[localVarOperationServerIndex]?.url;
@@ -4582,12 +4598,12 @@ export const SessionApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} userId 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async sessionControllerGetAllForUserByAdmin(userId: string, take: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SessionListResponseDto>> {
+        async sessionControllerGetAllForUserByAdmin(userId: string, take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SessionListResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.sessionControllerGetAllForUserByAdmin(userId, take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SessionApi.sessionControllerGetAllForUserByAdmin']?.[localVarOperationServerIndex]?.url;
@@ -4632,7 +4648,7 @@ export const SessionApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sessionControllerGetAll(requestParameters: SessionApiSessionControllerGetAllRequest, options?: RawAxiosRequestConfig): AxiosPromise<SessionListResponseDto> {
+        sessionControllerGetAll(requestParameters: SessionApiSessionControllerGetAllRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<SessionListResponseDto> {
             return localVarFp.sessionControllerGetAll(requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4641,7 +4657,7 @@ export const SessionApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sessionControllerGetAllForUser(requestParameters: SessionApiSessionControllerGetAllForUserRequest, options?: RawAxiosRequestConfig): AxiosPromise<SessionListResponseDto> {
+        sessionControllerGetAllForUser(requestParameters: SessionApiSessionControllerGetAllForUserRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<SessionListResponseDto> {
             return localVarFp.sessionControllerGetAllForUser(requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4684,7 +4700,7 @@ export interface SessionApiSessionControllerGetAllRequest {
      * @type {number}
      * @memberof SessionApiSessionControllerGetAll
      */
-    readonly take: number
+    readonly take?: number
 
     /**
      * 
@@ -4705,7 +4721,7 @@ export interface SessionApiSessionControllerGetAllForUserRequest {
      * @type {number}
      * @memberof SessionApiSessionControllerGetAllForUser
      */
-    readonly take: number
+    readonly take?: number
 
     /**
      * 
@@ -4733,7 +4749,7 @@ export interface SessionApiSessionControllerGetAllForUserByAdminRequest {
      * @type {number}
      * @memberof SessionApiSessionControllerGetAllForUserByAdmin
      */
-    readonly take: number
+    readonly take?: number
 
     /**
      * 
@@ -4771,7 +4787,7 @@ export class SessionApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof SessionApi
      */
-    public sessionControllerGetAll(requestParameters: SessionApiSessionControllerGetAllRequest, options?: RawAxiosRequestConfig) {
+    public sessionControllerGetAll(requestParameters: SessionApiSessionControllerGetAllRequest = {}, options?: RawAxiosRequestConfig) {
         return SessionApiFp(this.configuration).sessionControllerGetAll(requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -4782,7 +4798,7 @@ export class SessionApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof SessionApi
      */
-    public sessionControllerGetAllForUser(requestParameters: SessionApiSessionControllerGetAllForUserRequest, options?: RawAxiosRequestConfig) {
+    public sessionControllerGetAllForUser(requestParameters: SessionApiSessionControllerGetAllForUserRequest = {}, options?: RawAxiosRequestConfig) {
         return SessionApiFp(this.configuration).sessionControllerGetAllForUser(requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -4868,14 +4884,12 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerGetList: async (take: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'take' is not null or undefined
-            assertParamExists('userControllerGetList', 'take', take)
+        userControllerGetList: async (take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/user/list`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5014,12 +5028,12 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} take 
+         * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerGetList(take: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserListResponseDto>> {
+        async userControllerGetList(take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserListResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGetList(take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerGetList']?.[localVarOperationServerIndex]?.url;
@@ -5074,7 +5088,7 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerGetList(requestParameters: UserApiUserControllerGetListRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserListResponseDto> {
+        userControllerGetList(requestParameters: UserApiUserControllerGetListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<UserListResponseDto> {
             return localVarFp.userControllerGetList(requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
@@ -5122,7 +5136,7 @@ export interface UserApiUserControllerGetListRequest {
      * @type {number}
      * @memberof UserApiUserControllerGetList
      */
-    readonly take: number
+    readonly take?: number
 
     /**
      * 
@@ -5178,7 +5192,7 @@ export class UserApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UserApi
      */
-    public userControllerGetList(requestParameters: UserApiUserControllerGetListRequest, options?: RawAxiosRequestConfig) {
+    public userControllerGetList(requestParameters: UserApiUserControllerGetListRequest = {}, options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).userControllerGetList(requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 

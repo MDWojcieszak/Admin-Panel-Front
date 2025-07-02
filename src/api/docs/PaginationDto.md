@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**take** | **number** |  | [default to undefined]
+**take** | **number** |  | [optional] [default to undefined]
 **skip** | **number** |  | [optional] [default to 0]
 
 ## Example

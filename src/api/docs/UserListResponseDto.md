@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **users** | [**Array&lt;UserResponseDto&gt;**](UserResponseDto.md) |  | [default to undefined]
+**total** | **number** |  | [default to undefined]
 **params** | [**PaginationDto**](PaginationDto.md) |  | [optional] [default to undefined]
 
 ## Example
@@ -15,6 +16,7 @@ import { UserListResponseDto } from './api';
 
 const instance: UserListResponseDto = {
     users,
+    total,
     params,
 };
 ```

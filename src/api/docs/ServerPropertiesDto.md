@@ -7,10 +7,12 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **uptime** | **number** |  | [optional] [default to undefined]
 **status** | [**ServerStatus**](ServerStatus.md) |  | [optional] [default to undefined]
+**lastSeenAt** | **string** |  | [optional] [default to undefined]
+**isOnline** | **boolean** |  | [optional] [default to undefined]
 **startedBy** | [**UserDto**](UserDto.md) |  | [optional] [default to undefined]
 **cpuInfo** | [**CpuDto**](CpuDto.md) |  | [optional] [default to undefined]
 **memoryInfo** | [**MemoryDto**](MemoryDto.md) |  | [optional] [default to undefined]
-**disk** | [**Array&lt;DiskInfoDto&gt;**](DiskInfoDto.md) |  | [optional] [default to undefined]
+**diskInfo** | [**Array&lt;DiskInfoDto&gt;**](DiskInfoDto.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -20,10 +22,12 @@ import { ServerPropertiesDto } from './api';
 const instance: ServerPropertiesDto = {
     uptime,
     status,
+    lastSeenAt,
+    isOnline,
     startedBy,
     cpuInfo,
     memoryInfo,
-    disk,
+    diskInfo,
 };
 ```
 
