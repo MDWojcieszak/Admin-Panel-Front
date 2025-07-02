@@ -9,9 +9,10 @@ type CircularProgressProps = {
   progress: number;
   color?: string;
   icon?: ReactNode;
+  disabled?: boolean;
 };
 
-export const CircularProgress = ({ progress, ...p }: CircularProgressProps) => {
+export const CircularProgress = ({ progress, disabled = false, ...p }: CircularProgressProps) => {
   console.log(progress);
   const styles = useStyles();
   const theme = useTheme();
@@ -23,7 +24,7 @@ export const CircularProgress = ({ progress, ...p }: CircularProgressProps) => {
   const backgroundStrokeWidth = WIDTH - 0.8;
 
   return (
-    <div style={styles.timerContainer}>
+    <motion.div style={styles.timerContainer} animate={{ opacity: disabled ? 0.2 : 1 }}>
       <div style={styles.circleContainer}>
         <motion.svg
           fill='none'
@@ -44,6 +45,7 @@ export const CircularProgress = ({ progress, ...p }: CircularProgressProps) => {
           />
           <motion.circle
             animate={{ strokeDashoffset: strokeDashoffset }}
+            transition={{ duration: 1, ease: 'easeInOut' }}
             initial={{ strokeDashoffset: circumfrence }}
             cx={RADIUS}
             cy={RADIUS}
@@ -57,7 +59,7 @@ export const CircularProgress = ({ progress, ...p }: CircularProgressProps) => {
         </motion.svg>
       </div>
       {p.icon && <div style={styles.iconContainer}>{p.icon}</div>}
-    </div>
+    </motion.div>
   );
 };
 

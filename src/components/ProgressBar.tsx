@@ -1,5 +1,5 @@
 import { mkUseStyles } from '~/utils/theme';
-
+import { motion } from 'framer-motion';
 type ProgressBarProps = {
   progress: number;
 };
@@ -10,7 +10,12 @@ export const ProgressBar = (p: ProgressBarProps) => {
   const styles = useStyles();
   return (
     <div style={styles.container}>
-      <div style={{ ...styles.progress, width: `${p.progress}%` }}></div>
+      <motion.div
+        animate={{ width: `${p.progress}%` }}
+        initial={{ width: '0%' }}
+        transition={{ duration: 1, ease: 'easeInOut' }}
+        style={{ ...styles.progress }}
+      ></motion.div>
     </div>
   );
 };

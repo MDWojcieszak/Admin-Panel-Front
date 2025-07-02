@@ -1,10 +1,14 @@
-import { MdDelete, MdEdit } from 'react-icons/md';
+import { MdDelete, MdEdit, MdInfo } from 'react-icons/md';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { motion } from 'framer-motion';
+import { ReactNode } from 'react';
 type ActionButtonsProps = {
   id: string;
   onDelete?: F1<string>;
   onEdit?: F1<string>;
+  onDetails?: F1<string>;
+  onCustom?: F1<string>;
+  customChildren?: ReactNode;
 };
 export const ActionButtons = (p: ActionButtonsProps) => {
   const styles = useStyles();
@@ -18,8 +22,21 @@ export const ActionButtons = (p: ActionButtonsProps) => {
     p.onDelete?.(p.id);
   };
 
+  const handleDetails = () => {
+    p.onDetails?.(p.id);
+  };
+
+  const handleCustom = () => {
+    p.onCustom?.(p.id);
+  };
+
   return (
     <div style={styles.container}>
+      {p.onCustom && (
+        <motion.div onClick={handleCustom} style={styles.button} whileHover={{ backgroundColor: theme.colors.blue }}>
+          {p.customChildren}
+        </motion.div>
+      )}
       {p.onEdit && (
         <motion.div onClick={handleEdit} style={styles.button} whileHover={{ backgroundColor: theme.colors.blue }}>
           <MdEdit />
@@ -28,6 +45,15 @@ export const ActionButtons = (p: ActionButtonsProps) => {
       {p.onDelete && (
         <motion.div onClick={handleDelete} style={styles.button} whileHover={{ backgroundColor: theme.colors.red }}>
           <MdDelete />
+        </motion.div>
+      )}
+      {p.onDetails && (
+        <motion.div
+          onClick={handleDetails}
+          style={styles.button}
+          whileHover={{ backgroundColor: theme.colors.lightGreen }}
+        >
+          <MdInfo />
         </motion.div>
       )}
     </div>
@@ -47,5 +73,7 @@ const useStyles = mkUseStyles((t) => ({
     paddingBottom: t.spacing.s,
     borderRadius: t.borderRadius.default,
     cursor: 'pointer',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 }));
