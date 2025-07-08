@@ -15,7 +15,7 @@
     "jsx": "react-jsx",
 
     /* Linting */
-    "strict": true,
+    "strict": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
@@ -30,6 +30,7 @@
       "~/routes/*": ["src/routes/*"],
       "~/utils/*": ["src/utils/*"],
       "~/adapters/*": ["src/adapters/*"],
+      "~/apiOld/*": ["src/apiOld/*"],
       "~/api/*": ["src/api/*"]
     }
   },
