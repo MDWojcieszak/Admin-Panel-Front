@@ -32,6 +32,7 @@ docs/PatchDiskDto.md
 docs/PatchServerCommandDto.md
 docs/PatchServerSettingDto.md
 docs/PatchUserAdminDto.md
+docs/PowerServerResponseDto.md
 docs/ProcessListResponseDto.md
 docs/ProcessLog.md
 docs/ProcessLogLevel.md

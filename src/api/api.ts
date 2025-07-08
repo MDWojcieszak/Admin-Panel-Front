@@ -585,6 +585,39 @@ export interface PatchUserAdminDto {
 /**
  * 
  * @export
+ * @interface PowerServerResponseDto
+ */
+export interface PowerServerResponseDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PowerServerResponseDto
+     */
+    'success': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PowerServerResponseDto
+     */
+    'serverId': string;
+    /**
+     * 
+     * @type {ServerStatus}
+     * @memberof PowerServerResponseDto
+     */
+    'newStatus': ServerStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof PowerServerResponseDto
+     */
+    'message'?: string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface ProcessListResponseDto
  */
 export interface ProcessListResponseDto {
@@ -1016,6 +1049,12 @@ export interface ServerResponseDto {
      * @memberof ServerResponseDto
      */
     'ipAddress': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerResponseDto
+     */
+    'macAddress'?: string;
     /**
      * 
      * @type {string}
@@ -3432,6 +3471,117 @@ export const ServerApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverControllerReboot: async (serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'serverId' is not null or undefined
+            assertParamExists('serverControllerReboot', 'serverId', serverId)
+            const localVarPath = `/server/{serverId}/reboot`
+                .replace(`{${"serverId"}}`, encodeURIComponent(String(serverId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverControllerStart: async (serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'serverId' is not null or undefined
+            assertParamExists('serverControllerStart', 'serverId', serverId)
+            const localVarPath = `/server/{serverId}/start`
+                .replace(`{${"serverId"}}`, encodeURIComponent(String(serverId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverControllerStop: async (serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'serverId' is not null or undefined
+            assertParamExists('serverControllerStop', 'serverId', serverId)
+            const localVarPath = `/server/{serverId}/stop`
+                .replace(`{${"serverId"}}`, encodeURIComponent(String(serverId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
@@ -3757,6 +3907,42 @@ export const ServerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async serverControllerReboot(serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PowerServerResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.serverControllerReboot(serverId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ServerApi.serverControllerReboot']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async serverControllerStart(serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PowerServerResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.serverControllerStart(serverId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ServerApi.serverControllerStart']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async serverControllerStop(serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PowerServerResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.serverControllerStop(serverId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ServerApi.serverControllerStop']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
@@ -3901,6 +4087,33 @@ export const ServerApiFactory = function (configuration?: Configuration, basePat
          */
         serverControllerPatchDisk(requestParameters: ServerApiServerControllerPatchDiskRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.serverControllerPatchDisk(requestParameters.id, requestParameters.patchDiskDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ServerApiServerControllerRebootRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverControllerReboot(requestParameters: ServerApiServerControllerRebootRequest, options?: RawAxiosRequestConfig): AxiosPromise<PowerServerResponseDto> {
+            return localVarFp.serverControllerReboot(requestParameters.serverId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ServerApiServerControllerStartRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverControllerStart(requestParameters: ServerApiServerControllerStartRequest, options?: RawAxiosRequestConfig): AxiosPromise<PowerServerResponseDto> {
+            return localVarFp.serverControllerStart(requestParameters.serverId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ServerApiServerControllerStopRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverControllerStop(requestParameters: ServerApiServerControllerStopRequest, options?: RawAxiosRequestConfig): AxiosPromise<PowerServerResponseDto> {
+            return localVarFp.serverControllerStop(requestParameters.serverId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -4088,6 +4301,48 @@ export interface ServerApiServerControllerPatchDiskRequest {
      * @memberof ServerApiServerControllerPatchDisk
      */
     readonly patchDiskDto: PatchDiskDto
+}
+
+/**
+ * Request parameters for serverControllerReboot operation in ServerApi.
+ * @export
+ * @interface ServerApiServerControllerRebootRequest
+ */
+export interface ServerApiServerControllerRebootRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerApiServerControllerReboot
+     */
+    readonly serverId: string
+}
+
+/**
+ * Request parameters for serverControllerStart operation in ServerApi.
+ * @export
+ * @interface ServerApiServerControllerStartRequest
+ */
+export interface ServerApiServerControllerStartRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerApiServerControllerStart
+     */
+    readonly serverId: string
+}
+
+/**
+ * Request parameters for serverControllerStop operation in ServerApi.
+ * @export
+ * @interface ServerApiServerControllerStopRequest
+ */
+export interface ServerApiServerControllerStopRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerApiServerControllerStop
+     */
+    readonly serverId: string
 }
 
 /**
@@ -4288,6 +4543,39 @@ export class ServerApi extends BaseAPI {
      */
     public serverControllerPatchDisk(requestParameters: ServerApiServerControllerPatchDiskRequest, options?: RawAxiosRequestConfig) {
         return ServerApiFp(this.configuration).serverControllerPatchDisk(requestParameters.id, requestParameters.patchDiskDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ServerApiServerControllerRebootRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ServerApi
+     */
+    public serverControllerReboot(requestParameters: ServerApiServerControllerRebootRequest, options?: RawAxiosRequestConfig) {
+        return ServerApiFp(this.configuration).serverControllerReboot(requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ServerApiServerControllerStartRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ServerApi
+     */
+    public serverControllerStart(requestParameters: ServerApiServerControllerStartRequest, options?: RawAxiosRequestConfig) {
+        return ServerApiFp(this.configuration).serverControllerStart(requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ServerApiServerControllerStopRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ServerApi
+     */
+    public serverControllerStop(requestParameters: ServerApiServerControllerStopRequest, options?: RawAxiosRequestConfig) {
+        return ServerApiFp(this.configuration).serverControllerStop(requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

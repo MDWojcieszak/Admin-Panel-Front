@@ -12,6 +12,9 @@ All URIs are relative to *http://localhost*
 |[**serverControllerGetDetails**](#servercontrollergetdetails) | **GET** /server/details/{serverId} | |
 |[**serverControllerPatchCategory**](#servercontrollerpatchcategory) | **PATCH** /server/catgory/{id} | |
 |[**serverControllerPatchDisk**](#servercontrollerpatchdisk) | **PATCH** /server/disk/{id} | |
+|[**serverControllerReboot**](#servercontrollerreboot) | **PATCH** /server/{serverId}/reboot | |
+|[**serverControllerStart**](#servercontrollerstart) | **PATCH** /server/{serverId}/start | |
+|[**serverControllerStop**](#servercontrollerstop) | **PATCH** /server/{serverId}/stop | |
 |[**serverProcessControllerGetAll**](#serverprocesscontrollergetall) | **GET** /server/process/all | |
 |[**serverProcessControllerGetAllLogs**](#serverprocesscontrollergetalllogs) | **GET** /server/process/{id}/logs | |
 |[**serverProcessControllerGetOne**](#serverprocesscontrollergetone) | **GET** /server/process/{id} | |
@@ -430,6 +433,156 @@ void (empty response body)
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Changed correctly |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **serverControllerReboot**
+> PowerServerResponseDto serverControllerReboot()
+
+
+### Example
+
+```typescript
+import {
+    ServerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ServerApi(configuration);
+
+let serverId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.serverControllerReboot(
+    serverId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **serverId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PowerServerResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **serverControllerStart**
+> PowerServerResponseDto serverControllerStart()
+
+
+### Example
+
+```typescript
+import {
+    ServerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ServerApi(configuration);
+
+let serverId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.serverControllerStart(
+    serverId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **serverId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PowerServerResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **serverControllerStop**
+> PowerServerResponseDto serverControllerStop()
+
+
+### Example
+
+```typescript
+import {
+    ServerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ServerApi(configuration);
+
+let serverId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.serverControllerStop(
+    serverId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **serverId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PowerServerResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
