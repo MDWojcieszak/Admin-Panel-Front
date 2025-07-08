@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ServerCategoriesType, ServerService } from '~/api/Server';
+import { ServerCategoriesType, ServerService } from '~/apiOld/Server';
 
 export const useServerCategires = (serverId?: string) => {
   const [categories, setCategories] = useState<ServerCategoriesType[]>();

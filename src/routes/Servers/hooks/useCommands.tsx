@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CommandType, ServerCommandsService } from '~/api/ServerCommands';
+import { CommandType, ServerCommandsService } from '~/apiOld/ServerCommands';
 import useWebSocket from '~/hooks/useWebSocket';
 
 export const useCommands = (idCategory: string) => {
