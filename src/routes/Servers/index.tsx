@@ -1,13 +1,18 @@
-import { ServerType } from '~/api/Server';
-import { ServerTile } from '~/routes/Servers/components/ServerTile';
-import { useServers } from '~/routes/Servers/hooks/useServers';
+import { ServersList } from '~/routes/Servers/components/ServersList';
+import { mkUseStyles } from '~/utils/theme';
 
 export const Servers = () => {
-  const { servers } = useServers();
+  const styles = useStyles();
 
-  const renderItem = (server: ServerType) => {
-    return <ServerTile server={server} />;
-  };
-
-  return <div>{servers?.map(renderItem)}</div>;
+  return (
+    <div style={styles.container}>
+      <ServersList />
+    </div>
+  );
 };
+
+const useStyles = mkUseStyles(() => ({
+  container: {
+    height: '100%',
+  },
+}));

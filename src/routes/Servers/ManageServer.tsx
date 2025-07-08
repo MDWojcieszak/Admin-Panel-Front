@@ -6,12 +6,14 @@ import { mkUseStyles } from '~/utils/theme';
 import { MdKeyboardCommandKey } from 'react-icons/md';
 import { MdOutlineDisplaySettings } from 'react-icons/md';
 import { CommandCard } from '~/routes/Servers/components/CommandCard';
+import { useServerDetails } from '~/routes/Servers/hooks/useServerDetails';
+import { ServerTile } from '~/routes/Servers/components/ServerTile';
 
 export const ManageServer = () => {
   const styles = useStyles();
   const { serverId } = useParams();
   const { categories } = useServerCategires(serverId);
-
+  const { serverDetails } = useServerDetails({ id: serverId });
   const [selecredCard, setSelectedCard] = useState<string>();
 
   const getItems = () => {
@@ -30,7 +32,8 @@ export const ManageServer = () => {
   };
 
   return (
-    <>
+    <div style={styles.container}>
+      <ServerTile server={serverDetails} />
       {categories && (
         <CardSelect
           style={styles.cards}
@@ -42,11 +45,12 @@ export const ManageServer = () => {
       <div style={styles.contentContainer}>
         <CommandCard categoryId={categories?.find((c) => c.value === selecredCard)?.id || ''} />
       </div>
-    </>
+    </div>
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
+  container: { height: '100%' },
   cards: {
     margin: -t.spacing.m,
     flexDirection: 'row',
