@@ -1,4 +1,4 @@
-import { DiskType } from '~/api/Server';
+import { DiskType } from '~/apiOld/Server';
 import { ProgressBar } from '~/components/ProgressBar';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { BsDeviceHddFill } from 'react-icons/bs';
@@ -14,7 +14,7 @@ export const DiskTile = ({ diskInfo }: DiskTileProps) => {
   const styles = useStyles();
   const theme = useTheme();
 
-  const usage = (diskInfo.used / (diskInfo.used + diskInfo.available)) * 100;
+  const usage = diskInfo.used && diskInfo.available ? (diskInfo.used / (diskInfo.used + diskInfo.available)) * 100 : 0;
 
   return (
     <div style={styles.container}>
@@ -42,13 +42,16 @@ export const DiskTile = ({ diskInfo }: DiskTileProps) => {
         </div>
         <div style={styles.row}>
           <div style={styles.percent}>{usage.toFixed(2) + '%'}</div>
-
-          <div style={styles.usedContainer}>
-            {gigabytes(diskInfo.available).toFixed(2) +
-              ' / ' +
-              gigabytes(diskInfo.available + diskInfo.used).toFixed(2) +
-              ' GB'}
-          </div>
+          {diskInfo.available && diskInfo.used ? (
+            <div style={styles.usedContainer}>
+              {gigabytes(diskInfo.available).toFixed(2) +
+                ' / ' +
+                gigabytes(diskInfo.available + diskInfo.used).toFixed(2) +
+                ' GB'}
+            </div>
+          ) : (
+            <div style={styles.usedContainer}>Unknown</div>
+          )}
         </div>
         <ProgressBar progress={usage} />
       </div>
@@ -61,7 +64,7 @@ const useStyles = mkUseStyles((t) => ({
     flex: 1,
     maxWidth: 500,
     minWidth: 350,
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.7),
+    backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
     padding: t.spacing.m,
     borderRadius: t.borderRadius.default,
     marginBottom: t.spacing.s,

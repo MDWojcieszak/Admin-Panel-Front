@@ -1,4 +1,4 @@
-import { CommandType } from '~/api/ServerCommands';
+import { CommandType } from '~/apiOld/ServerCommands';
 import { Button } from '~/components/Button';
 import { useCommands } from '~/routes/Servers/hooks/useCommands';
 import { mkUseStyles } from '~/utils/theme';
