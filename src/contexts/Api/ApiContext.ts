@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { AuthApi, FileApi, ImageApi, ServerApi, SessionApi, UserApi } from '~/api/api';
+import { AstroObjectApi, AuthApi, FileApi, ImageApi, PhotoEntryApi, ServerApi, SessionApi, UserApi } from '~/api/api';
 
 type ApiContextType = {
   authApi: AuthApi | false;
@@ -8,6 +8,8 @@ type ApiContextType = {
   sessionApi: SessionApi | false;
   fileApi: FileApi | false;
   serverApi: ServerApi | false;
+  photoEntryApi: PhotoEntryApi | false;
+  astroObjectApi: AstroObjectApi | false;
 };
 
 export const ApiContext = createContext<ApiContextType | null>(null);

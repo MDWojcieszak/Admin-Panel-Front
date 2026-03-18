@@ -1,5 +1,5 @@
 import { ReactNode, useContext, useMemo } from 'react';
-import { AuthApi, FileApi, ImageApi, ServerApi, SessionApi, UserApi } from '~/api/api';
+import { AstroObjectApi, AuthApi, FileApi, ImageApi, PhotoEntryApi, ServerApi, SessionApi, UserApi } from '~/api/api';
 import { Configuration } from 'src/api/configuration';
 import { ApiContext } from '~/contexts/Api/ApiContext';
 import { AuthContext } from '~/contexts/User/AuthContext';
@@ -26,9 +26,13 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const sessionApi = useMemo(() => config && new SessionApi(config), [config]);
   const fileApi = useMemo(() => config && new FileApi(config), [config]);
   const serverApi = useMemo(() => config && new ServerApi(config), [config]);
+  const photoEntryApi = useMemo(() => config && new PhotoEntryApi(config), [config]);
+  const astroObjectApi = useMemo(() => config && new AstroObjectApi(config), [config]);
 
   return (
-    <ApiContext.Provider value={{ authApi, userApi, imageApi, sessionApi, fileApi, serverApi }}>
+    <ApiContext.Provider
+      value={{ authApi, userApi, imageApi, sessionApi, fileApi, serverApi, photoEntryApi, astroObjectApi }}
+    >
       {children}
     </ApiContext.Provider>
   );
