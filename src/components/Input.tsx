@@ -13,7 +13,7 @@ type InputProps<T extends FieldValues> = {
 
 export const Input = <T extends FieldValues>({ label, description, type = 'text', ...p }: InputProps<T>) => {
   const [showDescription, setShowDescription] = useState(false);
-  const [showLabel, setShowLabel] = useState(true);
+  const [showLabel, setShowLabel] = useState(type !== 'datetime-local' && type !== 'date');
   const {
     field,
     formState: { errors },
@@ -26,7 +26,7 @@ export const Input = <T extends FieldValues>({ label, description, type = 'text'
     setShowDescription(true);
   };
   const handleBlur = () => {
-    if (!inputRef?.current?.value) setShowLabel(true);
+    if (!inputRef?.current?.value && type !== 'datetime-local' && type !== 'date') setShowLabel(true);
     setShowDescription(false);
   };
 

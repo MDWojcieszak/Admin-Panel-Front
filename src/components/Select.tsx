@@ -1,8 +1,9 @@
-import { CSSProperties, useState } from 'react';
-import { mkUseStyles, useTheme } from '~/utils/theme';
+import { CSSProperties, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FaChevronDown } from 'react-icons/fa6';
 import { FieldValues, UseControllerProps, useController } from 'react-hook-form';
+import { FaChevronDown } from 'react-icons/fa6';
+import { mkUseStyles, useTheme } from '~/utils/theme';
+
 type Option = {
   label: string;
   value: string;
@@ -13,6 +14,8 @@ type SelectProps<T extends FieldValues> = {
   options: Option[];
   description?: string;
   style?: CSSProperties;
+  variant?: 'primary' | 'secondary';
+  onValueChange?: (value: string) => void;
 } & UseControllerProps<T>;
 
 export type SelectRef = {
@@ -20,77 +23,118 @@ export type SelectRef = {
 };
 
 export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
-  const [selectedOption, setSelectedOption] = useState(p.options[0].value);
   const [isExtended, setIsExtended] = useState(false);
   const [isOnList, setIsOnList] = useState(false);
+
   const {
     field,
     formState: { errors },
-  } = useController<T>({ name: p.name, control: p.control });
+  } = useController<T>({
+    name: p.name,
+    control: p.control,
+  });
+
   const styles = useStyles();
   const theme = useTheme();
-  const handlePress = () => setIsExtended((e) => !e);
+
+  const variant = p.variant ?? 'primary';
+  const error = errors[p.name];
+  const hasBottomSpace = Boolean(error || p.description);
+
+  const selectedValue = typeof field.value === 'string' ? field.value : '';
+
+  const selectedOption = useMemo(() => {
+    return p.options.find((option) => option.value === selectedValue) || p.options[0];
+  }, [p.options, selectedValue]);
+
+  const handlePress = () => setIsExtended((prev) => !prev);
 
   const handleBlur = () => {
     if (!isOnList) setIsExtended(false);
   };
 
+  const handleSelect = (value: string) => {
+    field.onChange(value);
+    p.onValueChange?.(value);
+    setIsExtended(false);
+  };
+
   const renderOption = (option: Option) => (
     <motion.li
-      whileHover={{
-        backgroundColor: theme.colors.blue,
-      }}
+      key={option.value}
+      whileHover={{ backgroundColor: theme.colors.blue }}
       style={styles.option}
-      value={option.value}
-      onClick={() => {
-        field.onChange(option.value);
-        setSelectedOption(option.value);
-        setIsExtended(false);
-      }}
+      onClick={() => handleSelect(option.value)}
     >
       {option.label}
     </motion.li>
   );
 
-  const renderDescription = errors[p.name] ? <>{errors[p.name]?.message}</> : p.description;
+  const renderDescription = error ? <>{error?.message}</> : p.description;
 
   return (
-    <div style={{ ...styles.selectContainer, ...p.style }}>
-      <label style={styles.label}>{p.label}</label>
+    <div
+      style={{
+        ...styles.selectContainer,
+        marginBottom: hasBottomSpace ? theme.spacing.l : 0,
+        ...p.style,
+      }}
+    >
+      {variant !== 'secondary' && <label style={styles.label}>{p.label}</label>}
+
       <AnimatePresence mode='wait'>
         {isExtended && (
           <motion.ul
             onMouseEnter={() => setIsOnList(true)}
             onMouseLeave={() => setIsOnList(false)}
-            initial={{ opacity: 0, translateY: -20 }}
+            initial={{ opacity: 0, translateY: variant === 'secondary' ? -12 : -20 }}
             animate={{ opacity: 1, translateY: 0 }}
-            exit={{ opacity: 0, translateY: -20 }}
-            style={styles.optionsContainer}
+            exit={{ opacity: 0, translateY: variant === 'secondary' ? -12 : -20 }}
+            style={{
+              ...styles.optionsContainer,
+              top: variant === 'secondary' ? `calc(100% + ${theme.spacing.s}px)` : `calc(100% + ${theme.spacing.l}px)`,
+              zIndex: variant === 'secondary' ? 30 : 1,
+              boxShadow: variant === 'secondary' ? '0 8px 24px rgba(0,0,0,0.35)' : undefined,
+            }}
           >
             <div>{p.options.map(renderOption)}</div>
           </motion.ul>
         )}
       </AnimatePresence>
+
       <input
-        {...field}
-        value={p.options.find((o) => o.value === selectedOption)?.label}
-        style={styles.input}
+        value={selectedOption?.label || ''}
+        style={{
+          ...styles.input,
+          width: variant === 'secondary' ? '100%' : undefined,
+          color: variant === 'secondary' ? theme.colors.white : undefined,
+          paddingTop: variant === 'secondary' ? theme.spacing.m : theme.spacing.l + 4,
+        }}
         readOnly
         onClick={handlePress}
         onBlur={handleBlur}
       />
+
       <motion.div
-        style={styles.chevron}
+        style={{
+          ...styles.chevron,
+          top: variant === 'secondary' ? theme.spacing.m : theme.spacing.m + 4,
+        }}
         animate={{ rotate: isExtended ? '180deg' : 0 }}
         transition={{ duration: 0.15 }}
       >
-        <FaChevronDown size={20} fill={theme.colors.blue} />
+        <FaChevronDown size={variant === 'secondary' ? 18 : 20} fill={theme.colors.blue} />
       </motion.div>
+
       <AnimatePresence mode='wait'>
-        {(isExtended || errors[p.name]) && (
+        {(isExtended || error) && renderDescription && (
           <motion.p
             initial={{ opacity: 0, translateY: -5 }}
-            animate={{ opacity: 1, translateY: 0, color: errors[p.name] ? theme.colors.red : theme.colors.blue04 }}
+            animate={{
+              opacity: 1,
+              translateY: 0,
+              color: error ? theme.colors.red : theme.colors.blue04,
+            }}
             exit={{ opacity: 0, translateY: -5 }}
             style={styles.description}
           >
@@ -105,37 +149,37 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
 const useStyles = mkUseStyles((t) => ({
   selectContainer: {
     position: 'relative',
-    marginBottom: t.spacing.l,
   },
   label: {
     position: 'absolute',
     left: t.spacing.m,
-    color: t.colors.blue04,
-    pointerEvents: 'none',
     top: 6,
     fontSize: 12,
+    color: t.colors.blue04,
+    pointerEvents: 'none',
+    zIndex: 1,
   },
   input: {
+    width: '100%',
     padding: t.spacing.m,
-    paddingTop: t.spacing.l + 4,
     cursor: 'pointer',
-    fontSize: '16px',
+    fontSize: 16,
     border: 0,
     borderRadius: t.borderRadius.default,
     outline: 'none',
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+    color: t.colors.white,
     userSelect: 'none',
     webkitUserSelect: 'none',
+    boxSizing: 'border-box',
   },
   optionsContainer: {
-    zIndex: 1,
     listStyle: 'none',
     position: 'absolute',
     display: 'flex',
     flexDirection: 'column',
     left: 0,
     right: 0,
-    top: `calc(100% + ${t.spacing.l}px)`,
     margin: 0,
     padding: t.spacing.s,
     gap: t.spacing.s,
@@ -147,24 +191,18 @@ const useStyles = mkUseStyles((t) => ({
     borderRadius: t.borderRadius.default,
     cursor: 'pointer',
   },
-  selectedOption: {
-    marginTop: '10px',
-    fontSize: '14px',
-    color: t.colors.dark02,
-  },
   chevron: {
     position: 'absolute',
     right: t.spacing.m,
-    top: t.spacing.m + 4,
     pointerEvents: 'none',
   },
   description: {
     position: 'absolute',
     left: t.spacing.m,
     top: 60,
-    fontSize: '12px',
+    fontSize: 12,
     margin: 0,
-    color: t.colors.blue04,
     opacity: 0,
+    zIndex: 5,
   },
 }));

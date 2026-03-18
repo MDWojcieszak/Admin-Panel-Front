@@ -2,8 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MdAccountBox, MdDashboard, MdImage, MdSettings } from 'react-icons/md';
+import { IoIosCamera } from 'react-icons/io';
+
 import { MainNavigationRoute } from '~/navigation/types';
-import { FaServer } from 'react-icons/fa6';
+import { FaCameraRotate, FaServer } from 'react-icons/fa6';
+
 const ICON_SIZE = 24;
 
 export type SideBarItem = {
@@ -35,6 +38,8 @@ export const Item = (p: SideBarItem) => {
         return <MdSettings {...iconProps} />;
       case MainNavigationRoute.SERVERS:
         return <FaServer {...iconProps} />;
+      case MainNavigationRoute.PHOTO_MANAGEMENT:
+        return <FaCameraRotate {...iconProps} />;
     }
   };
   return (

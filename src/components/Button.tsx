@@ -3,13 +3,13 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Loader } from '~/components/Loader';
 
-type ByttonVariant = 'primary' | 'secondary';
+type ButtonVariant = 'primary' | 'secondary' | 'danger';
 
 type ButtonProps = {
   label: string;
   onClick?: F0;
   style?: CSSProperties;
-  variant?: ByttonVariant;
+  variant?: ButtonVariant;
   type?: HTMLButtonElement['type'];
   loading?: boolean;
   disabled?: boolean;
@@ -20,7 +20,12 @@ export const Button = ({ label, onClick, variant = 'primary', ...p }: ButtonProp
   const styles = useStyles();
   const theme = useTheme();
 
-  const buttonColor = variant === 'primary' ? theme.colors.blue : theme.colors.gray01 + theme.colorOpacity(0.6);
+  const buttonColor =
+    variant === 'primary'
+      ? theme.colors.blue
+      : variant === 'danger'
+        ? theme.colors.red
+        : theme.colors.gray01 + theme.colorOpacity(0.6);
 
   const handleClick = () => {
     if (p.disabled) return;
