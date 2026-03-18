@@ -9,7 +9,7 @@ type ServerStatusProps = {
   lasSeenAt?: Date;
 };
 
-export const ServerStatus = ({ isOnline, lasSeenAt, status }: ServerStatusProps) => {
+export const ServerStatus = ({ isOnline, status }: ServerStatusProps) => {
   const styles = useStyles();
   const theme = useTheme();
 
@@ -30,7 +30,7 @@ export const ServerStatus = ({ isOnline, lasSeenAt, status }: ServerStatusProps)
   );
 };
 
-const useStyles = mkUseStyles((t) => ({
+const useStyles = mkUseStyles(() => ({
   container: {
     flexDirection: 'row',
     alignItems: 'center',

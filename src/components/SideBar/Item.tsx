@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MdAccountBox, MdDashboard, MdImage, MdSettings } from 'react-icons/md';
-import { IoIosCamera } from 'react-icons/io';
 
 import { MainNavigationRoute } from '~/navigation/types';
 import { FaCameraRotate, FaServer } from 'react-icons/fa6';

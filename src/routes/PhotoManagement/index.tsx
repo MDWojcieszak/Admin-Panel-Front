@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import {
   AstroObjectListResponse,
   PhotoEntryDetailsResponse,
@@ -7,7 +7,6 @@ import {
   PhotoEntryStatus,
   PhotoEntryType,
 } from '~/api/api';
-import { Scrollbar } from '~/components/Scrollbar';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
@@ -217,7 +216,7 @@ export const PhotoManagement = () => {
   );
 };
 
-const useStyles = mkUseStyles((t) => ({
+const useStyles = mkUseStyles(() => ({
   container: {
     height: '100%',
     minHeight: 0,
