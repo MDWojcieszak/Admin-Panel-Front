@@ -7,6 +7,7 @@ All URIs are relative to *http://localhost*
 |[**serverCommandsControllerGetCommands**](#servercommandscontrollergetcommands) | **GET** /server/commands/all | |
 |[**serverCommandsControllerPutCommand**](#servercommandscontrollerputcommand) | **PATCH** /server/commands/{id} | |
 |[**serverCommandsControllerStartServer**](#servercommandscontrollerstartserver) | **POST** /server/commands/send/{id} | |
+|[**serverControllerCreateCategory**](#servercontrollercreatecategory) | **POST** /server/catgory | |
 |[**serverControllerGet**](#servercontrollerget) | **GET** /server/{serverId} | |
 |[**serverControllerGetAll**](#servercontrollergetall) | **GET** /server/all | |
 |[**serverControllerGetDetails**](#servercontrollergetdetails) | **GET** /server/details/{serverId} | |
@@ -175,6 +176,60 @@ const { status, data } = await apiInstance.serverCommandsControllerStartServer(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **serverControllerCreateCategory**
+> serverControllerCreateCategory(createCategoryDto)
+
+
+### Example
+
+```typescript
+import {
+    ServerApi,
+    Configuration,
+    CreateCategoryDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ServerApi(configuration);
+
+let id: string; // (default to undefined)
+let createCategoryDto: CreateCategoryDto; //
+
+const { status, data } = await apiInstance.serverControllerCreateCategory(
+    id,
+    createCategoryDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **createCategoryDto** | **CreateCategoryDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Changed correctly |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **serverControllerGet**
 > ServerResponseDto serverControllerGet()
 
@@ -329,7 +384,7 @@ const { status, data } = await apiInstance.serverControllerGetDetails(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **serverControllerPatchCategory**
-> serverControllerPatchCategory(patchCategorykDto)
+> serverControllerPatchCategory(patchCategoryDto)
 
 
 ### Example
@@ -338,18 +393,18 @@ const { status, data } = await apiInstance.serverControllerGetDetails(
 import {
     ServerApi,
     Configuration,
-    PatchCategorykDto
+    PatchCategoryDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new ServerApi(configuration);
 
 let id: string; // (default to undefined)
-let patchCategorykDto: PatchCategorykDto; //
+let patchCategoryDto: PatchCategoryDto; //
 
 const { status, data } = await apiInstance.serverControllerPatchCategory(
     id,
-    patchCategorykDto
+    patchCategoryDto
 );
 ```
 
@@ -357,7 +412,7 @@ const { status, data } = await apiInstance.serverControllerPatchCategory(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **patchCategorykDto** | **PatchCategorykDto**|  | |
+| **patchCategoryDto** | **PatchCategoryDto**|  | |
 | **id** | [**string**] |  | defaults to undefined|
 
 
