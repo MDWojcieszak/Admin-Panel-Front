@@ -15,6 +15,12 @@ const bluePalette = {
   blue04: '#B7D3E8',
 };
 
+const purplePalette = {
+  purple01: 'rgb(120, 77, 255)',
+  purple02: 'rgb(177, 120, 255)',
+  purple03: 'rgb(216, 149, 255)',
+};
+
 const fallSeasonPalette = {
   gray01: '#333944',
   gray02: '#292d38',
@@ -32,6 +38,7 @@ const fallSeasonPalette = {
 export const colors = {
   background: palette.black,
   ...bluePalette,
+  ...purplePalette,
   ...fallSeasonPalette,
   ...palette,
 } as const;
