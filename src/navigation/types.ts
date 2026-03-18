@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 export enum MainNavigationRoute {
   DASHBOARD = 'dashboard',
   ACCOUNTS = 'accounts',
+  PHOTO_MANAGEMENT = 'photo-management',
   GALLERY = 'gallery',
   SETTINGS = 'settings',
   SERVERS = 'servers',

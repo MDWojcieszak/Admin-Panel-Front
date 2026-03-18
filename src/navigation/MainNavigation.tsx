@@ -8,12 +8,14 @@ import { MainNavigationRoute, MainRouteType } from '~/navigation/types';
 import { Accounts } from '~/routes/Accounts';
 import { Dashboard } from '~/routes/Dashboard';
 import { Gallery } from '~/routes/Images';
+import { PhotoManagement } from '~/routes/PhotoManagement';
 
 export const mainNavigationRoutes: MainRouteType[] = [
   { path: MainNavigationRoute.DASHBOARD, label: 'Dashboard', component: <Dashboard /> },
   { path: MainNavigationRoute.ACCOUNTS, label: 'Accounts', component: <Accounts /> },
-  { path: MainNavigationRoute.GALLERY, label: 'Gallery', component: <Gallery /> },
-  { path: MainNavigationRoute.SETTINGS, label: 'Setings', component: <Dashboard /> },
+  { path: MainNavigationRoute.PHOTO_MANAGEMENT, label: 'Photo Library', component: <PhotoManagement /> },
+  { path: MainNavigationRoute.GALLERY, label: 'Personal Gallery', component: <Gallery /> },
+  { path: MainNavigationRoute.SETTINGS, label: 'Settings', component: <Dashboard /> },
   { path: MainNavigationRoute.SERVERS, label: 'Servers', component: <ServerNavigation />, nested: true },
 ];
 
