@@ -101,8 +101,15 @@ export const UserRegister = () => {
 
           <FormProvider {...formMethods}>
             <form onSubmit={formMethods.handleSubmit(handleRegister)} style={styles.form} noValidate>
-              <Input name='password' label='Password' description='Your password' type='password' />
               <Input
+                disableAutofill={false}
+                name='password'
+                label='Password'
+                description='Your password'
+                type='password'
+              />
+              <Input
+                disableAutofill={false}
                 name='confirmPassword'
                 label='Confirm Password'
                 description='Your password confirmation'

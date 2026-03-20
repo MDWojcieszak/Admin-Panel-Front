@@ -114,8 +114,15 @@ export const ResetPassword = () => {
             <p style={styles.instruction}>Enter your new password, make sure the passwords are the same</p>
             <FormProvider {...resetPasswordMethods}>
               <form onSubmit={resetPasswordMethods.handleSubmit(handleResetPassword)} style={styles.form} noValidate>
-                <Input name='password' label='Password' description='Your password' type='password' />
                 <Input
+                  disableAutofill={false}
+                  name='password'
+                  label='Password'
+                  description='Your password'
+                  type='password'
+                />
+                <Input
+                  disableAutofill={false}
                   name='confirmPassword'
                   label='Confirm Password'
                   description='Your password confirmation'

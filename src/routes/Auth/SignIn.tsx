@@ -84,8 +84,14 @@ export const SignIn = () => {
       {result === undefined && (
         <FormProvider {...formMethods}>
           <form onSubmit={formMethods.handleSubmit(handleSignIn)} style={styles.form} noValidate>
-            <Input name='email' label='Email' description='Your e-mail address' type='email' />
-            <Input name='password' label='Password' description='Your password' type='password' />
+            <Input disableAutofill={false} name='email' label='Email' description='Your e-mail address' type='email' />
+            <Input
+              disableAutofill={false}
+              name='password'
+              label='Password'
+              description='Your password'
+              type='password'
+            />
             <motion.div onClick={handleResetPassword} whileHover={{ textDecoration: 'underline' }} style={styles.text}>
               Forgot password?
             </motion.div>
