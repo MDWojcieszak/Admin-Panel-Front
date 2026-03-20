@@ -9,9 +9,16 @@ type InputProps<T extends FieldValues> = {
   description: string;
   type?: HTMLInputTypeAttribute;
   style?: CSSProperties;
+  disableAutofill?: boolean;
 } & UseControllerProps<T>;
 
-export const Input = <T extends FieldValues>({ label, description, type = 'text', ...p }: InputProps<T>) => {
+export const Input = <T extends FieldValues>({
+  label,
+  description,
+  type = 'text',
+  disableAutofill = true,
+  ...p
+}: InputProps<T>) => {
   const [showDescription, setShowDescription] = useState(false);
   const [showLabel, setShowLabel] = useState(type !== 'datetime-local' && type !== 'date');
   const {
@@ -58,6 +65,9 @@ export const Input = <T extends FieldValues>({ label, description, type = 'text'
       <motion.input
         {...field}
         ref={inputRef}
+        autoComplete={disableAutofill ? 'off' : 'on'}
+        data-lpignore={disableAutofill ? 'true' : undefined}
+        data-form-type={disableAutofill ? 'other' : undefined}
         style={false ? { ...styles.input, borderColor: 'red' } : styles.input}
         onFocus={handleFocus}
         onBlur={handleBlur}
