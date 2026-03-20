@@ -1,9 +1,9 @@
 import { format } from 'date-fns';
 import { motion, useMotionValue } from 'framer-motion';
 import { useMemo, useRef } from 'react';
-import { FiBriefcase, FiFileText, FiMoon } from 'react-icons/fi';
+import { FiAlertCircle, FiBriefcase, FiCheckCircle, FiFileText, FiFolder, FiMoon } from 'react-icons/fi';
 import { IconType } from 'react-icons';
-import { PhotoEntryResponse, PhotoEntryType } from '~/api/api';
+import { MediaStatus, PhotoEntryResponse, PhotoEntryType } from '~/api/api';
 import { getPhotoEntryStatusColors } from '~/routes/PhotoManagement/utils/colors';
 
 type PhotoEntryKanbanCardProps = {
@@ -39,9 +39,13 @@ export const PhotoEntryKanbanCard = ({
   const createdAt = useMemo(() => parseDate(entry.createdAt), [entry.createdAt]);
 
   const dateRange = useMemo(() => formatDateRange(startDate, endDate), [startDate, endDate]);
-  const folderStatus = useMemo(() => getFolderStatusStyles(entry.foldersCreated), [entry.foldersCreated]);
+  const folderStatus = useMemo(
+    () => getFolderStatusMeta(entry.foldersCreated, entry.uploadStatus),
+    [entry.foldersCreated, entry.uploadStatus],
+  );
 
   const TypeIcon = typeMeta.icon;
+  const FolderStatusIcon = folderStatus.icon;
 
   return (
     <motion.div
@@ -118,34 +122,44 @@ export const PhotoEntryKanbanCard = ({
           <span>{typeMeta.label}</span>
         </div>
 
-        <div
+        <motion.div
+          animate={
+            folderStatus.pulse
+              ? {
+                  scale: [1, 1.04, 1],
+                }
+              : {
+                  scale: 1,
+                }
+          }
+          transition={
+            folderStatus.pulse
+              ? {
+                  duration: 1.8,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }
+              : undefined
+          }
           style={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 6,
-            padding: '4px 8px',
+            gap: 7,
+            padding: '6px 10px',
             borderRadius: 999,
-            fontSize: 11,
+            fontSize: 12,
             lineHeight: 1,
-            fontWeight: 500,
+            fontWeight: 600,
             width: 'fit-content',
             background: folderStatus.background,
             border: `1px solid ${folderStatus.border}`,
             color: folderStatus.color,
           }}
         >
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: '50%',
-              flexShrink: 0,
-              background: folderStatus.dot,
-            }}
-          />
+          <FolderStatusIcon size={14} />
           <span>{folderStatus.label}</span>
-        </div>
+        </motion.div>
       </div>
 
       {entry.rootPath ? (
@@ -166,12 +180,6 @@ export const PhotoEntryKanbanCard = ({
       {dateRange ? (
         <div style={{ ...styles.cardMeta, marginTop: 6 }}>
           <span style={{ opacity: 0.68 }}>Dates:</span> {dateRange}
-        </div>
-      ) : null}
-
-      {createdAt ? (
-        <div style={{ ...styles.cardMeta, marginTop: 4 }}>
-          <span style={{ opacity: 0.68 }}>Created:</span> {format(createdAt, 'dd.MM.yyyy HH:mm')}
         </div>
       ) : null}
     </motion.div>
@@ -202,23 +210,46 @@ const formatDateRange = (startDate?: Date | null, endDate?: Date | null) => {
   return null;
 };
 
-const getFolderStatusStyles = (foldersCreated: boolean) => {
-  if (foldersCreated) {
+const getFolderStatusMeta = (
+  foldersCreated: boolean,
+  uploadStatus?: MediaStatus | null,
+): {
+  label: string;
+  icon: IconType;
+  background: string;
+  border: string;
+  color: string;
+  pulse: boolean;
+} => {
+  if (!foldersCreated) {
     return {
-      label: 'Search ready',
-      background: 'rgba(53, 158, 122, 0.08)',
-      border: 'rgba(53, 158, 122, 0.18)',
+      label: 'Folders pending',
+      icon: FiFolder,
+      background: 'rgba(232, 179, 72, 0.08)',
+      border: 'rgba(232, 179, 72, 0.18)',
+      color: '#E7BE63',
+      pulse: false,
+    };
+  }
+
+  if (uploadStatus === MediaStatus.Uploaded) {
+    return {
+      label: 'Photo uploaded',
+      icon: FiCheckCircle,
+      background: 'rgba(53, 158, 122, 0.10)',
+      border: 'rgba(53, 158, 122, 0.20)',
       color: '#7BC8A6',
-      dot: '#63C29A',
+      pulse: false,
     };
   }
 
   return {
-    label: 'Folders pending',
-    background: 'rgba(232, 179, 72, 0.08)',
-    border: 'rgba(232, 179, 72, 0.18)',
-    color: '#E7BE63',
-    dot: '#E8B348',
+    label: 'Waiting for upload',
+    icon: FiAlertCircle,
+    background: 'rgba(220, 68, 55, 0.10)',
+    border: 'rgba(220, 68, 55, 0.22)',
+    color: '#F08A80',
+    pulse: true,
   };
 };
 

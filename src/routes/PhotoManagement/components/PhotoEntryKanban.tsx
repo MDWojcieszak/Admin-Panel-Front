@@ -25,7 +25,6 @@ type DragInfoState = {
 const KANBAN_COLUMNS = [
   { title: 'Planned', status: PhotoEntryStatus.Planned },
   { title: 'Active', status: PhotoEntryStatus.Active },
-  { title: 'Imported', status: PhotoEntryStatus.Imported },
   { title: 'Selected', status: PhotoEntryStatus.Selected },
   { title: 'Editing', status: PhotoEntryStatus.Editing },
   { title: 'Completed', status: PhotoEntryStatus.Completed },
@@ -245,7 +244,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   boardHeaders: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
     gap: t.spacing.m,
     alignItems: 'start',
     width: 'calc(100% - 28px)',
@@ -263,7 +262,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   boardCards: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
     gap: t.spacing.m,
     alignItems: 'start',
     width: '100%',

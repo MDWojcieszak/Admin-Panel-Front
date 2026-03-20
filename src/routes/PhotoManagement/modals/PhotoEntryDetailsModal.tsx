@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FiCheck, FiFolder, FiLock, FiMoon } from 'react-icons/fi';
+import { FiAlertTriangle, FiCheck, FiCheckCircle, FiFolder, FiLock, FiMoon } from 'react-icons/fi';
 
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
@@ -10,7 +10,7 @@ import { Scrollbar } from '~/components/Scrollbar';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { mkUseStyles } from '~/utils/theme';
-import { PatchPhotoEntryDto, PhotoEntryDetailsResponse, PhotoEntryType } from '~/api/api';
+import { MediaStatus, PatchPhotoEntryDto, PhotoEntryDetailsResponse, PhotoEntryType } from '~/api/api';
 
 type AstroObjectListItem = {
   id: string;
@@ -84,6 +84,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
 
   const astroObjects = useMemo(() => p.astroObjects ?? [], [p.astroObjects]);
   const isLocked = p.entry.foldersCreated;
+  const uploadStatus = p.entry.uploadStatus;
   const isAstro = p.entry.type === PhotoEntryType.Astro;
 
   const initialSelectedAstroObjectIds = useMemo(() => mapAstroObjectIds(p.entry.astroObjects), [p.entry.astroObjects]);
@@ -217,6 +218,24 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
     }
   };
 
+  const handleMarkAsUploaded = async () => {
+    if (!photoEntryApi || uploadStatus === MediaStatus.Uploaded) return;
+
+    setFoldersLoading(true);
+
+    try {
+      await photoEntryApi.photoEntryControllerMarkMediaUploaded({
+        id: p.entry.id,
+      });
+
+      await p.onFoldersCreated?.();
+    } catch (error: any) {
+      console.log(error?.message);
+    } finally {
+      setFoldersLoading(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (!photoEntryApi || isLocked) return;
 
@@ -241,14 +260,38 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   return (
     <FormProvider {...formMethods}>
       <div style={styles.container}>
-        {isLocked ? (
-          <div style={styles.lockedBanner}>
-            <div style={styles.lockedIcon}>
-              <FiLock size={14} />
+        {isLocked && uploadStatus === MediaStatus.NotUploaded && (
+          <div style={styles.uploadWarningBanner}>
+            <div style={styles.uploadWarningIcon}>
+              <FiAlertTriangle size={14} />
             </div>
-            <div style={styles.lockedText}>Folders already created. Editing is locked for this entry.</div>
+
+            <div style={styles.uploadWarningContent}>
+              <div style={styles.uploadWarningTitle}>Folders created</div>
+              <div style={styles.uploadWarningText}>Confirm once photos are uploaded.</div>
+            </div>
+
+            <Button
+              loading={foldersLoading}
+              label=' Mark as uploaded'
+              variant='secondary'
+              onClick={handleMarkAsUploaded}
+            ></Button>
           </div>
-        ) : null}
+        )}
+
+        {isLocked && uploadStatus === MediaStatus.Uploaded && (
+          <div style={styles.uploadSuccessBanner}>
+            <div style={styles.uploadSuccessIcon}>
+              <FiCheckCircle size={14} />
+            </div>
+
+            <div style={styles.uploadSuccessContent}>
+              <div style={styles.uploadSuccessTitle}>Upload confirmed</div>
+              <div style={styles.uploadSuccessText}>Photos have been uploaded to the server.</div>
+            </div>
+          </div>
+        )}
 
         <div
           style={{
@@ -532,28 +575,86 @@ const useStyles = mkUseStyles((t) => ({
   flex: {
     flex: 1,
   },
-  lockedBanner: {
+  uploadWarningBanner: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: t.spacing.s,
-    padding: t.spacing.s,
+    gap: t.spacing.m,
+    padding: t.spacing.m,
     borderRadius: 12,
-    backgroundColor: 'rgba(232, 179, 72, 0.08)',
-    border: '1px solid rgba(232, 179, 72, 0.18)',
+    backgroundColor: 'rgba(220, 68, 55, 0.08)',
+    border: '1px solid rgba(220, 68, 55, 0.18)',
   },
-  lockedIcon: {
+
+  uploadWarningIcon: {
     width: 24,
     height: 24,
     borderRadius: 999,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(232, 179, 72, 0.14)',
-    color: '#E8B348',
+    backgroundColor: 'rgba(220, 68, 55, 0.14)',
+    color: '#DC4437',
     flexShrink: 0,
   },
-  lockedText: {
+
+  uploadWarningContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 2,
+    flex: 1,
+    minWidth: 0,
+  },
+
+  uploadWarningTitle: {
+    fontSize: 13,
+    fontWeight: 600,
+    color: '#DC4437',
+  },
+
+  uploadWarningText: {
+    fontSize: 13,
+    opacity: 0.92,
+  },
+
+  uploadSuccessBanner: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    padding: t.spacing.s,
+    borderRadius: 12,
+    backgroundColor: 'rgba(53, 158, 122, 0.10)',
+    border: '1px solid rgba(53, 158, 122, 0.20)',
+  },
+
+  uploadSuccessIcon: {
+    width: 24,
+    height: 24,
+    borderRadius: 999,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(53, 158, 122, 0.16)',
+    color: '#359E7A',
+    flexShrink: 0,
+  },
+
+  uploadSuccessContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 2,
+    flex: 1,
+    minWidth: 0,
+  },
+
+  uploadSuccessTitle: {
+    fontSize: 13,
+    fontWeight: 600,
+    color: '#359E7A',
+  },
+
+  uploadSuccessText: {
     fontSize: 13,
     opacity: 0.92,
   },
