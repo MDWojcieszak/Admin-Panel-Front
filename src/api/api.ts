@@ -1145,6 +1145,20 @@ export interface LocationResponseDto {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const MediaStatus = {
+    Uploaded: 'UPLOADED',
+    NotUploaded: 'NOT_UPLOADED'
+} as const;
+
+export type MediaStatus = typeof MediaStatus[keyof typeof MediaStatus];
+
+
+/**
+ * 
+ * @export
  * @interface MemoryDto
  */
 export interface MemoryDto {
@@ -2431,6 +2445,12 @@ export interface PhotoEntryDetailsResponse {
     'foldersCreated': boolean;
     /**
      * 
+     * @type {MediaStatus}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'uploadStatus': MediaStatus;
+    /**
+     * 
      * @type {string}
      * @memberof PhotoEntryDetailsResponse
      */
@@ -2537,6 +2557,12 @@ export interface PhotoEntryResponse {
     'foldersCreated': boolean;
     /**
      * 
+     * @type {MediaStatus}
+     * @memberof PhotoEntryResponse
+     */
+    'uploadStatus': MediaStatus;
+    /**
+     * 
      * @type {string}
      * @memberof PhotoEntryResponse
      */
@@ -2565,7 +2591,6 @@ export interface PhotoEntryResponse {
 export const PhotoEntryStatus = {
     Planned: 'PLANNED',
     Active: 'ACTIVE',
-    Imported: 'IMPORTED',
     Selected: 'SELECTED',
     Editing: 'EDITING',
     Completed: 'COMPLETED'
@@ -9393,6 +9418,43 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
         /**
          * 
          * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerMarkMediaUploaded: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryControllerMarkMediaUploaded', 'id', id)
+            const localVarPath = `/photo-entry/{id}/mark-media-uploaded`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {PatchPhotoEntryDto} patchPhotoEntryDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9554,6 +9616,18 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryControllerMarkMediaUploaded(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryControllerMarkMediaUploaded(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryControllerMarkMediaUploaded']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {PatchPhotoEntryDto} patchPhotoEntryDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9631,6 +9705,15 @@ export const PhotoEntryApiFactory = function (configuration?: Configuration, bas
          */
         photoEntryControllerList(requestParameters: PhotoEntryApiPhotoEntryControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryListResponse> {
             return localVarFp.photoEntryControllerList(requestParameters.type, requestParameters.status, requestParameters.astroObjectId, requestParameters.search, requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PhotoEntryApiPhotoEntryControllerMarkMediaUploadedRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerMarkMediaUploaded(requestParameters: PhotoEntryApiPhotoEntryControllerMarkMediaUploadedRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryResponse> {
+            return localVarFp.photoEntryControllerMarkMediaUploaded(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -9759,6 +9842,20 @@ export interface PhotoEntryApiPhotoEntryControllerListRequest {
 }
 
 /**
+ * Request parameters for photoEntryControllerMarkMediaUploaded operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryControllerMarkMediaUploadedRequest
+ */
+export interface PhotoEntryApiPhotoEntryControllerMarkMediaUploadedRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryControllerMarkMediaUploaded
+     */
+    readonly id: string
+}
+
+/**
  * Request parameters for photoEntryControllerPatch operation in PhotoEntryApi.
  * @export
  * @interface PhotoEntryApiPhotoEntryControllerPatchRequest
@@ -9860,6 +9957,17 @@ export class PhotoEntryApi extends BaseAPI {
      */
     public photoEntryControllerList(requestParameters: PhotoEntryApiPhotoEntryControllerListRequest = {}, options?: RawAxiosRequestConfig) {
         return PhotoEntryApiFp(this.configuration).photoEntryControllerList(requestParameters.type, requestParameters.status, requestParameters.astroObjectId, requestParameters.search, requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PhotoEntryApiPhotoEntryControllerMarkMediaUploadedRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryControllerMarkMediaUploaded(requestParameters: PhotoEntryApiPhotoEntryControllerMarkMediaUploadedRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryControllerMarkMediaUploaded(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

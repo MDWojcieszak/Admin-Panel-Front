@@ -7,8 +7,6 @@
 
 * `Active` (value: `'ACTIVE'`)
 
-* `Imported` (value: `'IMPORTED'`)
-
 * `Selected` (value: `'SELECTED'`)
 
 * `Editing` (value: `'EDITING'`)

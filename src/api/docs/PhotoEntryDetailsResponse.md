@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **endDate** | **string** |  | [optional] [default to undefined]
 **rootPath** | **string** |  | [optional] [default to undefined]
 **foldersCreated** | **boolean** |  | [default to undefined]
+**uploadStatus** | [**MediaStatus**](MediaStatus.md) |  | [default to undefined]
 **foldersCreatedAt** | **string** |  | [optional] [default to undefined]
 **createdAt** | **string** |  | [default to undefined]
 **updatedAt** | **string** |  | [default to undefined]
@@ -33,6 +34,7 @@ const instance: PhotoEntryDetailsResponse = {
     endDate,
     rootPath,
     foldersCreated,
+    uploadStatus,
     foldersCreatedAt,
     createdAt,
     updatedAt,

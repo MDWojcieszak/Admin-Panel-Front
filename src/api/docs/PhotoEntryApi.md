@@ -9,6 +9,7 @@ All URIs are relative to *http://localhost*
 |[**photoEntryControllerDelete**](#photoentrycontrollerdelete) | **DELETE** /photo-entry/{id} | |
 |[**photoEntryControllerGetById**](#photoentrycontrollergetbyid) | **GET** /photo-entry/{id} | |
 |[**photoEntryControllerList**](#photoentrycontrollerlist) | **GET** /photo-entry | |
+|[**photoEntryControllerMarkMediaUploaded**](#photoentrycontrollermarkmediauploaded) | **POST** /photo-entry/{id}/mark-media-uploaded | |
 |[**photoEntryControllerPatch**](#photoentrycontrollerpatch) | **PATCH** /photo-entry/{id} | |
 |[**photoEntryControllerPatchStatus**](#photoentrycontrollerpatchstatus) | **PATCH** /photo-entry/{id}/status | |
 
@@ -275,6 +276,56 @@ const { status, data } = await apiInstance.photoEntryControllerList(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | List photo entries |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryControllerMarkMediaUploaded**
+> PhotoEntryResponse photoEntryControllerMarkMediaUploaded()
+
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryControllerMarkMediaUploaded(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Created photo entry folders |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

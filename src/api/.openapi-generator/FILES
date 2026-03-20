@@ -47,6 +47,7 @@ docs/ImageDto.md
 docs/ImageListResponseDto.md
 docs/LocationCreateDto.md
 docs/LocationResponseDto.md
+docs/MediaStatus.md
 docs/MemoryDto.md
 docs/OCRDevApi.md
 docs/OcrLang.md
