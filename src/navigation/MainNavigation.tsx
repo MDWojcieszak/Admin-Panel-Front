@@ -14,17 +14,10 @@ import { Gallery } from '~/routes/Images';
 import { PhotoManagement } from '~/routes/PhotoManagement';
 import { Settings } from '~/routes/Settings';
 
-// Top navigation items (rendered in the sidebar list).
+// Top navigation items (rendered in the sidebar list), grouped logically:
+// overview → infrastructure → photography → people & security.
 export const mainNavigationRoutes: MainRouteType[] = [
   { path: MainNavigationRoute.DASHBOARD, label: 'Dashboard', component: <Dashboard /> },
-  { path: MainNavigationRoute.ACCOUNTS, label: 'Accounts', component: <Accounts />, permission: 'user.read' },
-  {
-    path: MainNavigationRoute.PHOTO_MANAGEMENT,
-    label: 'Photo Library',
-    component: <PhotoManagement />,
-    permission: 'photoEntry.read',
-  },
-  { path: MainNavigationRoute.GALLERY, label: 'Personal Gallery', component: <Gallery /> },
   {
     path: MainNavigationRoute.SERVERS,
     label: 'Servers',
@@ -32,6 +25,14 @@ export const mainNavigationRoutes: MainRouteType[] = [
     nested: true,
     permission: 'server.read',
   },
+  {
+    path: MainNavigationRoute.PHOTO_MANAGEMENT,
+    label: 'Photo Library',
+    component: <PhotoManagement />,
+    permission: 'photoEntry.read',
+  },
+  { path: MainNavigationRoute.GALLERY, label: 'Personal Gallery', component: <Gallery /> },
+  { path: MainNavigationRoute.ACCOUNTS, label: 'Users', component: <Accounts />, permission: 'user.read' },
   {
     path: MainNavigationRoute.ACCESS_CONTROL,
     label: 'Access Control',

@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MdAccountBox, MdAdminPanelSettings, MdDashboard, MdImage, MdSettings } from 'react-icons/md';
+import { MdGroup, MdImage, MdPhotoCamera, MdSettings, MdShield, MdSpaceDashboard } from 'react-icons/md';
 
 import { Permission } from '~/acl/permissions';
 import { MainNavigationRoute } from '~/navigation/types';
-import { FaCameraRotate, FaServer } from 'react-icons/fa6';
+import { FaServer } from 'react-icons/fa6';
 
 const ICON_SIZE = 24;
 
@@ -30,19 +30,19 @@ export const Item = (p: SideBarItem) => {
   const renderIcon = () => {
     switch (p.path) {
       case MainNavigationRoute.DASHBOARD:
-        return <MdDashboard {...iconProps} />;
-      case MainNavigationRoute.ACCOUNTS:
-        return <MdAccountBox {...iconProps} />;
-      case MainNavigationRoute.GALLERY:
-        return <MdImage {...iconProps} />;
-      case MainNavigationRoute.SETTINGS:
-        return <MdSettings {...iconProps} />;
+        return <MdSpaceDashboard {...iconProps} />;
       case MainNavigationRoute.SERVERS:
         return <FaServer {...iconProps} />;
       case MainNavigationRoute.PHOTO_MANAGEMENT:
-        return <FaCameraRotate {...iconProps} />;
+        return <MdPhotoCamera {...iconProps} />;
+      case MainNavigationRoute.GALLERY:
+        return <MdImage {...iconProps} />;
+      case MainNavigationRoute.ACCOUNTS:
+        return <MdGroup {...iconProps} />;
       case MainNavigationRoute.ACCESS_CONTROL:
-        return <MdAdminPanelSettings {...iconProps} />;
+        return <MdShield {...iconProps} />;
+      case MainNavigationRoute.SETTINGS:
+        return <MdSettings {...iconProps} />;
     }
   };
   return (
