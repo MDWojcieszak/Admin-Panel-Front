@@ -3,9 +3,11 @@ import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { MdLogout } from 'react-icons/md';
 import { PatchUserSettingsDto, SessionResponseDto, UserSettingsResponseDto } from '~/api/api';
+import { Button } from '~/components/Button';
 import { CenteredCard } from '~/components/CenteredCard';
 import { Loader } from '~/components/Loader';
 import { useApi } from '~/hooks/useApi';
+import { useAuth } from '~/hooks/useAuth';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type SettingKey = keyof PatchUserSettingsDto;
@@ -32,6 +34,7 @@ export const Settings = () => {
   const styles = useStyles();
   const theme = useTheme();
   const { userApi, sessionApi } = useApi();
+  const auth = useAuth();
 
   const [settings, setSettings] = useState<UserSettingsResponseDto>();
   const [loading, setLoading] = useState(true);
@@ -55,14 +58,22 @@ export const Settings = () => {
     let active = true;
     setSessionsLoading(true);
     Promise.allSettled([
-      sessionApi.sessionControllerGetAllForUser({ take: 20, skip: 0 }),
+      sessionApi.sessionControllerGetAllForUser({ take: 50, skip: 0 }),
       sessionApi.sessionControllerGetCurrent(),
-    ]).then((results) => {
-      if (!active) return;
-      if (results[0].status === 'fulfilled') setSessions(results[0].value.data.sessions ?? []);
-      if (results[1].status === 'fulfilled') setCurrentSessionId(results[1].value.data.id);
-      setSessionsLoading(false);
-    });
+    ])
+      .then(([listResult, currentResult]) => {
+        if (!active) return;
+        const list = listResult.status === 'fulfilled' ? listResult.value.data.sessions ?? [] : [];
+        const current = currentResult.status === 'fulfilled' ? currentResult.value.data : undefined;
+        setCurrentSessionId(current?.id);
+        // Always surface the current session, even if /session/my comes back empty.
+        const merged = current && !list.some((s) => s.id === current.id) ? [current, ...list] : list;
+        setSessions(merged);
+      })
+      .catch((e) => console.error('Error loading sessions:', e))
+      .finally(() => {
+        if (active) setSessionsLoading(false);
+      });
     return () => {
       active = false;
     };
@@ -80,13 +91,28 @@ export const Settings = () => {
     }
   };
 
-  const signOutSession = async (sessionId: string) => {
+  const signOutSession = async (sessionId: string, isCurrent: boolean) => {
     if (!sessionApi) return;
     try {
-      await sessionApi.sessionControllerRemoveSession({ sessionDto: { sessionId } });
+      await sessionApi.sessionControllerRevokeOwn({ id: sessionId });
+      if (isCurrent) {
+        // Revoking the current session logs this device out.
+        auth.removeTokens();
+        return;
+      }
       setSessions((prev) => prev.filter((s) => s.id !== sessionId));
     } catch (e) {
       console.error('Error removing session:', e);
+    }
+  };
+
+  const signOutOthers = async () => {
+    if (!sessionApi) return;
+    try {
+      await sessionApi.sessionControllerRevokeOthers();
+      setSessions((prev) => prev.filter((s) => s.isCurrent));
+    } catch (e) {
+      console.error('Error signing out other sessions:', e);
     }
   };
 
@@ -147,13 +173,18 @@ export const Settings = () => {
       </div>
 
       <div style={styles.block}>
-        <span style={styles.blockTitle}>Active sessions · {sessions.length}</span>
+        <div style={styles.blockHeader}>
+          <span style={styles.blockTitle}>Active sessions · {sessions.length}</span>
+          {sessions.length > 1 ? (
+            <Button label='Sign out other devices' variant='secondary' onClick={signOutOthers} />
+          ) : null}
+        </div>
         {sessionsLoading ? (
           <Loader />
         ) : (
           <div style={styles.sessionList}>
             {sessions.map((s) => {
-              const current = s.id === currentSessionId;
+              const current = !!s.isCurrent || s.id === currentSessionId;
               return (
                 <div key={s.id} style={styles.sessionRow}>
                   <div style={styles.sessionInfo}>
@@ -168,7 +199,7 @@ export const Settings = () => {
                   {current ? (
                     <span style={styles.thisDeviceTag}>current</span>
                   ) : (
-                    <div style={styles.signOut} onClick={() => signOutSession(s.id)}>
+                    <div style={styles.signOut} onClick={() => signOutSession(s.id, false)}>
                       <MdLogout size={15} color={theme.colors.red} />
                       <span>Sign out</span>
                     </div>
@@ -194,6 +225,12 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
     padding: t.spacing.m,
     borderRadius: t.borderRadius.large,
+  },
+  blockHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: t.spacing.m,
   },
   blockTitle: {
     fontWeight: 700,

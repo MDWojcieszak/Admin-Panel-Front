@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
-import { MdLogout } from 'react-icons/md';
+import { MdDeleteOutline, MdLogout } from 'react-icons/md';
 import { PermissionGroupResponseDto, Role, SessionResponseDto, UserResponseDto } from '~/api/api';
-import { AuthService } from '~/apiOld/Auth';
 import { Badge, roleTone } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { Loader } from '~/components/Loader';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
+import { useAuth } from '~/hooks/useAuth';
 import { useCan } from '~/hooks/usePermissions';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -18,17 +18,23 @@ type UserDetailsModalProps = {
 export const UserDetailsModal = (p: UserDetailsModalProps) => {
   const styles = useStyles();
   const theme = useTheme();
-  const { aclApi, sessionApi } = useApi();
+  const { aclApi, sessionApi, authApi, userApi } = useApi();
+  const auth = useAuth();
   const can = useCan();
   const canReadSessions = can('session.read');
+  const canManageSessions = can('session.manage');
+  const canManageUsers = can('user.manage');
 
   const user = p.user;
   const isOwner = user?.role === Role.Owner;
+  const isSelf = !!user && auth.userData?.id === user.id;
 
   const [groups, setGroups] = useState<PermissionGroupResponseDto[]>([]);
   const [sessions, setSessions] = useState<SessionResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [resetSent, setResetSent] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -61,8 +67,9 @@ export const UserDetailsModal = (p: UserDetailsModalProps) => {
   const userName = [user.firstName, user.lastName].filter(Boolean).join(' ');
 
   const sendReset = async () => {
+    if (!authApi) return;
     try {
-      await AuthService.resetPasswordRequest({ email: user.email });
+      await authApi.authControllerAdminResetPassword({ userId: user.id });
       setResetSent(true);
     } catch (e) {
       console.error('Error sending reset:', e);
@@ -70,12 +77,25 @@ export const UserDetailsModal = (p: UserDetailsModalProps) => {
   };
 
   const signOutSession = async (sessionId: string) => {
-    if (!sessionApi) return;
+    if (!sessionApi || !canManageSessions) return;
     try {
-      await sessionApi.sessionControllerRemoveSession({ sessionDto: { sessionId } });
+      await sessionApi.sessionControllerRevokeByAdmin({ id: sessionId });
       setSessions((prev) => prev.filter((s) => s.id !== sessionId));
     } catch (e) {
       console.error('Error removing session:', e);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!userApi || !canManageUsers) return;
+    setDeleting(true);
+    try {
+      await userApi.userControllerDelete({ id: user.id });
+      p.handleClose?.();
+    } catch (e) {
+      console.error('Error deleting user:', e);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -144,10 +164,12 @@ export const UserDetailsModal = (p: UserDetailsModalProps) => {
                         {[s.platform, format(new Date(s.updatedAt), 'd MMM HH:mm')].filter(Boolean).join(' · ')}
                       </span>
                     </div>
-                    <div style={styles.signOut} onClick={() => signOutSession(s.id)}>
-                      <MdLogout size={15} color={theme.colors.red} />
-                      <span>Sign out</span>
-                    </div>
+                    {canManageSessions ? (
+                      <div style={styles.signOut} onClick={() => signOutSession(s.id)}>
+                        <MdLogout size={15} color={theme.colors.red} />
+                        <span>Sign out</span>
+                      </div>
+                    ) : null}
                   </div>
                 ))}
                 {sessions.length === 0 ? <span style={styles.muted}>No active sessions.</span> : null}
@@ -161,6 +183,29 @@ export const UserDetailsModal = (p: UserDetailsModalProps) => {
           ) : (
             <Button label='Send password reset' variant='secondary' onClick={sendReset} />
           )}
+
+          {/* Danger zone — soft delete */}
+          {canManageUsers && !isOwner && !isSelf ? (
+            confirmDelete ? (
+              <div style={styles.confirmRow}>
+                <span style={styles.confirmText}>
+                  Delete this user? Their sessions are revoked and login is disabled. Their content (photos, entries) is
+                  kept.
+                </span>
+                <div style={styles.confirmActions}>
+                  <Button label='Cancel' variant='secondary' onClick={() => setConfirmDelete(false)} />
+                  <Button label='Delete user' variant='danger' onClick={handleDelete} loading={deleting} />
+                </div>
+              </div>
+            ) : (
+              <Button
+                label='Delete user'
+                variant='danger'
+                icon={<MdDeleteOutline size={18} />}
+                onClick={() => setConfirmDelete(true)}
+              />
+            )
+          ) : null}
         </>
       )}
     </div>
@@ -300,5 +345,21 @@ const useStyles = mkUseStyles((t) => ({
   resetOk: {
     color: t.colors.lightGreen,
     fontSize: 14,
+  },
+  confirmRow: {
+    gap: t.spacing.m,
+    padding: t.spacing.m,
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.red + t.colorOpacity(0.1),
+    border: `1px solid ${t.colors.red + t.colorOpacity(0.3)}`,
+  },
+  confirmText: {
+    fontSize: 13,
+    color: t.colors.white,
+  },
+  confirmActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: t.spacing.s,
   },
 }));

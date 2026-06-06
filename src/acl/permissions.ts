@@ -22,6 +22,7 @@ export const PERMISSIONS = [
   'token.read',
   'token.manage',
   'session.read',
+  'session.manage',
   'image.delete',
   'photoEntry.read',
   'photoEntry.manage',
