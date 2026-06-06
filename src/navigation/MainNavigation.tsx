@@ -8,6 +8,7 @@ import { MainNavigationRoute, MainRouteType } from '~/navigation/types';
 import { Accounts } from '~/routes/Accounts';
 import { AccessControl } from '~/routes/AccessControl';
 import { Account } from '~/routes/Account';
+import { About } from '~/routes/About';
 import { Dashboard } from '~/routes/Dashboard';
 import { Gallery } from '~/routes/Images';
 import { PhotoManagement } from '~/routes/PhotoManagement';
@@ -43,6 +44,7 @@ export const mainNavigationRoutes: MainRouteType[] = [
 const footerRoutes: MainRouteType[] = [
   { path: MainNavigationRoute.SETTINGS, label: 'User Settings', component: <Settings />, bare: true },
   { path: MainNavigationRoute.ACCOUNT, label: 'Account', component: <Account />, bare: true },
+  { path: MainNavigationRoute.ABOUT, label: 'About', component: <About />, bare: true },
 ];
 
 const allRoutes = [...mainNavigationRoutes, ...footerRoutes];

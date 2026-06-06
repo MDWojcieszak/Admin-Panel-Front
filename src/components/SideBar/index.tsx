@@ -40,7 +40,16 @@ export const SideBar = ({ items }: SideBarProps) => {
 
   return (
     <GlassCard style={styles.container}>
-      <div style={styles.itemContainer}>{visibleItems.map(renderItem)}</div>
+      <div style={styles.top}>
+        <img
+          src='/full_logo.png'
+          alt='Applogy'
+          title='About Applogy'
+          style={styles.logo}
+          onClick={() => navigate('/' + MainNavigationRoute.ABOUT)}
+        />
+        <div style={styles.itemContainer}>{visibleItems.map(renderItem)}</div>
+      </div>
 
       <div style={styles.footer}>
         <div
@@ -77,9 +86,21 @@ const useStyles = mkUseStyles((t) => ({
     height: `calc(100% - ${t.spacing.m * 2}px)`,
     justifyContent: 'space-between',
   },
-  itemContainer: {
-    marginTop: t.spacing.l,
+  top: {
+    gap: t.spacing.l,
   },
+  logo: {
+    display: 'block',
+    width: 150,
+    maxWidth: '85%',
+    height: 'auto',
+    objectFit: 'contain',
+    alignSelf: 'center',
+    cursor: 'pointer',
+    marginTop: t.spacing.m,
+    marginBottom: t.spacing.s,
+  },
+  itemContainer: {},
   footer: {
     gap: t.spacing.s,
     padding: t.spacing.m,

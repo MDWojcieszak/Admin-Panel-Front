@@ -10,6 +10,7 @@ export enum MainNavigationRoute {
   SERVERS = 'servers',
   ACCESS_CONTROL = 'access-control',
   ACCOUNT = 'account',
+  ABOUT = 'about',
 }
 
 export enum CommonNavigationRoute {
