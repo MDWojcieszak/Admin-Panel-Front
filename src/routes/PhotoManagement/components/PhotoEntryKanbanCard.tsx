@@ -36,7 +36,6 @@ export const PhotoEntryKanbanCard = ({
 
   const startDate = useMemo(() => parseDate(entry.startDate), [entry.startDate]);
   const endDate = useMemo(() => parseDate(entry.endDate), [entry.endDate]);
-  const createdAt = useMemo(() => parseDate(entry.createdAt), [entry.createdAt]);
 
   const dateRange = useMemo(() => formatDateRange(startDate, endDate), [startDate, endDate]);
   const folderStatus = useMemo(

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FiAlertTriangle, FiCheck, FiCheckCircle, FiFolder, FiLock, FiMoon } from 'react-icons/fi';
+import { FiAlertTriangle, FiCheck, FiCheckCircle, FiFolder, FiMoon } from 'react-icons/fi';
 
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';

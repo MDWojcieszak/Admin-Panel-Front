@@ -35,8 +35,6 @@ const getStatusLabel = (status: PhotoEntryStatus) => {
       return 'Planned';
     case PhotoEntryStatus.Active:
       return 'Active';
-    case PhotoEntryStatus.Imported:
-      return 'Imported';
     case PhotoEntryStatus.Selected:
       return 'Selected';
     case PhotoEntryStatus.Editing:

@@ -19,14 +19,6 @@ export const getPhotoEntryStatusColors = (status: PhotoEntryStatus) => {
         accent: colors.red,
       };
 
-    case PhotoEntryStatus.Imported:
-      return {
-        background: 'rgba(140, 207, 119, 0.07)',
-        activeBackground: 'rgba(140, 207, 119, 0.14)',
-        border: 'rgba(140, 207, 119, 0.24)',
-        accent: colors.lightGreen,
-      };
-
     case PhotoEntryStatus.Selected:
       return {
         background: 'rgba(249, 248, 113, 0.07)',
