@@ -7,10 +7,13 @@ import { ServerNavigation } from '~/navigation/ServerNavigation';
 import { MainNavigationRoute, MainRouteType } from '~/navigation/types';
 import { Accounts } from '~/routes/Accounts';
 import { AccessControl } from '~/routes/AccessControl';
+import { Account } from '~/routes/Account';
 import { Dashboard } from '~/routes/Dashboard';
 import { Gallery } from '~/routes/Images';
 import { PhotoManagement } from '~/routes/PhotoManagement';
+import { Settings } from '~/routes/Settings';
 
+// Top navigation items (rendered in the sidebar list).
 export const mainNavigationRoutes: MainRouteType[] = [
   { path: MainNavigationRoute.DASHBOARD, label: 'Dashboard', component: <Dashboard /> },
   { path: MainNavigationRoute.ACCOUNTS, label: 'Accounts', component: <Accounts />, permission: 'user.read' },
@@ -21,7 +24,6 @@ export const mainNavigationRoutes: MainRouteType[] = [
     permission: 'photoEntry.read',
   },
   { path: MainNavigationRoute.GALLERY, label: 'Personal Gallery', component: <Gallery /> },
-  { path: MainNavigationRoute.SETTINGS, label: 'Settings', component: <Dashboard />, permission: 'settings.read' },
   {
     path: MainNavigationRoute.SERVERS,
     label: 'Servers',
@@ -37,6 +39,14 @@ export const mainNavigationRoutes: MainRouteType[] = [
   },
 ];
 
+// Personal pages reachable from the sidebar footer (not part of the top nav list).
+const footerRoutes: MainRouteType[] = [
+  { path: MainNavigationRoute.SETTINGS, label: 'User Settings', component: <Settings />, bare: true },
+  { path: MainNavigationRoute.ACCOUNT, label: 'Account', component: <Account />, bare: true },
+];
+
+const allRoutes = [...mainNavigationRoutes, ...footerRoutes];
+
 export const MainNavigation = () => {
   const location = useLocation();
 
@@ -47,7 +57,9 @@ export const MainNavigation = () => {
       index={route.path === MainNavigationRoute.DASHBOARD}
       element={
         <ProtectedRoute permission={route.permission}>
-          <AnimatedRoute key={route.path}>{route.component}</AnimatedRoute>
+          <AnimatedRoute key={route.path} bare={route.bare}>
+            {route.component}
+          </AnimatedRoute>
         </ProtectedRoute>
       }
     />
@@ -58,7 +70,7 @@ export const MainNavigation = () => {
       <SideBar items={mainNavigationRoutes} />
       <AnimatePresence mode='wait' key='navigation' presenceAffectsLayout>
         <Routes key={location.pathname} location={location}>
-          {mainNavigationRoutes.map(renderRoute)}
+          {allRoutes.map(renderRoute)}
           <Route path='/' element={<Navigate to={MainNavigationRoute.DASHBOARD} />} />
           <Route path='*' element={<Navigate to='not-found' />} />
         </Routes>

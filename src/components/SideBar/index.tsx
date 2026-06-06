@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
-import { AuthService } from '~/apiOld/Auth';
-import { Button } from '~/components/Button';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { MdSettings } from 'react-icons/md';
 import { GlassCard } from '~/components/GlassCard';
 import { Item, SideBarItem } from '~/components/SideBar/Item';
 import { useAuth } from '~/hooks/useAuth';
-import { useCan } from '~/hooks/usePermissions';
+import { useCan, usePermissions } from '~/hooks/usePermissions';
 import { hasAccess } from '~/acl/permissions';
-import { mkUseStyles } from '~/utils/theme';
+import { MainNavigationRoute } from '~/navigation/types';
+import { mkUseStyles, useTheme } from '~/utils/theme';
 
 const WIDTH = 250;
 
@@ -17,31 +17,55 @@ type SideBarProps = {
 
 export const SideBar = ({ items }: SideBarProps) => {
   const styles = useStyles();
+  const theme = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const auth = useAuth();
   const can = useCan();
-  const handleLogout = useCallback(async () => {
-    try {
-      await AuthService.logout();
-    } catch (error: any) {
-      console.log(error.message);
-    }
-    auth.removeTokens();
-  }, []);
+  const { role } = usePermissions();
+  const email = auth.userData?.email;
+
+  const current = location.pathname.split('/')[1];
 
   const renderItem = useCallback(
     (item: Omit<SideBarItem, 'isActive'>) => {
-      return <Item {...item} key={item.path} isActive={location.pathname.split('/')[1] === item.path} />;
+      return <Item {...item} key={item.path} isActive={current === item.path} />;
     },
-    [location],
+    [current],
   );
 
   const visibleItems = items.filter((item) => hasAccess(can, item.permission));
+  const settingsActive = current === MainNavigationRoute.SETTINGS;
+  const accountActive = current === MainNavigationRoute.ACCOUNT;
 
   return (
     <GlassCard style={styles.container}>
       <div style={styles.itemContainer}>{visibleItems.map(renderItem)}</div>
-      <Button style={styles.button} label='Log out' variant='secondary' onClick={handleLogout} />
+
+      <div style={styles.footer}>
+        <div
+          style={{ ...styles.settingsRow, color: settingsActive ? theme.colors.blue : theme.colors.dark05 }}
+          onClick={() => navigate('/' + MainNavigationRoute.SETTINGS)}
+        >
+          <MdSettings size={20} />
+          <span>User Settings</span>
+        </div>
+
+        <div
+          style={{
+            ...styles.userChip,
+            borderColor: accountActive ? theme.colors.blue : 'transparent',
+          }}
+          onClick={() => navigate('/' + MainNavigationRoute.ACCOUNT)}
+          title='Account'
+        >
+          <div style={styles.avatar}>{(email?.[0] ?? '?').toUpperCase()}</div>
+          <div style={styles.userInfo}>
+            <span style={styles.userEmail}>{email ?? 'Account'}</span>
+            {role ? <span style={styles.userRole}>{role}</span> : null}
+          </div>
+        </div>
+      </div>
     </GlassCard>
   );
 };
@@ -56,7 +80,55 @@ const useStyles = mkUseStyles((t) => ({
   itemContainer: {
     marginTop: t.spacing.l,
   },
-  button: {
-    margin: t.spacing.m,
+  footer: {
+    gap: t.spacing.s,
+    padding: t.spacing.m,
+  },
+  settingsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    cursor: 'pointer',
+    userSelect: 'none',
+    fontWeight: 600,
+  },
+  userChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
+    borderWidth: 1,
+    borderStyle: 'solid',
+    cursor: 'pointer',
+  },
+  avatar: {
+    width: 34,
+    height: 34,
+    minWidth: 34,
+    borderRadius: '50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 700,
+    color: t.colors.white,
+    backgroundColor: t.colors.blue,
+  },
+  userInfo: {
+    gap: 1,
+    minWidth: 0,
+    flex: 1,
+  },
+  userEmail: {
+    fontSize: 13,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  userRole: {
+    fontSize: 11,
+    color: t.colors.dark05,
   },
 }));

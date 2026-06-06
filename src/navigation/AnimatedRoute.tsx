@@ -4,9 +4,24 @@ import { GlassCard } from '~/components/GlassCard';
 import { mkUseStyles } from '~/utils/theme';
 type AnimatedRouteProps = {
   children: ReactNode;
+  /** When true, skip the full-screen glass card so the page can provide its own card. */
+  bare?: boolean;
 };
-export const AnimatedRoute = ({ children }: AnimatedRouteProps) => {
+export const AnimatedRoute = ({ children, bare }: AnimatedRouteProps) => {
   const styles = useStyles();
+
+  const inner = (
+    <motion.div
+      style={styles.motionContainer}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      {children}
+    </motion.div>
+  );
+
   return (
     <motion.div
       style={styles.container}
@@ -15,17 +30,7 @@ export const AnimatedRoute = ({ children }: AnimatedRouteProps) => {
       exit={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
     >
-      <GlassCard style={styles.contentContainer}>
-        <motion.div
-          style={styles.motionContainer}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {children}
-        </motion.div>
-      </GlassCard>
+      {bare ? inner : <GlassCard style={styles.contentContainer}>{inner}</GlassCard>}
     </motion.div>
   );
 };

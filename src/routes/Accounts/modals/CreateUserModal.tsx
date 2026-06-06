@@ -8,7 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { UserRole } from '~/types/user';
 import { UserService } from '~/apiOld/User';
 import { Input } from '~/components/Input';
-import { Select } from '~/components/Select';
 
 type CreateUserModalProps = Partial<InternalModalProps>;
 
@@ -16,7 +15,6 @@ const UserSchema = z.object({
   email: z.string({ required_error: 'Email is required' }).email({ message: 'Incorrect email' }),
   firstName: z.string(),
   lastName: z.string(),
-  role: z.nativeEnum(UserRole),
 });
 
 type UserSchemaType = z.infer<typeof UserSchema>;
@@ -32,7 +30,7 @@ export const CreateUserModal = (p: CreateUserModalProps) => {
   const handleCreateUser = async (data: UserSchemaType) => {
     setLoading(true);
     try {
-      await UserService.create(data);
+      await UserService.create({ ...data, role: UserRole.USER });
       p.handleClose?.();
     } catch (error: any) {
       console.log(error.message);
@@ -41,17 +39,6 @@ export const CreateUserModal = (p: CreateUserModalProps) => {
 
   return (
     <FormProvider {...formMethods}>
-      <Select
-        name='role'
-        label='Role'
-        options={[
-          { label: 'User', value: UserRole.USER },
-          { label: 'Moderator', value: UserRole.MODERATOR },
-          { label: 'Admin', value: UserRole.ADMIN },
-          { label: 'Owner', value: UserRole.OWNER },
-        ]}
-        description='Select user role'
-      />
       <div style={styles.row}>
         <Input
           name='firstName'

@@ -9,6 +9,7 @@ export enum MainNavigationRoute {
   SETTINGS = 'settings',
   SERVERS = 'servers',
   ACCESS_CONTROL = 'access-control',
+  ACCOUNT = 'account',
 }
 
 export enum CommonNavigationRoute {
@@ -35,6 +36,8 @@ type RouteType<T> = {
    * An array means "any of" — the section is reachable with at least one of the permissions.
    */
   permission?: Permission | Permission[];
+  /** Render without the full-screen glass card wrapper (page provides its own centered card). */
+  bare?: boolean;
 };
 
 export type CommonRouteType = RouteType<CommonNavigationRoute>;

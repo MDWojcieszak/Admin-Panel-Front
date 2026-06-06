@@ -1,31 +1,31 @@
 import { PaginationState } from '@tanstack/react-table';
-import { useEffect, useState } from 'react';
-import { UserDataResponse, UserService } from '~/apiOld/User';
+import { useCallback, useEffect, useState } from 'react';
+import { UserResponseDto } from '~/api/api';
+import { useApi } from '~/hooks/useApi';
 
 export const useUsersData = () => {
-  const [data, setData] = useState<UserDataResponse>();
+  const { userApi } = useApi();
+  const [users, setUsers] = useState<UserResponseDto[]>();
+  const [total, setTotal] = useState(0);
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 15 });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    if (!userApi) return;
     try {
-      const data = await UserService.getList({
+      const { data } = await userApi.userControllerGetList({
         take: pagination.pageSize,
         skip: pagination.pageIndex * pagination.pageSize,
       });
-      setData(data);
+      setUsers(data.users);
+      setTotal(data.total);
     } catch (e) {
-      console.log(e);
+      console.error('Error loading users:', e);
     }
-  };
+  }, [userApi, pagination]);
 
   useEffect(() => {
     fetchData();
-  }, [pagination]);
+  }, [fetchData]);
 
-  return {
-    data,
-    pagination,
-    setPagination,
-    refresh: fetchData,
-  };
+  return { users, total, pagination, setPagination, refresh: fetchData };
 };
