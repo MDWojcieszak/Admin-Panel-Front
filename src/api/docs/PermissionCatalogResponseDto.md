@@ -1,21 +1,19 @@
-# ServerCategory
+# PermissionCatalogResponseDto
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **string** |  | [default to undefined]
-**name** | **string** |  | [optional] [default to undefined]
+**permissions** | [**Array&lt;PermissionDescriptorResponseDto&gt;**](PermissionDescriptorResponseDto.md) |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { ServerCategory } from './api';
+import { PermissionCatalogResponseDto } from './api';
 
-const instance: ServerCategory = {
-    id,
-    name,
+const instance: PermissionCatalogResponseDto = {
+    permissions,
 };
 ```
 

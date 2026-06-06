@@ -1,21 +1,19 @@
-# ServerCategory
+# CreateImmichAlbumDto
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **string** |  | [default to undefined]
-**name** | **string** |  | [optional] [default to undefined]
+**photoEntryId** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { ServerCategory } from './api';
+import { CreateImmichAlbumDto } from './api';
 
-const instance: ServerCategory = {
-    id,
-    name,
+const instance: CreateImmichAlbumDto = {
+    photoEntryId,
 };
 ```
 

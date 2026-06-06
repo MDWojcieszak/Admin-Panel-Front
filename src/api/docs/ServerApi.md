@@ -4,23 +4,132 @@ All URIs are relative to *http://localhost*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
+|[**serverCommandsControllerCreateProgressMarker**](#servercommandscontrollercreateprogressmarker) | **POST** /server/commands/{id}/markers | |
+|[**serverCommandsControllerDeleteProgressMarker**](#servercommandscontrollerdeleteprogressmarker) | **DELETE** /server/commands/markers/{markerId} | |
 |[**serverCommandsControllerGetCommands**](#servercommandscontrollergetcommands) | **GET** /server/commands/all | |
+|[**serverCommandsControllerGetProgressMarkers**](#servercommandscontrollergetprogressmarkers) | **GET** /server/commands/{id}/markers | |
 |[**serverCommandsControllerPutCommand**](#servercommandscontrollerputcommand) | **PATCH** /server/commands/{id} | |
 |[**serverCommandsControllerStartServer**](#servercommandscontrollerstartserver) | **POST** /server/commands/send/{id} | |
-|[**serverControllerCreateCategory**](#servercontrollercreatecategory) | **POST** /server/catgory | |
+|[**serverCommandsControllerUpdateProgressMarker**](#servercommandscontrollerupdateprogressmarker) | **PATCH** /server/commands/markers/{markerId} | |
+|[**serverControllerCreateCategory**](#servercontrollercreatecategory) | **POST** /server/{serverId}/category | |
 |[**serverControllerGet**](#servercontrollerget) | **GET** /server/{serverId} | |
 |[**serverControllerGetAll**](#servercontrollergetall) | **GET** /server/all | |
 |[**serverControllerGetDetails**](#servercontrollergetdetails) | **GET** /server/details/{serverId} | |
-|[**serverControllerPatchCategory**](#servercontrollerpatchcategory) | **PATCH** /server/catgory/{id} | |
+|[**serverControllerPatchCategory**](#servercontrollerpatchcategory) | **PATCH** /server/category/{id} | |
 |[**serverControllerPatchDisk**](#servercontrollerpatchdisk) | **PATCH** /server/disk/{id} | |
 |[**serverControllerReboot**](#servercontrollerreboot) | **PATCH** /server/{serverId}/reboot | |
 |[**serverControllerStart**](#servercontrollerstart) | **PATCH** /server/{serverId}/start | |
 |[**serverControllerStop**](#servercontrollerstop) | **PATCH** /server/{serverId}/stop | |
+|[**serverProcessControllerDelete**](#serverprocesscontrollerdelete) | **DELETE** /server/process/{id} | |
 |[**serverProcessControllerGetAll**](#serverprocesscontrollergetall) | **GET** /server/process/all | |
 |[**serverProcessControllerGetAllLogs**](#serverprocesscontrollergetalllogs) | **GET** /server/process/{id}/logs | |
 |[**serverProcessControllerGetOne**](#serverprocesscontrollergetone) | **GET** /server/process/{id} | |
 |[**serverSettingsControllerGetSettings**](#serversettingscontrollergetsettings) | **GET** /server/settings | |
 |[**serverSettingsControllerPutCommand**](#serversettingscontrollerputcommand) | **PATCH** /server/settings/{id} | |
+
+# **serverCommandsControllerCreateProgressMarker**
+> CommandProgressMarkerResponseDto serverCommandsControllerCreateProgressMarker(createCommandProgressMarkerDto)
+
+
+### Example
+
+```typescript
+import {
+    ServerApi,
+    Configuration,
+    CreateCommandProgressMarkerDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ServerApi(configuration);
+
+let id: string; // (default to undefined)
+let createCommandProgressMarkerDto: CreateCommandProgressMarkerDto; //
+
+const { status, data } = await apiInstance.serverCommandsControllerCreateProgressMarker(
+    id,
+    createCommandProgressMarkerDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **createCommandProgressMarkerDto** | **CreateCommandProgressMarkerDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**CommandProgressMarkerResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **serverCommandsControllerDeleteProgressMarker**
+> CommandProgressMarkerResponseDto serverCommandsControllerDeleteProgressMarker()
+
+
+### Example
+
+```typescript
+import {
+    ServerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ServerApi(configuration);
+
+let markerId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.serverCommandsControllerDeleteProgressMarker(
+    markerId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **markerId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**CommandProgressMarkerResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **serverCommandsControllerGetCommands**
 > CommandListResponseDto serverCommandsControllerGetCommands()
@@ -54,6 +163,56 @@ const { status, data } = await apiInstance.serverCommandsControllerGetCommands(
 ### Return type
 
 **CommandListResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **serverCommandsControllerGetProgressMarkers**
+> CommandProgressMarkerListResponseDto serverCommandsControllerGetProgressMarkers()
+
+
+### Example
+
+```typescript
+import {
+    ServerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ServerApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.serverCommandsControllerGetProgressMarkers(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**CommandProgressMarkerListResponseDto**
 
 ### Authorization
 
@@ -176,6 +335,60 @@ const { status, data } = await apiInstance.serverCommandsControllerStartServer(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **serverCommandsControllerUpdateProgressMarker**
+> CommandProgressMarkerResponseDto serverCommandsControllerUpdateProgressMarker(updateCommandProgressMarkerDto)
+
+
+### Example
+
+```typescript
+import {
+    ServerApi,
+    Configuration,
+    UpdateCommandProgressMarkerDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ServerApi(configuration);
+
+let markerId: string; // (default to undefined)
+let updateCommandProgressMarkerDto: UpdateCommandProgressMarkerDto; //
+
+const { status, data } = await apiInstance.serverCommandsControllerUpdateProgressMarker(
+    markerId,
+    updateCommandProgressMarkerDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **updateCommandProgressMarkerDto** | **UpdateCommandProgressMarkerDto**|  | |
+| **markerId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**CommandProgressMarkerResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **serverControllerCreateCategory**
 > serverControllerCreateCategory(createCategoryDto)
 
@@ -192,11 +405,11 @@ import {
 const configuration = new Configuration();
 const apiInstance = new ServerApi(configuration);
 
-let id: string; // (default to undefined)
+let serverId: string; // (default to undefined)
 let createCategoryDto: CreateCategoryDto; //
 
 const { status, data } = await apiInstance.serverControllerCreateCategory(
-    id,
+    serverId,
     createCategoryDto
 );
 ```
@@ -206,7 +419,7 @@ const { status, data } = await apiInstance.serverControllerCreateCategory(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **createCategoryDto** | **CreateCategoryDto**|  | |
-| **id** | [**string**] |  | defaults to undefined|
+| **serverId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -638,6 +851,56 @@ const { status, data } = await apiInstance.serverControllerStop(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **serverProcessControllerDelete**
+> serverProcessControllerDelete()
+
+
+### Example
+
+```typescript
+import {
+    ServerApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ServerApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.serverProcessControllerDelete(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Process deleted |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

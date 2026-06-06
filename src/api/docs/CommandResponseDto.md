@@ -9,7 +9,6 @@ Name | Type | Description | Notes
 **name** | **string** |  | [optional] [default to undefined]
 **value** | **string** |  | [default to undefined]
 **status** | [**CommandStatus**](CommandStatus.md) |  | [default to undefined]
-**runningProgress** | **number** |  | [optional] [default to undefined]
 **type** | [**CommandType**](CommandType.md) |  | [default to undefined]
 
 ## Example
@@ -22,7 +21,6 @@ const instance: CommandResponseDto = {
     name,
     value,
     status,
-    runningProgress,
     type,
 };
 ```

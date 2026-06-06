@@ -35,7 +35,7 @@ This endpoint does not have any parameters.
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -86,7 +86,7 @@ const { status, data } = await apiInstance.ollamaControllerPull(
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 

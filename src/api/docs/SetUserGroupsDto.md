@@ -1,21 +1,19 @@
-# ServerCategory
+# SetUserGroupsDto
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **string** |  | [default to undefined]
-**name** | **string** |  | [optional] [default to undefined]
+**groupIds** | **Array&lt;string&gt;** | Permission group IDs the user should belong to (replaces all) | [default to undefined]
 
 ## Example
 
 ```typescript
-import { ServerCategory } from './api';
+import { SetUserGroupsDto } from './api';
 
-const instance: ServerCategory = {
-    id,
-    name,
+const instance: SetUserGroupsDto = {
+    groupIds,
 };
 ```
 

@@ -431,6 +431,103 @@ export interface CommandListResponseDto {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const CommandMatchType = {
+    Contains: 'CONTAINS',
+    StartsWith: 'STARTS_WITH',
+    Regex: 'REGEX'
+} as const;
+
+export type CommandMatchType = typeof CommandMatchType[keyof typeof CommandMatchType];
+
+
+/**
+ * 
+ * @export
+ * @interface CommandProgressMarkerListResponseDto
+ */
+export interface CommandProgressMarkerListResponseDto {
+    /**
+     * 
+     * @type {Array<CommandProgressMarkerResponseDto>}
+     * @memberof CommandProgressMarkerListResponseDto
+     */
+    'markers': Array<CommandProgressMarkerResponseDto>;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommandProgressMarkerListResponseDto
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface CommandProgressMarkerResponseDto
+ */
+export interface CommandProgressMarkerResponseDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommandProgressMarkerResponseDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommandProgressMarkerResponseDto
+     */
+    'commandId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommandProgressMarkerResponseDto
+     */
+    'label'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommandProgressMarkerResponseDto
+     */
+    'pattern': string;
+    /**
+     * 
+     * @type {CommandMatchType}
+     * @memberof CommandProgressMarkerResponseDto
+     */
+    'matchType': CommandMatchType;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommandProgressMarkerResponseDto
+     */
+    'progress'?: number;
+    /**
+     * 
+     * @type {CommandRuntimeStatus}
+     * @memberof CommandProgressMarkerResponseDto
+     */
+    'runtimeStatus'?: CommandRuntimeStatus;
+    /**
+     * 
+     * @type {ProcessLogLevel}
+     * @memberof CommandProgressMarkerResponseDto
+     */
+    'level'?: ProcessLogLevel;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommandProgressMarkerResponseDto
+     */
+    'order': number;
+}
+
+
+/**
+ * 
+ * @export
  * @interface CommandResponseDto
  */
 export interface CommandResponseDto {
@@ -460,17 +557,29 @@ export interface CommandResponseDto {
     'status': CommandStatus;
     /**
      * 
-     * @type {number}
-     * @memberof CommandResponseDto
-     */
-    'runningProgress'?: number;
-    /**
-     * 
      * @type {CommandType}
      * @memberof CommandResponseDto
      */
     'type': CommandType;
 }
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const CommandRuntimeStatus = {
+    Idle: 'IDLE',
+    Starting: 'STARTING',
+    Running: 'RUNNING',
+    Stopping: 'STOPPING',
+    Stopped: 'STOPPED',
+    Error: 'ERROR'
+} as const;
+
+export type CommandRuntimeStatus = typeof CommandRuntimeStatus[keyof typeof CommandRuntimeStatus];
 
 
 /**
@@ -515,7 +624,8 @@ export const ConnectedServiceType = {
     Telegram: 'TELEGRAM',
     N8N: 'N8N',
     Openai: 'OPENAI',
-    Other: 'OTHER'
+    Other: 'OTHER',
+    Immich: 'IMMICH'
 } as const;
 
 export type ConnectedServiceType = typeof ConnectedServiceType[keyof typeof ConnectedServiceType];
@@ -601,6 +711,95 @@ export interface CreateCategoryDto {
      * @memberof CreateCategoryDto
      */
     'value': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreateCommandProgressMarkerDto
+ */
+export interface CreateCommandProgressMarkerDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateCommandProgressMarkerDto
+     */
+    'label'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateCommandProgressMarkerDto
+     */
+    'pattern': string;
+    /**
+     * 
+     * @type {CommandMatchType}
+     * @memberof CreateCommandProgressMarkerDto
+     */
+    'matchType'?: CommandMatchType;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateCommandProgressMarkerDto
+     */
+    'progress'?: number;
+    /**
+     * 
+     * @type {CommandRuntimeStatus}
+     * @memberof CreateCommandProgressMarkerDto
+     */
+    'runtimeStatus'?: CommandRuntimeStatus;
+    /**
+     * 
+     * @type {ProcessLogLevel}
+     * @memberof CreateCommandProgressMarkerDto
+     */
+    'level'?: ProcessLogLevel;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateCommandProgressMarkerDto
+     */
+    'order'?: number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface CreateImmichAlbumDto
+ */
+export interface CreateImmichAlbumDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateImmichAlbumDto
+     */
+    'photoEntryId': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreatePermissionGroupDto
+ */
+export interface CreatePermissionGroupDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatePermissionGroupDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatePermissionGroupDto
+     */
+    'description'?: string;
+    /**
+     * Permission keys from the catalog
+     * @type {Array<string>}
+     * @memberof CreatePermissionGroupDto
+     */
+    'permissions': Array<string>;
 }
 /**
  * 
@@ -1023,6 +1222,74 @@ export interface ImageListResponseDto {
 /**
  * 
  * @export
+ * @interface ImmichAlbumSyncResponse
+ */
+export interface ImmichAlbumSyncResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'albumId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'albumName': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'created': boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'assetsFound': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'assetsAdded': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'totalAlbumAssets': number;
+}
+/**
+ * 
+ * @export
+ * @interface ImmichStatusResponse
+ */
+export interface ImmichStatusResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ImmichStatusResponse
+     */
+    'connected': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichStatusResponse
+     */
+    'serverVersion'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichStatusResponse
+     */
+    'baseUrl'?: string;
+}
+/**
+ * 
+ * @export
  * @interface LocationCreateDto
  */
 export interface LocationCreateDto {
@@ -1175,6 +1442,33 @@ export interface MemoryDto {
      */
     'free'?: number;
 }
+/**
+ * 
+ * @export
+ * @interface MyPermissionsResponseDto
+ */
+export interface MyPermissionsResponseDto {
+    /**
+     * 
+     * @type {Role}
+     * @memberof MyPermissionsResponseDto
+     */
+    'role': Role;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof MyPermissionsResponseDto
+     */
+    'isOwner': boolean;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof MyPermissionsResponseDto
+     */
+    'permissions': Array<string>;
+}
+
+
 /**
  * 
  * @export
@@ -1884,6 +2178,112 @@ export interface PatchUserAdminDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface PermissionCatalogResponseDto
+ */
+export interface PermissionCatalogResponseDto {
+    /**
+     * 
+     * @type {Array<PermissionDescriptorResponseDto>}
+     * @memberof PermissionCatalogResponseDto
+     */
+    'permissions': Array<PermissionDescriptorResponseDto>;
+}
+/**
+ * 
+ * @export
+ * @interface PermissionDescriptorResponseDto
+ */
+export interface PermissionDescriptorResponseDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof PermissionDescriptorResponseDto
+     */
+    'key': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PermissionDescriptorResponseDto
+     */
+    'resource': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PermissionDescriptorResponseDto
+     */
+    'description': string;
+}
+/**
+ * 
+ * @export
+ * @interface PermissionGroupListResponseDto
+ */
+export interface PermissionGroupListResponseDto {
+    /**
+     * 
+     * @type {Array<PermissionGroupResponseDto>}
+     * @memberof PermissionGroupListResponseDto
+     */
+    'groups': Array<PermissionGroupResponseDto>;
+    /**
+     * 
+     * @type {number}
+     * @memberof PermissionGroupListResponseDto
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface PermissionGroupResponseDto
+ */
+export interface PermissionGroupResponseDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof PermissionGroupResponseDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PermissionGroupResponseDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PermissionGroupResponseDto
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PermissionGroupResponseDto
+     */
+    'permissions': Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof PermissionGroupResponseDto
+     */
+    'userCount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PermissionGroupResponseDto
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PermissionGroupResponseDto
+     */
+    'updatedAt': string;
+}
 /**
  * 
  * @export
@@ -3238,6 +3638,18 @@ export interface ProcessResponseDto {
     'status': ServerProcessStatus;
     /**
      * 
+     * @type {CommandRuntimeStatus}
+     * @memberof ProcessResponseDto
+     */
+    'runtimeStatus': CommandRuntimeStatus;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProcessResponseDto
+     */
+    'progress'?: number;
+    /**
+     * 
      * @type {string}
      * @memberof ProcessResponseDto
      */
@@ -3281,6 +3693,19 @@ export interface PullModelDto {
      * @memberof PullModelDto
      */
     'model': string;
+}
+/**
+ * 
+ * @export
+ * @interface RefreshImmichAlbumDto
+ */
+export interface RefreshImmichAlbumDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof RefreshImmichAlbumDto
+     */
+    'photoEntryId': string;
 }
 /**
  * 
@@ -3467,7 +3892,7 @@ export interface ServerCategory {
      * @type {string}
      * @memberof ServerCategory
      */
-    'name': string;
+    'name'?: string;
 }
 /**
  * 
@@ -4048,6 +4473,19 @@ export interface SessionResponseDto {
 /**
  * 
  * @export
+ * @interface SetUserGroupsDto
+ */
+export interface SetUserGroupsDto {
+    /**
+     * Permission group IDs the user should belong to (replaces all)
+     * @type {Array<string>}
+     * @memberof SetUserGroupsDto
+     */
+    'groupIds': Array<string>;
+}
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
@@ -4383,6 +4821,82 @@ export interface TokensDto {
 /**
  * 
  * @export
+ * @interface UpdateCommandProgressMarkerDto
+ */
+export interface UpdateCommandProgressMarkerDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateCommandProgressMarkerDto
+     */
+    'label'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateCommandProgressMarkerDto
+     */
+    'pattern'?: string;
+    /**
+     * 
+     * @type {CommandMatchType}
+     * @memberof UpdateCommandProgressMarkerDto
+     */
+    'matchType'?: CommandMatchType;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateCommandProgressMarkerDto
+     */
+    'progress'?: number;
+    /**
+     * 
+     * @type {CommandRuntimeStatus}
+     * @memberof UpdateCommandProgressMarkerDto
+     */
+    'runtimeStatus'?: CommandRuntimeStatus;
+    /**
+     * 
+     * @type {ProcessLogLevel}
+     * @memberof UpdateCommandProgressMarkerDto
+     */
+    'level'?: ProcessLogLevel;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateCommandProgressMarkerDto
+     */
+    'order'?: number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface UpdatePermissionGroupDto
+ */
+export interface UpdatePermissionGroupDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdatePermissionGroupDto
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdatePermissionGroupDto
+     */
+    'description'?: string;
+    /**
+     * Permission keys from the catalog (replaces the existing set)
+     * @type {Array<string>}
+     * @memberof UpdatePermissionGroupDto
+     */
+    'permissions'?: Array<string>;
+}
+/**
+ * 
+ * @export
  * @interface UploadResponseDto
  */
 export interface UploadResponseDto {
@@ -4541,6 +5055,759 @@ export interface UserResponseDto {
 
 
 /**
+ * ACLApi - axios parameter creator
+ * @export
+ */
+export const ACLApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CreatePermissionGroupDto} createPermissionGroupDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerCreateGroup: async (createPermissionGroupDto: CreatePermissionGroupDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createPermissionGroupDto' is not null or undefined
+            assertParamExists('aclControllerCreateGroup', 'createPermissionGroupDto', createPermissionGroupDto)
+            const localVarPath = `/acl/groups`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createPermissionGroupDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerDeleteGroup: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('aclControllerDeleteGroup', 'id', id)
+            const localVarPath = `/acl/groups/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerGetCatalog: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/acl/permissions`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerGetGroup: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('aclControllerGetGroup', 'id', id)
+            const localVarPath = `/acl/groups/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerGetMyPermissions: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/acl/me`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerGetUserGroups: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('aclControllerGetUserGroups', 'userId', userId)
+            const localVarPath = `/acl/users/{userId}/groups`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerListGroups: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/acl/groups`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} userId 
+         * @param {SetUserGroupsDto} setUserGroupsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerSetUserGroups: async (userId: string, setUserGroupsDto: SetUserGroupsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('aclControllerSetUserGroups', 'userId', userId)
+            // verify required parameter 'setUserGroupsDto' is not null or undefined
+            assertParamExists('aclControllerSetUserGroups', 'setUserGroupsDto', setUserGroupsDto)
+            const localVarPath = `/acl/users/{userId}/groups`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setUserGroupsDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdatePermissionGroupDto} updatePermissionGroupDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerUpdateGroup: async (id: string, updatePermissionGroupDto: UpdatePermissionGroupDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('aclControllerUpdateGroup', 'id', id)
+            // verify required parameter 'updatePermissionGroupDto' is not null or undefined
+            assertParamExists('aclControllerUpdateGroup', 'updatePermissionGroupDto', updatePermissionGroupDto)
+            const localVarPath = `/acl/groups/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updatePermissionGroupDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ACLApi - functional programming interface
+ * @export
+ */
+export const ACLApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ACLApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CreatePermissionGroupDto} createPermissionGroupDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aclControllerCreateGroup(createPermissionGroupDto: CreatePermissionGroupDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PermissionGroupResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aclControllerCreateGroup(createPermissionGroupDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ACLApi.aclControllerCreateGroup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aclControllerDeleteGroup(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aclControllerDeleteGroup(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ACLApi.aclControllerDeleteGroup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aclControllerGetCatalog(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PermissionCatalogResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aclControllerGetCatalog(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ACLApi.aclControllerGetCatalog']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aclControllerGetGroup(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PermissionGroupResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aclControllerGetGroup(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ACLApi.aclControllerGetGroup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aclControllerGetMyPermissions(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MyPermissionsResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aclControllerGetMyPermissions(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ACLApi.aclControllerGetMyPermissions']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aclControllerGetUserGroups(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PermissionGroupListResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aclControllerGetUserGroups(userId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ACLApi.aclControllerGetUserGroups']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aclControllerListGroups(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PermissionGroupListResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aclControllerListGroups(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ACLApi.aclControllerListGroups']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} userId 
+         * @param {SetUserGroupsDto} setUserGroupsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aclControllerSetUserGroups(userId: string, setUserGroupsDto: SetUserGroupsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PermissionGroupListResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aclControllerSetUserGroups(userId, setUserGroupsDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ACLApi.aclControllerSetUserGroups']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdatePermissionGroupDto} updatePermissionGroupDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async aclControllerUpdateGroup(id: string, updatePermissionGroupDto: UpdatePermissionGroupDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PermissionGroupResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.aclControllerUpdateGroup(id, updatePermissionGroupDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ACLApi.aclControllerUpdateGroup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ACLApi - factory interface
+ * @export
+ */
+export const ACLApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ACLApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {ACLApiAclControllerCreateGroupRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerCreateGroup(requestParameters: ACLApiAclControllerCreateGroupRequest, options?: RawAxiosRequestConfig): AxiosPromise<PermissionGroupResponseDto> {
+            return localVarFp.aclControllerCreateGroup(requestParameters.createPermissionGroupDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ACLApiAclControllerDeleteGroupRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerDeleteGroup(requestParameters: ACLApiAclControllerDeleteGroupRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.aclControllerDeleteGroup(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerGetCatalog(options?: RawAxiosRequestConfig): AxiosPromise<PermissionCatalogResponseDto> {
+            return localVarFp.aclControllerGetCatalog(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ACLApiAclControllerGetGroupRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerGetGroup(requestParameters: ACLApiAclControllerGetGroupRequest, options?: RawAxiosRequestConfig): AxiosPromise<PermissionGroupResponseDto> {
+            return localVarFp.aclControllerGetGroup(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerGetMyPermissions(options?: RawAxiosRequestConfig): AxiosPromise<MyPermissionsResponseDto> {
+            return localVarFp.aclControllerGetMyPermissions(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ACLApiAclControllerGetUserGroupsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerGetUserGroups(requestParameters: ACLApiAclControllerGetUserGroupsRequest, options?: RawAxiosRequestConfig): AxiosPromise<PermissionGroupListResponseDto> {
+            return localVarFp.aclControllerGetUserGroups(requestParameters.userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerListGroups(options?: RawAxiosRequestConfig): AxiosPromise<PermissionGroupListResponseDto> {
+            return localVarFp.aclControllerListGroups(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ACLApiAclControllerSetUserGroupsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerSetUserGroups(requestParameters: ACLApiAclControllerSetUserGroupsRequest, options?: RawAxiosRequestConfig): AxiosPromise<PermissionGroupListResponseDto> {
+            return localVarFp.aclControllerSetUserGroups(requestParameters.userId, requestParameters.setUserGroupsDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ACLApiAclControllerUpdateGroupRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        aclControllerUpdateGroup(requestParameters: ACLApiAclControllerUpdateGroupRequest, options?: RawAxiosRequestConfig): AxiosPromise<PermissionGroupResponseDto> {
+            return localVarFp.aclControllerUpdateGroup(requestParameters.id, requestParameters.updatePermissionGroupDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for aclControllerCreateGroup operation in ACLApi.
+ * @export
+ * @interface ACLApiAclControllerCreateGroupRequest
+ */
+export interface ACLApiAclControllerCreateGroupRequest {
+    /**
+     * 
+     * @type {CreatePermissionGroupDto}
+     * @memberof ACLApiAclControllerCreateGroup
+     */
+    readonly createPermissionGroupDto: CreatePermissionGroupDto
+}
+
+/**
+ * Request parameters for aclControllerDeleteGroup operation in ACLApi.
+ * @export
+ * @interface ACLApiAclControllerDeleteGroupRequest
+ */
+export interface ACLApiAclControllerDeleteGroupRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ACLApiAclControllerDeleteGroup
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for aclControllerGetGroup operation in ACLApi.
+ * @export
+ * @interface ACLApiAclControllerGetGroupRequest
+ */
+export interface ACLApiAclControllerGetGroupRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ACLApiAclControllerGetGroup
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for aclControllerGetUserGroups operation in ACLApi.
+ * @export
+ * @interface ACLApiAclControllerGetUserGroupsRequest
+ */
+export interface ACLApiAclControllerGetUserGroupsRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ACLApiAclControllerGetUserGroups
+     */
+    readonly userId: string
+}
+
+/**
+ * Request parameters for aclControllerSetUserGroups operation in ACLApi.
+ * @export
+ * @interface ACLApiAclControllerSetUserGroupsRequest
+ */
+export interface ACLApiAclControllerSetUserGroupsRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ACLApiAclControllerSetUserGroups
+     */
+    readonly userId: string
+
+    /**
+     * 
+     * @type {SetUserGroupsDto}
+     * @memberof ACLApiAclControllerSetUserGroups
+     */
+    readonly setUserGroupsDto: SetUserGroupsDto
+}
+
+/**
+ * Request parameters for aclControllerUpdateGroup operation in ACLApi.
+ * @export
+ * @interface ACLApiAclControllerUpdateGroupRequest
+ */
+export interface ACLApiAclControllerUpdateGroupRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ACLApiAclControllerUpdateGroup
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {UpdatePermissionGroupDto}
+     * @memberof ACLApiAclControllerUpdateGroup
+     */
+    readonly updatePermissionGroupDto: UpdatePermissionGroupDto
+}
+
+/**
+ * ACLApi - object-oriented interface
+ * @export
+ * @class ACLApi
+ * @extends {BaseAPI}
+ */
+export class ACLApi extends BaseAPI {
+    /**
+     * 
+     * @param {ACLApiAclControllerCreateGroupRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ACLApi
+     */
+    public aclControllerCreateGroup(requestParameters: ACLApiAclControllerCreateGroupRequest, options?: RawAxiosRequestConfig) {
+        return ACLApiFp(this.configuration).aclControllerCreateGroup(requestParameters.createPermissionGroupDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ACLApiAclControllerDeleteGroupRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ACLApi
+     */
+    public aclControllerDeleteGroup(requestParameters: ACLApiAclControllerDeleteGroupRequest, options?: RawAxiosRequestConfig) {
+        return ACLApiFp(this.configuration).aclControllerDeleteGroup(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ACLApi
+     */
+    public aclControllerGetCatalog(options?: RawAxiosRequestConfig) {
+        return ACLApiFp(this.configuration).aclControllerGetCatalog(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ACLApiAclControllerGetGroupRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ACLApi
+     */
+    public aclControllerGetGroup(requestParameters: ACLApiAclControllerGetGroupRequest, options?: RawAxiosRequestConfig) {
+        return ACLApiFp(this.configuration).aclControllerGetGroup(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ACLApi
+     */
+    public aclControllerGetMyPermissions(options?: RawAxiosRequestConfig) {
+        return ACLApiFp(this.configuration).aclControllerGetMyPermissions(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ACLApiAclControllerGetUserGroupsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ACLApi
+     */
+    public aclControllerGetUserGroups(requestParameters: ACLApiAclControllerGetUserGroupsRequest, options?: RawAxiosRequestConfig) {
+        return ACLApiFp(this.configuration).aclControllerGetUserGroups(requestParameters.userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ACLApi
+     */
+    public aclControllerListGroups(options?: RawAxiosRequestConfig) {
+        return ACLApiFp(this.configuration).aclControllerListGroups(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ACLApiAclControllerSetUserGroupsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ACLApi
+     */
+    public aclControllerSetUserGroups(requestParameters: ACLApiAclControllerSetUserGroupsRequest, options?: RawAxiosRequestConfig) {
+        return ACLApiFp(this.configuration).aclControllerSetUserGroups(requestParameters.userId, requestParameters.setUserGroupsDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ACLApiAclControllerUpdateGroupRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ACLApi
+     */
+    public aclControllerUpdateGroup(requestParameters: ACLApiAclControllerUpdateGroupRequest, options?: RawAxiosRequestConfig) {
+        return ACLApiFp(this.configuration).aclControllerUpdateGroup(requestParameters.id, requestParameters.updatePermissionGroupDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * AIOllamaApi - axios parameter creator
  * @export
  */
@@ -4564,6 +5831,10 @@ export const AIOllamaApiAxiosParamCreator = function (configuration?: Configurat
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -4597,6 +5868,10 @@ export const AIOllamaApiAxiosParamCreator = function (configuration?: Configurat
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -8355,6 +9630,277 @@ export class ImageApi extends BaseAPI {
 
 
 /**
+ * ImmichApi - axios parameter creator
+ * @export
+ */
+export const ImmichApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CreateImmichAlbumDto} createImmichAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerCreateAlbum: async (createImmichAlbumDto: CreateImmichAlbumDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createImmichAlbumDto' is not null or undefined
+            assertParamExists('immichControllerCreateAlbum', 'createImmichAlbumDto', createImmichAlbumDto)
+            const localVarPath = `/immich/album/create`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createImmichAlbumDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerGetStatus: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/immich/status`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {RefreshImmichAlbumDto} refreshImmichAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerRefreshAlbum: async (refreshImmichAlbumDto: RefreshImmichAlbumDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'refreshImmichAlbumDto' is not null or undefined
+            assertParamExists('immichControllerRefreshAlbum', 'refreshImmichAlbumDto', refreshImmichAlbumDto)
+            const localVarPath = `/immich/album/refresh`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(refreshImmichAlbumDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ImmichApi - functional programming interface
+ * @export
+ */
+export const ImmichApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ImmichApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CreateImmichAlbumDto} createImmichAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerCreateAlbum(createImmichAlbumDto: CreateImmichAlbumDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumSyncResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerCreateAlbum(createImmichAlbumDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerCreateAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerGetStatus(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerGetStatus(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerGetStatus']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {RefreshImmichAlbumDto} refreshImmichAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerRefreshAlbum(refreshImmichAlbumDto: RefreshImmichAlbumDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumSyncResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerRefreshAlbum(refreshImmichAlbumDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerRefreshAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ImmichApi - factory interface
+ * @export
+ */
+export const ImmichApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ImmichApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {ImmichApiImmichControllerCreateAlbumRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerCreateAlbum(requestParameters: ImmichApiImmichControllerCreateAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumSyncResponse> {
+            return localVarFp.immichControllerCreateAlbum(requestParameters.createImmichAlbumDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerGetStatus(options?: RawAxiosRequestConfig): AxiosPromise<ImmichStatusResponse> {
+            return localVarFp.immichControllerGetStatus(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ImmichApiImmichControllerRefreshAlbumRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerRefreshAlbum(requestParameters: ImmichApiImmichControllerRefreshAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumSyncResponse> {
+            return localVarFp.immichControllerRefreshAlbum(requestParameters.refreshImmichAlbumDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for immichControllerCreateAlbum operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerCreateAlbumRequest
+ */
+export interface ImmichApiImmichControllerCreateAlbumRequest {
+    /**
+     * 
+     * @type {CreateImmichAlbumDto}
+     * @memberof ImmichApiImmichControllerCreateAlbum
+     */
+    readonly createImmichAlbumDto: CreateImmichAlbumDto
+}
+
+/**
+ * Request parameters for immichControllerRefreshAlbum operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerRefreshAlbumRequest
+ */
+export interface ImmichApiImmichControllerRefreshAlbumRequest {
+    /**
+     * 
+     * @type {RefreshImmichAlbumDto}
+     * @memberof ImmichApiImmichControllerRefreshAlbum
+     */
+    readonly refreshImmichAlbumDto: RefreshImmichAlbumDto
+}
+
+/**
+ * ImmichApi - object-oriented interface
+ * @export
+ * @class ImmichApi
+ * @extends {BaseAPI}
+ */
+export class ImmichApi extends BaseAPI {
+    /**
+     * 
+     * @param {ImmichApiImmichControllerCreateAlbumRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerCreateAlbum(requestParameters: ImmichApiImmichControllerCreateAlbumRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerCreateAlbum(requestParameters.createImmichAlbumDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerGetStatus(options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerGetStatus(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ImmichApiImmichControllerRefreshAlbumRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerRefreshAlbum(requestParameters: ImmichApiImmichControllerRefreshAlbumRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerRefreshAlbum(requestParameters.refreshImmichAlbumDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * OCRDevApi - axios parameter creator
  * @export
  */
@@ -10845,6 +12391,86 @@ export const ServerApiAxiosParamCreator = function (configuration?: Configuratio
     return {
         /**
          * 
+         * @param {string} id 
+         * @param {CreateCommandProgressMarkerDto} createCommandProgressMarkerDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverCommandsControllerCreateProgressMarker: async (id: string, createCommandProgressMarkerDto: CreateCommandProgressMarkerDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('serverCommandsControllerCreateProgressMarker', 'id', id)
+            // verify required parameter 'createCommandProgressMarkerDto' is not null or undefined
+            assertParamExists('serverCommandsControllerCreateProgressMarker', 'createCommandProgressMarkerDto', createCommandProgressMarkerDto)
+            const localVarPath = `/server/commands/{id}/markers`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createCommandProgressMarkerDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} markerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverCommandsControllerDeleteProgressMarker: async (markerId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'markerId' is not null or undefined
+            assertParamExists('serverCommandsControllerDeleteProgressMarker', 'markerId', markerId)
+            const localVarPath = `/server/commands/markers/{markerId}`
+                .replace(`{${"markerId"}}`, encodeURIComponent(String(markerId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} categoryId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -10871,6 +12497,43 @@ export const ServerApiAxiosParamCreator = function (configuration?: Configuratio
             if (categoryId !== undefined) {
                 localVarQueryParameter['categoryId'] = categoryId;
             }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverCommandsControllerGetProgressMarkers: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('serverCommandsControllerGetProgressMarkers', 'id', id)
+            const localVarPath = `/server/commands/{id}/markers`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -10965,18 +12628,61 @@ export const ServerApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
-         * @param {string} id 
+         * @param {string} markerId 
+         * @param {UpdateCommandProgressMarkerDto} updateCommandProgressMarkerDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverCommandsControllerUpdateProgressMarker: async (markerId: string, updateCommandProgressMarkerDto: UpdateCommandProgressMarkerDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'markerId' is not null or undefined
+            assertParamExists('serverCommandsControllerUpdateProgressMarker', 'markerId', markerId)
+            // verify required parameter 'updateCommandProgressMarkerDto' is not null or undefined
+            assertParamExists('serverCommandsControllerUpdateProgressMarker', 'updateCommandProgressMarkerDto', updateCommandProgressMarkerDto)
+            const localVarPath = `/server/commands/markers/{markerId}`
+                .replace(`{${"markerId"}}`, encodeURIComponent(String(markerId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateCommandProgressMarkerDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} serverId 
          * @param {CreateCategoryDto} createCategoryDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        serverControllerCreateCategory: async (id: string, createCategoryDto: CreateCategoryDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('serverControllerCreateCategory', 'id', id)
+        serverControllerCreateCategory: async (serverId: string, createCategoryDto: CreateCategoryDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'serverId' is not null or undefined
+            assertParamExists('serverControllerCreateCategory', 'serverId', serverId)
             // verify required parameter 'createCategoryDto' is not null or undefined
             assertParamExists('serverControllerCreateCategory', 'createCategoryDto', createCategoryDto)
-            const localVarPath = `/server/catgory`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            const localVarPath = `/server/{serverId}/category`
+                .replace(`{${"serverId"}}`, encodeURIComponent(String(serverId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -11135,7 +12841,7 @@ export const ServerApiAxiosParamCreator = function (configuration?: Configuratio
             assertParamExists('serverControllerPatchCategory', 'id', id)
             // verify required parameter 'patchCategoryDto' is not null or undefined
             assertParamExists('serverControllerPatchCategory', 'patchCategoryDto', patchCategoryDto)
-            const localVarPath = `/server/catgory/{id}`
+            const localVarPath = `/server/category/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -11302,6 +13008,43 @@ export const ServerApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
             const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverProcessControllerDelete: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('serverProcessControllerDelete', 'id', id)
+            const localVarPath = `/server/process/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -11547,6 +13290,31 @@ export const ServerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {string} id 
+         * @param {CreateCommandProgressMarkerDto} createCommandProgressMarkerDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async serverCommandsControllerCreateProgressMarker(id: string, createCommandProgressMarkerDto: CreateCommandProgressMarkerDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommandProgressMarkerResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.serverCommandsControllerCreateProgressMarker(id, createCommandProgressMarkerDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ServerApi.serverCommandsControllerCreateProgressMarker']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} markerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async serverCommandsControllerDeleteProgressMarker(markerId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommandProgressMarkerResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.serverCommandsControllerDeleteProgressMarker(markerId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ServerApi.serverCommandsControllerDeleteProgressMarker']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} categoryId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -11555,6 +13323,18 @@ export const ServerApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.serverCommandsControllerGetCommands(categoryId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ServerApi.serverCommandsControllerGetCommands']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async serverCommandsControllerGetProgressMarkers(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommandProgressMarkerListResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.serverCommandsControllerGetProgressMarkers(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ServerApi.serverCommandsControllerGetProgressMarkers']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -11584,13 +13364,26 @@ export const ServerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} id 
+         * @param {string} markerId 
+         * @param {UpdateCommandProgressMarkerDto} updateCommandProgressMarkerDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async serverCommandsControllerUpdateProgressMarker(markerId: string, updateCommandProgressMarkerDto: UpdateCommandProgressMarkerDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommandProgressMarkerResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.serverCommandsControllerUpdateProgressMarker(markerId, updateCommandProgressMarkerDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ServerApi.serverCommandsControllerUpdateProgressMarker']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} serverId 
          * @param {CreateCategoryDto} createCategoryDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async serverControllerCreateCategory(id: string, createCategoryDto: CreateCategoryDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.serverControllerCreateCategory(id, createCategoryDto, options);
+        async serverControllerCreateCategory(serverId: string, createCategoryDto: CreateCategoryDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.serverControllerCreateCategory(serverId, createCategoryDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ServerApi.serverControllerCreateCategory']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -11696,6 +13489,18 @@ export const ServerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async serverProcessControllerDelete(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.serverProcessControllerDelete(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ServerApi.serverProcessControllerDelete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
@@ -11771,12 +13576,39 @@ export const ServerApiFactory = function (configuration?: Configuration, basePat
     return {
         /**
          * 
+         * @param {ServerApiServerCommandsControllerCreateProgressMarkerRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverCommandsControllerCreateProgressMarker(requestParameters: ServerApiServerCommandsControllerCreateProgressMarkerRequest, options?: RawAxiosRequestConfig): AxiosPromise<CommandProgressMarkerResponseDto> {
+            return localVarFp.serverCommandsControllerCreateProgressMarker(requestParameters.id, requestParameters.createCommandProgressMarkerDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ServerApiServerCommandsControllerDeleteProgressMarkerRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverCommandsControllerDeleteProgressMarker(requestParameters: ServerApiServerCommandsControllerDeleteProgressMarkerRequest, options?: RawAxiosRequestConfig): AxiosPromise<CommandProgressMarkerResponseDto> {
+            return localVarFp.serverCommandsControllerDeleteProgressMarker(requestParameters.markerId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {ServerApiServerCommandsControllerGetCommandsRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         serverCommandsControllerGetCommands(requestParameters: ServerApiServerCommandsControllerGetCommandsRequest, options?: RawAxiosRequestConfig): AxiosPromise<CommandListResponseDto> {
             return localVarFp.serverCommandsControllerGetCommands(requestParameters.categoryId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ServerApiServerCommandsControllerGetProgressMarkersRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverCommandsControllerGetProgressMarkers(requestParameters: ServerApiServerCommandsControllerGetProgressMarkersRequest, options?: RawAxiosRequestConfig): AxiosPromise<CommandProgressMarkerListResponseDto> {
+            return localVarFp.serverCommandsControllerGetProgressMarkers(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -11798,12 +13630,21 @@ export const ServerApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @param {ServerApiServerCommandsControllerUpdateProgressMarkerRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverCommandsControllerUpdateProgressMarker(requestParameters: ServerApiServerCommandsControllerUpdateProgressMarkerRequest, options?: RawAxiosRequestConfig): AxiosPromise<CommandProgressMarkerResponseDto> {
+            return localVarFp.serverCommandsControllerUpdateProgressMarker(requestParameters.markerId, requestParameters.updateCommandProgressMarkerDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {ServerApiServerControllerCreateCategoryRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         serverControllerCreateCategory(requestParameters: ServerApiServerControllerCreateCategoryRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.serverControllerCreateCategory(requestParameters.id, requestParameters.createCategoryDto, options).then((request) => request(axios, basePath));
+            return localVarFp.serverControllerCreateCategory(requestParameters.serverId, requestParameters.createCategoryDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -11879,6 +13720,15 @@ export const ServerApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @param {ServerApiServerProcessControllerDeleteRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        serverProcessControllerDelete(requestParameters: ServerApiServerProcessControllerDeleteRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.serverProcessControllerDelete(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {ServerApiServerProcessControllerGetAllRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -11926,6 +13776,41 @@ export const ServerApiFactory = function (configuration?: Configuration, basePat
 };
 
 /**
+ * Request parameters for serverCommandsControllerCreateProgressMarker operation in ServerApi.
+ * @export
+ * @interface ServerApiServerCommandsControllerCreateProgressMarkerRequest
+ */
+export interface ServerApiServerCommandsControllerCreateProgressMarkerRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerApiServerCommandsControllerCreateProgressMarker
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {CreateCommandProgressMarkerDto}
+     * @memberof ServerApiServerCommandsControllerCreateProgressMarker
+     */
+    readonly createCommandProgressMarkerDto: CreateCommandProgressMarkerDto
+}
+
+/**
+ * Request parameters for serverCommandsControllerDeleteProgressMarker operation in ServerApi.
+ * @export
+ * @interface ServerApiServerCommandsControllerDeleteProgressMarkerRequest
+ */
+export interface ServerApiServerCommandsControllerDeleteProgressMarkerRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerApiServerCommandsControllerDeleteProgressMarker
+     */
+    readonly markerId: string
+}
+
+/**
  * Request parameters for serverCommandsControllerGetCommands operation in ServerApi.
  * @export
  * @interface ServerApiServerCommandsControllerGetCommandsRequest
@@ -11937,6 +13822,20 @@ export interface ServerApiServerCommandsControllerGetCommandsRequest {
      * @memberof ServerApiServerCommandsControllerGetCommands
      */
     readonly categoryId: string
+}
+
+/**
+ * Request parameters for serverCommandsControllerGetProgressMarkers operation in ServerApi.
+ * @export
+ * @interface ServerApiServerCommandsControllerGetProgressMarkersRequest
+ */
+export interface ServerApiServerCommandsControllerGetProgressMarkersRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerApiServerCommandsControllerGetProgressMarkers
+     */
+    readonly id: string
 }
 
 /**
@@ -11975,6 +13874,27 @@ export interface ServerApiServerCommandsControllerStartServerRequest {
 }
 
 /**
+ * Request parameters for serverCommandsControllerUpdateProgressMarker operation in ServerApi.
+ * @export
+ * @interface ServerApiServerCommandsControllerUpdateProgressMarkerRequest
+ */
+export interface ServerApiServerCommandsControllerUpdateProgressMarkerRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerApiServerCommandsControllerUpdateProgressMarker
+     */
+    readonly markerId: string
+
+    /**
+     * 
+     * @type {UpdateCommandProgressMarkerDto}
+     * @memberof ServerApiServerCommandsControllerUpdateProgressMarker
+     */
+    readonly updateCommandProgressMarkerDto: UpdateCommandProgressMarkerDto
+}
+
+/**
  * Request parameters for serverControllerCreateCategory operation in ServerApi.
  * @export
  * @interface ServerApiServerControllerCreateCategoryRequest
@@ -11985,7 +13905,7 @@ export interface ServerApiServerControllerCreateCategoryRequest {
      * @type {string}
      * @memberof ServerApiServerControllerCreateCategory
      */
-    readonly id: string
+    readonly serverId: string
 
     /**
      * 
@@ -12129,6 +14049,20 @@ export interface ServerApiServerControllerStopRequest {
 }
 
 /**
+ * Request parameters for serverProcessControllerDelete operation in ServerApi.
+ * @export
+ * @interface ServerApiServerProcessControllerDeleteRequest
+ */
+export interface ServerApiServerProcessControllerDeleteRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerApiServerProcessControllerDelete
+     */
+    readonly id: string
+}
+
+/**
  * Request parameters for serverProcessControllerGetAll operation in ServerApi.
  * @export
  * @interface ServerApiServerProcessControllerGetAllRequest
@@ -12242,6 +14176,28 @@ export interface ServerApiServerSettingsControllerPutCommandRequest {
 export class ServerApi extends BaseAPI {
     /**
      * 
+     * @param {ServerApiServerCommandsControllerCreateProgressMarkerRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ServerApi
+     */
+    public serverCommandsControllerCreateProgressMarker(requestParameters: ServerApiServerCommandsControllerCreateProgressMarkerRequest, options?: RawAxiosRequestConfig) {
+        return ServerApiFp(this.configuration).serverCommandsControllerCreateProgressMarker(requestParameters.id, requestParameters.createCommandProgressMarkerDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ServerApiServerCommandsControllerDeleteProgressMarkerRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ServerApi
+     */
+    public serverCommandsControllerDeleteProgressMarker(requestParameters: ServerApiServerCommandsControllerDeleteProgressMarkerRequest, options?: RawAxiosRequestConfig) {
+        return ServerApiFp(this.configuration).serverCommandsControllerDeleteProgressMarker(requestParameters.markerId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {ServerApiServerCommandsControllerGetCommandsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -12249,6 +14205,17 @@ export class ServerApi extends BaseAPI {
      */
     public serverCommandsControllerGetCommands(requestParameters: ServerApiServerCommandsControllerGetCommandsRequest, options?: RawAxiosRequestConfig) {
         return ServerApiFp(this.configuration).serverCommandsControllerGetCommands(requestParameters.categoryId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ServerApiServerCommandsControllerGetProgressMarkersRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ServerApi
+     */
+    public serverCommandsControllerGetProgressMarkers(requestParameters: ServerApiServerCommandsControllerGetProgressMarkersRequest, options?: RawAxiosRequestConfig) {
+        return ServerApiFp(this.configuration).serverCommandsControllerGetProgressMarkers(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -12275,13 +14242,24 @@ export class ServerApi extends BaseAPI {
 
     /**
      * 
+     * @param {ServerApiServerCommandsControllerUpdateProgressMarkerRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ServerApi
+     */
+    public serverCommandsControllerUpdateProgressMarker(requestParameters: ServerApiServerCommandsControllerUpdateProgressMarkerRequest, options?: RawAxiosRequestConfig) {
+        return ServerApiFp(this.configuration).serverCommandsControllerUpdateProgressMarker(requestParameters.markerId, requestParameters.updateCommandProgressMarkerDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {ServerApiServerControllerCreateCategoryRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ServerApi
      */
     public serverControllerCreateCategory(requestParameters: ServerApiServerControllerCreateCategoryRequest, options?: RawAxiosRequestConfig) {
-        return ServerApiFp(this.configuration).serverControllerCreateCategory(requestParameters.id, requestParameters.createCategoryDto, options).then((request) => request(this.axios, this.basePath));
+        return ServerApiFp(this.configuration).serverControllerCreateCategory(requestParameters.serverId, requestParameters.createCategoryDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -12370,6 +14348,17 @@ export class ServerApi extends BaseAPI {
      */
     public serverControllerStop(requestParameters: ServerApiServerControllerStopRequest, options?: RawAxiosRequestConfig) {
         return ServerApiFp(this.configuration).serverControllerStop(requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ServerApiServerProcessControllerDeleteRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ServerApi
+     */
+    public serverProcessControllerDelete(requestParameters: ServerApiServerProcessControllerDeleteRequest, options?: RawAxiosRequestConfig) {
+        return ServerApiFp(this.configuration).serverProcessControllerDelete(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -1,21 +1,23 @@
-# ServerCategory
+# UpdatePermissionGroupDto
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **string** |  | [default to undefined]
 **name** | **string** |  | [optional] [default to undefined]
+**description** | **string** |  | [optional] [default to undefined]
+**permissions** | **Array&lt;string&gt;** | Permission keys from the catalog (replaces the existing set) | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { ServerCategory } from './api';
+import { UpdatePermissionGroupDto } from './api';
 
-const instance: ServerCategory = {
-    id,
+const instance: UpdatePermissionGroupDto = {
     name,
+    description,
+    permissions,
 };
 ```
 

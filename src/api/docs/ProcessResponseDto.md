@@ -7,6 +7,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** |  | [default to undefined]
 **status** | [**ServerProcessStatus**](ServerProcessStatus.md) |  | [default to undefined]
+**runtimeStatus** | [**CommandRuntimeStatus**](CommandRuntimeStatus.md) |  | [default to undefined]
+**progress** | **number** |  | [optional] [default to undefined]
 **name** | **string** |  | [optional] [default to undefined]
 **startedAt** | **string** |  | [default to undefined]
 **stoppedAt** | **string** |  | [optional] [default to undefined]
@@ -21,6 +23,8 @@ import { ProcessResponseDto } from './api';
 const instance: ProcessResponseDto = {
     id,
     status,
+    runtimeStatus,
+    progress,
     name,
     startedAt,
     stoppedAt,
