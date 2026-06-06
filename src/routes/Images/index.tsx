@@ -39,7 +39,9 @@ export const Gallery = () => {
   const handleDelete = async (imageId: string) => {
     try {
       await ImageService.delete({ id: imageId });
-    } catch (_) {}
+    } catch (e) {
+      console.error('Error deleting image:', e);
+    }
     refresh();
   };
   const handleEdit = useCallback(
@@ -53,7 +55,10 @@ export const Gallery = () => {
   );
   return (
     <div style={styles.container}>
-      <Button label='Add' icon={<FaPlus />} onClick={() => createImageModal.show()} />
+      <div style={styles.toolbar}>
+        <h2 style={styles.title}>Gallery</h2>
+        <Button label='Add image' icon={<FaPlus />} onClick={() => createImageModal.show()} />
+      </div>
       <ImagesTable
         setPagination={setPagination}
         images={data?.images}
@@ -66,8 +71,20 @@ export const Gallery = () => {
   );
 };
 
-const useStyles = mkUseStyles(() => ({
+const useStyles = mkUseStyles((t) => ({
   container: {
     height: '100%',
+    minHeight: 0,
+    gap: t.spacing.m,
+  },
+  toolbar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: t.spacing.m,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 700,
   },
 }));

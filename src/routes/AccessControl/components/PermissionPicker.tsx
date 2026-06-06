@@ -1,3 +1,4 @@
+import { Scrollbar } from '~/components/Scrollbar';
 import { PermissionGroupByResource } from '~/routes/AccessControl/hooks/usePermissionCatalog';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -29,7 +30,7 @@ export const PermissionPicker = ({ grouped, value, onChange, disabled }: Permiss
   };
 
   return (
-    <div style={styles.scroll}>
+    <Scrollbar style={styles.scroll}>
       <div style={styles.container}>
         {grouped.map((group) => {
           const keys = group.permissions.map((p) => p.key);
@@ -79,18 +80,17 @@ export const PermissionPicker = ({ grouped, value, onChange, disabled }: Permiss
           );
         })}
       </div>
-    </div>
+    </Scrollbar>
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
   scroll: {
-    maxHeight: 360,
-    overflowY: 'auto',
-    paddingRight: t.spacing.s,
+    height: 340,
   },
   container: {
     gap: t.spacing.m,
+    paddingRight: t.spacing.m,
   },
   resourceBlock: {
     gap: t.spacing.s,

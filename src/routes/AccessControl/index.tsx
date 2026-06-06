@@ -44,10 +44,12 @@ export const AccessControl = () => {
 const useStyles = mkUseStyles((t) => ({
   container: {
     height: '100%',
+    minHeight: 0,
     gap: t.spacing.l,
   },
   content: {
     flex: 1,
     minHeight: 0,
+    display: 'flex',
   },
 }));

@@ -1,4 +1,5 @@
-import { CSSProperties, useMemo, useState } from 'react';
+import { CSSProperties, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FieldValues, UseControllerProps, useController } from 'react-hook-form';
 import { FaChevronDown } from 'react-icons/fa6';
@@ -25,6 +26,10 @@ export type SelectRef = {
 export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
   const [isExtended, setIsExtended] = useState(false);
   const [isOnList, setIsOnList] = useState(false);
+  const [coords, setCoords] = useState<{ left: number; top: number; width: number } | null>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const {
     field,
@@ -47,7 +52,30 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
     return p.options.find((option) => option.value === selectedValue) || p.options[0];
   }, [p.options, selectedValue]);
 
-  const handlePress = () => setIsExtended((prev) => !prev);
+  const updateCoords = () => {
+    const el = inputRef.current ?? containerRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setCoords({ left: r.left, top: r.bottom + theme.spacing.m, width: r.width });
+  };
+
+  useLayoutEffect(() => {
+    if (!isExtended) return;
+    updateCoords();
+    const close = () => setIsExtended(false);
+    window.addEventListener('scroll', close, true);
+    window.addEventListener('resize', close);
+    return () => {
+      window.removeEventListener('scroll', close, true);
+      window.removeEventListener('resize', close);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExtended]);
+
+  const handlePress = () => {
+    if (!isExtended) updateCoords();
+    setIsExtended((prev) => !prev);
+  };
 
   const handleBlur = () => {
     if (!isOnList) setIsExtended(false);
@@ -74,6 +102,7 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
 
   return (
     <div
+      ref={containerRef}
       style={{
         ...styles.selectContainer,
         marginBottom: hasBottomSpace ? theme.spacing.l : 0,
@@ -82,27 +111,34 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
     >
       {variant !== 'secondary' && <label style={styles.label}>{p.label}</label>}
 
-      <AnimatePresence mode='wait'>
-        {isExtended && (
-          <motion.ul
-            onMouseEnter={() => setIsOnList(true)}
-            onMouseLeave={() => setIsOnList(false)}
-            initial={{ opacity: 0, translateY: variant === 'secondary' ? -12 : -20 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            exit={{ opacity: 0, translateY: variant === 'secondary' ? -12 : -20 }}
-            style={{
-              ...styles.optionsContainer,
-              top: variant === 'secondary' ? `calc(100% + ${theme.spacing.s}px)` : `calc(100% + ${theme.spacing.l}px)`,
-              zIndex: variant === 'secondary' ? 30 : 1,
-              boxShadow: variant === 'secondary' ? '0 8px 24px rgba(0,0,0,0.35)' : undefined,
-            }}
-          >
-            <div>{p.options.map(renderOption)}</div>
-          </motion.ul>
-        )}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence mode='wait'>
+          {isExtended && coords && (
+            <motion.ul
+              onMouseEnter={() => setIsOnList(true)}
+              onMouseLeave={() => setIsOnList(false)}
+              initial={{ opacity: 0, translateY: -8 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              exit={{ opacity: 0, translateY: -8 }}
+              style={{
+                ...styles.optionsContainer,
+                position: 'fixed',
+                left: coords.left,
+                top: coords.top,
+                width: coords.width,
+                zIndex: 1000,
+                boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+              }}
+            >
+              <div>{p.options.map(renderOption)}</div>
+            </motion.ul>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
 
       <input
+        ref={inputRef}
         value={selectedOption?.label || ''}
         style={{
           ...styles.input,
@@ -175,11 +211,9 @@ const useStyles = mkUseStyles((t) => ({
   },
   optionsContainer: {
     listStyle: 'none',
-    position: 'absolute',
     display: 'flex',
     flexDirection: 'column',
-    left: 0,
-    right: 0,
+    boxSizing: 'border-box',
     margin: 0,
     padding: t.spacing.s,
     gap: t.spacing.s,

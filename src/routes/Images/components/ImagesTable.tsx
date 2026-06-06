@@ -1,7 +1,9 @@
 import { Dispatch, SetStateAction, useMemo } from 'react';
 
 import { PaginationState, useReactTable, getCoreRowModel, ColumnDef } from '@tanstack/react-table';
+import { MdPlace } from 'react-icons/md';
 import { ImageType } from '~/apiOld/Image';
+import { Badge } from '~/components/Badge';
 import { ImageIcon } from '~/routes/Images/components/ImageIcon';
 import { useTheme } from '~/utils/theme';
 import { format } from 'date-fns';
@@ -28,7 +30,6 @@ export const ImagesTable = (p: ImagesTableProps) => {
     () => [
       {
         header: 'Image',
-        footer: (props) => props.column.id,
         cell: (info) => (
           <ImageIcon
             key={info.getValue() as string}
@@ -44,13 +45,11 @@ export const ImagesTable = (p: ImagesTableProps) => {
       },
       {
         header: 'Title',
-        footer: (props) => props.column.id,
         cell: (info) => info.getValue(),
         accessorKey: 'title',
       },
       {
         header: 'Date',
-        footer: (props) => props.column.id,
         cell: (info) => (
           <div>
             <p style={{ margin: 0, padding: 0 }}>{format(info.getValue<Date>(), 'MMMM')}</p>
@@ -63,13 +62,18 @@ export const ImagesTable = (p: ImagesTableProps) => {
       },
       {
         header: 'Localization',
-        footer: (props) => props.column.id,
-        cell: (info) => info.getValue(),
+        cell: (info) => {
+          const value = info.getValue<string>();
+          return value ? (
+            <Badge icon={<MdPlace size={13} />} label={value} tone='blue' />
+          ) : (
+            <span style={{ color: theme.colors.dark05 }}>—</span>
+          );
+        },
         accessorKey: 'localization',
       },
       {
         header: 'Description',
-        footer: (props) => props.column.id,
         cell: (info) =>
           info.getValue() ? (
             <p>{(info.getValue() as string).slice(0, 10) + ' ...'}</p>
@@ -81,9 +85,8 @@ export const ImagesTable = (p: ImagesTableProps) => {
       {
         header: '',
         id: 'actions',
-        footer: (props) => props.column.id,
         cell: (info) => (
-          <div style={{ alignItems: 'flex-end', paddingRight: theme.spacing.m }}>
+          <div style={{ alignItems: 'flex-end' }}>
             <ActionButtons
               id={info.getValue() as string}
               key={info.row.id}

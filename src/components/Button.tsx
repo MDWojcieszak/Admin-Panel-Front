@@ -35,8 +35,9 @@ export const Button = ({ label, onClick, variant = 'primary', ...p }: ButtonProp
   return (
     <motion.button
       type={p.type}
-      whileTap={{ scaleY: 0.95, scaleX: 0.98 }}
-      whileHover={{ scaleY: 1.05, scaleX: 1.02 }}
+      whileTap={p.disabled ? undefined : { filter: 'brightness(0.9)' }}
+      whileHover={p.disabled ? undefined : { filter: 'brightness(1.15)' }}
+      transition={{ duration: 0.12 }}
       onClick={handleClick}
       animate={{ opacity: p.disabled ? 0.2 : 1 }}
       style={{

@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Button } from '~/components/Button';
+import { Input } from '~/components/Input';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { mkUseStyles } from '~/utils/theme';
@@ -11,43 +13,42 @@ type SettingEditModalProps = {
   canManage?: boolean;
 } & Partial<InternalModalProps>;
 
+type SchemaType = { name: string };
+
 export const SettingEditModal = (p: SettingEditModalProps) => {
   const styles = useStyles();
   const { serverApi } = useApi();
-  const [name, setName] = useState(p.settingName ?? '');
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string>();
   const canManage = p.canManage ?? true;
 
-  const handleSave = async () => {
+  const formMethods = useForm<SchemaType>({ defaultValues: { name: p.settingName ?? '' } });
+
+  const handleSave = async (data: SchemaType) => {
     if (!serverApi || !p.settingId || !canManage) return;
-    setError(undefined);
     setSaving(true);
     try {
-      await serverApi.serverSettingsControllerPutCommand({ id: p.settingId, patchServerSettingDto: { name } });
+      await serverApi.serverSettingsControllerPutCommand({ id: p.settingId, patchServerSettingDto: { name: data.name } });
       p.handleClose?.();
     } catch (e) {
       console.error('Error renaming setting:', e);
-      setError('Could not save the name');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      {p.serverName ? <span style={styles.key}>{p.serverName}</span> : null}
-      <label style={styles.label}>Display name</label>
-      <input
-        style={styles.input}
-        value={name}
-        disabled={!canManage}
-        onChange={(e) => setName(e.target.value)}
-        placeholder='Friendly name (leave empty to use the server key)'
-      />
-      {error ? <span style={styles.error}>{error}</span> : null}
-      <Button label='Save' onClick={handleSave} loading={saving} disabled={!canManage} />
-    </div>
+    <FormProvider {...formMethods}>
+      <div style={styles.container}>
+        {p.serverName ? <span style={styles.key}>{p.serverName}</span> : null}
+        <Input
+          name='name'
+          label='Display name'
+          description='Friendly name (leave empty to use the server key)'
+          disableAutofill={false}
+        />
+        <Button label='Save' onClick={formMethods.handleSubmit(handleSave)} loading={saving} disabled={!canManage} />
+      </div>
+    </FormProvider>
   );
 };
 
@@ -60,22 +61,5 @@ const useStyles = mkUseStyles((t) => ({
     fontSize: 13,
     color: t.colors.dark05,
     fontFamily: 'monospace',
-  },
-  label: {
-    fontSize: 12,
-    color: t.colors.blue04,
-  },
-  input: {
-    padding: t.spacing.m,
-    color: t.colors.white,
-    fontSize: 16,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    border: 0,
-    outline: 'none',
-  },
-  error: {
-    color: t.colors.red,
-    fontSize: 14,
   },
 }));

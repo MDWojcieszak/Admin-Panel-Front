@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { CreateServerTransferDto, ServerTransferMode, ServerTransferResponse } from '~/api/api';
 import { Button } from '~/components/Button';
+import { Input } from '~/components/Input';
+import { Select } from '~/components/Select';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { mkUseStyles } from '~/utils/theme';
@@ -11,183 +16,123 @@ type TransferModalProps = {
   canManage?: boolean;
 } & Partial<InternalModalProps>;
 
+const Schema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().optional(),
+  originPath: z.string().min(1, 'Origin path is required'),
+  targetPath: z.string().min(1, 'Target path is required'),
+  mode: z.nativeEnum(ServerTransferMode),
+  enableMoveBackup: z.boolean(),
+  moveBackupPath: z.string().optional(),
+  bwLimitKbps: z.string().optional(),
+  isEnabled: z.boolean(),
+  secondsStart: z.string().optional(),
+  secondsStop: z.string().optional(),
+});
+type SchemaType = z.infer<typeof Schema>;
+
+const modeOptions = Object.values(ServerTransferMode).map((mode) => ({ label: mode, value: mode }));
+
 export const TransferModal = (p: TransferModalProps) => {
   const styles = useStyles();
   const { defaultApi } = useApi();
   const canManage = p.canManage ?? true;
   const isEdit = Boolean(p.transfer);
-
-  const [form, setForm] = useState({
-    name: p.transfer?.name ?? '',
-    description: p.transfer?.description ?? '',
-    originPath: p.transfer?.originPath ?? '',
-    targetPath: p.transfer?.targetPath ?? '',
-    mode: (p.transfer?.mode ?? ServerTransferMode.Copy) as ServerTransferMode,
-    enableMoveBackup: p.transfer?.enableMoveBackup ?? false,
-    moveBackupPath: p.transfer?.moveBackupPath ?? '',
-    bwLimitKbps: p.transfer?.bwLimitKbps != null ? String(p.transfer.bwLimitKbps) : '',
-    isEnabled: true,
-    secondsStart: '0',
-    secondsStop: '0',
-  });
-  const [error, setError] = useState<string>();
   const [saving, setSaving] = useState(false);
 
-  const setField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const formMethods = useForm<SchemaType>({
+    resolver: zodResolver(Schema),
+    defaultValues: {
+      name: p.transfer?.name ?? '',
+      description: p.transfer?.description ?? '',
+      originPath: p.transfer?.originPath ?? '',
+      targetPath: p.transfer?.targetPath ?? '',
+      mode: p.transfer?.mode ?? ServerTransferMode.Copy,
+      enableMoveBackup: p.transfer?.enableMoveBackup ?? false,
+      moveBackupPath: p.transfer?.moveBackupPath ?? '',
+      bwLimitKbps: p.transfer?.bwLimitKbps != null ? String(p.transfer.bwLimitKbps) : '',
+      isEnabled: true,
+      secondsStart: '0',
+      secondsStop: '0',
+    },
+  });
 
-  const handleSave = async () => {
+  const enableMoveBackup = formMethods.watch('enableMoveBackup');
+
+  const handleSave = async (data: SchemaType) => {
     if (!defaultApi || !canManage) return;
-    if (!form.name.trim() || !form.originPath.trim() || !form.targetPath.trim()) {
-      setError('Name, origin and target paths are required');
-      return;
-    }
-    setError(undefined);
     setSaving(true);
     try {
+      const shared = {
+        name: data.name,
+        description: data.description || undefined,
+        originPath: data.originPath,
+        targetPath: data.targetPath,
+        mode: data.mode,
+        enableMoveBackup: data.enableMoveBackup,
+        moveBackupPath: data.moveBackupPath || undefined,
+        bwLimitKbps: data.bwLimitKbps ? Number(data.bwLimitKbps) : undefined,
+      };
       if (isEdit && p.transfer) {
-        await defaultApi.serverTransferControllerPatch({
-          id: p.transfer.id,
-          patchServerTransferDto: {
-            name: form.name,
-            description: form.description || undefined,
-            originPath: form.originPath,
-            targetPath: form.targetPath,
-            mode: form.mode,
-            enableMoveBackup: form.enableMoveBackup,
-            moveBackupPath: form.moveBackupPath || undefined,
-            bwLimitKbps: form.bwLimitKbps !== '' ? Number(form.bwLimitKbps) : undefined,
-          },
-        });
+        await defaultApi.serverTransferControllerPatch({ id: p.transfer.id, patchServerTransferDto: shared });
       } else {
         const dto: CreateServerTransferDto = {
-          name: form.name,
-          description: form.description || undefined,
-          originPath: form.originPath,
-          targetPath: form.targetPath,
-          mode: form.mode,
-          enableMoveBackup: form.enableMoveBackup,
-          moveBackupPath: form.moveBackupPath || undefined,
-          bwLimitKbps: form.bwLimitKbps !== '' ? Number(form.bwLimitKbps) : undefined,
-          isEnabled: form.isEnabled,
-          secondsStart: Number(form.secondsStart) || 0,
-          secondsStop: Number(form.secondsStop) || 0,
+          ...shared,
+          isEnabled: data.isEnabled,
+          secondsStart: Number(data.secondsStart) || 0,
+          secondsStop: Number(data.secondsStop) || 0,
         };
         await defaultApi.serverTransferControllerCreate({ id: p.categoryId ?? '', createServerTransferDto: dto });
       }
       p.handleClose?.();
     } catch (e) {
       console.error('Error saving transfer:', e);
-      setError('Could not save the transfer');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.row}>
-        <input
-          style={styles.input}
-          placeholder='Name'
-          value={form.name}
-          disabled={!canManage}
-          onChange={(e) => setField('name', e.target.value)}
-        />
-        <select
-          style={styles.input}
-          value={form.mode}
-          disabled={!canManage}
-          onChange={(e) => setField('mode', e.target.value as ServerTransferMode)}
-        >
-          {Object.values(ServerTransferMode).map((mode) => (
-            <option key={mode} value={mode}>
-              {mode}
-            </option>
-          ))}
-        </select>
-      </div>
-      <input
-        style={styles.input}
-        placeholder='Description (optional)'
-        value={form.description}
-        disabled={!canManage}
-        onChange={(e) => setField('description', e.target.value)}
-      />
-      <input
-        style={styles.input}
-        placeholder='Origin path'
-        value={form.originPath}
-        disabled={!canManage}
-        onChange={(e) => setField('originPath', e.target.value)}
-      />
-      <input
-        style={styles.input}
-        placeholder='Target path'
-        value={form.targetPath}
-        disabled={!canManage}
-        onChange={(e) => setField('targetPath', e.target.value)}
-      />
-      <label style={styles.checkboxRow}>
-        <input
-          type='checkbox'
-          checked={form.isEnabled}
-          disabled={!canManage}
-          onChange={(e) => setField('isEnabled', e.target.checked)}
-        />
-        <span>Enabled</span>
-      </label>
-      <label style={styles.checkboxRow}>
-        <input
-          type='checkbox'
-          checked={form.enableMoveBackup}
-          disabled={!canManage}
-          onChange={(e) => setField('enableMoveBackup', e.target.checked)}
-        />
-        <span>Enable move backup</span>
-      </label>
-      {form.enableMoveBackup ? (
-        <input
-          style={styles.input}
-          placeholder='Move backup path'
-          value={form.moveBackupPath}
-          disabled={!canManage}
-          onChange={(e) => setField('moveBackupPath', e.target.value)}
-        />
-      ) : null}
-      <div style={styles.row}>
-        <input
-          style={styles.input}
-          type='number'
-          placeholder='Bandwidth limit (Kbps)'
-          value={form.bwLimitKbps}
-          disabled={!canManage}
-          onChange={(e) => setField('bwLimitKbps', e.target.value)}
-        />
-        {!isEdit ? (
-          <>
-            <input
-              style={styles.input}
-              type='number'
-              placeholder='Start (s)'
-              value={form.secondsStart}
-              disabled={!canManage}
-              onChange={(e) => setField('secondsStart', e.target.value)}
-            />
-            <input
-              style={styles.input}
-              type='number'
-              placeholder='Stop (s)'
-              value={form.secondsStop}
-              disabled={!canManage}
-              onChange={(e) => setField('secondsStop', e.target.value)}
-            />
-          </>
+    <FormProvider {...formMethods}>
+      <div style={styles.container}>
+        <div style={styles.row}>
+          <Input name='name' label='Name' description='Transfer name' style={styles.field} />
+          <Select name='mode' label='Mode' description='Copy or move' options={modeOptions} style={styles.field} />
+        </div>
+        <Input name='description' label='Description' description='Optional description' />
+        <Input name='originPath' label='Origin path' description='Source directory' />
+        <Input name='targetPath' label='Target path' description='Destination directory' />
+
+        <label style={styles.checkboxRow}>
+          <input type='checkbox' disabled={!canManage} {...formMethods.register('isEnabled')} />
+          <span>Enabled</span>
+        </label>
+        <label style={styles.checkboxRow}>
+          <input type='checkbox' disabled={!canManage} {...formMethods.register('enableMoveBackup')} />
+          <span>Enable move backup</span>
+        </label>
+        {enableMoveBackup ? (
+          <Input name='moveBackupPath' label='Move backup path' description='Where moved files are backed up' />
         ) : null}
+
+        <div style={styles.row}>
+          <Input name='bwLimitKbps' label='Bandwidth limit (Kbps)' description='Optional' type='number' style={styles.field} />
+          {!isEdit ? (
+            <>
+              <Input name='secondsStart' label='Start (s)' description='Delay before start' type='number' style={styles.field} />
+              <Input name='secondsStop' label='Stop (s)' description='Auto-stop after' type='number' style={styles.field} />
+            </>
+          ) : null}
+        </div>
+
+        <Button
+          label={isEdit ? 'Save transfer' : 'Create transfer'}
+          onClick={formMethods.handleSubmit(handleSave)}
+          loading={saving}
+          disabled={!canManage}
+        />
       </div>
-      {error ? <span style={styles.error}>{error}</span> : null}
-      <Button label={isEdit ? 'Save transfer' : 'Create transfer'} onClick={handleSave} loading={saving} disabled={!canManage} />
-    </div>
+    </FormProvider>
   );
 };
 
@@ -198,18 +143,11 @@ const useStyles = mkUseStyles((t) => ({
   },
   row: {
     flexDirection: 'row',
-    gap: t.spacing.s,
+    gap: t.spacing.m,
   },
-  input: {
+  field: {
     flex: 1,
     minWidth: 0,
-    padding: t.spacing.s,
-    color: t.colors.white,
-    fontSize: 14,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    border: 0,
-    outline: 'none',
   },
   checkboxRow: {
     flexDirection: 'row',
@@ -217,9 +155,5 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.s,
     cursor: 'pointer',
     fontSize: 14,
-  },
-  error: {
-    color: t.colors.red,
-    fontSize: 13,
   },
 }));

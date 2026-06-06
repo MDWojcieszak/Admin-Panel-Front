@@ -23,18 +23,16 @@ export const ServersList = () => {
     () => [
       {
         header: 'Name',
-        footer: (props) => props.column.id,
         cell: (info) =>
           info.getValue() ? (
-            <p style={{ marginLeft: theme.spacing.m }}>{info.getValue() as string}</p>
+            <span>{info.getValue() as string}</span>
           ) : (
-            <p style={{ color: theme.colors.yellow }}>Empty</p>
+            <span style={{ color: theme.colors.yellow }}>Empty</span>
           ),
         accessorKey: 'name',
       },
       {
         header: 'Created At',
-        footer: (props) => props.column.id,
         cell: (info) => (
           <div>
             <p style={{ margin: 0, padding: 0 }}>{format(info.getValue<Date>(), 'hh:mm:ss')}</p>
@@ -47,21 +45,18 @@ export const ServersList = () => {
       },
       {
         header: 'IP Address',
-        footer: (props) => props.column.id,
         cell: (info) => info.getValue(),
         accessorKey: 'ipAddress',
       },
       {
         header: 'Actions',
         id: 'actions',
-        footer: (props) => props.column.id,
         cell: (info) => (
-          <div style={{ alignItems: 'flex-end', paddingRight: theme.spacing.m }}>
+          <div style={{ alignItems: 'flex-end' }}>
             <ActionButtons
               id={info.getValue() as string}
               key={info.row.original.id}
               onCustom={handleNavigateToServer}
-              onDelete={() => {}}
               customChildren={
                 <div style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <p style={{ marginRight: theme.spacing.m, userSelect: 'none' }}>Manage</p>

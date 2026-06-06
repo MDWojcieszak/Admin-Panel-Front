@@ -9,9 +9,11 @@ type ServerStatTileProps = {
   accent?: keyof Theme['colors'];
   /** 0–100; when provided, renders a thin usage bar under the value. */
   progress?: number;
+  /** Tint the label with the accent colour (instead of muted grey). */
+  coloredLabel?: boolean;
 };
 
-export const ServerStatTile = ({ icon, label, value, sub, accent = 'blue04', progress }: ServerStatTileProps) => {
+export const ServerStatTile = ({ icon, label, value, sub, accent = 'blue04', progress, coloredLabel }: ServerStatTileProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const clamped = progress === undefined ? undefined : Math.max(0, Math.min(100, progress));
@@ -19,7 +21,7 @@ export const ServerStatTile = ({ icon, label, value, sub, accent = 'blue04', pro
     <div style={styles.container}>
       <div style={{ ...styles.iconWrap, color: theme.colors[accent] }}>{icon}</div>
       <div style={styles.text}>
-        <span style={styles.label}>{label}</span>
+        <span style={{ ...styles.label, ...(coloredLabel ? { color: theme.colors[accent] } : null) }}>{label}</span>
         <span style={styles.value}>{value}</span>
         {sub ? <span style={styles.sub}>{sub}</span> : null}
         {clamped !== undefined ? (

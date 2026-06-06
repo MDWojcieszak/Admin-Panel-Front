@@ -16,9 +16,9 @@ const bluePalette = {
 };
 
 const purplePalette = {
-  purple01: 'rgb(120, 77, 255)',
-  purple02: 'rgb(177, 120, 255)',
-  purple03: 'rgb(216, 149, 255)',
+  purple01: '#784DFF',
+  purple02: '#B178FF',
+  purple03: '#D895FF',
 };
 
 const fallSeasonPalette = {

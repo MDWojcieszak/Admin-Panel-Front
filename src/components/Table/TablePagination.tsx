@@ -2,56 +2,52 @@ import { Table } from '@tanstack/react-table';
 import { TbPlayerPlayFilled, TbPlayerTrackNextFilled, TbPlayerTrackPrevFilled } from 'react-icons/tb';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { motion } from 'framer-motion';
+
 type TablePaginationProps<T> = {
   table: Table<T>;
 };
 
-export const TablePagination = <T extends Object>({ table }: TablePaginationProps<T>) => {
+export const TablePagination = <T extends object>({ table }: TablePaginationProps<T>) => {
   const styles = useStyles();
   const theme = useTheme();
   const prevDisabled = !table.getCanPreviousPage();
   const nextDisabled = !table.getCanNextPage();
+
+  const renderButton = (icon: React.ReactNode, onClick: () => void, disabled: boolean, key: string) => (
+    <motion.button
+      key={key}
+      style={{ ...styles.button, cursor: disabled ? 'default' : 'pointer', color: disabled ? theme.colors.dark04 : theme.colors.white }}
+      whileHover={disabled ? undefined : { backgroundColor: theme.colors.gray01 }}
+      whileTap={disabled ? undefined : { scale: 0.94 }}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {icon}
+    </motion.button>
+  );
+
   return (
     <div style={styles.container}>
-      <span className='flex items-center gap-1'>
-        <strong>
-          {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-        </strong>
+      <span style={styles.pageInfo}>
+        Page <strong style={styles.pageStrong}>{table.getState().pagination.pageIndex + 1}</strong> of{' '}
+        {table.getPageCount() || 1}
       </span>
-      <motion.button
-        style={{ ...styles.button, cursor: prevDisabled ? 'default' : 'pointer' }}
-        onClick={() => table.setPageIndex(0)}
-        animate={{ backgroundColor: prevDisabled ? theme.colors.gray04 : theme.colors.gray02 }}
-        disabled={prevDisabled}
-      >
-        <TbPlayerTrackPrevFilled size={16} />
-      </motion.button>
-      <motion.button
-        style={{ ...styles.button, cursor: prevDisabled ? 'default' : 'pointer' }}
-        onClick={() => table.previousPage()}
-        animate={{ backgroundColor: prevDisabled ? theme.colors.gray04 : theme.colors.gray02 }}
-        disabled={prevDisabled}
-      >
-        <TbPlayerPlayFilled style={{ rotate: '180deg' }} size={16} />
-      </motion.button>
-
-      <motion.button
-        style={{ ...styles.button, cursor: nextDisabled ? 'default' : 'pointer' }}
-        onClick={() => table.nextPage()}
-        animate={{ backgroundColor: nextDisabled ? theme.colors.gray04 : theme.colors.gray02 }}
-        disabled={nextDisabled}
-      >
-        <TbPlayerPlayFilled size={16} />
-      </motion.button>
-
-      <motion.button
-        style={{ ...styles.button, cursor: nextDisabled ? 'default' : 'pointer' }}
-        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-        animate={{ backgroundColor: !table.getCanNextPage() ? theme.colors.gray04 : theme.colors.gray02 }}
-        disabled={!table.getCanNextPage()}
-      >
-        <TbPlayerTrackNextFilled size={16} />
-      </motion.button>
+      <div style={styles.buttons}>
+        {renderButton(<TbPlayerTrackPrevFilled size={14} />, () => table.setPageIndex(0), prevDisabled, 'first')}
+        {renderButton(
+          <TbPlayerPlayFilled style={{ rotate: '180deg' }} size={14} />,
+          () => table.previousPage(),
+          prevDisabled,
+          'prev',
+        )}
+        {renderButton(<TbPlayerPlayFilled size={14} />, () => table.nextPage(), nextDisabled, 'next')}
+        {renderButton(
+          <TbPlayerTrackNextFilled size={14} />,
+          () => table.setPageIndex(table.getPageCount() - 1),
+          nextDisabled,
+          'last',
+        )}
+      </div>
     </div>
   );
 };
@@ -62,12 +58,27 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.m,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginTop: t.spacing.m,
+  },
+  pageInfo: {
+    fontSize: 13,
+    color: t.colors.dark05,
+  },
+  pageStrong: {
+    color: t.colors.white,
+  },
+  buttons: {
+    flexDirection: 'row',
+    gap: t.spacing.xs,
   },
   button: {
-    padding: t.spacing.s,
-    borderRadius: t.borderRadius.small,
-    border: 0,
-    lineHeight: '10px',
+    width: 32,
+    height: 32,
+    padding: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: t.borderRadius.default,
+    border: `1px solid ${t.colors.gray01 + t.colorOpacity(0.6)}`,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
   },
 }));

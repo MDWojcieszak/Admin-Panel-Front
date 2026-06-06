@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { MdGroups } from 'react-icons/md';
-import { UserType } from '~/apiOld/User';
+import { UserResponseDto } from '~/api/api';
+import { Badge, roleTone } from '~/components/Badge';
 import { Table } from '~/components/Table';
 import { ActionButtons } from '~/components/Table/ActionButtons';
 import { useCan } from '~/hooks/usePermissions';
@@ -15,9 +16,9 @@ export const UserAccessPanel = () => {
   const theme = useTheme();
   const can = useCan();
   const canAssign = can('acl.assign');
-  const defaultData = useMemo<UserType[]>(() => [], []);
+  const defaultData = useMemo<UserResponseDto[]>(() => [], []);
 
-  const { data, pagination, setPagination } = useUsersData();
+  const { users, total, pagination, setPagination } = useUsersData();
   const { groups } = useAclGroups();
 
   const userGroupsModal = useModal(
@@ -31,24 +32,27 @@ export const UserAccessPanel = () => {
     },
   );
 
-  const columns = useMemo<ColumnDef<UserType>[]>(
+  const columns = useMemo<ColumnDef<UserResponseDto>[]>(
     () => [
       {
         header: 'Email',
-        cell: (info) => <div style={{ marginLeft: theme.spacing.m }}>{info.getValue<string>()}</div>,
+        cell: (info) => info.getValue<string>(),
         accessorKey: 'email',
         minSize: 260,
       },
       {
         header: 'Role',
-        cell: (info) => info.getValue(),
+        cell: (info) => {
+          const role = info.getValue<string>();
+          return <Badge label={role} tone={roleTone(role)} />;
+        },
         accessorKey: 'role',
       },
       {
         header: '',
         id: 'actions',
         cell: (info) => (
-          <div style={{ alignItems: 'flex-end', paddingRight: theme.spacing.m }}>
+          <div style={{ alignItems: 'flex-end' }}>
             <ActionButtons
               id={info.row.original.id}
               key={info.row.original.id}
@@ -79,8 +83,8 @@ export const UserAccessPanel = () => {
   );
 
   const table = useReactTable({
-    data: data?.users || defaultData,
-    pageCount: data?.total ? Math.ceil(data.total / pagination.pageSize) : 1,
+    data: users || defaultData,
+    pageCount: total ? Math.ceil(total / pagination.pageSize) : 1,
     columns,
     state: { pagination },
     manualPagination: true,

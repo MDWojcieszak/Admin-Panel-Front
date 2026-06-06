@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { PermissionGroupResponseDto } from '~/api/api';
 import { Button } from '~/components/Button';
+import { Input } from '~/components/Input';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { usePermissions } from '~/hooks/usePermissions';
@@ -13,84 +17,65 @@ type GroupEditorModalProps = {
   canManage?: boolean;
 } & Partial<InternalModalProps>;
 
+const Schema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().optional(),
+});
+type SchemaType = z.infer<typeof Schema>;
+
 export const GroupEditorModal = (p: GroupEditorModalProps) => {
   const styles = useStyles();
   const { aclApi } = useApi();
   const { refresh: refreshPermissions } = usePermissions();
   const { grouped } = usePermissionCatalog();
 
-  const [name, setName] = useState(p.group?.name ?? '');
-  const [description, setDescription] = useState(p.group?.description ?? '');
   const [permissions, setPermissions] = useState<string[]>(p.group?.permissions ?? []);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>();
 
   const isEdit = Boolean(p.group);
   const canManage = p.canManage ?? true;
 
-  const handleSave = async () => {
+  const formMethods = useForm<SchemaType>({
+    resolver: zodResolver(Schema),
+    defaultValues: { name: p.group?.name ?? '', description: p.group?.description ?? '' },
+  });
+
+  const handleSave = async (data: SchemaType) => {
     if (!aclApi || !canManage) return;
-    if (!name.trim()) {
-      setError('Name is required');
-      return;
-    }
-    setError(undefined);
     setLoading(true);
     try {
+      const payload = { name: data.name, description: data.description ?? '', permissions };
       if (isEdit && p.group) {
-        await aclApi.aclControllerUpdateGroup({
-          id: p.group.id,
-          updatePermissionGroupDto: { name, description, permissions },
-        });
+        await aclApi.aclControllerUpdateGroup({ id: p.group.id, updatePermissionGroupDto: payload });
       } else {
-        await aclApi.aclControllerCreateGroup({
-          createPermissionGroupDto: { name, description, permissions },
-        });
+        await aclApi.aclControllerCreateGroup({ createPermissionGroupDto: payload });
       }
       await refreshPermissions();
       p.handleClose?.();
     } catch (e) {
       console.error('Error saving permission group:', e);
-      setError('Could not save the group');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.field}>
-        <label style={styles.label}>Name</label>
-        <input
-          style={styles.input}
-          value={name}
+    <FormProvider {...formMethods}>
+      <div style={styles.container}>
+        <Input name='name' label='Name' description='e.g. Server operators' />
+        <Input name='description' label='Description' description='Optional description' />
+        <div style={styles.field}>
+          <label style={styles.label}>Permissions ({permissions.length})</label>
+          <PermissionPicker grouped={grouped} value={permissions} onChange={setPermissions} disabled={!canManage} />
+        </div>
+        <Button
+          label={isEdit ? 'Save changes' : 'Create group'}
+          onClick={formMethods.handleSubmit(handleSave)}
+          loading={loading}
           disabled={!canManage}
-          onChange={(e) => setName(e.target.value)}
-          placeholder='e.g. Server operators'
         />
       </div>
-      <div style={styles.field}>
-        <label style={styles.label}>Description</label>
-        <input
-          style={styles.input}
-          value={description}
-          disabled={!canManage}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder='Optional description'
-        />
-      </div>
-      <div style={styles.field}>
-        <label style={styles.label}>Permissions ({permissions.length})</label>
-        <PermissionPicker grouped={grouped} value={permissions} onChange={setPermissions} disabled={!canManage} />
-      </div>
-      {error ? <span style={styles.error}>{error}</span> : null}
-      <Button
-        label={isEdit ? 'Save changes' : 'Create group'}
-        onClick={handleSave}
-        loading={loading}
-        disabled={!canManage}
-      />
-    </div>
+    </FormProvider>
   );
 };
 
@@ -105,18 +90,5 @@ const useStyles = mkUseStyles((t) => ({
   label: {
     fontSize: 12,
     color: t.colors.blue04,
-  },
-  input: {
-    padding: t.spacing.m,
-    color: t.colors.white,
-    fontSize: 16,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    border: 0,
-    outline: 'none',
-  },
-  error: {
-    color: t.colors.red,
-    fontSize: 14,
   },
 }));

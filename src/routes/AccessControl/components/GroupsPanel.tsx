@@ -1,17 +1,23 @@
+import { useCallback, useMemo } from 'react';
+import { ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { FaPlus } from 'react-icons/fa6';
+import { PermissionGroupResponseDto } from '~/api/api';
 import { Button } from '~/components/Button';
+import { Table } from '~/components/Table';
 import { ActionButtons } from '~/components/Table/ActionButtons';
 import { useCan } from '~/hooks/usePermissions';
 import { useModal } from '~/hooks/useModal';
 import { GroupEditorModal } from '~/routes/AccessControl/modals/GroupEditorModal';
 import { useAclGroups } from '~/routes/AccessControl/hooks/useAclGroups';
-import { mkUseStyles } from '~/utils/theme';
+import { mkUseStyles, useTheme } from '~/utils/theme';
 
 export const GroupsPanel = () => {
   const styles = useStyles();
+  const theme = useTheme();
   const can = useCan();
   const canManage = can('acl.manage');
   const { groups, refresh, deleteGroup } = useAclGroups();
+  const defaultData = useMemo<PermissionGroupResponseDto[]>(() => [], []);
 
   const editorModal = useModal(
     'acl-group-editor',
@@ -25,96 +31,102 @@ export const GroupsPanel = () => {
     },
   );
 
-  const handleDelete = async (id: string) => {
-    if (!canManage) return;
-    try {
-      await deleteGroup(id);
-      refresh();
-    } catch (e) {
-      console.error('Error deleting permission group:', e);
-    }
-  };
+  const handleDelete = useCallback(
+    async (id: string) => {
+      if (!canManage) return;
+      try {
+        await deleteGroup(id);
+        refresh();
+      } catch (e) {
+        console.error('Error deleting permission group:', e);
+      }
+    },
+    [canManage, deleteGroup, refresh],
+  );
+
+  const columns = useMemo<ColumnDef<PermissionGroupResponseDto>[]>(
+    () => [
+      {
+        header: 'Name',
+        accessorKey: 'name',
+        cell: (info) => <span style={{ fontWeight: 600 }}>{info.getValue<string>()}</span>,
+        minSize: 200,
+      },
+      {
+        header: 'Description',
+        accessorKey: 'description',
+        cell: (info) =>
+          info.getValue() ? (
+            <span>{info.getValue<string>()}</span>
+          ) : (
+            <span style={{ color: theme.colors.dark05 }}>—</span>
+          ),
+        minSize: 240,
+      },
+      {
+        header: 'Permissions',
+        id: 'permissions',
+        cell: (info) => info.row.original.permissions.length,
+        maxSize: 130,
+      },
+      {
+        header: 'Users',
+        id: 'users',
+        cell: (info) => info.row.original.userCount ?? 0,
+        maxSize: 100,
+      },
+      {
+        header: '',
+        id: 'actions',
+        cell: (info) =>
+          canManage ? (
+            <div style={{ alignItems: 'flex-end' }}>
+              <ActionButtons
+                id={info.row.original.id}
+                onEdit={() => editorModal.show({ group: info.row.original, canManage })}
+                onDelete={handleDelete}
+              />
+            </div>
+          ) : null,
+        maxSize: 110,
+      },
+    ],
+    [theme, canManage, editorModal, handleDelete],
+  );
+
+  const table = useReactTable({
+    data: groups || defaultData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <div style={styles.container}>
       <div style={styles.toolbar}>
-        <Button
-          label='Create group'
-          icon={<FaPlus />}
-          disabled={!canManage}
-          onClick={() => editorModal.show({ canManage, group: undefined })}
-        />
+        <h2 style={styles.title}>Permission groups</h2>
+        {canManage ? (
+          <Button label='Create group' icon={<FaPlus />} onClick={() => editorModal.show({ canManage, group: undefined })} />
+        ) : null}
       </div>
-      <div style={styles.list}>
-        {(groups ?? []).map((group) => (
-          <div key={group.id} style={styles.card}>
-            <div style={styles.info}>
-              <span style={styles.name}>{group.name}</span>
-              {group.description ? <span style={styles.description}>{group.description}</span> : null}
-              <div style={styles.metaRow}>
-                <span style={styles.meta}>{group.permissions.length} permissions</span>
-                <span style={styles.meta}>{group.userCount ?? 0} users</span>
-              </div>
-            </div>
-            {canManage ? (
-              <ActionButtons
-                id={group.id}
-                onEdit={() => editorModal.show({ group, canManage })}
-                onDelete={handleDelete}
-              />
-            ) : null}
-          </div>
-        ))}
-        {(groups ?? []).length === 0 ? <span style={styles.empty}>No permission groups yet.</span> : null}
-      </div>
+      <Table table={table} hidePagination />
     </div>
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
   container: {
-    gap: t.spacing.m,
     height: '100%',
+    minHeight: 0,
+    gap: t.spacing.m,
   },
   toolbar: {
     flexDirection: 'row',
-  },
-  list: {
-    gap: t.spacing.m,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  card: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: t.spacing.l,
-    padding: t.spacing.m,
-    minWidth: 320,
-    backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
-    borderRadius: t.borderRadius.default,
-  },
-  info: {
-    gap: 4,
-  },
-  name: {
-    fontWeight: 700,
-    fontSize: 16,
-  },
-  description: {
-    color: t.colors.blue04,
-    fontSize: 14,
-  },
-  metaRow: {
-    flexDirection: 'row',
+    justifyContent: 'space-between',
     gap: t.spacing.m,
-    marginTop: 4,
   },
-  meta: {
-    fontSize: 13,
-    color: t.colors.dark05,
-  },
-  empty: {
-    color: t.colors.dark05,
+  title: {
+    fontSize: 22,
+    fontWeight: 700,
   },
 }));

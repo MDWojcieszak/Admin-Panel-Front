@@ -1,5 +1,9 @@
 import { useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '~/components/Button';
+import { Input } from '~/components/Input';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { mkUseStyles } from '~/utils/theme';
@@ -10,46 +14,53 @@ type CommandEditModalProps = {
   canManage?: boolean;
 } & Partial<InternalModalProps>;
 
+const Schema = z.object({
+  name: z.string().min(1, 'Name is required'),
+});
+type SchemaType = z.infer<typeof Schema>;
+
 export const CommandEditModal = (p: CommandEditModalProps) => {
   const styles = useStyles();
   const { serverApi } = useApi();
-  const [name, setName] = useState(p.commandName ?? '');
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string>();
   const canManage = p.canManage ?? true;
 
-  const handleSave = async () => {
+  const formMethods = useForm<SchemaType>({
+    resolver: zodResolver(Schema),
+    defaultValues: { name: p.commandName ?? '' },
+  });
+
+  const handleSave = async (data: SchemaType) => {
     if (!serverApi || !p.commandId || !canManage) return;
-    if (!name.trim()) {
-      setError('Name is required');
-      return;
-    }
-    setError(undefined);
     setSaving(true);
     try {
-      await serverApi.serverCommandsControllerPutCommand({ id: p.commandId, patchServerCommandDto: { name } });
+      await serverApi.serverCommandsControllerPutCommand({ id: p.commandId, patchServerCommandDto: { name: data.name } });
       p.handleClose?.();
     } catch (e) {
       console.error('Error renaming command:', e);
-      setError('Could not rename the command');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <label style={styles.label}>Display name</label>
-      <input
-        style={styles.input}
-        value={name}
-        disabled={!canManage}
-        onChange={(e) => setName(e.target.value)}
-        placeholder='Command name'
-      />
-      {error ? <span style={styles.error}>{error}</span> : null}
-      <Button label='Save' onClick={handleSave} loading={saving} disabled={!canManage} />
-    </div>
+    <FormProvider {...formMethods}>
+      <div style={styles.container}>
+        <Input
+          name='name'
+          label='Display name'
+          description='Friendly name for the command'
+          type='text'
+          disableAutofill={false}
+        />
+        <Button
+          label='Save'
+          onClick={formMethods.handleSubmit(handleSave)}
+          loading={saving}
+          disabled={!canManage}
+        />
+      </div>
+    </FormProvider>
   );
 };
 
@@ -57,22 +68,5 @@ const useStyles = mkUseStyles((t) => ({
   container: {
     gap: t.spacing.m,
     width: 360,
-  },
-  label: {
-    fontSize: 12,
-    color: t.colors.blue04,
-  },
-  input: {
-    padding: t.spacing.m,
-    color: t.colors.white,
-    fontSize: 16,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    border: 0,
-    outline: 'none',
-  },
-  error: {
-    color: t.colors.red,
-    fontSize: 14,
   },
 }));

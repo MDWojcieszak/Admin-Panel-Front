@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ServerCategoriesDto } from '~/api/api';
 import { Button } from '~/components/Button';
+import { Input } from '~/components/Input';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { mkUseStyles } from '~/utils/theme';
@@ -11,68 +15,58 @@ type CategoryModalProps = {
   canManage?: boolean;
 } & Partial<InternalModalProps>;
 
+const makeSchema = (isEdit: boolean) =>
+  z.object({
+    name: z.string().optional(),
+    value: isEdit ? z.string().optional() : z.string().min(1, 'Value is required'),
+  });
+type SchemaType = { name?: string; value?: string };
+
 export const CategoryModal = (p: CategoryModalProps) => {
   const styles = useStyles();
   const { serverApi } = useApi();
   const isEdit = Boolean(p.category);
   const canManage = p.canManage ?? true;
-
-  const [name, setName] = useState(p.category?.name ?? '');
-  const [value, setValue] = useState(p.category?.value ?? '');
-  const [error, setError] = useState<string>();
   const [saving, setSaving] = useState(false);
 
-  const handleSave = async () => {
+  const formMethods = useForm<SchemaType>({
+    resolver: zodResolver(makeSchema(isEdit)),
+    defaultValues: { name: p.category?.name ?? '', value: p.category?.value ?? '' },
+  });
+
+  const handleSave = async (data: SchemaType) => {
     if (!serverApi || !canManage) return;
-    if (!isEdit && !value.trim()) {
-      setError('Value is required');
-      return;
-    }
-    setError(undefined);
     setSaving(true);
     try {
       if (isEdit && p.category) {
-        await serverApi.serverControllerPatchCategory({ id: p.category.id, patchCategoryDto: { name } });
+        await serverApi.serverControllerPatchCategory({ id: p.category.id, patchCategoryDto: { name: data.name } });
       } else if (p.serverId) {
         await serverApi.serverControllerCreateCategory({
           serverId: p.serverId,
-          createCategoryDto: { name: name || undefined, value },
+          createCategoryDto: { name: data.name || undefined, value: data.value ?? '' },
         });
       }
       p.handleClose?.();
     } catch (e) {
       console.error('Error saving category:', e);
-      setError('Could not save the category');
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <label style={styles.label}>Name</label>
-      <input
-        style={styles.input}
-        value={name}
-        disabled={!canManage}
-        onChange={(e) => setName(e.target.value)}
-        placeholder='Display name'
-      />
-      {!isEdit ? (
-        <>
-          <label style={styles.label}>Value</label>
-          <input
-            style={styles.input}
-            value={value}
-            disabled={!canManage}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder='Unique key'
-          />
-        </>
-      ) : null}
-      {error ? <span style={styles.error}>{error}</span> : null}
-      <Button label={isEdit ? 'Save' : 'Create category'} onClick={handleSave} loading={saving} disabled={!canManage} />
-    </div>
+    <FormProvider {...formMethods}>
+      <div style={styles.container}>
+        <Input name='name' label='Name' description='Display name' />
+        {!isEdit ? <Input name='value' label='Value' description='Unique key for this category' /> : null}
+        <Button
+          label={isEdit ? 'Save' : 'Create category'}
+          onClick={formMethods.handleSubmit(handleSave)}
+          loading={saving}
+          disabled={!canManage}
+        />
+      </div>
+    </FormProvider>
   );
 };
 
@@ -80,22 +74,5 @@ const useStyles = mkUseStyles((t) => ({
   container: {
     gap: t.spacing.s,
     width: 360,
-  },
-  label: {
-    fontSize: 12,
-    color: t.colors.blue04,
-  },
-  input: {
-    padding: t.spacing.m,
-    color: t.colors.white,
-    fontSize: 16,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    border: 0,
-    outline: 'none',
-  },
-  error: {
-    color: t.colors.red,
-    fontSize: 14,
   },
 }));
