@@ -31,6 +31,7 @@ export const PERMISSIONS = [
   'ocr.use',
   'acl.manage',
   'acl.assign',
+  'dashboard.read',
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
