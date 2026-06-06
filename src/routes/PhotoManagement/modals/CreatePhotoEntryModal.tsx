@@ -31,18 +31,6 @@ const PhotoEntrySchema = z
     startDate: z.string().optional(),
     endDate: z.string().optional(),
     selectedAstroObjectIds: z.array(z.string()).optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (
-      data.type === PhotoEntryType.Astro &&
-      (!data.selectedAstroObjectIds || data.selectedAstroObjectIds.length === 0)
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['selectedAstroObjectIds'],
-        message: 'Select at least one astro object',
-      });
-    }
   });
 
 type PhotoEntryFormValues = z.infer<typeof PhotoEntrySchema>;
@@ -153,8 +141,10 @@ export const CreatePhotoEntryModal = (p: CreatePhotoEntryModalProps) => {
             </div>
 
             <div style={styles.sectionHeaderText}>
-              <div style={styles.sectionTitle}>Astro objects</div>
-              <div style={styles.sectionDescription}>Select astro objects for this entry</div>
+              <div style={styles.sectionTitle}>Astro objects (optional)</div>
+              <div style={styles.sectionDescription}>
+                Leave empty for general sky (Milky Way, timelapse), or pick catalogued objects to target them.
+              </div>
             </div>
           </div>
 

@@ -38,28 +38,15 @@ type PhotoEntryDetailsModalProps = Partial<InternalModalProps> & {
   onFoldersCreated?: () => void | Promise<void>;
 };
 
-const buildPhotoEntryDetailsSchema = (entryType: PhotoEntryType) =>
-  z
-    .object({
-      name: z.string({ required_error: 'Name is required' }).min(1, 'Name is required'),
-      startDate: z.string().optional(),
-      endDate: z.string().optional(),
-      selectedAstroObjectIds: z.array(z.string()).optional(),
-    })
-    .superRefine((data, ctx) => {
-      if (
-        entryType === PhotoEntryType.Astro &&
-        (!data.selectedAstroObjectIds || data.selectedAstroObjectIds.length === 0)
-      ) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['selectedAstroObjectIds'],
-          message: 'Select at least one astro object',
-        });
-      }
-    });
+const photoEntryDetailsSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  // Optional even for ASTRO: an empty array clears objects (general-sky session).
+  selectedAstroObjectIds: z.array(z.string()).optional(),
+});
 
-type PhotoEntryDetailsFormValues = z.infer<ReturnType<typeof buildPhotoEntryDetailsSchema>>;
+type PhotoEntryDetailsFormValues = z.infer<typeof photoEntryDetailsSchema>;
 
 const getRelationAstroObjectId = (item: PhotoEntryAstroRelation): string | undefined => {
   return item.astroObjectId || item.astroObject?.id;
@@ -90,7 +77,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const initialSelectedAstroObjectIds = useMemo(() => mapAstroObjectIds(p.entry.astroObjects), [p.entry.astroObjects]);
 
   const formMethods = useForm<PhotoEntryDetailsFormValues>({
-    resolver: zodResolver(buildPhotoEntryDetailsSchema(p.entry.type)),
+    resolver: zodResolver(photoEntryDetailsSchema),
     defaultValues: {
       name: p.entry.name ?? '',
       startDate: toInputDate(p.entry.startDate),
@@ -152,12 +139,8 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const canCreateFolders = useMemo(() => {
     if (p.entry.foldersCreated) return false;
     if (!startDate || !endDate) return false;
-    if (isAstro && (!selectedAstroObjectIds || selectedAstroObjectIds.length === 0)) {
-      return false;
-    }
-
     return true;
-  }, [p.entry.foldersCreated, isAstro, startDate, endDate, selectedAstroObjectIds]);
+  }, [p.entry.foldersCreated, startDate, endDate]);
 
   const toggleAstroObject = (astroObjectId: string) => {
     if (isLocked) return;
