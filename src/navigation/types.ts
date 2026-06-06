@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Permission } from '~/acl/permissions';
 
 export enum MainNavigationRoute {
   DASHBOARD = 'dashboard',
@@ -7,6 +8,7 @@ export enum MainNavigationRoute {
   GALLERY = 'gallery',
   SETTINGS = 'settings',
   SERVERS = 'servers',
+  ACCESS_CONTROL = 'access-control',
 }
 
 export enum CommonNavigationRoute {
@@ -28,6 +30,11 @@ type RouteType<T> = {
   label: string;
   component: ReactNode;
   nested?: true;
+  /**
+   * Entry-level permission gating sidebar visibility and route access (OWNER bypass).
+   * An array means "any of" — the section is reachable with at least one of the permissions.
+   */
+  permission?: Permission | Permission[];
 };
 
 export type CommonRouteType = RouteType<CommonNavigationRoute>;

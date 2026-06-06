@@ -31,7 +31,8 @@
       "~/utils/*": ["src/utils/*"],
       "~/adapters/*": ["src/adapters/*"],
       "~/apiOld/*": ["src/apiOld/*"],
-      "~/api/*": ["src/api/*"]
+      "~/api/*": ["src/api/*"],
+      "~/acl/*": ["src/acl/*"]
     }
   },
   "exclude": ["node_modules"],

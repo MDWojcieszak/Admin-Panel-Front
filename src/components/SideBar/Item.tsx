@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MdAccountBox, MdDashboard, MdImage, MdSettings } from 'react-icons/md';
+import { MdAccountBox, MdAdminPanelSettings, MdDashboard, MdImage, MdSettings } from 'react-icons/md';
 
+import { Permission } from '~/acl/permissions';
 import { MainNavigationRoute } from '~/navigation/types';
 import { FaCameraRotate, FaServer } from 'react-icons/fa6';
 
@@ -12,6 +13,7 @@ export type SideBarItem = {
   label: string;
   path: MainNavigationRoute;
   isActive: boolean;
+  permission?: Permission | Permission[];
 };
 
 export const Item = (p: SideBarItem) => {
@@ -39,6 +41,8 @@ export const Item = (p: SideBarItem) => {
         return <FaServer {...iconProps} />;
       case MainNavigationRoute.PHOTO_MANAGEMENT:
         return <FaCameraRotate {...iconProps} />;
+      case MainNavigationRoute.ACCESS_CONTROL:
+        return <MdAdminPanelSettings {...iconProps} />;
     }
   };
   return (

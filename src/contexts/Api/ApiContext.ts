@@ -1,5 +1,16 @@
 import { createContext } from 'react';
-import { AstroObjectApi, AuthApi, FileApi, ImageApi, PhotoEntryApi, ServerApi, SessionApi, UserApi } from '~/api/api';
+import {
+  ACLApi,
+  AstroObjectApi,
+  AuthApi,
+  DefaultApi,
+  FileApi,
+  ImageApi,
+  PhotoEntryApi,
+  ServerApi,
+  SessionApi,
+  UserApi,
+} from '~/api/api';
 
 type ApiContextType = {
   authApi: AuthApi | false;
@@ -10,6 +21,8 @@ type ApiContextType = {
   serverApi: ServerApi | false;
   photoEntryApi: PhotoEntryApi | false;
   astroObjectApi: AstroObjectApi | false;
+  aclApi: ACLApi | false;
+  defaultApi: DefaultApi | false;
 };
 
 export const ApiContext = createContext<ApiContextType | null>(null);

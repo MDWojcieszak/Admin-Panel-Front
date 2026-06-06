@@ -5,6 +5,7 @@ import { ModalManagerProvider } from '~/contexts/ModalManager/ModalManagerProvid
 import { AuthProvider } from '~/contexts/User/AuthProvider';
 import { WebSocketProvider } from '~/contexts/WebSocket/WebSocketProvider';
 import { ApiProvider } from '~/contexts/Api/ApiProvider';
+import { PermissionsProvider } from '~/contexts/Permissions/PermissionsProvider';
 
 type AppProviderProps = {
   theme: Theme;
@@ -16,9 +17,11 @@ export const AppProvider = (p: AppProviderProps) => {
     <ThemeProvider theme={p.theme}>
       <AuthProvider>
         <ApiProvider>
-          <WebSocketProvider>
-            <ModalManagerProvider>{p.children}</ModalManagerProvider>
-          </WebSocketProvider>
+          <PermissionsProvider>
+            <WebSocketProvider>
+              <ModalManagerProvider>{p.children}</ModalManagerProvider>
+            </WebSocketProvider>
+          </PermissionsProvider>
         </ApiProvider>
       </AuthProvider>
     </ThemeProvider>

@@ -23,6 +23,19 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
   const [userData, setUserData] = useState<UserData>();
   const [accessToken, setAccessToken] = useState<string>();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const buildUserData = (token: string): UserData | undefined => {
+    const data = getTokenData(token);
+    if (!data || typeof data === 'string') return undefined;
+    const claims = data as { sub?: string; email?: string; role?: string };
+    return {
+      email: claims.email ?? '',
+      name: claims.email ?? '',
+      id: claims.sub,
+      role: claims.role,
+    };
+  };
+
   const initializeAppCredentials = () => {
     const visitData = Cookies.get(CookieKey.USER_VISIT);
     if (!visitData) {
@@ -37,6 +50,7 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
       const accessToken = getAccessToken();
       if (isTokenValid(accessToken)) {
         setAccessToken(accessToken);
+        setUserData(buildUserData(accessToken!));
         setUserState(UserState.LOGGED_IN);
         return scheduleTokenRefresh(accessToken!);
       }
@@ -47,10 +61,7 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
 
   const setTokens: AuthContextType['setTokens'] = (tokens) => {
     const { access_token: accessToken, refresh_token: refresfToken } = tokens;
-    setUserData({
-      email: 'test',
-      name: 'test',
-    });
+    setUserData(buildUserData(accessToken));
     setAccessToken(accessToken);
     setAccessTokenToCookie(accessToken);
     setRefreshTokenToCookie(refresfToken);
@@ -94,10 +105,6 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
     setUserState(UserState.REQUIRES_LOGIN);
     timeoutRef.current && clearInterval(timeoutRef.current);
   };
-
-  useEffect(() => {
-    console.log(userState);
-  }, [userState]);
 
   useEffect(() => {
     initializeAppCredentials();
