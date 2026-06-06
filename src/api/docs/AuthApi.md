@@ -4,6 +4,7 @@ All URIs are relative to *http://localhost*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
+|[**authControllerAdminResetPassword**](#authcontrolleradminresetpassword) | **POST** /auth/admin/reset-password/{userId} | Owner/admin: send a password reset email to a specific user|
 |[**authControllerCheckRegister**](#authcontrollercheckregister) | **POST** /auth/check-register | Check if registration token is valid|
 |[**authControllerLogout**](#authcontrollerlogout) | **POST** /auth/logout | Log out user and invalidate session|
 |[**authControllerRefreshToken**](#authcontrollerrefreshtoken) | **POST** /auth/refresh | Refresh access and refresh tokens|
@@ -11,6 +12,56 @@ All URIs are relative to *http://localhost*
 |[**authControllerResetPassword**](#authcontrollerresetpassword) | **POST** /auth/reset-password | Reset password using reset token|
 |[**authControllerResetPasswordRequest**](#authcontrollerresetpasswordrequest) | **POST** /auth/reset-password-request | Initiate password reset request|
 |[**authControllerSignIn**](#authcontrollersignin) | **POST** /auth/local/signin | Sign in using email and password|
+
+# **authControllerAdminResetPassword**
+> authControllerAdminResetPassword()
+
+
+### Example
+
+```typescript
+import {
+    AuthApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new AuthApi(configuration);
+
+let userId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.authControllerAdminResetPassword(
+    userId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **userId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Password reset email sent to the user |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **authControllerCheckRegister**
 > AuthControllerCheckRegister200Response authControllerCheckRegister()

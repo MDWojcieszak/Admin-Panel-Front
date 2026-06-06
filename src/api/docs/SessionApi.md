@@ -8,7 +8,9 @@ All URIs are relative to *http://localhost*
 |[**sessionControllerGetAllForUser**](#sessioncontrollergetallforuser) | **GET** /session/my | |
 |[**sessionControllerGetAllForUserByAdmin**](#sessioncontrollergetallforuserbyadmin) | **GET** /session/user/{userId} | |
 |[**sessionControllerGetCurrent**](#sessioncontrollergetcurrent) | **GET** /session/current | |
-|[**sessionControllerRemoveSession**](#sessioncontrollerremovesession) | **POST** /session/logout | |
+|[**sessionControllerRevokeByAdmin**](#sessioncontrollerrevokebyadmin) | **DELETE** /session/admin/{id} | |
+|[**sessionControllerRevokeOthers**](#sessioncontrollerrevokeothers) | **DELETE** /session/others | |
+|[**sessionControllerRevokeOwn**](#sessioncontrollerrevokeown) | **DELETE** /session/{id} | |
 
 # **sessionControllerGetAll**
 > SessionListResponseDto sessionControllerGetAll()
@@ -215,8 +217,8 @@ This endpoint does not have any parameters.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **sessionControllerRemoveSession**
-> sessionControllerRemoveSession(sessionDto)
+# **sessionControllerRevokeByAdmin**
+> sessionControllerRevokeByAdmin()
 
 
 ### Example
@@ -224,17 +226,16 @@ This endpoint does not have any parameters.
 ```typescript
 import {
     SessionApi,
-    Configuration,
-    SessionDto
+    Configuration
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new SessionApi(configuration);
 
-let sessionDto: SessionDto; //
+let id: string; // (default to undefined)
 
-const { status, data } = await apiInstance.sessionControllerRemoveSession(
-    sessionDto
+const { status, data } = await apiInstance.sessionControllerRevokeByAdmin(
+    id
 );
 ```
 
@@ -242,7 +243,7 @@ const { status, data } = await apiInstance.sessionControllerRemoveSession(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **sessionDto** | **SessionDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
@@ -255,14 +256,107 @@ void (empty response body)
 
 ### HTTP request headers
 
- - **Content-Type**: application/json
+ - **Content-Type**: Not defined
  - **Accept**: Not defined
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | Session deleted |  -  |
+|**200** | Revoke any session (admin) |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **sessionControllerRevokeOthers**
+> sessionControllerRevokeOthers()
+
+
+### Example
+
+```typescript
+import {
+    SessionApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new SessionApi(configuration);
+
+const { status, data } = await apiInstance.sessionControllerRevokeOthers();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Revoke all of the current user sessions except this one |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **sessionControllerRevokeOwn**
+> sessionControllerRevokeOwn()
+
+
+### Example
+
+```typescript
+import {
+    SessionApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new SessionApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.sessionControllerRevokeOwn(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Revoke one of your own sessions |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

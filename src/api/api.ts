@@ -857,7 +857,7 @@ export interface CreatePhotoEntryDto {
      */
     'endDate'?: string;
     /**
-     * 
+     * Only for ASTRO entries, and optional even then: omit or send an empty array for a general sky / Milky Way / timelapse session not tied to catalogued objects. Must be omitted for GENERAL and WORK entries.
      * @type {Array<string>}
      * @memberof CreatePhotoEntryDto
      */
@@ -2466,7 +2466,7 @@ export interface PatchPhotoEntryDto {
      */
     'endDate'?: string;
     /**
-     * 
+     * ASTRO entries only. Replaces the linked objects; send an empty array to clear them (general astro session). Omit to leave links unchanged. Cannot be changed after folders are created.
      * @type {Array<string>}
      * @memberof PatchPhotoEntryDto
      */
@@ -4905,19 +4905,6 @@ export type ServerTransferStatus = typeof ServerTransferStatus[keyof typeof Serv
 /**
  * 
  * @export
- * @interface SessionDto
- */
-export interface SessionDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof SessionDto
-     */
-    'sessionId'?: string;
-}
-/**
- * 
- * @export
  * @interface SessionListResponseDto
  */
 export interface SessionListResponseDto {
@@ -4957,19 +4944,31 @@ export interface SessionResponseDto {
      * @type {string}
      * @memberof SessionResponseDto
      */
-    'browser': string;
+    'browser'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof SessionResponseDto
      */
-    'os': string;
+    'os'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof SessionResponseDto
      */
-    'platform': string;
+    'platform'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SessionResponseDto
+     */
+    'isCurrent'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionResponseDto
+     */
+    'createdAt'?: string;
     /**
      * 
      * @type {string}
@@ -8226,6 +8225,44 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
+         * @summary Owner/admin: send a password reset email to a specific user
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authControllerAdminResetPassword: async (userId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('authControllerAdminResetPassword', 'userId', userId)
+            const localVarPath = `/auth/admin/reset-password/{userId}`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Check if registration token is valid
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8490,6 +8527,19 @@ export const AuthApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Owner/admin: send a password reset email to a specific user
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authControllerAdminResetPassword(userId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authControllerAdminResetPassword(userId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.authControllerAdminResetPassword']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Check if registration token is valid
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8588,6 +8638,16 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
+         * @summary Owner/admin: send a password reset email to a specific user
+         * @param {AuthApiAuthControllerAdminResetPasswordRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authControllerAdminResetPassword(requestParameters: AuthApiAuthControllerAdminResetPasswordRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.authControllerAdminResetPassword(requestParameters.userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Check if registration token is valid
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8657,6 +8717,20 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
 };
 
 /**
+ * Request parameters for authControllerAdminResetPassword operation in AuthApi.
+ * @export
+ * @interface AuthApiAuthControllerAdminResetPasswordRequest
+ */
+export interface AuthApiAuthControllerAdminResetPasswordRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof AuthApiAuthControllerAdminResetPassword
+     */
+    readonly userId: string
+}
+
+/**
  * Request parameters for authControllerRegister operation in AuthApi.
  * @export
  * @interface AuthApiAuthControllerRegisterRequest
@@ -8719,6 +8793,18 @@ export interface AuthApiAuthControllerSignInRequest {
  * @extends {BaseAPI}
  */
 export class AuthApi extends BaseAPI {
+    /**
+     * 
+     * @summary Owner/admin: send a password reset email to a specific user
+     * @param {AuthApiAuthControllerAdminResetPasswordRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public authControllerAdminResetPassword(requestParameters: AuthApiAuthControllerAdminResetPasswordRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).authControllerAdminResetPassword(requestParameters.userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Check if registration token is valid
@@ -15441,14 +15527,15 @@ export const SessionApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {SessionDto} sessionDto 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sessionControllerRemoveSession: async (sessionDto: SessionDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'sessionDto' is not null or undefined
-            assertParamExists('sessionControllerRemoveSession', 'sessionDto', sessionDto)
-            const localVarPath = `/session/logout`;
+        sessionControllerRevokeByAdmin: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('sessionControllerRevokeByAdmin', 'id', id)
+            const localVarPath = `/session/admin/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -15456,7 +15543,7 @@ export const SessionApiAxiosParamCreator = function (configuration?: Configurati
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -15466,12 +15553,79 @@ export const SessionApiAxiosParamCreator = function (configuration?: Configurati
 
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(sessionDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sessionControllerRevokeOthers: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/session/others`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sessionControllerRevokeOwn: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('sessionControllerRevokeOwn', 'id', id)
+            const localVarPath = `/session/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -15541,14 +15695,37 @@ export const SessionApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {SessionDto} sessionDto 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async sessionControllerRemoveSession(sessionDto: SessionDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.sessionControllerRemoveSession(sessionDto, options);
+        async sessionControllerRevokeByAdmin(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sessionControllerRevokeByAdmin(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['SessionApi.sessionControllerRemoveSession']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['SessionApi.sessionControllerRevokeByAdmin']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async sessionControllerRevokeOthers(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sessionControllerRevokeOthers(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SessionApi.sessionControllerRevokeOthers']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async sessionControllerRevokeOwn(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sessionControllerRevokeOwn(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SessionApi.sessionControllerRevokeOwn']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -15598,12 +15775,29 @@ export const SessionApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {SessionApiSessionControllerRemoveSessionRequest} requestParameters Request parameters.
+         * @param {SessionApiSessionControllerRevokeByAdminRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sessionControllerRemoveSession(requestParameters: SessionApiSessionControllerRemoveSessionRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.sessionControllerRemoveSession(requestParameters.sessionDto, options).then((request) => request(axios, basePath));
+        sessionControllerRevokeByAdmin(requestParameters: SessionApiSessionControllerRevokeByAdminRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.sessionControllerRevokeByAdmin(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sessionControllerRevokeOthers(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.sessionControllerRevokeOthers(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {SessionApiSessionControllerRevokeOwnRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sessionControllerRevokeOwn(requestParameters: SessionApiSessionControllerRevokeOwnRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.sessionControllerRevokeOwn(requestParameters.id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -15679,17 +15873,31 @@ export interface SessionApiSessionControllerGetAllForUserByAdminRequest {
 }
 
 /**
- * Request parameters for sessionControllerRemoveSession operation in SessionApi.
+ * Request parameters for sessionControllerRevokeByAdmin operation in SessionApi.
  * @export
- * @interface SessionApiSessionControllerRemoveSessionRequest
+ * @interface SessionApiSessionControllerRevokeByAdminRequest
  */
-export interface SessionApiSessionControllerRemoveSessionRequest {
+export interface SessionApiSessionControllerRevokeByAdminRequest {
     /**
      * 
-     * @type {SessionDto}
-     * @memberof SessionApiSessionControllerRemoveSession
+     * @type {string}
+     * @memberof SessionApiSessionControllerRevokeByAdmin
      */
-    readonly sessionDto: SessionDto
+    readonly id: string
+}
+
+/**
+ * Request parameters for sessionControllerRevokeOwn operation in SessionApi.
+ * @export
+ * @interface SessionApiSessionControllerRevokeOwnRequest
+ */
+export interface SessionApiSessionControllerRevokeOwnRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionApiSessionControllerRevokeOwn
+     */
+    readonly id: string
 }
 
 /**
@@ -15744,13 +15952,34 @@ export class SessionApi extends BaseAPI {
 
     /**
      * 
-     * @param {SessionApiSessionControllerRemoveSessionRequest} requestParameters Request parameters.
+     * @param {SessionApiSessionControllerRevokeByAdminRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SessionApi
      */
-    public sessionControllerRemoveSession(requestParameters: SessionApiSessionControllerRemoveSessionRequest, options?: RawAxiosRequestConfig) {
-        return SessionApiFp(this.configuration).sessionControllerRemoveSession(requestParameters.sessionDto, options).then((request) => request(this.axios, this.basePath));
+    public sessionControllerRevokeByAdmin(requestParameters: SessionApiSessionControllerRevokeByAdminRequest, options?: RawAxiosRequestConfig) {
+        return SessionApiFp(this.configuration).sessionControllerRevokeByAdmin(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SessionApi
+     */
+    public sessionControllerRevokeOthers(options?: RawAxiosRequestConfig) {
+        return SessionApiFp(this.configuration).sessionControllerRevokeOthers(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {SessionApiSessionControllerRevokeOwnRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SessionApi
+     */
+    public sessionControllerRevokeOwn(requestParameters: SessionApiSessionControllerRevokeOwnRequest, options?: RawAxiosRequestConfig) {
+        return SessionApiFp(this.configuration).sessionControllerRevokeOwn(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -17126,6 +17355,43 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerDelete: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('userControllerDelete', 'id', id)
+            const localVarPath = `/user/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
@@ -17342,6 +17608,18 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerDelete(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerDelete(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerDelete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
@@ -17421,6 +17699,15 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @param {UserApiUserControllerDeleteRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerDelete(requestParameters: UserApiUserControllerDeleteRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserResponseDto> {
+            return localVarFp.userControllerDelete(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {UserApiUserControllerGetListRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -17477,6 +17764,20 @@ export interface UserApiUserControllerCreateRequest {
      * @memberof UserApiUserControllerCreate
      */
     readonly userDto: UserDto
+}
+
+/**
+ * Request parameters for userControllerDelete operation in UserApi.
+ * @export
+ * @interface UserApiUserControllerDeleteRequest
+ */
+export interface UserApiUserControllerDeleteRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserApiUserControllerDelete
+     */
+    readonly id: string
 }
 
 /**
@@ -17551,6 +17852,17 @@ export class UserApi extends BaseAPI {
      */
     public userControllerCreate(requestParameters: UserApiUserControllerCreateRequest, options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).userControllerCreate(requestParameters.userDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {UserApiUserControllerDeleteRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public userControllerDelete(requestParameters: UserApiUserControllerDeleteRequest, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userControllerDelete(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

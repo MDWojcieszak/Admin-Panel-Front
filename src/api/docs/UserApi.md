@@ -5,6 +5,7 @@ All URIs are relative to *http://localhost*
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
 |[**userControllerCreate**](#usercontrollercreate) | **POST** /user/create | |
+|[**userControllerDelete**](#usercontrollerdelete) | **DELETE** /user/{id} | |
 |[**userControllerGetList**](#usercontrollergetlist) | **GET** /user/list | |
 |[**userControllerGetSettings**](#usercontrollergetsettings) | **GET** /user/settings | |
 |[**userControllerUpdate**](#usercontrollerupdate) | **PATCH** /user/me | |
@@ -59,6 +60,56 @@ const { status, data } = await apiInstance.userControllerCreate(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | User created |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **userControllerDelete**
+> UserResponseDto userControllerDelete()
+
+
+### Example
+
+```typescript
+import {
+    UserApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new UserApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.userControllerDelete(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**UserResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | User soft-deleted (account disabled, sessions revoked) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

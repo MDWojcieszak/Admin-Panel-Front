@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **type** | [**PhotoEntryType**](PhotoEntryType.md) |  | [optional] [default to undefined]
 **startDate** | **string** |  | [optional] [default to undefined]
 **endDate** | **string** |  | [optional] [default to undefined]
-**astroObjectIds** | **Array&lt;string&gt;** |  | [optional] [default to undefined]
+**astroObjectIds** | **Array&lt;string&gt;** | ASTRO entries only. Replaces the linked objects; send an empty array to clear them (general astro session). Omit to leave links unchanged. Cannot be changed after folders are created. | [optional] [default to undefined]
 
 ## Example
 

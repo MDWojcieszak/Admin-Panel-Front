@@ -170,7 +170,6 @@ docs/ServerTransferMode.md
 docs/ServerTransferResponse.md
 docs/ServerTransferStatus.md
 docs/SessionApi.md
-docs/SessionDto.md
 docs/SessionListResponseDto.md
 docs/SessionResponseDto.md
 docs/SetUserGroupsDto.md
