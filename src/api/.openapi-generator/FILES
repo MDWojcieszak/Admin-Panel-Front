@@ -18,7 +18,7 @@ docs/AstroObjectDetailsResponse.md
 docs/AstroObjectListResponse.md
 docs/AstroObjectResponse.md
 docs/AuthApi.md
-docs/AuthControllerHandleUserCreatedEvent200Response.md
+docs/AuthControllerCheckRegister200Response.md
 docs/AuthorDto.md
 docs/Category.md
 docs/CommandExecuteResponseDto.md
@@ -31,6 +31,7 @@ docs/CommandRuntimeStatus.md
 docs/CommandStatus.md
 docs/CommandType.md
 docs/ConnectedServiceType.md
+docs/CountByDto.md
 docs/CpuDto.md
 docs/CreateAstroObjectDto.md
 docs/CreateCategoryDto.md
@@ -39,13 +40,29 @@ docs/CreateImmichAlbumDto.md
 docs/CreatePermissionGroupDto.md
 docs/CreatePhotoEntryDto.md
 docs/CreateServerTransferDto.md
+docs/DailyPointDto.md
+docs/DashboardApi.md
+docs/DashboardGalleryResponseDto.md
+docs/DashboardPhotoEntriesDto.md
+docs/DashboardProcessesDto.md
+docs/DashboardRecentProcessDto.md
+docs/DashboardResponseDto.md
+docs/DashboardServersDto.md
+docs/DashboardTransfersDto.md
+docs/DashboardTrendsResponseDto.md
+docs/DashboardUsersDto.md
 docs/DefaultApi.md
 docs/DimensionsDto.md
 docs/DiskInfoDto.md
 docs/DiskType.md
 docs/FileApi.md
 docs/GalleryApi.md
+docs/GalleryAuthorDto.md
+docs/GalleryCompletenessDto.md
+docs/GalleryLocalizationDto.md
+docs/GalleryRecentDto.md
 docs/GalleryResponseDto.md
+docs/GalleryTotalsDto.md
 docs/GenerateTokenDto.md
 docs/GenerateTokenResponseDto.md
 docs/ImageApi.md
@@ -60,6 +77,7 @@ docs/LocationCreateDto.md
 docs/LocationResponseDto.md
 docs/MediaStatus.md
 docs/MemoryDto.md
+docs/MonthlyPointDto.md
 docs/MyPermissionsResponseDto.md
 docs/OCRDevApi.md
 docs/OcrLang.md
@@ -85,6 +103,7 @@ docs/PatchServerCommandDto.md
 docs/PatchServerSettingDto.md
 docs/PatchServerTransferDto.md
 docs/PatchUserAdminDto.md
+docs/PatchUserSettingsDto.md
 docs/PermissionCatalogResponseDto.md
 docs/PermissionDescriptorResponseDto.md
 docs/PermissionGroupListResponseDto.md
@@ -125,6 +144,7 @@ docs/ProcessListResponseDto.md
 docs/ProcessLog.md
 docs/ProcessLogLevel.md
 docs/ProcessLogListResponseDto.md
+docs/ProcessPointDto.md
 docs/ProcessResponseDto.md
 docs/PullModelDto.md
 docs/RefreshImmichAlbumDto.md
@@ -171,6 +191,8 @@ docs/TokenApi.md
 docs/TokenListResponseDto.md
 docs/TokenMetadataResponseDto.md
 docs/TokensDto.md
+docs/TrendsRange.md
+docs/TrendsSeriesDto.md
 docs/UpdateCommandProgressMarkerDto.md
 docs/UpdatePermissionGroupDto.md
 docs/UploadResponseDto.md
@@ -179,5 +201,6 @@ docs/UserApi.md
 docs/UserDto.md
 docs/UserListResponseDto.md
 docs/UserResponseDto.md
+docs/UserSettingsResponseDto.md
 git_push.sh
 index.ts

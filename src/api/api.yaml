@@ -221,7 +221,7 @@ paths:
         - JWT-register-user: []
   /auth/check-register:
     post:
-      operationId: AuthController_handleUserCreatedEvent
+      operationId: AuthController_checkRegister
       summary: Check if registration token is valid
       parameters: []
       responses:
@@ -298,6 +298,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResponseDto'
+      tags: *ref_3
+      security: *ref_4
+  /user/settings:
+    get:
+      operationId: UserController_getSettings
+      parameters: []
+      responses:
+        '200':
+          description: Current user settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsResponseDto'
+      tags: *ref_3
+      security: *ref_4
+    patch:
+      operationId: UserController_updateSettings
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchUserSettingsDto'
+      responses:
+        '200':
+          description: User settings updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSettingsResponseDto'
       tags: *ref_3
       security: *ref_4
   /user/role:
@@ -2480,6 +2511,52 @@ paths:
                 $ref: '#/components/schemas/PermissionGroupListResponseDto'
       tags: *ref_30
       security: *ref_31
+  /dashboard:
+    get:
+      operationId: DashboardController_getOverview
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardResponseDto'
+      tags: &ref_32
+        - Dashboard
+      security: &ref_33
+        - bearer: []
+  /dashboard/gallery:
+    get:
+      operationId: DashboardController_getGallery
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardGalleryResponseDto'
+      tags: *ref_32
+      security: *ref_33
+  /dashboard/trends:
+    get:
+      operationId: DashboardController_getTrends
+      parameters:
+        - name: range
+          required: false
+          in: query
+          schema:
+            $ref: '#/components/schemas/TrendsRange'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardTrendsResponseDto'
+      tags: *ref_32
+      security: *ref_33
 info:
   title: WHCP Backend
   description: XD
@@ -2801,6 +2878,41 @@ components:
       required:
         - users
         - total
+    UserSettingsResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+        serverStatusEmailNotifications:
+          type: boolean
+        serverIdleEmailNotifications:
+          type: boolean
+        serverPushNotifications:
+          type: boolean
+        processEmailNotifications:
+          type: boolean
+        processPushNotifications:
+          type: boolean
+      required:
+        - id
+        - serverStatusEmailNotifications
+        - serverIdleEmailNotifications
+        - serverPushNotifications
+        - processEmailNotifications
+        - processPushNotifications
+    PatchUserSettingsDto:
+      type: object
+      properties:
+        serverStatusEmailNotifications:
+          type: boolean
+        serverIdleEmailNotifications:
+          type: boolean
+        serverPushNotifications:
+          type: boolean
+        processEmailNotifications:
+          type: boolean
+        processPushNotifications:
+          type: boolean
     PatchUserAdminDto:
       type: object
       properties:
@@ -4864,6 +4976,11 @@ components:
           type: string
           format: date-time
         astroObjectIds:
+          description: >-
+            Only for ASTRO entries, and optional even then: omit or send an
+            empty array for a general sky / Milky Way / timelapse session not
+            tied to catalogued objects. Must be omitted for GENERAL and WORK
+            entries.
           type: array
           items:
             type: string
@@ -4885,6 +5002,10 @@ components:
           type: string
           format: date-time
         astroObjectIds:
+          description: >-
+            ASTRO entries only. Replaces the linked objects; send an empty array
+            to clear them (general astro session). Omit to leave links
+            unchanged. Cannot be changed after folders are created.
           type: array
           items:
             type: string
@@ -5055,3 +5176,290 @@ components:
             type: string
       required:
         - groupIds
+    DashboardServersDto:
+      type: object
+      properties:
+        total:
+          type: number
+        online:
+          type: number
+        offline:
+          type: number
+      required:
+        - total
+        - online
+        - offline
+    DashboardRecentProcessDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/ServerProcessStatus'
+        runtimeStatus:
+          $ref: '#/components/schemas/CommandRuntimeStatus'
+        progress:
+          type: number
+        startedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - status
+        - runtimeStatus
+        - startedAt
+    DashboardProcessesDto:
+      type: object
+      properties:
+        total:
+          type: number
+        running:
+          type: number
+        failed:
+          type: number
+        recent:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardRecentProcessDto'
+      required:
+        - total
+        - running
+        - failed
+        - recent
+    DashboardUsersDto:
+      type: object
+      properties:
+        total:
+          type: number
+      required:
+        - total
+    CountByDto:
+      type: object
+      properties:
+        key:
+          type: string
+        count:
+          type: number
+      required:
+        - key
+        - count
+    DashboardPhotoEntriesDto:
+      type: object
+      properties:
+        total:
+          type: number
+        byType:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountByDto'
+        byStatus:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountByDto'
+      required:
+        - total
+        - byType
+        - byStatus
+    DashboardTransfersDto:
+      type: object
+      properties:
+        total:
+          type: number
+        running:
+          type: number
+        failed:
+          type: number
+      required:
+        - total
+        - running
+        - failed
+    DashboardResponseDto:
+      type: object
+      properties:
+        servers:
+          $ref: '#/components/schemas/DashboardServersDto'
+        processes:
+          $ref: '#/components/schemas/DashboardProcessesDto'
+        users:
+          $ref: '#/components/schemas/DashboardUsersDto'
+        photoEntries:
+          $ref: '#/components/schemas/DashboardPhotoEntriesDto'
+        transfers:
+          $ref: '#/components/schemas/DashboardTransfersDto'
+      required:
+        - servers
+        - processes
+        - users
+        - photoEntries
+        - transfers
+    GalleryTotalsDto:
+      type: object
+      properties:
+        images:
+          type: number
+        catalogued:
+          type: number
+        missingMetadata:
+          type: number
+      required:
+        - images
+        - catalogued
+        - missingMetadata
+    GalleryCompletenessDto:
+      type: object
+      properties:
+        withoutAuthor:
+          type: number
+        withoutTitle:
+          type: number
+        withoutDescription:
+          type: number
+      required:
+        - withoutAuthor
+        - withoutTitle
+        - withoutDescription
+    GalleryAuthorDto:
+      type: object
+      properties:
+        authorId:
+          type: string
+        name:
+          type: string
+        count:
+          type: number
+      required:
+        - authorId
+        - name
+        - count
+    GalleryLocalizationDto:
+      type: object
+      properties:
+        key:
+          type: string
+        count:
+          type: number
+      required:
+        - key
+        - count
+    GalleryRecentDto:
+      type: object
+      properties:
+        imageId:
+          type: string
+        title:
+          type: string
+        dateTaken:
+          type: string
+          format: date-time
+        localization:
+          type: string
+        author:
+          type: string
+      required:
+        - imageId
+        - dateTaken
+        - localization
+    DashboardGalleryResponseDto:
+      type: object
+      properties:
+        totals:
+          $ref: '#/components/schemas/GalleryTotalsDto'
+        completeness:
+          $ref: '#/components/schemas/GalleryCompletenessDto'
+        byAuthor:
+          type: array
+          items:
+            $ref: '#/components/schemas/GalleryAuthorDto'
+        byLocalization:
+          type: array
+          items:
+            $ref: '#/components/schemas/GalleryLocalizationDto'
+        recent:
+          type: array
+          items:
+            $ref: '#/components/schemas/GalleryRecentDto'
+      required:
+        - totals
+        - completeness
+        - byAuthor
+        - byLocalization
+        - recent
+    TrendsRange:
+      type: string
+      enum:
+        - 7d
+        - 30d
+    DailyPointDto:
+      type: object
+      properties:
+        date:
+          type: string
+        count:
+          type: number
+      required:
+        - date
+        - count
+    MonthlyPointDto:
+      type: object
+      properties:
+        period:
+          type: string
+        count:
+          type: number
+      required:
+        - period
+        - count
+    ProcessPointDto:
+      type: object
+      properties:
+        date:
+          type: string
+        total:
+          type: number
+        failed:
+          type: number
+      required:
+        - date
+        - total
+        - failed
+    TrendsSeriesDto:
+      type: object
+      properties:
+        imagesAdded:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyPointDto'
+        photosByTaken:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonthlyPointDto'
+        photoEntriesCreated:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyPointDto'
+        processes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProcessPointDto'
+        newUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyPointDto'
+      required:
+        - imagesAdded
+        - photosByTaken
+        - photoEntriesCreated
+        - processes
+        - newUsers
+    DashboardTrendsResponseDto:
+      type: object
+      properties:
+        range:
+          type: string
+        series:
+          $ref: '#/components/schemas/TrendsSeriesDto'
+      required:
+        - range
+        - series

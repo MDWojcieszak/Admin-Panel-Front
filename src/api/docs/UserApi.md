@@ -6,8 +6,10 @@ All URIs are relative to *http://localhost*
 |------------- | ------------- | -------------|
 |[**userControllerCreate**](#usercontrollercreate) | **POST** /user/create | |
 |[**userControllerGetList**](#usercontrollergetlist) | **GET** /user/list | |
+|[**userControllerGetSettings**](#usercontrollergetsettings) | **GET** /user/settings | |
 |[**userControllerUpdate**](#usercontrollerupdate) | **PATCH** /user/me | |
 |[**userControllerUpdateAdmin**](#usercontrollerupdateadmin) | **PATCH** /user/role | |
+|[**userControllerUpdateSettings**](#usercontrollerupdatesettings) | **PATCH** /user/settings | |
 
 # **userControllerCreate**
 > UserResponseDto userControllerCreate(userDto)
@@ -113,6 +115,49 @@ const { status, data } = await apiInstance.userControllerGetList(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **userControllerGetSettings**
+> UserSettingsResponseDto userControllerGetSettings()
+
+
+### Example
+
+```typescript
+import {
+    UserApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new UserApi(configuration);
+
+const { status, data } = await apiInstance.userControllerGetSettings();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**UserSettingsResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Current user settings |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **userControllerUpdate**
 > UserResponseDto userControllerUpdate()
 
@@ -207,6 +252,57 @@ const { status, data } = await apiInstance.userControllerUpdateAdmin(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | User updated |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **userControllerUpdateSettings**
+> UserSettingsResponseDto userControllerUpdateSettings(patchUserSettingsDto)
+
+
+### Example
+
+```typescript
+import {
+    UserApi,
+    Configuration,
+    PatchUserSettingsDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new UserApi(configuration);
+
+let patchUserSettingsDto: PatchUserSettingsDto; //
+
+const { status, data } = await apiInstance.userControllerUpdateSettings(
+    patchUserSettingsDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **patchUserSettingsDto** | **PatchUserSettingsDto**|  | |
+
+
+### Return type
+
+**UserSettingsResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | User settings updated |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

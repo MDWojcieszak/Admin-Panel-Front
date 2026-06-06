@@ -348,19 +348,19 @@ export interface AstroObjectResponse {
 /**
  * 
  * @export
- * @interface AuthControllerHandleUserCreatedEvent200Response
+ * @interface AuthControllerCheckRegister200Response
  */
-export interface AuthControllerHandleUserCreatedEvent200Response {
+export interface AuthControllerCheckRegister200Response {
     /**
      * 
      * @type {string}
-     * @memberof AuthControllerHandleUserCreatedEvent200Response
+     * @memberof AuthControllerCheckRegister200Response
      */
     'email'?: string;
     /**
      * 
      * @type {string}
-     * @memberof AuthControllerHandleUserCreatedEvent200Response
+     * @memberof AuthControllerCheckRegister200Response
      */
     'firstName'?: string;
 }
@@ -631,6 +631,25 @@ export const ConnectedServiceType = {
 export type ConnectedServiceType = typeof ConnectedServiceType[keyof typeof ConnectedServiceType];
 
 
+/**
+ * 
+ * @export
+ * @interface CountByDto
+ */
+export interface CountByDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CountByDto
+     */
+    'key': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CountByDto
+     */
+    'count': number;
+}
 /**
  * 
  * @export
@@ -930,6 +949,282 @@ export interface CreateServerTransferDto {
 /**
  * 
  * @export
+ * @interface DailyPointDto
+ */
+export interface DailyPointDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof DailyPointDto
+     */
+    'date': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof DailyPointDto
+     */
+    'count': number;
+}
+/**
+ * 
+ * @export
+ * @interface DashboardGalleryResponseDto
+ */
+export interface DashboardGalleryResponseDto {
+    /**
+     * 
+     * @type {GalleryTotalsDto}
+     * @memberof DashboardGalleryResponseDto
+     */
+    'totals': GalleryTotalsDto;
+    /**
+     * 
+     * @type {GalleryCompletenessDto}
+     * @memberof DashboardGalleryResponseDto
+     */
+    'completeness': GalleryCompletenessDto;
+    /**
+     * 
+     * @type {Array<GalleryAuthorDto>}
+     * @memberof DashboardGalleryResponseDto
+     */
+    'byAuthor': Array<GalleryAuthorDto>;
+    /**
+     * 
+     * @type {Array<GalleryLocalizationDto>}
+     * @memberof DashboardGalleryResponseDto
+     */
+    'byLocalization': Array<GalleryLocalizationDto>;
+    /**
+     * 
+     * @type {Array<GalleryRecentDto>}
+     * @memberof DashboardGalleryResponseDto
+     */
+    'recent': Array<GalleryRecentDto>;
+}
+/**
+ * 
+ * @export
+ * @interface DashboardPhotoEntriesDto
+ */
+export interface DashboardPhotoEntriesDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardPhotoEntriesDto
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<CountByDto>}
+     * @memberof DashboardPhotoEntriesDto
+     */
+    'byType': Array<CountByDto>;
+    /**
+     * 
+     * @type {Array<CountByDto>}
+     * @memberof DashboardPhotoEntriesDto
+     */
+    'byStatus': Array<CountByDto>;
+}
+/**
+ * 
+ * @export
+ * @interface DashboardProcessesDto
+ */
+export interface DashboardProcessesDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardProcessesDto
+     */
+    'total': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardProcessesDto
+     */
+    'running': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardProcessesDto
+     */
+    'failed': number;
+    /**
+     * 
+     * @type {Array<DashboardRecentProcessDto>}
+     * @memberof DashboardProcessesDto
+     */
+    'recent': Array<DashboardRecentProcessDto>;
+}
+/**
+ * 
+ * @export
+ * @interface DashboardRecentProcessDto
+ */
+export interface DashboardRecentProcessDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof DashboardRecentProcessDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DashboardRecentProcessDto
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {ServerProcessStatus}
+     * @memberof DashboardRecentProcessDto
+     */
+    'status': ServerProcessStatus;
+    /**
+     * 
+     * @type {CommandRuntimeStatus}
+     * @memberof DashboardRecentProcessDto
+     */
+    'runtimeStatus': CommandRuntimeStatus;
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardRecentProcessDto
+     */
+    'progress'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DashboardRecentProcessDto
+     */
+    'startedAt': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface DashboardResponseDto
+ */
+export interface DashboardResponseDto {
+    /**
+     * 
+     * @type {DashboardServersDto}
+     * @memberof DashboardResponseDto
+     */
+    'servers': DashboardServersDto;
+    /**
+     * 
+     * @type {DashboardProcessesDto}
+     * @memberof DashboardResponseDto
+     */
+    'processes': DashboardProcessesDto;
+    /**
+     * 
+     * @type {DashboardUsersDto}
+     * @memberof DashboardResponseDto
+     */
+    'users': DashboardUsersDto;
+    /**
+     * 
+     * @type {DashboardPhotoEntriesDto}
+     * @memberof DashboardResponseDto
+     */
+    'photoEntries': DashboardPhotoEntriesDto;
+    /**
+     * 
+     * @type {DashboardTransfersDto}
+     * @memberof DashboardResponseDto
+     */
+    'transfers': DashboardTransfersDto;
+}
+/**
+ * 
+ * @export
+ * @interface DashboardServersDto
+ */
+export interface DashboardServersDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardServersDto
+     */
+    'total': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardServersDto
+     */
+    'online': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardServersDto
+     */
+    'offline': number;
+}
+/**
+ * 
+ * @export
+ * @interface DashboardTransfersDto
+ */
+export interface DashboardTransfersDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardTransfersDto
+     */
+    'total': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardTransfersDto
+     */
+    'running': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardTransfersDto
+     */
+    'failed': number;
+}
+/**
+ * 
+ * @export
+ * @interface DashboardTrendsResponseDto
+ */
+export interface DashboardTrendsResponseDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof DashboardTrendsResponseDto
+     */
+    'range': string;
+    /**
+     * 
+     * @type {TrendsSeriesDto}
+     * @memberof DashboardTrendsResponseDto
+     */
+    'series': TrendsSeriesDto;
+}
+/**
+ * 
+ * @export
+ * @interface DashboardUsersDto
+ */
+export interface DashboardUsersDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof DashboardUsersDto
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
  * @interface DimensionsDto
  */
 export interface DimensionsDto {
@@ -1009,6 +1304,112 @@ export type DiskType = typeof DiskType[keyof typeof DiskType];
 /**
  * 
  * @export
+ * @interface GalleryAuthorDto
+ */
+export interface GalleryAuthorDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryAuthorDto
+     */
+    'authorId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryAuthorDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryAuthorDto
+     */
+    'count': number;
+}
+/**
+ * 
+ * @export
+ * @interface GalleryCompletenessDto
+ */
+export interface GalleryCompletenessDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryCompletenessDto
+     */
+    'withoutAuthor': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryCompletenessDto
+     */
+    'withoutTitle': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryCompletenessDto
+     */
+    'withoutDescription': number;
+}
+/**
+ * 
+ * @export
+ * @interface GalleryLocalizationDto
+ */
+export interface GalleryLocalizationDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryLocalizationDto
+     */
+    'key': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryLocalizationDto
+     */
+    'count': number;
+}
+/**
+ * 
+ * @export
+ * @interface GalleryRecentDto
+ */
+export interface GalleryRecentDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryRecentDto
+     */
+    'imageId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryRecentDto
+     */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryRecentDto
+     */
+    'dateTaken': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryRecentDto
+     */
+    'localization': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryRecentDto
+     */
+    'author'?: string;
+}
+/**
+ * 
+ * @export
  * @interface GalleryResponseDto
  */
 export interface GalleryResponseDto {
@@ -1024,6 +1425,31 @@ export interface GalleryResponseDto {
      * @memberof GalleryResponseDto
      */
     'count': number;
+}
+/**
+ * 
+ * @export
+ * @interface GalleryTotalsDto
+ */
+export interface GalleryTotalsDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryTotalsDto
+     */
+    'images': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryTotalsDto
+     */
+    'catalogued': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryTotalsDto
+     */
+    'missingMetadata': number;
 }
 /**
  * 
@@ -1441,6 +1867,25 @@ export interface MemoryDto {
      * @memberof MemoryDto
      */
     'free'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface MonthlyPointDto
+ */
+export interface MonthlyPointDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof MonthlyPointDto
+     */
+    'period': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof MonthlyPointDto
+     */
+    'count': number;
 }
 /**
  * 
@@ -2178,6 +2623,43 @@ export interface PatchUserAdminDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface PatchUserSettingsDto
+ */
+export interface PatchUserSettingsDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'serverStatusEmailNotifications'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'serverIdleEmailNotifications'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'serverPushNotifications'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'processEmailNotifications'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'processPushNotifications'?: boolean;
+}
 /**
  * 
  * @export
@@ -3621,6 +4103,31 @@ export interface ProcessLogListResponseDto {
 /**
  * 
  * @export
+ * @interface ProcessPointDto
+ */
+export interface ProcessPointDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProcessPointDto
+     */
+    'date': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProcessPointDto
+     */
+    'total': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProcessPointDto
+     */
+    'failed': number;
+}
+/**
+ * 
+ * @export
  * @interface ProcessResponseDto
  */
 export interface ProcessResponseDto {
@@ -4821,6 +5328,57 @@ export interface TokensDto {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const TrendsRange = {
+    _7d: '7d',
+    _30d: '30d'
+} as const;
+
+export type TrendsRange = typeof TrendsRange[keyof typeof TrendsRange];
+
+
+/**
+ * 
+ * @export
+ * @interface TrendsSeriesDto
+ */
+export interface TrendsSeriesDto {
+    /**
+     * 
+     * @type {Array<DailyPointDto>}
+     * @memberof TrendsSeriesDto
+     */
+    'imagesAdded': Array<DailyPointDto>;
+    /**
+     * 
+     * @type {Array<MonthlyPointDto>}
+     * @memberof TrendsSeriesDto
+     */
+    'photosByTaken': Array<MonthlyPointDto>;
+    /**
+     * 
+     * @type {Array<DailyPointDto>}
+     * @memberof TrendsSeriesDto
+     */
+    'photoEntriesCreated': Array<DailyPointDto>;
+    /**
+     * 
+     * @type {Array<ProcessPointDto>}
+     * @memberof TrendsSeriesDto
+     */
+    'processes': Array<ProcessPointDto>;
+    /**
+     * 
+     * @type {Array<DailyPointDto>}
+     * @memberof TrendsSeriesDto
+     */
+    'newUsers': Array<DailyPointDto>;
+}
+/**
+ * 
+ * @export
  * @interface UpdateCommandProgressMarkerDto
  */
 export interface UpdateCommandProgressMarkerDto {
@@ -5053,6 +5611,49 @@ export interface UserResponseDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface UserSettingsResponseDto
+ */
+export interface UserSettingsResponseDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSettingsResponseDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'serverStatusEmailNotifications': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'serverIdleEmailNotifications': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'serverPushNotifications': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'processEmailNotifications': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'processPushNotifications': boolean;
+}
 
 /**
  * ACLApi - axios parameter creator
@@ -7629,7 +8230,7 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authControllerHandleUserCreatedEvent: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        authControllerCheckRegister: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/auth/check-register`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7893,10 +8494,10 @@ export const AuthApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async authControllerHandleUserCreatedEvent(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthControllerHandleUserCreatedEvent200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.authControllerHandleUserCreatedEvent(options);
+        async authControllerCheckRegister(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthControllerCheckRegister200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authControllerCheckRegister(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AuthApi.authControllerHandleUserCreatedEvent']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.authControllerCheckRegister']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -7991,8 +8592,8 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        authControllerHandleUserCreatedEvent(options?: RawAxiosRequestConfig): AxiosPromise<AuthControllerHandleUserCreatedEvent200Response> {
-            return localVarFp.authControllerHandleUserCreatedEvent(options).then((request) => request(axios, basePath));
+        authControllerCheckRegister(options?: RawAxiosRequestConfig): AxiosPromise<AuthControllerCheckRegister200Response> {
+            return localVarFp.authControllerCheckRegister(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8125,8 +8726,8 @@ export class AuthApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public authControllerHandleUserCreatedEvent(options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).authControllerHandleUserCreatedEvent(options).then((request) => request(this.axios, this.basePath));
+    public authControllerCheckRegister(options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).authControllerCheckRegister(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8197,6 +8798,253 @@ export class AuthApi extends BaseAPI {
      */
     public authControllerSignIn(requestParameters: AuthApiAuthControllerSignInRequest, options?: RawAxiosRequestConfig) {
         return AuthApiFp(this.configuration).authControllerSignIn(requestParameters.signInDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * DashboardApi - axios parameter creator
+ * @export
+ */
+export const DashboardApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        dashboardControllerGetGallery: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/dashboard/gallery`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        dashboardControllerGetOverview: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/dashboard`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {TrendsRange} [range] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        dashboardControllerGetTrends: async (range?: TrendsRange, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/dashboard/trends`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (range !== undefined) {
+                localVarQueryParameter['range'] = range;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DashboardApi - functional programming interface
+ * @export
+ */
+export const DashboardApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DashboardApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async dashboardControllerGetGallery(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DashboardGalleryResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.dashboardControllerGetGallery(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DashboardApi.dashboardControllerGetGallery']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async dashboardControllerGetOverview(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DashboardResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.dashboardControllerGetOverview(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DashboardApi.dashboardControllerGetOverview']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {TrendsRange} [range] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async dashboardControllerGetTrends(range?: TrendsRange, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DashboardTrendsResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.dashboardControllerGetTrends(range, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DashboardApi.dashboardControllerGetTrends']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DashboardApi - factory interface
+ * @export
+ */
+export const DashboardApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DashboardApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        dashboardControllerGetGallery(options?: RawAxiosRequestConfig): AxiosPromise<DashboardGalleryResponseDto> {
+            return localVarFp.dashboardControllerGetGallery(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        dashboardControllerGetOverview(options?: RawAxiosRequestConfig): AxiosPromise<DashboardResponseDto> {
+            return localVarFp.dashboardControllerGetOverview(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DashboardApiDashboardControllerGetTrendsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        dashboardControllerGetTrends(requestParameters: DashboardApiDashboardControllerGetTrendsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<DashboardTrendsResponseDto> {
+            return localVarFp.dashboardControllerGetTrends(requestParameters.range, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for dashboardControllerGetTrends operation in DashboardApi.
+ * @export
+ * @interface DashboardApiDashboardControllerGetTrendsRequest
+ */
+export interface DashboardApiDashboardControllerGetTrendsRequest {
+    /**
+     * 
+     * @type {TrendsRange}
+     * @memberof DashboardApiDashboardControllerGetTrends
+     */
+    readonly range?: TrendsRange
+}
+
+/**
+ * DashboardApi - object-oriented interface
+ * @export
+ * @class DashboardApi
+ * @extends {BaseAPI}
+ */
+export class DashboardApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public dashboardControllerGetGallery(options?: RawAxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).dashboardControllerGetGallery(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public dashboardControllerGetOverview(options?: RawAxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).dashboardControllerGetOverview(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DashboardApiDashboardControllerGetTrendsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DashboardApi
+     */
+    public dashboardControllerGetTrends(requestParameters: DashboardApiDashboardControllerGetTrendsRequest = {}, options?: RawAxiosRequestConfig) {
+        return DashboardApiFp(this.configuration).dashboardControllerGetTrends(requestParameters.range, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -16324,6 +17172,39 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        userControllerGetSettings: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/user/settings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         userControllerUpdate: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/user/me`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -16398,6 +17279,45 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {PatchUserSettingsDto} patchUserSettingsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerUpdateSettings: async (patchUserSettingsDto: PatchUserSettingsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'patchUserSettingsDto' is not null or undefined
+            assertParamExists('userControllerUpdateSettings', 'patchUserSettingsDto', patchUserSettingsDto)
+            const localVarPath = `/user/settings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchUserSettingsDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -16438,6 +17358,17 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async userControllerGetSettings(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserSettingsResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGetSettings(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerGetSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async userControllerUpdate(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResponseDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUpdate(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -16455,6 +17386,18 @@ export const UserApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUpdateAdmin(id, patchUserAdminDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerUpdateAdmin']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {PatchUserSettingsDto} patchUserSettingsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async userControllerUpdateSettings(patchUserSettingsDto: PatchUserSettingsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserSettingsResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUpdateSettings(patchUserSettingsDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.userControllerUpdateSettings']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -16490,6 +17433,14 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        userControllerGetSettings(options?: RawAxiosRequestConfig): AxiosPromise<UserSettingsResponseDto> {
+            return localVarFp.userControllerGetSettings(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         userControllerUpdate(options?: RawAxiosRequestConfig): AxiosPromise<UserResponseDto> {
             return localVarFp.userControllerUpdate(options).then((request) => request(axios, basePath));
         },
@@ -16501,6 +17452,15 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          */
         userControllerUpdateAdmin(requestParameters: UserApiUserControllerUpdateAdminRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserResponseDto> {
             return localVarFp.userControllerUpdateAdmin(requestParameters.id, requestParameters.patchUserAdminDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {UserApiUserControllerUpdateSettingsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        userControllerUpdateSettings(requestParameters: UserApiUserControllerUpdateSettingsRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserSettingsResponseDto> {
+            return localVarFp.userControllerUpdateSettings(requestParameters.patchUserSettingsDto, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -16562,6 +17522,20 @@ export interface UserApiUserControllerUpdateAdminRequest {
 }
 
 /**
+ * Request parameters for userControllerUpdateSettings operation in UserApi.
+ * @export
+ * @interface UserApiUserControllerUpdateSettingsRequest
+ */
+export interface UserApiUserControllerUpdateSettingsRequest {
+    /**
+     * 
+     * @type {PatchUserSettingsDto}
+     * @memberof UserApiUserControllerUpdateSettings
+     */
+    readonly patchUserSettingsDto: PatchUserSettingsDto
+}
+
+/**
  * UserApi - object-oriented interface
  * @export
  * @class UserApi
@@ -16596,6 +17570,16 @@ export class UserApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UserApi
      */
+    public userControllerGetSettings(options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userControllerGetSettings(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
     public userControllerUpdate(options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).userControllerUpdate(options).then((request) => request(this.axios, this.basePath));
     }
@@ -16609,6 +17593,17 @@ export class UserApi extends BaseAPI {
      */
     public userControllerUpdateAdmin(requestParameters: UserApiUserControllerUpdateAdminRequest, options?: RawAxiosRequestConfig) {
         return UserApiFp(this.configuration).userControllerUpdateAdmin(requestParameters.id, requestParameters.patchUserAdminDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {UserApiUserControllerUpdateSettingsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserApi
+     */
+    public userControllerUpdateSettings(requestParameters: UserApiUserControllerUpdateSettingsRequest, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).userControllerUpdateSettings(requestParameters.patchUserSettingsDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

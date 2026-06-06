@@ -3,6 +3,7 @@ import {
   ACLApi,
   AstroObjectApi,
   AuthApi,
+  DashboardApi,
   DefaultApi,
   FileApi,
   ImageApi,
@@ -23,6 +24,7 @@ type ApiContextType = {
   astroObjectApi: AstroObjectApi | false;
   aclApi: ACLApi | false;
   defaultApi: DefaultApi | false;
+  dashboardApi: DashboardApi | false;
 };
 
 export const ApiContext = createContext<ApiContextType | null>(null);

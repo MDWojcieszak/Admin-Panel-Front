@@ -3,6 +3,7 @@ import {
   ACLApi,
   AstroObjectApi,
   AuthApi,
+  DashboardApi,
   DefaultApi,
   FileApi,
   ImageApi,
@@ -39,6 +40,7 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const astroObjectApi = useMemo(() => config && new AstroObjectApi(config), [config]);
   const aclApi = useMemo(() => config && new ACLApi(config), [config]);
   const defaultApi = useMemo(() => config && new DefaultApi(config), [config]);
+  const dashboardApi = useMemo(() => config && new DashboardApi(config), [config]);
 
   return (
     <ApiContext.Provider
@@ -53,6 +55,7 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         astroObjectApi,
         aclApi,
         defaultApi,
+        dashboardApi,
       }}
     >
       {children}

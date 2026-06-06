@@ -4,7 +4,7 @@ All URIs are relative to *http://localhost*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**authControllerHandleUserCreatedEvent**](#authcontrollerhandleusercreatedevent) | **POST** /auth/check-register | Check if registration token is valid|
+|[**authControllerCheckRegister**](#authcontrollercheckregister) | **POST** /auth/check-register | Check if registration token is valid|
 |[**authControllerLogout**](#authcontrollerlogout) | **POST** /auth/logout | Log out user and invalidate session|
 |[**authControllerRefreshToken**](#authcontrollerrefreshtoken) | **POST** /auth/refresh | Refresh access and refresh tokens|
 |[**authControllerRegister**](#authcontrollerregister) | **POST** /auth/register | Finish registration by setting password|
@@ -12,8 +12,8 @@ All URIs are relative to *http://localhost*
 |[**authControllerResetPasswordRequest**](#authcontrollerresetpasswordrequest) | **POST** /auth/reset-password-request | Initiate password reset request|
 |[**authControllerSignIn**](#authcontrollersignin) | **POST** /auth/local/signin | Sign in using email and password|
 
-# **authControllerHandleUserCreatedEvent**
-> AuthControllerHandleUserCreatedEvent200Response authControllerHandleUserCreatedEvent()
+# **authControllerCheckRegister**
+> AuthControllerCheckRegister200Response authControllerCheckRegister()
 
 
 ### Example
@@ -27,7 +27,7 @@ import {
 const configuration = new Configuration();
 const apiInstance = new AuthApi(configuration);
 
-const { status, data } = await apiInstance.authControllerHandleUserCreatedEvent();
+const { status, data } = await apiInstance.authControllerCheckRegister();
 ```
 
 ### Parameters
@@ -36,7 +36,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-**AuthControllerHandleUserCreatedEvent200Response**
+**AuthControllerCheckRegister200Response**
 
 ### Authorization
 
