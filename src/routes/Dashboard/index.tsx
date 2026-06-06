@@ -38,11 +38,13 @@ const fillCounts = (arr: CountByDto[], keys: string[]) => {
 const BreakdownCard = ({
   title,
   icon,
+  total,
   items,
   colorFor,
 }: {
   title: string;
   icon: ReactNode;
+  total: number;
   items: { key: string; count: number }[];
   colorFor: (key: string) => string;
 }) => {
@@ -50,9 +52,15 @@ const BreakdownCard = ({
   const max = Math.max(1, ...items.map((i) => i.count));
   return (
     <div style={styles.card}>
-      <div style={styles.cardTitle}>
-        {icon}
-        <span>{title}</span>
+      <div style={styles.cardHeader}>
+        <div style={styles.cardTitle}>
+          {icon}
+          <span>{title}</span>
+        </div>
+        <div style={styles.cardTotal}>
+          <span style={styles.cardTotalLabel}>Total</span>
+          <span style={styles.cardTotalValue}>{total}</span>
+        </div>
       </div>
       <div style={styles.barsRow}>
         {items.map((item) => (
@@ -160,14 +168,16 @@ export const Dashboard = () => {
 
       <div style={styles.panels}>
         <BreakdownCard
-          title={`Photo Library · by type · ${data.photoEntries.total}`}
+          title='Photo Library · by type'
           icon={<MdCategory size={15} />}
+          total={data.photoEntries.total}
           items={byType}
           colorFor={(key) => typeColor(theme, key)}
         />
         <BreakdownCard
           title='Photo Library · by status'
           icon={<MdFlag size={15} />}
+          total={data.photoEntries.total}
           items={byStatus}
           colorFor={(key) => getPhotoEntryStatusColors(key as PhotoEntryStatus).accent}
         />
@@ -227,11 +237,35 @@ const useStyles = mkUseStyles((t) => ({
     padding: t.spacing.m,
     borderRadius: t.borderRadius.large,
   },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: t.spacing.m,
+  },
   cardTitle: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.s,
+    minWidth: 0,
     fontWeight: 700,
+  },
+  cardTotal: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: t.spacing.xs,
+    whiteSpace: 'nowrap',
+  },
+  cardTotalLabel: {
+    fontSize: 11,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    color: t.colors.dark05,
+  },
+  cardTotalValue: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: t.colors.dark05,
   },
   barsRow: {
     flexDirection: 'row',
