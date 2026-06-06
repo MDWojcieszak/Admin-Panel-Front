@@ -1,30 +1,47 @@
-import { useEffect, useState } from 'react';
-import { CommandType, ServerCommandsService } from '~/apiOld/ServerCommands';
+import { useCallback, useEffect, useState } from 'react';
+import { CommandResponseDto, CommandRuntimeStatus } from '~/api/api';
+import { useApi } from '~/hooks/useApi';
 import useWebSocket from '~/hooks/useWebSocket';
+import { ServerCommandUpdatePayload } from '~/routes/Servers/types';
 
-export const useCommands = (idCategory: string) => {
-  const [commands, setCommands] = useState<CommandType[]>();
+export type CommandRuntime = {
+  runtimeStatus?: CommandRuntimeStatus;
+  runningProgress?: number;
+};
+
+export const useCommands = (categoryId: string) => {
+  const { serverApi } = useApi();
+  const [commands, setCommands] = useState<CommandResponseDto[]>();
+  // Runtime phase/progress is live-only (no longer part of CommandResponseDto).
+  const [runtime, setRuntime] = useState<Record<string, CommandRuntime>>({});
   const [loading, setLoading] = useState(false);
 
-  const handleGet = async () => {
-    if (!idCategory) return;
+  const handleGet = useCallback(async () => {
+    if (!serverApi || !categoryId) return;
+    setLoading(true);
     try {
-      const response = await ServerCommandsService.getAll(idCategory);
-      setCommands(response);
-      setLoading(false);
+      const { data } = await serverApi.serverCommandsControllerGetCommands({ categoryId });
+      setCommands(data.commands);
     } catch (e) {
+      console.error('Error getting server commands list:', e);
+    } finally {
       setLoading(false);
     }
-  };
+  }, [serverApi, categoryId]);
 
-  useWebSocket('server-command.update', handleGet);
+  useWebSocket<ServerCommandUpdatePayload>('server-command.update', (payload) => {
+    setRuntime((prev) => ({
+      ...prev,
+      [payload.commandId]: {
+        runtimeStatus: payload.runtimeStatus,
+        runningProgress: payload.runningProgress,
+      },
+    }));
+  });
 
   useEffect(() => {
     handleGet();
-  }, [idCategory]);
+  }, [handleGet]);
 
-  return {
-    commands,
-    loading,
-  };
+  return { commands, runtime, loading, refresh: handleGet };
 };

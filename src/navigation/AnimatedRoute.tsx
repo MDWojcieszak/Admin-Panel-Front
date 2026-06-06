@@ -33,12 +33,14 @@ export const AnimatedRoute = ({ children }: AnimatedRouteProps) => {
 const useStyles = mkUseStyles((t) => ({
   container: {
     width: '100%',
+    minWidth: 0,
     margin: t.spacing.m,
     marginLeft: 0,
     height: `calc(100% - ${t.spacing.m * 2}px)`,
   },
   contentContainer: {
     width: `calc(100% - ${t.spacing.m * 2}px)`,
+    minWidth: 0,
     position: 'relative',
     height: '100%',
     padding: t.spacing.m,
@@ -46,5 +48,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   motionContainer: {
     height: '100%',
+    minWidth: 0,
+    overflow: 'hidden',
   },
 }));

@@ -9,11 +9,11 @@ type CircularProgressProps = {
   progress: number;
   color?: string;
   icon?: ReactNode;
+  value?: ReactNode;
   disabled?: boolean;
 };
 
 export const CircularProgress = ({ progress, disabled = false, ...p }: CircularProgressProps) => {
-  console.log(progress);
   const styles = useStyles();
   const theme = useTheme();
   const innerRadius = RADIUS - WIDTH / 2;
@@ -44,7 +44,7 @@ export const CircularProgress = ({ progress, disabled = false, ...p }: CircularP
             strokeWidth={backgroundStrokeWidth}
           />
           <motion.circle
-            animate={{ strokeDashoffset: strokeDashoffset }}
+            animate={{ strokeDashoffset: strokeDashoffset, stroke: progressColor }}
             transition={{ duration: 1, ease: 'easeInOut' }}
             initial={{ strokeDashoffset: circumfrence }}
             cx={RADIUS}
@@ -58,7 +58,10 @@ export const CircularProgress = ({ progress, disabled = false, ...p }: CircularP
           />
         </motion.svg>
       </div>
-      {p.icon && <div style={styles.iconContainer}>{p.icon}</div>}
+      <div style={styles.centerContainer}>
+        {p.icon && <div style={{ ...styles.iconWrap, color: progressColor }}>{p.icon}</div>}
+        {p.value !== undefined && <div style={styles.valueText}>{p.value}</div>}
+      </div>
     </motion.div>
   );
 };
@@ -75,10 +78,23 @@ const useStyles = mkUseStyles(() => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  iconContainer: {
+  centerContainer: {
     position: 'absolute',
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+  },
+  iconWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  valueText: {
+    fontSize: 26,
+    fontWeight: 800,
+    lineHeight: 1,
+    color: '#FFFFFF',
   },
 }));

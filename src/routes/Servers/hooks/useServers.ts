@@ -28,6 +28,8 @@ export const useServers = () => {
   };
 
   useWebSocket('server.update', handleGet);
+  useWebSocket('server.online', handleGet);
+  useWebSocket('server.offline', handleGet);
 
   useEffect(() => {
     handleGet();

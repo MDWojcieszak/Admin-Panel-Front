@@ -1,7 +1,12 @@
 import { useContext, useEffect } from 'react';
 import { WebSocketContext } from '~/contexts/WebSocket/WebSocketContext';
 
-const useWebSocket = (messageType: string, callback: F0) => {
+/**
+ * Subscribe to a socket.io event. The callback receives the event payload.
+ * Server events (server.*) carry only an id; process.* / server-command.update
+ * carry full payloads — type them via the generic.
+ */
+const useWebSocket = <T = void>(messageType: string, callback: (payload: T) => void) => {
   const ctx = useContext(WebSocketContext);
 
   useEffect(() => {

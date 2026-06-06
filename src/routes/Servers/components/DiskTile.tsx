@@ -1,59 +1,50 @@
-import { DiskType } from '~/apiOld/Server';
-import { ProgressBar } from '~/components/ProgressBar';
-import { mkUseStyles, useTheme } from '~/utils/theme';
+import { ReactNode } from 'react';
 import { BsDeviceHddFill } from 'react-icons/bs';
-import { HiDotsVertical } from 'react-icons/hi';
+import { DiskInfoDto } from '~/api/api';
+import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type DiskTileProps = {
-  diskInfo: DiskType;
+  diskInfo: DiskInfoDto;
+  actions?: ReactNode;
 };
 
 const gigabytes = (bytes: number) => bytes / Math.pow(1024, 3);
 
-export const DiskTile = ({ diskInfo }: DiskTileProps) => {
+export const DiskTile = ({ diskInfo, actions }: DiskTileProps) => {
   const styles = useStyles();
   const theme = useTheme();
 
-  const usage = diskInfo.used && diskInfo.available ? (diskInfo.used / (diskInfo.used + diskInfo.available)) * 100 : 0;
+  const used = diskInfo.used ?? 0;
+  const available = diskInfo.available ?? 0;
+  const capacity = used + available;
+  const usage = capacity ? (used / capacity) * 100 : 0;
+  const hasData = capacity > 0;
+
+  const usageColor = usage >= 90 ? theme.colors.red : usage >= 70 ? theme.colors.yellow : theme.colors.lightGreen;
 
   return (
     <div style={styles.container}>
-      <div style={styles.iconContainer}>
-        <BsDeviceHddFill size={50} fill={'white'} />
-        <p> {diskInfo.type}</p>
+      <div style={styles.header}>
+        <div style={styles.iconWrap}>
+          <BsDeviceHddFill size={22} color={theme.colors.blue04} />
+        </div>
+        <div style={styles.titleBlock}>
+          <span style={styles.name}>{diskInfo.name || 'Local disk'}</span>
+          <span style={styles.sub}>{[diskInfo.fs, diskInfo.type].filter(Boolean).join(' · ') || '—'}</span>
+        </div>
+        {diskInfo.mediaType ? <span style={styles.badge}>{diskInfo.mediaType}</span> : null}
+        {actions}
       </div>
-      <div style={styles.contentContainer}>
-        <div>
-          <div style={styles.row}>
-            <div style={{ flex: 1 }}>{diskInfo.name || 'Local disk' + ' (' + diskInfo.fs + ')'}</div>
-            <HiDotsVertical />
-          </div>
-        </div>
-        <div
-          style={{
-            fontWeight: 600,
-            color: theme.colors.dark05,
-            opacity: 0.7,
-            fontSize: 14,
-            marginTop: -10,
-          }}
-        >
-          {diskInfo.mediaType || 'unknown'}
-        </div>
-        <div style={styles.row}>
-          <div style={styles.percent}>{usage.toFixed(2) + '%'}</div>
-          {diskInfo.available && diskInfo.used ? (
-            <div style={styles.usedContainer}>
-              {gigabytes(diskInfo.available).toFixed(2) +
-                ' / ' +
-                gigabytes(diskInfo.available + diskInfo.used).toFixed(2) +
-                ' GB'}
-            </div>
-          ) : (
-            <div style={styles.usedContainer}>Unknown</div>
-          )}
-        </div>
-        <ProgressBar progress={usage} />
+
+      <div style={styles.statsRow}>
+        <span style={styles.used}>
+          {hasData ? `${gigabytes(used).toFixed(1)} / ${gigabytes(capacity).toFixed(1)} GB` : 'Unknown'}
+        </span>
+        {hasData ? <span style={{ ...styles.percent, color: usageColor }}>{usage.toFixed(0)}%</span> : null}
+      </div>
+
+      <div style={styles.bar}>
+        <div style={{ ...styles.barFill, width: `${usage}%`, backgroundColor: usageColor }} />
       </div>
     </div>
   );
@@ -61,37 +52,73 @@ export const DiskTile = ({ diskInfo }: DiskTileProps) => {
 
 const useStyles = mkUseStyles((t) => ({
   container: {
+    width: 320,
     flex: 1,
-    maxWidth: 500,
-    minWidth: 350,
+    maxWidth: 420,
+    gap: t.spacing.m,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
     padding: t.spacing.m,
-    borderRadius: t.borderRadius.default,
-    marginBottom: t.spacing.s,
+    borderRadius: t.borderRadius.large,
+  },
+  header: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.m,
   },
-  iconContainer: {
+  iconWrap: {
+    width: 40,
+    height: 40,
+    minWidth: 40,
+    alignItems: 'center',
     justifyContent: 'center',
-    textAlign: 'center',
-    marginTop: t.spacing.xxs,
-    marginRight: t.spacing.m,
-    gap: t.spacing.xxs,
+    borderRadius: t.borderRadius.medium,
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.6),
   },
-  contentContainer: {
-    gap: t.spacing.xxs,
+  titleBlock: {
     flex: 1,
+    minWidth: 0,
+    gap: 2,
+  },
+  name: {
+    fontWeight: 700,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  sub: {
+    fontSize: 12,
+    color: t.colors.dark05,
+  },
+  badge: {
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: 0.5,
+    color: t.colors.blue04,
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.7),
+    padding: `3px ${t.spacing.s}px`,
+    borderRadius: t.borderRadius.default,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
     justifyContent: 'space-between',
   },
-  usedContainer: {
+  used: {
     fontSize: 14,
     color: t.colors.blue04,
   },
   percent: {
-    fontWeight: 600,
+    fontSize: 18,
+    fontWeight: 800,
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  bar: {
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.8),
+    overflow: 'hidden',
+  },
+  barFill: {
+    height: 8,
+    borderRadius: 4,
   },
 }));
