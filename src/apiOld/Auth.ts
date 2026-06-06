@@ -5,10 +5,6 @@ import { ApiTag, Auth } from '~/apiOld/types';
 const AuthDto = z.object({
   email: z.string().email(),
   password: z.string(),
-  platform: z.string(),
-
-  browser: z.string().optional(),
-  os: z.string().optional(),
 });
 
 export type AuthDto = z.infer<typeof AuthDto>;

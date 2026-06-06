@@ -38,7 +38,7 @@ export const SignIn = () => {
   const handleSignIn = useCallback(async (data: SignInSchemaType) => {
     setLoading(true);
     try {
-      const res = await AuthService.signIn({ ...data, platform: 'Windows' });
+      const res = await AuthService.signIn(data);
       if (res.access_token && res.refresh_token) {
         auth.setTokens({
           access_token: res.access_token,
