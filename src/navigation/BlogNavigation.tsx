@@ -3,11 +3,18 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { hasAccess } from '~/acl/permissions';
 import { useCan } from '~/hooks/usePermissions';
 import { BlogNavigationRoute, BlogRouteType } from '~/navigation/types';
+import { BlogCategories } from '~/routes/Blog/Categories';
 import { BlogPosts } from '~/routes/Blog/Posts';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 export const blogNavigationRoutes: BlogRouteType[] = [
   { path: BlogNavigationRoute.POSTS, label: 'Posts', component: <BlogPosts />, permission: 'blog.read' },
+  {
+    path: BlogNavigationRoute.CATEGORIES,
+    label: 'Categories',
+    component: <BlogCategories />,
+    permission: 'blog.category.manage',
+  },
 ];
 
 export const BlogNavigation = () => {
