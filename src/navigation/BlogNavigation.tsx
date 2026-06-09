@@ -5,6 +5,7 @@ import { useCan } from '~/hooks/usePermissions';
 import { BlogNavigationRoute, BlogRouteType } from '~/navigation/types';
 import { BlogCategories } from '~/routes/Blog/Categories';
 import { BlogCollections } from '~/routes/Blog/Collections';
+import { BlogHome } from '~/routes/Blog/Home';
 import { BlogPlaces } from '~/routes/Blog/Places';
 import { BlogPosts } from '~/routes/Blog/Posts';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -24,6 +25,7 @@ export const blogNavigationRoutes: BlogRouteType[] = [
     component: <BlogCollections />,
     permission: 'blog.place.manage',
   },
+  { path: BlogNavigationRoute.HOME, label: 'Home page', component: <BlogHome />, permission: 'blog.home.manage' },
 ];
 
 export const BlogNavigation = () => {
