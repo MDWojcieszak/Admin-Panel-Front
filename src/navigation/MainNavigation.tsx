@@ -2,6 +2,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { SideBar } from '~/components/SideBar';
 import { AnimatedRoute } from '~/navigation/AnimatedRoute';
+import { BlogNavigation } from '~/navigation/BlogNavigation';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { ServerNavigation } from '~/navigation/ServerNavigation';
 import { MainNavigationRoute, MainRouteType } from '~/navigation/types';
@@ -32,6 +33,13 @@ export const mainNavigationRoutes: MainRouteType[] = [
     permission: 'photoEntry.read',
   },
   { path: MainNavigationRoute.GALLERY, label: 'Personal Gallery', component: <Gallery /> },
+  {
+    path: MainNavigationRoute.BLOG,
+    label: 'Blog',
+    component: <BlogNavigation />,
+    nested: true,
+    permission: 'blog.read',
+  },
   { path: MainNavigationRoute.ACCOUNTS, label: 'Users', component: <Accounts />, permission: 'user.read' },
   {
     path: MainNavigationRoute.ACCESS_CONTROL,

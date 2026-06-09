@@ -1,7 +1,9 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import { MainNavigation } from '~/navigation/MainNavigation';
+import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { CommonNavigationRoute, CommonRouteType } from '~/navigation/types';
+import { BlogPostEditor } from '~/routes/Blog/Editor';
 import { ResetPassword } from '~/routes/Auth/ResetPassword';
 import { SignIn } from '~/routes/Auth/SignIn';
 import { UserRegister } from '~/routes/Auth/UserRegister';
@@ -31,7 +33,17 @@ export const CommonNavigation = () => {
 
   return (
     <div style={styles.container}>
-      <Routes location={location}>{commonRoutes.map(renderRoute)}</Routes>
+      <Routes location={location}>
+        <Route
+          path='blog/posts/:id/edit'
+          element={
+            <ProtectedRoute permission='blog.write'>
+              <BlogPostEditor />
+            </ProtectedRoute>
+          }
+        />
+        {commonRoutes.map(renderRoute)}
+      </Routes>
     </div>
   );
 };

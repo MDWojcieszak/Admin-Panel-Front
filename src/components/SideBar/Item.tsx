@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MdGroup, MdImage, MdPhotoCamera, MdSettings, MdShield, MdSpaceDashboard } from 'react-icons/md';
+import { MdArticle, MdGroup, MdImage, MdPhotoCamera, MdSettings, MdShield, MdSpaceDashboard } from 'react-icons/md';
 
 import { Permission } from '~/acl/permissions';
 import { MainNavigationRoute } from '~/navigation/types';
@@ -37,6 +37,8 @@ export const Item = (p: SideBarItem) => {
         return <MdPhotoCamera {...iconProps} />;
       case MainNavigationRoute.GALLERY:
         return <MdImage {...iconProps} />;
+      case MainNavigationRoute.BLOG:
+        return <MdArticle {...iconProps} />;
       case MainNavigationRoute.ACCOUNTS:
         return <MdGroup {...iconProps} />;
       case MainNavigationRoute.ACCESS_CONTROL:

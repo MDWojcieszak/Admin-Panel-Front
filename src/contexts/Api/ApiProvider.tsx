@@ -3,6 +3,17 @@ import {
   ACLApi,
   AstroObjectApi,
   AuthApi,
+  BlogCategoriesApi,
+  BlogCollectionsApi,
+  BlogEditorialCommentsApi,
+  BlogHomeAdminApi,
+  BlogInteractionsApi,
+  BlogLocalesApi,
+  BlogPOIApi,
+  BlogPostsApi,
+  BlogSectionsApi,
+  BlogTemplatesApi,
+  BlogVersioningApi,
   DashboardApi,
   DefaultApi,
   FileApi,
@@ -41,6 +52,17 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const aclApi = useMemo(() => config && new ACLApi(config), [config]);
   const defaultApi = useMemo(() => config && new DefaultApi(config), [config]);
   const dashboardApi = useMemo(() => config && new DashboardApi(config), [config]);
+  const blogPostsApi = useMemo(() => config && new BlogPostsApi(config), [config]);
+  const blogVersioningApi = useMemo(() => config && new BlogVersioningApi(config), [config]);
+  const blogSectionsApi = useMemo(() => config && new BlogSectionsApi(config), [config]);
+  const blogLocalesApi = useMemo(() => config && new BlogLocalesApi(config), [config]);
+  const blogCategoriesApi = useMemo(() => config && new BlogCategoriesApi(config), [config]);
+  const blogPoiApi = useMemo(() => config && new BlogPOIApi(config), [config]);
+  const blogCollectionsApi = useMemo(() => config && new BlogCollectionsApi(config), [config]);
+  const blogHomeApi = useMemo(() => config && new BlogHomeAdminApi(config), [config]);
+  const blogTemplatesApi = useMemo(() => config && new BlogTemplatesApi(config), [config]);
+  const blogCommentsApi = useMemo(() => config && new BlogEditorialCommentsApi(config), [config]);
+  const blogInteractionsApi = useMemo(() => config && new BlogInteractionsApi(config), [config]);
 
   return (
     <ApiContext.Provider
@@ -56,6 +78,17 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         aclApi,
         defaultApi,
         dashboardApi,
+        blogPostsApi,
+        blogVersioningApi,
+        blogSectionsApi,
+        blogLocalesApi,
+        blogCategoriesApi,
+        blogPoiApi,
+        blogCollectionsApi,
+        blogHomeApi,
+        blogTemplatesApi,
+        blogCommentsApi,
+        blogInteractionsApi,
       }}
     >
       {children}

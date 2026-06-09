@@ -3,6 +3,17 @@ import {
   ACLApi,
   AstroObjectApi,
   AuthApi,
+  BlogCategoriesApi,
+  BlogCollectionsApi,
+  BlogEditorialCommentsApi,
+  BlogHomeAdminApi,
+  BlogInteractionsApi,
+  BlogLocalesApi,
+  BlogPOIApi,
+  BlogPostsApi,
+  BlogSectionsApi,
+  BlogTemplatesApi,
+  BlogVersioningApi,
   DashboardApi,
   DefaultApi,
   FileApi,
@@ -25,6 +36,17 @@ type ApiContextType = {
   aclApi: ACLApi | false;
   defaultApi: DefaultApi | false;
   dashboardApi: DashboardApi | false;
+  blogPostsApi: BlogPostsApi | false;
+  blogVersioningApi: BlogVersioningApi | false;
+  blogSectionsApi: BlogSectionsApi | false;
+  blogLocalesApi: BlogLocalesApi | false;
+  blogCategoriesApi: BlogCategoriesApi | false;
+  blogPoiApi: BlogPOIApi | false;
+  blogCollectionsApi: BlogCollectionsApi | false;
+  blogHomeApi: BlogHomeAdminApi | false;
+  blogTemplatesApi: BlogTemplatesApi | false;
+  blogCommentsApi: BlogEditorialCommentsApi | false;
+  blogInteractionsApi: BlogInteractionsApi | false;
 };
 
 export const ApiContext = createContext<ApiContextType | null>(null);

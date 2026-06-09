@@ -11,6 +11,16 @@ export enum MainNavigationRoute {
   ACCESS_CONTROL = 'access-control',
   ACCOUNT = 'account',
   ABOUT = 'about',
+  BLOG = 'blog',
+}
+
+export enum BlogNavigationRoute {
+  POSTS = '',
+  CATEGORIES = 'categories',
+  PLACES = 'places',
+  HOME = 'home',
+  TEMPLATES = 'templates',
+  INSIGHTS = 'insights',
 }
 
 export enum CommonNavigationRoute {
@@ -46,3 +56,5 @@ export type CommonRouteType = RouteType<CommonNavigationRoute>;
 export type MainRouteType = RouteType<MainNavigationRoute>;
 
 export type ServerRouteType = RouteType<ServerNavigationRoute>;
+
+export type BlogRouteType = RouteType<BlogNavigationRoute>;

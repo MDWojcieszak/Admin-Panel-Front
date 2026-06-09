@@ -33,6 +33,15 @@ export const PERMISSIONS = [
   'acl.manage',
   'acl.assign',
   'dashboard.read',
+  'blog.read',
+  'blog.read.draft',
+  'blog.write',
+  'blog.publish',
+  'blog.version.prune',
+  'blog.category.manage',
+  'blog.place.manage',
+  'blog.home.manage',
+  'blog.analytics',
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
