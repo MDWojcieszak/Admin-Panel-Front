@@ -31,6 +31,9 @@ type SectionCardProps = {
   onRemoveImage: (sectionImageId: string) => void;
   onAddPoi: (sectionId: string, poiId: string) => void;
   onRemovePoi: (poiLinkId: string) => void;
+  onAddListItem: (sectionId: string) => void;
+  onRemoveListItem: (itemId: string) => void;
+  onSaveListItem: (itemId: string, content: string) => void;
 };
 
 const enumOptions = (e: Record<string, string>) => Object.values(e).map((v) => ({ label: v, value: v }));
@@ -298,6 +301,28 @@ export const SectionCard = (p: SectionCardProps) => {
       );
       break;
     case BlogSectionType.List:
+      inner = (
+        <div style={styles.mediaArea}>
+          {section.items
+            .slice()
+            .sort((a, b) => a.order - b.order)
+            .map((item) => (
+              <ListItemRow
+                key={item.id}
+                itemId={item.id}
+                content={item.content ?? ''}
+                sectionId={section.id}
+                locale={locale}
+                onSave={p.onSaveListItem}
+                onRemove={p.onRemoveListItem}
+              />
+            ))}
+          <button style={styles.addItemBtn} onClick={() => p.onAddListItem(section.id)}>
+            + Add item
+          </button>
+        </div>
+      );
+      break;
     default:
       inner = (
         <span style={styles.placeholder}>
@@ -329,6 +354,44 @@ export const SectionCard = (p: SectionCardProps) => {
         </div>
       </div>
       <div style={styles.bodyWrap}>{inner}</div>
+    </div>
+  );
+};
+
+const ListItemRow = ({
+  itemId,
+  content,
+  locale,
+  onSave,
+  onRemove,
+}: {
+  itemId: string;
+  content: string;
+  sectionId: string;
+  locale: string;
+  onSave: (itemId: string, content: string) => void;
+  onRemove: (itemId: string) => void;
+}) => {
+  const styles = useStyles();
+  const theme = useTheme();
+  const [value, setValue] = useState(content);
+  useEffect(() => {
+    setValue(content);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemId, locale]);
+  return (
+    <div style={styles.listItemRow}>
+      <span style={styles.bullet}>•</span>
+      <input
+        style={styles.listItemInput}
+        value={value}
+        placeholder='List item'
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={() => value !== content && onSave(itemId, value)}
+      />
+      <button style={styles.iconBtn} title='Remove' onClick={() => onRemove(itemId)}>
+        <MdClose size={15} color={theme.colors.red} />
+      </button>
     </div>
   );
 };
@@ -507,5 +570,38 @@ const useStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
     color: t.colors.white,
     backgroundColor: 'rgba(0,0,0,0.45)',
+  },
+  listItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+  },
+  bullet: {
+    color: t.colors.dark05,
+    fontSize: 18,
+  },
+  listItemInput: {
+    flex: 1,
+    minWidth: 0,
+    height: 36,
+    boxSizing: 'border-box',
+    padding: `0 ${t.spacing.m}px`,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+    color: t.colors.white,
+    border: 0,
+    outline: 'none',
+    fontSize: 14,
+  },
+  addItemBtn: {
+    alignSelf: 'flex-start',
+    height: 32,
+    padding: `0 ${t.spacing.m}px`,
+    borderRadius: t.borderRadius.default,
+    border: `1px dashed ${t.colors.white + t.colorOpacity(0.2)}`,
+    background: 'transparent',
+    color: t.colors.white,
+    cursor: 'pointer',
+    fontSize: 13,
   },
 }));

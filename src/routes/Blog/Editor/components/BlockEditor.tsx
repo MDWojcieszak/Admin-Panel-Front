@@ -16,6 +16,9 @@ type BlockEditorProps = {
   onRemoveImage: (sectionImageId: string) => void;
   onAddPoi: (sectionId: string, poiId: string) => void;
   onRemovePoi: (poiLinkId: string) => void;
+  onAddListItem: (sectionId: string) => void;
+  onRemoveListItem: (itemId: string) => void;
+  onSaveListItem: (itemId: string, content: string) => void;
   onChanged: () => void;
 };
 
@@ -30,6 +33,9 @@ export const BlockEditor = ({
   onRemoveImage,
   onAddPoi,
   onRemovePoi,
+  onAddListItem,
+  onRemoveListItem,
+  onSaveListItem,
   onChanged,
 }: BlockEditorProps) => {
   const styles = useStyles();
@@ -142,6 +148,9 @@ export const BlockEditor = ({
           onRemoveImage={onRemoveImage}
           onAddPoi={onAddPoi}
           onRemovePoi={onRemovePoi}
+          onAddListItem={onAddListItem}
+          onRemoveListItem={onRemoveListItem}
+          onSaveListItem={onSaveListItem}
         />
       ))}
 

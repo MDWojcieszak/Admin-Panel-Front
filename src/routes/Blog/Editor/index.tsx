@@ -155,6 +155,39 @@ export const BlogPostEditor = () => {
     }
   };
 
+  const addListItem = async (sectionId: string) => {
+    if (!blogSectionsApi) return;
+    try {
+      await blogSectionsApi.sectionControllerAddItem({ id: sectionId, addSectionListItemDto: { content: '', locale } });
+      await refresh();
+    } catch (e) {
+      console.error('Error adding list item:', e);
+    }
+  };
+
+  const removeListItem = async (itemId: string) => {
+    if (!blogSectionsApi) return;
+    try {
+      await blogSectionsApi.sectionControllerDeleteItem({ itemId });
+      await refresh();
+    } catch (e) {
+      console.error('Error removing list item:', e);
+    }
+  };
+
+  const saveListItem = async (itemId: string, content: string) => {
+    if (!blogSectionsApi) return;
+    try {
+      await blogSectionsApi.sectionControllerUpsertItemTranslation({
+        itemId,
+        locale,
+        upsertSectionListItemTranslationDto: { content },
+      });
+    } catch (e) {
+      console.error('Error saving list item:', e);
+    }
+  };
+
   return (
     <div style={styles.screen}>
       <div style={styles.topbar}>
@@ -309,6 +342,9 @@ export const BlogPostEditor = () => {
                   onRemoveImage={removeImage}
                   onAddPoi={addPoi}
                   onRemovePoi={removePoi}
+                  onAddListItem={addListItem}
+                  onRemoveListItem={removeListItem}
+                  onSaveListItem={saveListItem}
                   onChanged={refresh}
                 />
               </>
