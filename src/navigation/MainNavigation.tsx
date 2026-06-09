@@ -1,8 +1,9 @@
+import { Suspense, lazy } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Loader } from '~/components/Loader';
 import { SideBar } from '~/components/SideBar';
 import { AnimatedRoute } from '~/navigation/AnimatedRoute';
-import { BlogNavigation } from '~/navigation/BlogNavigation';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { ServerNavigation } from '~/navigation/ServerNavigation';
 import { MainNavigationRoute, MainRouteType } from '~/navigation/types';
@@ -14,6 +15,9 @@ import { Dashboard } from '~/routes/Dashboard';
 import { Gallery } from '~/routes/Images';
 import { PhotoManagement } from '~/routes/PhotoManagement';
 import { Settings } from '~/routes/Settings';
+
+// Blog area (rich markdown + maps libs) — split into its own chunk.
+const BlogNavigation = lazy(() => import('~/navigation/BlogNavigation').then((m) => ({ default: m.BlogNavigation })));
 
 // Top navigation items (rendered in the sidebar list), grouped logically:
 // overview → infrastructure → photography → people & security.
@@ -36,7 +40,11 @@ export const mainNavigationRoutes: MainRouteType[] = [
   {
     path: MainNavigationRoute.BLOG,
     label: 'Blog',
-    component: <BlogNavigation />,
+    component: (
+      <Suspense fallback={<Loader />}>
+        <BlogNavigation />
+      </Suspense>
+    ),
     nested: true,
     permission: 'blog.read',
   },

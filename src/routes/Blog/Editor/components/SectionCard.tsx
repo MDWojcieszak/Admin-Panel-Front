@@ -14,6 +14,7 @@ import {
 } from '~/api/api';
 import { MarkdownEditor } from '~/components/MarkdownEditor';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
+import { PoiPicker } from '~/routes/Blog/Editor/components/PoiPicker';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type SectionCardProps = {
@@ -28,6 +29,8 @@ type SectionCardProps = {
   onMove: (id: string, dir: -1 | 1) => void;
   onDelete: (id: string) => void;
   onRemoveImage: (sectionImageId: string) => void;
+  onAddPoi: (sectionId: string, poiId: string) => void;
+  onRemovePoi: (poiLinkId: string) => void;
 };
 
 const enumOptions = (e: Record<string, string>) => Object.values(e).map((v) => ({ label: v, value: v }));
@@ -261,10 +264,44 @@ export const SectionCard = (p: SectionCardProps) => {
       );
       break;
     }
+    case BlogSectionType.Map:
+    case BlogSectionType.Place:
+      inner = (
+        <div style={styles.mediaArea}>
+          {section.pois.length ? (
+            <div style={styles.poiList}>
+              {section.pois.map((link) => (
+                <div key={link.id} style={styles.poiRow}>
+                  <div style={styles.poiInfo}>
+                    <span style={styles.poiName}>{link.name}</span>
+                    <span style={styles.poiLoc}>
+                      {[link.city, link.region, link.country].filter(Boolean).join(', ') ||
+                        `${link.latitude.toFixed(3)}, ${link.longitude.toFixed(3)}`}
+                    </span>
+                  </div>
+                  <button style={styles.removePoi} title='Remove place' onClick={() => p.onRemovePoi(link.id)}>
+                    <MdClose size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          {section.type === BlogSectionType.Place && section.pois.length ? null : (
+            <PoiPicker onPick={(poiId) => p.onAddPoi(section.id, poiId)} />
+          )}
+          <span style={styles.pickHint}>
+            {section.type === BlogSectionType.Place
+              ? 'A place block shows a single point of interest.'
+              : 'A map block can show several places.'}
+          </span>
+        </div>
+      );
+      break;
+    case BlogSectionType.List:
     default:
       inner = (
         <span style={styles.placeholder}>
-          {section.type} editing (lists / places) arrives in the next editor pass. Order and removal already work.
+          {section.type} editing arrives in a follow-up. Order and removal already work.
         </span>
       );
   }
@@ -434,5 +471,41 @@ const useStyles = mkUseStyles((t) => ({
   pickHint: {
     fontSize: 13,
     color: t.colors.dark05,
+  },
+  poiList: {
+    gap: t.spacing.s,
+  },
+  poiRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.m,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.4),
+  },
+  poiInfo: {
+    flex: 1,
+    minWidth: 0,
+    gap: 2,
+  },
+  poiName: {
+    fontWeight: 600,
+    fontSize: 14,
+  },
+  poiLoc: {
+    fontSize: 12,
+    color: t.colors.dark05,
+  },
+  removePoi: {
+    width: 26,
+    height: 26,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    border: 0,
+    cursor: 'pointer',
+    color: t.colors.white,
+    backgroundColor: 'rgba(0,0,0,0.45)',
   },
 }));

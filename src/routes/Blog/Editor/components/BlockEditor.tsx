@@ -13,6 +13,8 @@ type BlockEditorProps = {
   activeSectionId?: string;
   onActivate: (id: string) => void;
   onRemoveImage: (sectionImageId: string) => void;
+  onAddPoi: (sectionId: string, poiId: string) => void;
+  onRemovePoi: (poiLinkId: string) => void;
   onChanged: () => void;
 };
 
@@ -25,6 +27,8 @@ export const BlockEditor = ({
   activeSectionId,
   onActivate,
   onRemoveImage,
+  onAddPoi,
+  onRemovePoi,
   onChanged,
 }: BlockEditorProps) => {
   const styles = useStyles();
@@ -122,6 +126,8 @@ export const BlockEditor = ({
           onMove={moveSection}
           onDelete={deleteSection}
           onRemoveImage={onRemoveImage}
+          onAddPoi={onAddPoi}
+          onRemovePoi={onRemovePoi}
         />
       ))}
 

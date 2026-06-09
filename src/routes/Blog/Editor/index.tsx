@@ -128,6 +128,31 @@ export const BlogPostEditor = () => {
     }
   };
 
+  const addPoi = async (sectionId: string, poiId: string) => {
+    if (!blogSectionsApi) return;
+    const section = draft?.sections.find((s) => s.id === sectionId);
+    try {
+      // PLACE blocks hold a single POI — replace any existing.
+      if (section?.type === BlogSectionType.Place) {
+        for (const link of section.pois) await blogSectionsApi.sectionControllerDeletePoi({ poiLinkId: link.id });
+      }
+      await blogSectionsApi.sectionControllerAddPoi({ id: sectionId, addSectionPoiDto: { poiId } });
+      await refresh();
+    } catch (e) {
+      console.error('Error adding place:', e);
+    }
+  };
+
+  const removePoi = async (poiLinkId: string) => {
+    if (!blogSectionsApi) return;
+    try {
+      await blogSectionsApi.sectionControllerDeletePoi({ poiLinkId });
+      await refresh();
+    } catch (e) {
+      console.error('Error removing place:', e);
+    }
+  };
+
   return (
     <div style={styles.screen}>
       <div style={styles.topbar}>
@@ -264,6 +289,8 @@ export const BlogPostEditor = () => {
                   activeSectionId={activeSectionId}
                   onActivate={setActiveSectionId}
                   onRemoveImage={removeImage}
+                  onAddPoi={addPoi}
+                  onRemovePoi={removePoi}
                   onChanged={refresh}
                 />
               </>
