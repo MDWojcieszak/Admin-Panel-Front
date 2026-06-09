@@ -1,9 +1,10 @@
+import { Suspense, lazy } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
+import { Loader } from '~/components/Loader';
 import { MainNavigation } from '~/navigation/MainNavigation';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { CommonNavigationRoute, CommonRouteType } from '~/navigation/types';
-import { BlogPostEditor } from '~/routes/Blog/Editor';
 import { ResetPassword } from '~/routes/Auth/ResetPassword';
 import { SignIn } from '~/routes/Auth/SignIn';
 import { UserRegister } from '~/routes/Auth/UserRegister';
@@ -11,6 +12,9 @@ import { NotFound } from '~/routes/NotFound';
 
 import { Welcome } from '~/routes/Welcome';
 import { mkUseStyles } from '~/utils/theme';
+
+// Heavy markdown editor — only loaded when the editor route is opened.
+const BlogPostEditor = lazy(() => import('~/routes/Blog/Editor').then((m) => ({ default: m.BlogPostEditor })));
 
 const commonRoutes: CommonRouteType[] = [
   { path: CommonNavigationRoute.WELCOME, label: 'Welcome', component: <Welcome /> },
@@ -38,7 +42,9 @@ export const CommonNavigation = () => {
           path='blog/posts/:id/edit'
           element={
             <ProtectedRoute permission='blog.write'>
-              <BlogPostEditor />
+              <Suspense fallback={<Loader />}>
+                <BlogPostEditor />
+              </Suspense>
             </ProtectedRoute>
           }
         />

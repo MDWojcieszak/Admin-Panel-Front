@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MdArrowBack, MdCheckCircle, MdCloudUpload } from 'react-icons/md';
+import { MdArrowBack, MdCheckCircle, MdCloudUpload, MdPermMedia, MdTune } from 'react-icons/md';
+import { BlogSectionType } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
 import { Badge } from '~/components/Badge';
@@ -9,7 +10,9 @@ import { Loader } from '~/components/Loader';
 import { Scrollbar } from '~/components/Scrollbar';
 import { useBlogLocales } from '~/routes/Blog/hooks/useBlogLocales';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
-import { SectionList } from '~/routes/Blog/Editor/components/SectionList';
+import { BlockEditor } from '~/routes/Blog/Editor/components/BlockEditor';
+import { MediaPanel } from '~/routes/Blog/Editor/components/MediaPanel';
+import { PostSettingsPanel } from '~/routes/Blog/Editor/components/PostSettingsPanel';
 import { postStatusTone } from '~/routes/Blog/utils/status';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -20,9 +23,14 @@ export const BlogPostEditor = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { blogPostsApi, blogVersioningApi } = useApi();
+  const { blogPostsApi, blogVersioningApi, blogSectionsApi } = useApi();
   const can = useCan();
   const canPublish = can('blog.publish');
+
+  const [mediaOpen, setMediaOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [coverPickMode, setCoverPickMode] = useState(false);
+  const [activeSectionId, setActiveSectionId] = useState<string>();
 
   const { locales, defaultLocale } = useBlogLocales();
   const [locale, setLocale] = useState('');
@@ -70,6 +78,53 @@ export const BlogPostEditor = () => {
       console.error('Error publishing post:', e);
     } finally {
       setPublishing(false);
+    }
+  };
+
+  const activeSection = draft?.sections.find((s) => s.id === activeSectionId);
+  const activeLabel = activeSection?.type;
+
+  const attachImage = async (imageId: string) => {
+    // Cover-pick mode: the next image click sets the post cover, not a section image.
+    if (coverPickMode) {
+      setCoverPickMode(false);
+      setMediaOpen(false);
+      if (blogPostsApi && id) {
+        try {
+          await blogPostsApi.postControllerPatch({ id, patchPostDto: { coverImageId: imageId } });
+          await refresh();
+        } catch (e) {
+          console.error('Error setting cover image:', e);
+        }
+      }
+      return;
+    }
+    if (!blogSectionsApi || !activeSection) return;
+    const single = activeSection.type === BlogSectionType.Image || activeSection.type === BlogSectionType.MediaText;
+    try {
+      if (single) {
+        // Single-image blocks hold exactly one image — replace any existing.
+        for (const link of activeSection.images) {
+          await blogSectionsApi.sectionControllerDeleteImage({ imageId: link.id });
+        }
+      }
+      await blogSectionsApi.sectionControllerAddImage({
+        id: activeSection.id,
+        addSectionImageDto: { imageId },
+      });
+      await refresh();
+    } catch (e) {
+      console.error('Error attaching image:', e);
+    }
+  };
+
+  const removeImage = async (sectionImageId: string) => {
+    if (!blogSectionsApi) return;
+    try {
+      await blogSectionsApi.sectionControllerDeleteImage({ imageId: sectionImageId });
+      await refresh();
+    } catch (e) {
+      console.error('Error removing image:', e);
     }
   };
 
@@ -122,11 +177,47 @@ export const BlogPostEditor = () => {
               </>
             ) : null}
           </span>
+          <button
+            style={{ ...styles.iconBtn, color: settingsOpen ? theme.colors.blue : theme.colors.white }}
+            title='Post settings'
+            onClick={() => setSettingsOpen((o) => !o)}
+          >
+            <MdTune size={18} />
+          </button>
           {canPublish ? <Button label='Publish' onClick={handlePublish} loading={publishing} /> : null}
         </div>
       </div>
 
       <div style={styles.body}>
+        <MediaPanel
+          open={mediaOpen}
+          activeLabel={coverPickMode ? 'cover image' : activeLabel}
+          onClose={() => {
+            setMediaOpen(false);
+            setCoverPickMode(false);
+          }}
+          onPick={attachImage}
+        />
+        {!mediaOpen ? (
+          <button style={styles.mediaToggle} title='Media' onClick={() => setMediaOpen(true)}>
+            <MdPermMedia size={20} />
+          </button>
+        ) : null}
+        {draft ? (
+          <PostSettingsPanel
+            open={settingsOpen}
+            postId={draft.postId}
+            locale={locale}
+            draft={draft}
+            onClose={() => setSettingsOpen(false)}
+            onChanged={refresh}
+            onRequestCover={() => {
+              setCoverPickMode(true);
+              setSettingsOpen(false);
+              setMediaOpen(true);
+            }}
+          />
+        ) : null}
         <Scrollbar style={styles.scroll}>
           <div style={styles.doc}>
             {loading && !draft ? (
@@ -166,7 +257,15 @@ export const BlogPostEditor = () => {
 
                 <div style={styles.divider} />
 
-                <SectionList sections={draft.sections} />
+                <BlockEditor
+                  postId={draft.postId}
+                  locale={locale}
+                  sections={draft.sections}
+                  activeSectionId={activeSectionId}
+                  onActivate={setActiveSectionId}
+                  onRemoveImage={removeImage}
+                  onChanged={refresh}
+                />
               </>
             )}
           </div>
@@ -269,6 +368,28 @@ const useStyles = mkUseStyles((t) => ({
     flex: 1,
     minHeight: 0,
     position: 'relative',
+    overflow: 'hidden',
+  },
+  mediaToggle: {
+    position: 'absolute',
+    left: 0,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    zIndex: 4,
+    width: 34,
+    height: 64,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: 0,
+    cursor: 'pointer',
+    color: t.colors.white,
+    backgroundColor: t.colors.gray04,
+    borderTopRightRadius: t.borderRadius.default,
+    borderBottomRightRadius: t.borderRadius.default,
+    borderRight: `1px solid ${t.colors.white + t.colorOpacity(0.08)}`,
+    borderTop: `1px solid ${t.colors.white + t.colorOpacity(0.08)}`,
+    borderBottom: `1px solid ${t.colors.white + t.colorOpacity(0.08)}`,
   },
   scroll: {
     position: 'absolute',
