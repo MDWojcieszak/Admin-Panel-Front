@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FaPlus } from 'react-icons/fa6';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { CategoryKind } from '~/api/api';
@@ -28,11 +28,8 @@ export const BlogCategories = () => {
   const can = useCan();
   const canManage = can('blog.category.manage');
 
-  const { locales, defaultLocale } = useBlogLocales();
-  const [locale, setLocale] = useState('');
-  useEffect(() => {
-    if (!locale && defaultLocale) setLocale(defaultLocale);
-  }, [defaultLocale, locale]);
+  const { defaultLocale } = useBlogLocales();
+  const locale = defaultLocale || 'en';
 
   const [kind, setKind] = useState<CategoryKind>(CategoryKind.Post);
   const { categories, loading, refresh } = useBlogCategories(kind, locale || 'en');
@@ -64,29 +61,11 @@ export const BlogCategories = () => {
       <div style={styles.toolbar}>
         <h2 style={styles.title}>Categories</h2>
         <div style={styles.toolbarRight}>
-          <div style={styles.localeSwitch}>
-            {locales.map((l) => {
-              const active = l.code === locale;
-              return (
-                <button
-                  key={l.code}
-                  style={{
-                    ...styles.localeBtn,
-                    color: active ? theme.colors.white : theme.colors.dark05,
-                    backgroundColor: active ? theme.colors.blue + theme.colorOpacity(0.25) : 'transparent',
-                  }}
-                  onClick={() => setLocale(l.code)}
-                >
-                  {l.code.toUpperCase()}
-                </button>
-              );
-            })}
-          </div>
           {canManage ? (
             <Button
               label='New category'
               icon={<FaPlus />}
-              onClick={() => editor.show({ kind, locale, canManage, category: undefined })}
+              onClick={() => editor.show({ kind, canManage, category: undefined })}
             />
           ) : null}
         </div>
@@ -122,7 +101,7 @@ export const BlogCategories = () => {
                       <button
                         style={styles.iconBtn}
                         title='Edit'
-                        onClick={() => editor.show({ category: c, locale, canManage, kind: undefined })}
+                        onClick={() => editor.show({ category: c, canManage, kind: undefined })}
                       >
                         <MdEdit size={18} color={theme.colors.blue04} />
                       </button>
@@ -163,22 +142,6 @@ const useStyles = mkUseStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.m,
-  },
-  localeSwitch: {
-    flexDirection: 'row',
-    gap: 4,
-    padding: 3,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray05 + t.colorOpacity(0.6),
-  },
-  localeBtn: {
-    minWidth: 40,
-    height: 30,
-    border: 0,
-    cursor: 'pointer',
-    borderRadius: t.borderRadius.small,
-    fontSize: 13,
-    fontWeight: 700,
   },
   listWrap: {
     flex: 1,

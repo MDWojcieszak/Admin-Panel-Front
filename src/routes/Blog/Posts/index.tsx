@@ -102,7 +102,13 @@ export const BlogPosts = () => {
               }}
             />
           </div>
-          {canWrite ? <Button label='New post' icon={<FaPlus />} onClick={() => createModal.show()} /> : null}
+          {canWrite ? (
+            <Button
+              label='New post'
+              icon={<FaPlus />}
+              onClick={() => createModal.show({ onCreated: (id: string) => navigate('/blog/posts/' + id + '/edit') })}
+            />
+          ) : null}
         </div>
       </div>
 

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,7 +10,9 @@ import { useApi } from '~/hooks/useApi';
 import { useBlogLocales } from '~/routes/Blog/hooks/useBlogLocales';
 import { mkUseStyles } from '~/utils/theme';
 
-type CreatePostModalProps = Partial<InternalModalProps>;
+type CreatePostModalProps = {
+  onCreated?: (postId: string) => void;
+} & Partial<InternalModalProps>;
 
 const Schema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -30,7 +31,6 @@ const slugify = (value: string) =>
 
 export const CreatePostModal = (p: CreatePostModalProps) => {
   const styles = useStyles();
-  const navigate = useNavigate();
   const { blogPostsApi } = useApi();
   const { locales, defaultLocale } = useBlogLocales();
   const [saving, setSaving] = useState(false);
@@ -63,7 +63,7 @@ export const CreatePostModal = (p: CreatePostModalProps) => {
         createPostDto: { slug: data.slug, title: data.title, locale: data.locale || undefined },
       });
       p.handleClose?.();
-      navigate('/blog/posts/' + res.data.id + '/edit');
+      p.onCreated?.(res.data.id);
     } catch (e) {
       console.error('Error creating post:', e);
     } finally {

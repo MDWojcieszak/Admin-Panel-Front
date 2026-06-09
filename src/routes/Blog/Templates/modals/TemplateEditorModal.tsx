@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { MdAdd, MdArrowDownward, MdArrowUpward, MdDelete } from 'react-icons/md';
 import { BlogSectionType, TemplateBlockResponse, TemplateResponse } from '~/api/api';
 import { Button } from '~/components/Button';
+import { LockedField } from '~/components/LockedField';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { SECTION_META } from '~/routes/Blog/Editor/sectionTypes';
@@ -124,16 +125,14 @@ export const TemplateEditorModal = (p: TemplateEditorModalProps) => {
           <span style={styles.label}>Name</span>
           <input style={styles.input} value={name} onChange={(e) => setName(e.target.value)} placeholder='Travel guide' />
         </div>
-        <div style={styles.field}>
-          <span style={styles.label}>Key</span>
-          <input
-            style={styles.input}
-            value={key}
-            onChange={(e) => setKey(e.target.value)}
-            placeholder='travel-guide'
-            disabled={isEdit}
-          />
-        </div>
+        {isEdit ? (
+          <LockedField label='Key' value={key} hint='Key is set on creation and cannot change' style={styles.field} />
+        ) : (
+          <div style={styles.field}>
+            <span style={styles.label}>Key</span>
+            <input style={styles.input} value={key} onChange={(e) => setKey(e.target.value)} placeholder='travel-guide' />
+          </div>
+        )}
       </div>
       <div style={styles.row}>
         <div style={styles.field}>
