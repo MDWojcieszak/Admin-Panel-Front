@@ -39,11 +39,14 @@ export const CategoryModal = (p: CategoryModalProps) => {
     setSaving(true);
     try {
       if (isEdit && p.category) {
-        await serverApi.serverControllerPatchCategory({ id: p.category.id, patchCategoryDto: { name: data.name } });
+        await serverApi.serverControllerPatchCategory({
+          id: p.category.id,
+          patchServerCategoryDto: { name: data.name },
+        });
       } else if (p.serverId) {
         await serverApi.serverControllerCreateCategory({
           serverId: p.serverId,
-          createCategoryDto: { name: data.name || undefined, value: data.value ?? '' },
+          createServerCategoryDto: { name: data.name || undefined, value: data.value ?? '' },
         });
       }
       p.handleClose?.();
