@@ -8,6 +8,7 @@ import { Input } from '~/components/Input';
 import { PlaceAutocomplete, isPlacesEnabled } from '~/components/PlaceAutocomplete';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
+import { PoiCategoriesField, PoiGalleryField, PoiHoursField } from '~/routes/Blog/Places/components/PoiEnrichment';
 import { mkUseStyles } from '~/utils/theme';
 
 type PoiEditorModalProps = {
@@ -178,6 +179,16 @@ export const PoiEditorModal = (p: PoiEditorModalProps) => {
 
         {googlePlaceId ? <span style={styles.placeId}>googlePlaceId: {googlePlaceId}</span> : null}
 
+        {isEdit && p.poi ? (
+          <>
+            <PoiCategoriesField poiId={p.poi.id} locale={locale} current={p.poi.categories.map((c) => c.categoryId)} />
+            <PoiHoursField poiId={p.poi.id} current={p.poi.hours} />
+            <PoiGalleryField poiId={p.poi.id} current={p.poi.images} />
+          </>
+        ) : (
+          <span style={styles.editHint}>Create the place first, then reopen it to add categories, hours and gallery.</span>
+        )}
+
         <Button
           label={isEdit ? 'Save place' : 'Create place'}
           onClick={formMethods.handleSubmit(handleSave)}
@@ -266,5 +277,11 @@ const useStyles = mkUseStyles((t) => ({
     fontSize: 11,
     color: t.colors.dark05,
     fontFamily: 'monospace',
+  },
+  editHint: {
+    fontSize: 12,
+    color: t.colors.dark05,
+    paddingTop: t.spacing.m,
+    borderTop: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
   },
 }));
