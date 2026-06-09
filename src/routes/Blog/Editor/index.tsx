@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MdArrowBack, MdCheckCircle, MdCloudUpload, MdPermMedia, MdTune } from 'react-icons/md';
+import { MdArrowBack, MdChatBubbleOutline, MdCheckCircle, MdCloudUpload, MdPermMedia, MdTune } from 'react-icons/md';
 import { BlogSectionType } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
@@ -11,6 +11,7 @@ import { Scrollbar } from '~/components/Scrollbar';
 import { useBlogLocales } from '~/routes/Blog/hooks/useBlogLocales';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { BlockEditor } from '~/routes/Blog/Editor/components/BlockEditor';
+import { EditorialCommentsPanel } from '~/routes/Blog/Editor/components/EditorialCommentsPanel';
 import { MediaPanel } from '~/routes/Blog/Editor/components/MediaPanel';
 import { PostSettingsPanel } from '~/routes/Blog/Editor/components/PostSettingsPanel';
 import { postStatusTone } from '~/routes/Blog/utils/status';
@@ -29,6 +30,7 @@ export const BlogPostEditor = () => {
 
   const [mediaOpen, setMediaOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const [coverPickMode, setCoverPickMode] = useState(false);
   const [activeSectionId, setActiveSectionId] = useState<string>();
 
@@ -203,9 +205,22 @@ export const BlogPostEditor = () => {
             ) : null}
           </span>
           <button
+            style={{ ...styles.iconBtn, color: commentsOpen ? theme.colors.blue : theme.colors.white }}
+            title='Editorial notes'
+            onClick={() => {
+              setCommentsOpen((o) => !o);
+              setSettingsOpen(false);
+            }}
+          >
+            <MdChatBubbleOutline size={18} />
+          </button>
+          <button
             style={{ ...styles.iconBtn, color: settingsOpen ? theme.colors.blue : theme.colors.white }}
             title='Post settings'
-            onClick={() => setSettingsOpen((o) => !o)}
+            onClick={() => {
+              setSettingsOpen((o) => !o);
+              setCommentsOpen(false);
+            }}
           >
             <MdTune size={18} />
           </button>
@@ -242,6 +257,9 @@ export const BlogPostEditor = () => {
               setMediaOpen(true);
             }}
           />
+        ) : null}
+        {draft ? (
+          <EditorialCommentsPanel open={commentsOpen} postId={draft.postId} onClose={() => setCommentsOpen(false)} />
         ) : null}
         <Scrollbar style={styles.scroll}>
           <div style={styles.doc}>
