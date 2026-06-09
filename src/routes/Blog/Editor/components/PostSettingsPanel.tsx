@@ -423,11 +423,6 @@ const useStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
     fontSize: 13,
   },
-  smallBtnDanger: {
-    flex: 1,
-    border: 0,
-    background: 'transparent',
-  },
   chips: {
     flexDirection: 'row',
     flexWrap: 'wrap',
