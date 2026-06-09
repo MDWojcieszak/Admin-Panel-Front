@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@react-google-maps/api": "^2.20.8",
     "@tanstack/react-table": "^8.12.0",
     "@types/js-cookie": "^3.0.6",
     "@types/jwt-decode": "^3.1.0",

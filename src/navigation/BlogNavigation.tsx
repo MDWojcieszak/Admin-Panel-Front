@@ -4,6 +4,7 @@ import { hasAccess } from '~/acl/permissions';
 import { useCan } from '~/hooks/usePermissions';
 import { BlogNavigationRoute, BlogRouteType } from '~/navigation/types';
 import { BlogCategories } from '~/routes/Blog/Categories';
+import { BlogPlaces } from '~/routes/Blog/Places';
 import { BlogPosts } from '~/routes/Blog/Posts';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -15,6 +16,7 @@ export const blogNavigationRoutes: BlogRouteType[] = [
     component: <BlogCategories />,
     permission: 'blog.category.manage',
   },
+  { path: BlogNavigationRoute.PLACES, label: 'Places', component: <BlogPlaces />, permission: 'blog.place.manage' },
 ];
 
 export const BlogNavigation = () => {
