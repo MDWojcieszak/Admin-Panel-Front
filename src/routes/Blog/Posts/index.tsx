@@ -11,6 +11,7 @@ import { useModal } from '~/hooks/useModal';
 import { BlogPostsTable, PostActionHandlers } from '~/routes/Blog/Posts/components/BlogPostsTable';
 import { useBlogPosts } from '~/routes/Blog/Posts/hooks/useBlogPosts';
 import { CreatePostModal } from '~/routes/Blog/Posts/modals/CreatePostModal';
+import { PostInsightsModal } from '~/routes/Blog/Posts/modals/PostInsightsModal';
 import { SchedulePostModal } from '~/routes/Blog/Posts/modals/SchedulePostModal';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -30,6 +31,7 @@ export const BlogPosts = () => {
   const can = useCan();
   const canWrite = can('blog.write');
   const canPublish = can('blog.publish');
+  const canAnalytics = can('blog.analytics');
 
   const { posts, total, pagination, setPagination, status, setStatus, search, setSearch, refresh } = useBlogPosts();
 
@@ -49,6 +51,12 @@ export const BlogPosts = () => {
         refresh();
       },
     },
+  );
+  const insightsModal = useModal(
+    'blog-post-insights',
+    PostInsightsModal,
+    { title: 'Post insights' },
+    { handleClose: async () => insightsModal.hide() },
   );
 
   const runLifecycle = useCallback(
@@ -71,6 +79,7 @@ export const BlogPosts = () => {
       onArchive: (id) => blogVersioningApi && runLifecycle(() => blogVersioningApi.versionControllerArchive({ id })),
       onRestore: (id) => blogVersioningApi && runLifecycle(() => blogVersioningApi.versionControllerRestore({ id })),
       onSchedule: (id) => scheduleModal.show({ postId: id }),
+      onInsights: (id, slug) => insightsModal.show({ postId: id, slug }),
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }),
     [blogVersioningApi, runLifecycle, navigate],
@@ -114,6 +123,7 @@ export const BlogPosts = () => {
         setPagination={setPagination}
         canWrite={canWrite}
         canPublish={canPublish}
+        canAnalytics={canAnalytics}
         actions={actions}
       />
     </div>

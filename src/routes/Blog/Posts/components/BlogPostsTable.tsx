@@ -2,7 +2,7 @@ import { Dispatch, ReactNode, SetStateAction, useMemo } from 'react';
 import { ColumnDef, PaginationState, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import { MdArchive, MdEdit, MdPublish, MdRestore, MdSchedule, MdUnpublished } from 'react-icons/md';
+import { MdArchive, MdEdit, MdInsights, MdPublish, MdRestore, MdSchedule, MdUnpublished } from 'react-icons/md';
 import { BlogPostStatus, PostResponse } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Table } from '~/components/Table';
@@ -16,6 +16,7 @@ export type PostActionHandlers = {
   onArchive: (id: string) => void;
   onRestore: (id: string) => void;
   onSchedule: (id: string) => void;
+  onInsights: (id: string, slug: string) => void;
 };
 
 type BlogPostsTableProps = {
@@ -25,6 +26,7 @@ type BlogPostsTableProps = {
   setPagination: Dispatch<SetStateAction<PaginationState>>;
   canWrite: boolean;
   canPublish: boolean;
+  canAnalytics: boolean;
   actions: PostActionHandlers;
 };
 
@@ -51,11 +53,28 @@ const IconButton = ({ title, color, onClick, children }: { title: string; color:
   </motion.button>
 );
 
-const PostActions = ({ post, canWrite, canPublish, actions }: { post: PostResponse; canWrite: boolean; canPublish: boolean; actions: PostActionHandlers }) => {
+const PostActions = ({
+  post,
+  canWrite,
+  canPublish,
+  canAnalytics,
+  actions,
+}: {
+  post: PostResponse;
+  canWrite: boolean;
+  canPublish: boolean;
+  canAnalytics: boolean;
+  actions: PostActionHandlers;
+}) => {
   const theme = useTheme();
   const { status, id } = post;
   return (
     <div style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 2 }}>
+      {canAnalytics ? (
+        <IconButton title='Insights' color={theme.colors.blue} onClick={() => actions.onInsights(id, post.slug)}>
+          <MdInsights size={18} />
+        </IconButton>
+      ) : null}
       {canWrite ? (
         <IconButton title='Edit' color={theme.colors.blue04} onClick={() => actions.onEdit(id)}>
           <MdEdit size={18} />
@@ -140,12 +159,18 @@ export const BlogPostsTable = (p: BlogPostsTableProps) => {
         header: '',
         id: 'actions',
         cell: (info) => (
-          <PostActions post={info.row.original} canWrite={p.canWrite} canPublish={p.canPublish} actions={p.actions} />
+          <PostActions
+            post={info.row.original}
+            canWrite={p.canWrite}
+            canPublish={p.canPublish}
+            canAnalytics={p.canAnalytics}
+            actions={p.actions}
+          />
         ),
-        maxSize: 220,
+        maxSize: 240,
       },
     ],
-    [theme, p.canWrite, p.canPublish, p.actions],
+    [theme, p.canWrite, p.canPublish, p.canAnalytics, p.actions],
   );
 
   const table = useReactTable({
