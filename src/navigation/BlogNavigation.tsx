@@ -8,6 +8,7 @@ import { BlogCollections } from '~/routes/Blog/Collections';
 import { BlogHome } from '~/routes/Blog/Home';
 import { BlogPlaces } from '~/routes/Blog/Places';
 import { BlogPosts } from '~/routes/Blog/Posts';
+import { BlogTemplates } from '~/routes/Blog/Templates';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 export const blogNavigationRoutes: BlogRouteType[] = [
@@ -26,6 +27,7 @@ export const blogNavigationRoutes: BlogRouteType[] = [
     permission: 'blog.place.manage',
   },
   { path: BlogNavigationRoute.HOME, label: 'Home page', component: <BlogHome />, permission: 'blog.home.manage' },
+  { path: BlogNavigationRoute.TEMPLATES, label: 'Templates', component: <BlogTemplates />, permission: 'blog.write' },
 ];
 
 export const BlogNavigation = () => {

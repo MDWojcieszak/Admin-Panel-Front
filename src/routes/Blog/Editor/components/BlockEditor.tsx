@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { MdAdd } from 'react-icons/md';
+import { MdAdd, MdDashboardCustomize } from 'react-icons/md';
 import { BlogSectionType, PatchSectionDto, ResolvedSectionResponse, UpsertSectionTranslationDto } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import { SectionCard } from '~/routes/Blog/Editor/components/SectionCard';
 import { SECTION_META, sectionDefaults } from '~/routes/Blog/Editor/sectionTypes';
+import { useTemplates } from '~/routes/Blog/Templates/hooks/useTemplates';
 import { mkUseStyles } from '~/utils/theme';
 
 type BlockEditorProps = {
@@ -32,9 +33,22 @@ export const BlockEditor = ({
   onChanged,
 }: BlockEditorProps) => {
   const styles = useStyles();
-  const { blogSectionsApi } = useApi();
+  const { blogSectionsApi, blogTemplatesApi } = useApi();
+  const { templates } = useTemplates();
   const [ordered, setOrdered] = useState<ResolvedSectionResponse[]>([]);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [templateOpen, setTemplateOpen] = useState(false);
+
+  const applyTemplate = async (templateId: string) => {
+    if (!blogTemplatesApi) return;
+    setTemplateOpen(false);
+    try {
+      await blogTemplatesApi.templateControllerApply({ postId, templateId });
+      onChanged();
+    } catch (e) {
+      console.error('Error applying template:', e);
+    }
+  };
 
   useEffect(() => {
     setOrdered([...sections].sort(byOrder));
@@ -132,9 +146,25 @@ export const BlockEditor = ({
       ))}
 
       <div style={styles.addArea}>
-        <button style={styles.addButton} onClick={() => setPaletteOpen((o) => !o)}>
-          <MdAdd size={18} /> Add block
-        </button>
+        <div style={styles.addButtons}>
+          <button style={styles.addButton} onClick={() => setPaletteOpen((o) => !o)}>
+            <MdAdd size={18} /> Add block
+          </button>
+          {templates.length ? (
+            <button style={styles.addButton} onClick={() => setTemplateOpen((o) => !o)}>
+              <MdDashboardCustomize size={16} /> Use template
+            </button>
+          ) : null}
+        </div>
+        {templateOpen ? (
+          <div style={styles.palette}>
+            {templates.map((tpl) => (
+              <button key={tpl.id} style={styles.paletteItem} title={`${tpl.blocks.length} block(s)`} onClick={() => applyTemplate(tpl.id)}>
+                {tpl.name}
+              </button>
+            ))}
+          </div>
+        ) : null}
         {paletteOpen ? (
           <div style={styles.palette}>
             {Object.entries(grouped).map(([group, items]) => (
@@ -163,6 +193,10 @@ const useStyles = mkUseStyles((t) => ({
   addArea: {
     gap: t.spacing.s,
     alignItems: 'flex-start',
+  },
+  addButtons: {
+    flexDirection: 'row',
+    gap: t.spacing.s,
   },
   addButton: {
     flexDirection: 'row',
