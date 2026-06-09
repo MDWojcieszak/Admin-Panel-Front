@@ -5,8 +5,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **string** |  | [optional] [default to undefined]
-**value** | **string** |  | [default to undefined]
+**kind** | [**CategoryKind**](CategoryKind.md) |  | [default to undefined]
+**key** | **string** | Canonical, language-neutral key (normalized server-side). | [default to undefined]
+**icon** | **string** |  | [optional] [default to undefined]
+**color** | **string** |  | [optional] [default to undefined]
+**order** | **number** |  | [optional] [default to undefined]
+**locale** | **string** | Locale for the initial label. Defaults to the default locale. | [optional] [default to undefined]
+**label** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -14,8 +19,13 @@ Name | Type | Description | Notes
 import { CreateCategoryDto } from './api';
 
 const instance: CreateCategoryDto = {
-    name,
-    value,
+    kind,
+    key,
+    icon,
+    color,
+    order,
+    locale,
+    label,
 };
 ```
 

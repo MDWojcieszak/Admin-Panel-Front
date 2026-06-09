@@ -390,7 +390,7 @@ const { status, data } = await apiInstance.serverCommandsControllerUpdateProgres
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **serverControllerCreateCategory**
-> serverControllerCreateCategory(createCategoryDto)
+> serverControllerCreateCategory(createServerCategoryDto)
 
 
 ### Example
@@ -399,18 +399,18 @@ const { status, data } = await apiInstance.serverCommandsControllerUpdateProgres
 import {
     ServerApi,
     Configuration,
-    CreateCategoryDto
+    CreateServerCategoryDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new ServerApi(configuration);
 
 let serverId: string; // (default to undefined)
-let createCategoryDto: CreateCategoryDto; //
+let createServerCategoryDto: CreateServerCategoryDto; //
 
 const { status, data } = await apiInstance.serverControllerCreateCategory(
     serverId,
-    createCategoryDto
+    createServerCategoryDto
 );
 ```
 
@@ -418,7 +418,7 @@ const { status, data } = await apiInstance.serverControllerCreateCategory(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **createCategoryDto** | **CreateCategoryDto**|  | |
+| **createServerCategoryDto** | **CreateServerCategoryDto**|  | |
 | **serverId** | [**string**] |  | defaults to undefined|
 
 
@@ -597,7 +597,7 @@ const { status, data } = await apiInstance.serverControllerGetDetails(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **serverControllerPatchCategory**
-> serverControllerPatchCategory(patchCategoryDto)
+> serverControllerPatchCategory(patchServerCategoryDto)
 
 
 ### Example
@@ -606,18 +606,18 @@ const { status, data } = await apiInstance.serverControllerGetDetails(
 import {
     ServerApi,
     Configuration,
-    PatchCategoryDto
+    PatchServerCategoryDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new ServerApi(configuration);
 
 let id: string; // (default to undefined)
-let patchCategoryDto: PatchCategoryDto; //
+let patchServerCategoryDto: PatchServerCategoryDto; //
 
 const { status, data } = await apiInstance.serverControllerPatchCategory(
     id,
-    patchCategoryDto
+    patchServerCategoryDto
 );
 ```
 
@@ -625,7 +625,7 @@ const { status, data } = await apiInstance.serverControllerPatchCategory(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **patchCategoryDto** | **PatchCategoryDto**|  | |
+| **patchServerCategoryDto** | **PatchServerCategoryDto**|  | |
 | **id** | [**string**] |  | defaults to undefined|
 
 

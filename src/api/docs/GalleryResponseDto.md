@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**images** | [**Array&lt;ImageDto&gt;**](ImageDto.md) |  | [default to undefined]
+**images** | [**Array&lt;GalleryImageDto&gt;**](GalleryImageDto.md) |  | [default to undefined]
 **count** | **number** |  | [default to undefined]
 
 ## Example

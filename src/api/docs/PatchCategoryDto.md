@@ -5,7 +5,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **string** |  | [optional] [default to undefined]
+**key** | **string** | Blocked for system categories. | [optional] [default to undefined]
+**icon** | **string** |  | [optional] [default to undefined]
+**color** | **string** |  | [optional] [default to undefined]
+**order** | **number** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -13,7 +16,10 @@ Name | Type | Description | Notes
 import { PatchCategoryDto } from './api';
 
 const instance: PatchCategoryDto = {
-    name,
+    key,
+    icon,
+    color,
+    order,
 };
 ```
 
