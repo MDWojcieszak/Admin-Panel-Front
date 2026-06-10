@@ -14,3 +14,14 @@
 .bn-block-content[data-content-type='divider'] {
   width: 100%;
 }
+
+/*
+ * The app has a global `div { display: flex; flex-direction: column }` (src/index.css).
+ * It leaks into BlockNote and breaks list markers / checkbox rows. Neutralise it INSIDE the
+ * editor with equal specificity (`:where()` adds none) loaded after the global rule, so
+ * BlockNote's own class-based layout wins. Our custom blocks use inline styles and are unaffected.
+ */
+:where(.bn-container) div {
+  display: revert;
+  flex-direction: revert;
+}

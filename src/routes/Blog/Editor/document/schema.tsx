@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { MdClose, MdImage, MdPlace } from 'react-icons/md';
+import { ReactNode, useEffect, useState } from 'react';
+import { MdCheckCircle, MdClose, MdImage, MdInfoOutline, MdLightbulb, MdPlace, MdWarningAmber } from 'react-icons/md';
 import { Block, BlockNoteEditor, BlockNoteSchema, PartialBlock, defaultBlockSpecs } from '@blocknote/core';
 import { createReactBlockSpec } from '@blocknote/react';
 import { CalloutVariant, EmbedProvider, PoiAdminResponse } from '~/api/api';
@@ -275,20 +275,41 @@ const BlogCallout = createReactBlockSpec(
   {
     render: ({ block, editor, contentRef }) => {
       const styles = useBlockStyles();
+      const theme = useTheme();
+      const variants: { value: CalloutVariant; color: string; icon: ReactNode }[] = [
+        { value: CalloutVariant.Info, color: theme.colors.blue, icon: <MdInfoOutline size={16} /> },
+        { value: CalloutVariant.Tip, color: theme.colors.blue04, icon: <MdLightbulb size={16} /> },
+        { value: CalloutVariant.Warning, color: theme.colors.yellow, icon: <MdWarningAmber size={16} /> },
+        { value: CalloutVariant.Success, color: theme.colors.lightGreen, icon: <MdCheckCircle size={16} /> },
+      ];
+      const active = variants.find((v) => v.value === block.props.variant) ?? variants[0];
       return (
-        <div style={styles.calloutBlock}>
-          <select
-            style={styles.calloutSelect}
-            contentEditable={false}
-            value={block.props.variant}
-            onChange={(e) => editor.updateBlock(block, { props: { variant: e.target.value as CalloutVariant } })}
-          >
-            {Object.values(CalloutVariant).map((v) => (
-              <option key={v} value={v}>
-                {v}
-              </option>
-            ))}
-          </select>
+        <div
+          style={{
+            ...styles.calloutBlock,
+            backgroundColor: active.color + theme.colorOpacity(0.12),
+            borderLeft: `3px solid ${active.color}`,
+          }}
+        >
+          <div style={styles.calloutHeader} contentEditable={false}>
+            <span style={{ ...styles.calloutIcon, color: active.color }}>{active.icon}</span>
+            <div style={styles.calloutPills}>
+              {variants.map((v) => (
+                <button
+                  key={v.value}
+                  type='button'
+                  title={v.value}
+                  style={{
+                    ...styles.calloutPill,
+                    ...(v.value === active.value ? { color: v.color, backgroundColor: v.color + theme.colorOpacity(0.18) } : null),
+                  }}
+                  onClick={() => editor.updateBlock(block, { props: { variant: v.value } })}
+                >
+                  {v.icon}
+                </button>
+              ))}
+            </div>
+          </div>
           <div style={styles.calloutBody} ref={contentRef} />
         </div>
       );
@@ -456,19 +477,32 @@ const useBlockStyles = mkUseStyles((t) => ({
     gap: t.spacing.xs,
     padding: t.spacing.m,
     borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.blue + t.colorOpacity(0.12),
-    borderLeft: `3px solid ${t.colors.blue + t.colorOpacity(0.5)}`,
   },
-  calloutSelect: {
-    alignSelf: 'flex-start',
+  calloutHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 2,
+  },
+  calloutIcon: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  calloutPills: {
+    flexDirection: 'row',
+    gap: 2,
+  },
+  calloutPill: {
+    width: 26,
     height: 26,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: t.borderRadius.small,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    color: t.colors.white,
     border: 0,
-    outline: 'none',
-    colorScheme: 'dark',
-    fontSize: 12,
+    background: 'transparent',
+    color: t.colors.dark05,
+    cursor: 'pointer',
   },
   calloutBody: {},
 }));
