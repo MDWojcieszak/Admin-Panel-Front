@@ -17,7 +17,7 @@ export const useCollections = () => {
     if (!blogCollectionsApi) return;
     try {
       const { data } = await blogCollectionsApi.collectionControllerList({
-        take: 100,
+        take: 20,
         skip: 0,
         search: debouncedSearch.trim() || undefined,
       });

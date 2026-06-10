@@ -35,29 +35,35 @@ export const BlogMediaPanel = ({ open, pickMode, onClose, onPick }: BlogMediaPan
   const styles = useStyles();
   const { blogMediaApi } = useApi();
   const [images, setImages] = useState<BlogMediaImageResponse[]>([]);
+  const [total, setTotal] = useState(0);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const load = useCallback(async () => {
-    if (!blogMediaApi) return;
-    try {
-      const { data } = await blogMediaApi.mediaControllerList({ take: 60, skip: 0 });
-      setImages(data.images);
-    } catch (e) {
-      console.error('Error loading blog media:', e);
-    }
-  }, [blogMediaApi]);
+  // The endpoint caps `take` at 20 — paginate with skip and a "load more" button.
+  const fetchPage = useCallback(
+    async (skip: number, replace: boolean) => {
+      if (!blogMediaApi) return;
+      try {
+        const { data } = await blogMediaApi.mediaControllerList({ take: 20, skip });
+        setTotal(data.total);
+        setImages((prev) => (replace ? data.images : [...prev, ...data.images]));
+      } catch (e) {
+        console.error('Error loading blog media:', e);
+      }
+    },
+    [blogMediaApi],
+  );
 
   useEffect(() => {
-    if (open) load();
-  }, [open, load]);
+    if (open) fetchPage(0, true);
+  }, [open, fetchPage]);
 
   const handleUpload = async (file?: File) => {
     if (!file) return;
     setUploading(true);
     try {
       const id = await uploadBlogMedia(file);
-      await load();
+      await fetchPage(0, true);
       onPick(id);
     } catch (e) {
       console.error('Error uploading blog media:', e);
@@ -101,6 +107,11 @@ export const BlogMediaPanel = ({ open, pickMode, onClose, onPick }: BlogMediaPan
               </button>
             ))}
           </div>
+          {images.length < total ? (
+            <button style={styles.loadMore} onClick={() => fetchPage(images.length, false)}>
+              Load more ({images.length}/{total})
+            </button>
+          ) : null}
         </Scrollbar>
       </div>
     </motion.div>
@@ -162,4 +173,14 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray05,
   },
   fill: { width: '100%', height: '100%' },
+  loadMore: {
+    marginTop: t.spacing.s,
+    height: 34,
+    borderRadius: t.borderRadius.default,
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.1)}`,
+    background: 'transparent',
+    color: t.colors.dark05,
+    cursor: 'pointer',
+    fontSize: 12,
+  },
 }));

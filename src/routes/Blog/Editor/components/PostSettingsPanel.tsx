@@ -69,7 +69,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
   useEffect(() => {
     if (!userApi || !p.open) return;
     userApi
-      .userControllerGetList({ take: 100, skip: 0 })
+      .userControllerGetList({ take: 20, skip: 0 })
       .then((r) => setUsers(r.data.users))
       .catch((e) => console.error('Error loading users:', e));
   }, [userApi, p.open]);
