@@ -1,5 +1,6 @@
 import '@blocknote/core/fonts/inter.css';
 import '@blocknote/mantine/style.css';
+import '~/routes/Blog/Editor/document/editor.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { filterSuggestionItems } from '@blocknote/core';
 import { BlockNoteView } from '@blocknote/mantine';
@@ -153,9 +154,14 @@ export const NotionEditor = ({ postId, locale, onSaved, onSaveStateChange }: Not
         >
           <SuggestionMenuController
             triggerCharacter='/'
-            getItems={async (query) =>
-              filterSuggestionItems([...getDefaultReactSlashMenuItems(editor), ...slashItems(editor)], query)
-            }
+            getItems={async (query) => {
+              // Drop blocks a blog post shouldn't use (toggle lists, native media — our blocks replace those).
+              const denied = ['toggle', 'image', 'video', 'audio', 'file'];
+              const defaults = getDefaultReactSlashMenuItems(editor).filter(
+                (i) => !denied.some((d) => i.title.toLowerCase().includes(d)),
+              );
+              return filterSuggestionItems([...defaults, ...slashItems(editor)], query);
+            }}
           />
         </BlockNoteView>
       </div>

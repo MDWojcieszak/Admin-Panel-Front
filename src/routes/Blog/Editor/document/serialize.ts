@@ -37,7 +37,10 @@ export const sectionsToBlocks = async (
   for (const s of ordered) {
     switch (s.type) {
       case BlogSectionType.Paragraph: {
-        const parsed = await editor.tryParseMarkdownToBlocks(s.body || '');
+        // Prose is stored as HTML to preserve inline formatting (bold/italic/colour/links).
+        const parsed = s.body?.trim().startsWith('<')
+          ? await editor.tryParseHTMLToBlocks(s.body)
+          : await editor.tryParseMarkdownToBlocks(s.body || '');
         blocks.push(...(parsed as BlogPartialBlock[]));
         break;
       }
@@ -217,9 +220,14 @@ export const blocksToDocument = async (editor: BlogEditor, blocks: BlogBlock[]):
 
   const flush = async () => {
     if (!prose.length) return;
-    const markdown = (await editor.blocksToMarkdownLossy(prose)).trim();
-    if (markdown) out.push({ type: DocumentBlockType.Prose, markdown });
+    const buffer = prose;
     prose = [];
+    // Skip runs that are only empty paragraphs.
+    const hasText = buffer.some((b) => inlineToText((b as { content?: unknown }).content).trim());
+    if (!hasText) return;
+    // HTML keeps inline marks/colours that Markdown would drop.
+    const markdown = (await editor.blocksToFullHTML(buffer)).trim();
+    if (markdown) out.push({ type: DocumentBlockType.Prose, markdown });
   };
 
   for (const b of blocks) {

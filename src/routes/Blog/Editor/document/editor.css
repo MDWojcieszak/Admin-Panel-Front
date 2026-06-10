@@ -1,0 +1,16 @@
+/* Blend BlockNote into the dark document — drop the boxed background that fought with controls. */
+.bn-container,
+.bn-container .bn-editor,
+.bn-mantine .bn-editor {
+  background-color: transparent !important;
+}
+
+.bn-editor {
+  padding-inline: 0 !important;
+}
+
+/* Let custom blocks use the full content width. */
+.bn-block-content[data-content-type^='blog'],
+.bn-block-content[data-content-type='divider'] {
+  width: 100%;
+}
