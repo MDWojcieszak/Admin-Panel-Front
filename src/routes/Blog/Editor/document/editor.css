@@ -25,3 +25,13 @@
   display: revert;
   flex-direction: revert;
 }
+
+/*
+ * The reset above also stripped flex from OUR custom blocks, which were built assuming the app's
+ * global div-flex (they only set flex-direction inline). Restore that default inside custom blocks;
+ * the blocks' own inline `flex-direction: row` still overrides where needed.
+ */
+.bn-container .bn-block-content[data-content-type^='blog'] div {
+  display: flex;
+  flex-direction: column;
+}
