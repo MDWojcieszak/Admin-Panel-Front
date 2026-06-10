@@ -5,10 +5,12 @@ import {
   AuthApi,
   BlogCategoriesApi,
   BlogCollectionsApi,
+  BlogDocumentApi,
   BlogEditorialCommentsApi,
   BlogHomeAdminApi,
   BlogInteractionsApi,
   BlogLocalesApi,
+  BlogMediaApi,
   BlogPOIApi,
   BlogPostsApi,
   BlogSectionsApi,
@@ -63,6 +65,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const blogTemplatesApi = useMemo(() => config && new BlogTemplatesApi(config), [config]);
   const blogCommentsApi = useMemo(() => config && new BlogEditorialCommentsApi(config), [config]);
   const blogInteractionsApi = useMemo(() => config && new BlogInteractionsApi(config), [config]);
+  const blogDocumentApi = useMemo(() => config && new BlogDocumentApi(config), [config]);
+  const blogMediaApi = useMemo(() => config && new BlogMediaApi(config), [config]);
 
   return (
     <ApiContext.Provider
@@ -89,6 +93,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         blogTemplatesApi,
         blogCommentsApi,
         blogInteractionsApi,
+        blogDocumentApi,
+        blogMediaApi,
       }}
     >
       {children}

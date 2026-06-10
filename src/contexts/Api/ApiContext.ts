@@ -5,10 +5,12 @@ import {
   AuthApi,
   BlogCategoriesApi,
   BlogCollectionsApi,
+  BlogDocumentApi,
   BlogEditorialCommentsApi,
   BlogHomeAdminApi,
   BlogInteractionsApi,
   BlogLocalesApi,
+  BlogMediaApi,
   BlogPOIApi,
   BlogPostsApi,
   BlogSectionsApi,
@@ -47,6 +49,8 @@ type ApiContextType = {
   blogTemplatesApi: BlogTemplatesApi | false;
   blogCommentsApi: BlogEditorialCommentsApi | false;
   blogInteractionsApi: BlogInteractionsApi | false;
+  blogDocumentApi: BlogDocumentApi | false;
+  blogMediaApi: BlogMediaApi | false;
 };
 
 export const ApiContext = createContext<ApiContextType | null>(null);

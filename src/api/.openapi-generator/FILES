@@ -30,10 +30,12 @@ docs/AuthApi.md
 docs/AuthControllerCheckRegister200Response.md
 docs/AuthorDto.md
 docs/BlogAccessTier.md
+docs/BlogAlbumItemInputDto.md
 docs/BlogAspectRatio.md
 docs/BlogAuthorRole.md
 docs/BlogCategoriesApi.md
 docs/BlogCollectionsApi.md
+docs/BlogDocumentApi.md
 docs/BlogEditorialCommentsApi.md
 docs/BlogFeedbackRating.md
 docs/BlogHomeAdminApi.md
@@ -43,6 +45,14 @@ docs/BlogInteractionsApi.md
 docs/BlogLocaleListResponse.md
 docs/BlogLocaleResponse.md
 docs/BlogLocalesApi.md
+docs/BlogMediaAlbumItemResponse.md
+docs/BlogMediaAlbumListResponse.md
+docs/BlogMediaAlbumResponse.md
+docs/BlogMediaAlbumSummaryResponse.md
+docs/BlogMediaApi.md
+docs/BlogMediaImageDimensionsResponse.md
+docs/BlogMediaImageResponse.md
+docs/BlogMediaListResponse.md
 docs/BlogMediaPosition.md
 docs/BlogMediaSplit.md
 docs/BlogMobileStackOrder.md
@@ -86,6 +96,7 @@ docs/ConnectedServiceType.md
 docs/CountByDto.md
 docs/CpuDto.md
 docs/CreateAstroObjectDto.md
+docs/CreateBlogAlbumDto.md
 docs/CreateBlogCategoryDto.md
 docs/CreateCodeDto.md
 docs/CreateCollectionDto.md
@@ -104,6 +115,7 @@ docs/CreateServerCategoryDto.md
 docs/CreateServerTransferDto.md
 docs/CreateTemplateBlockDto.md
 docs/CreateTemplateDto.md
+docs/CreatedBlockRefResponse.md
 docs/DailyPointDto.md
 docs/DashboardApi.md
 docs/DashboardGalleryResponseDto.md
@@ -122,6 +134,9 @@ docs/DeviceWithLicenseResponse.md
 docs/DimensionsDto.md
 docs/DiskInfoDto.md
 docs/DiskType.md
+docs/DocumentBlockDto.md
+docs/DocumentBlockType.md
+docs/DocumentListItemInputDto.md
 docs/EcosystemAccessGrantsApi.md
 docs/EcosystemAppDevicesApi.md
 docs/EcosystemLicenseApi.md
@@ -188,6 +203,7 @@ docs/OllamaPullModelResponseDto.md
 docs/OrderItemDto.md
 docs/PaginationDto.md
 docs/PatchAstroObjectDto.md
+docs/PatchBlogAlbumDto.md
 docs/PatchBlogCategoryDto.md
 docs/PatchCollectionDto.md
 docs/PatchCollectionItemDto.md
@@ -307,6 +323,8 @@ docs/ResolvedSectionPoiResponse.md
 docs/ResolvedSectionResponse.md
 docs/Role.md
 docs/RollbackDto.md
+docs/SaveDocumentDto.md
+docs/SaveDocumentResponse.md
 docs/SaveServiceTokenDto.md
 docs/SaveServiceTokenResponseDto.md
 docs/ScheduleDto.md
@@ -339,6 +357,7 @@ docs/ServerTransferStatus.md
 docs/SessionApi.md
 docs/SessionListResponseDto.md
 docs/SessionResponseDto.md
+docs/SetBlogAlbumItemsDto.md
 docs/SetHomeBlockPostsDto.md
 docs/SetPoiCategoriesDto.md
 docs/SetPoiHoursDto.md

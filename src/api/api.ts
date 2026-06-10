@@ -608,6 +608,25 @@ export type BlogAccessTier = typeof BlogAccessTier[keyof typeof BlogAccessTier];
 /**
  * 
  * @export
+ * @interface BlogAlbumItemInputDto
+ */
+export interface BlogAlbumItemInputDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogAlbumItemInputDto
+     */
+    'imageId': string;
+    /**
+     * Explicit order; defaults to the array index.
+     * @type {number}
+     * @memberof BlogAlbumItemInputDto
+     */
+    'order'?: number;
+}
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
@@ -722,6 +741,235 @@ export interface BlogLocaleResponse {
      * @memberof BlogLocaleResponse
      */
     'order'?: number | null;
+}
+/**
+ * 
+ * @export
+ * @interface BlogMediaAlbumItemResponse
+ */
+export interface BlogMediaAlbumItemResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumItemResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogMediaAlbumItemResponse
+     */
+    'order': number;
+    /**
+     * 
+     * @type {BlogMediaImageResponse}
+     * @memberof BlogMediaAlbumItemResponse
+     */
+    'image': BlogMediaImageResponse;
+}
+/**
+ * 
+ * @export
+ * @interface BlogMediaAlbumListResponse
+ */
+export interface BlogMediaAlbumListResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogMediaAlbumListResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<BlogMediaAlbumSummaryResponse>}
+     * @memberof BlogMediaAlbumListResponse
+     */
+    'albums': Array<BlogMediaAlbumSummaryResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface BlogMediaAlbumResponse
+ */
+export interface BlogMediaAlbumResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumResponse
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumResponse
+     */
+    'createdById': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogMediaAlbumResponse
+     */
+    'itemCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumResponse
+     */
+    'updatedAt': string;
+    /**
+     * 
+     * @type {Array<BlogMediaAlbumItemResponse>}
+     * @memberof BlogMediaAlbumResponse
+     */
+    'items': Array<BlogMediaAlbumItemResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface BlogMediaAlbumSummaryResponse
+ */
+export interface BlogMediaAlbumSummaryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumSummaryResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumSummaryResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumSummaryResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumSummaryResponse
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumSummaryResponse
+     */
+    'createdById': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogMediaAlbumSummaryResponse
+     */
+    'itemCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumSummaryResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaAlbumSummaryResponse
+     */
+    'updatedAt': string;
+}
+/**
+ * 
+ * @export
+ * @interface BlogMediaImageDimensionsResponse
+ */
+export interface BlogMediaImageDimensionsResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaImageDimensionsResponse
+     */
+    'width': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaImageDimensionsResponse
+     */
+    'height': string;
+}
+/**
+ * 
+ * @export
+ * @interface BlogMediaImageResponse
+ */
+export interface BlogMediaImageResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaImageResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {BlogMediaImageDimensionsResponse}
+     * @memberof BlogMediaImageResponse
+     */
+    'dimensions'?: BlogMediaImageDimensionsResponse | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaImageResponse
+     */
+    'uploadedById'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaImageResponse
+     */
+    'createdAt': string;
+}
+/**
+ * 
+ * @export
+ * @interface BlogMediaListResponse
+ */
+export interface BlogMediaListResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogMediaListResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<BlogMediaImageResponse>}
+     * @memberof BlogMediaListResponse
+     */
+    'images': Array<BlogMediaImageResponse>;
 }
 /**
  * 
@@ -1598,6 +1846,31 @@ export interface CreateAstroObjectDto {
      * @memberof CreateAstroObjectDto
      */
     'thumbnailUrl'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface CreateBlogAlbumDto
+ */
+export interface CreateBlogAlbumDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBlogAlbumDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBlogAlbumDto
+     */
+    'description'?: string | null;
+    /**
+     * Cover image id. Must be a BLOG-scoped image.
+     * @type {string}
+     * @memberof CreateBlogAlbumDto
+     */
+    'coverImageId'?: string | null;
 }
 /**
  * 
@@ -2602,6 +2875,25 @@ export interface CreateTemplateDto {
 /**
  * 
  * @export
+ * @interface CreatedBlockRefResponse
+ */
+export interface CreatedBlockRefResponse {
+    /**
+     * clientKey of a new block, or the previous sectionId of a block whose type changed.
+     * @type {string}
+     * @memberof CreatedBlockRefResponse
+     */
+    'clientKey': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedBlockRefResponse
+     */
+    'sectionId': string;
+}
+/**
+ * 
+ * @export
  * @interface DailyPointDto
  */
 export interface DailyPointDto {
@@ -3061,6 +3353,196 @@ export const DiskType = {
 export type DiskType = typeof DiskType[keyof typeof DiskType];
 
 
+/**
+ * 
+ * @export
+ * @interface DocumentBlockDto
+ */
+export interface DocumentBlockDto {
+    /**
+     * Existing sectionId (update).
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'id'?: string;
+    /**
+     * Client key for a new block.
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'clientKey'?: string;
+    /**
+     * 
+     * @type {DocumentBlockType}
+     * @memberof DocumentBlockDto
+     */
+    'type': DocumentBlockType;
+    /**
+     * Markdown body (prose/callout/mediaText/quote).
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'markdown'?: string | null;
+    /**
+     * Heading text (heading block).
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'text'?: string | null;
+    /**
+     * Caption for a single-image block (image/mediaText).
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'caption'?: string | null;
+    /**
+     * 
+     * @type {CalloutVariant}
+     * @memberof DocumentBlockDto
+     */
+    'variant'?: CalloutVariant;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'imageId'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof DocumentBlockDto
+     */
+    'imageIds'?: Array<string>;
+    /**
+     * 
+     * @type {GalleryLayout}
+     * @memberof DocumentBlockDto
+     */
+    'galleryLayout'?: GalleryLayout;
+    /**
+     * 
+     * @type {BlogImageSize}
+     * @memberof DocumentBlockDto
+     */
+    'imageSize'?: BlogImageSize;
+    /**
+     * 
+     * @type {BlogAspectRatio}
+     * @memberof DocumentBlockDto
+     */
+    'aspectRatio'?: BlogAspectRatio;
+    /**
+     * 
+     * @type {BlogOverlayPosition}
+     * @memberof DocumentBlockDto
+     */
+    'overlayPosition'?: BlogOverlayPosition;
+    /**
+     * 
+     * @type {BlogMediaPosition}
+     * @memberof DocumentBlockDto
+     */
+    'mediaPosition'?: BlogMediaPosition;
+    /**
+     * 
+     * @type {BlogMediaSplit}
+     * @memberof DocumentBlockDto
+     */
+    'mediaSplit'?: BlogMediaSplit;
+    /**
+     * 
+     * @type {BlogMobileStackOrder}
+     * @memberof DocumentBlockDto
+     */
+    'mobileStackOrder'?: BlogMobileStackOrder;
+    /**
+     * 
+     * @type {EmbedProvider}
+     * @memberof DocumentBlockDto
+     */
+    'provider'?: EmbedProvider;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'url'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'poiId'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof DocumentBlockDto
+     */
+    'poiIds'?: Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentBlockDto
+     */
+    'level'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'author'?: string | null;
+    /**
+     * 
+     * @type {Array<DocumentListItemInputDto>}
+     * @memberof DocumentBlockDto
+     */
+    'items'?: Array<DocumentListItemInputDto>;
+    /**
+     * 
+     * @type {BlogAccessTier}
+     * @memberof DocumentBlockDto
+     */
+    'minAccessTier'?: BlogAccessTier;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const DocumentBlockType = {
+    Prose: 'prose',
+    Callout: 'callout',
+    Divider: 'divider',
+    Image: 'image',
+    Gallery: 'gallery',
+    MediaText: 'mediaText',
+    Embed: 'embed',
+    Map: 'map',
+    Place: 'place',
+    List: 'list',
+    Heading: 'heading',
+    Quote: 'quote'
+} as const;
+
+export type DocumentBlockType = typeof DocumentBlockType[keyof typeof DocumentBlockType];
+
+
+/**
+ * 
+ * @export
+ * @interface DocumentListItemInputDto
+ */
+export interface DocumentListItemInputDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentListItemInputDto
+     */
+    'content'?: string | null;
+}
 /**
  * 
  * @export
@@ -4892,6 +5374,31 @@ export interface PatchAstroObjectDto {
      * @memberof PatchAstroObjectDto
      */
     'thumbnailUrl'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface PatchBlogAlbumDto
+ */
+export interface PatchBlogAlbumDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchBlogAlbumDto
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchBlogAlbumDto
+     */
+    'description'?: string | null;
+    /**
+     * Cover image id (BLOG-scoped). Pass null to clear.
+     * @type {string}
+     * @memberof PatchBlogAlbumDto
+     */
+    'coverImageId'?: string | null;
 }
 /**
  * 
@@ -9689,6 +10196,50 @@ export interface RollbackDto {
 /**
  * 
  * @export
+ * @interface SaveDocumentDto
+ */
+export interface SaveDocumentDto {
+    /**
+     * 
+     * @type {Array<DocumentBlockDto>}
+     * @memberof SaveDocumentDto
+     */
+    'blocks': Array<DocumentBlockDto>;
+}
+/**
+ * 
+ * @export
+ * @interface SaveDocumentResponse
+ */
+export interface SaveDocumentResponse {
+    /**
+     * 
+     * @type {Array<SectionResponse>}
+     * @memberof SaveDocumentResponse
+     */
+    'sections': Array<SectionResponse>;
+    /**
+     * 
+     * @type {Array<CreatedBlockRefResponse>}
+     * @memberof SaveDocumentResponse
+     */
+    'created': Array<CreatedBlockRefResponse>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SaveDocumentResponse
+     */
+    'hasUnpublishedChanges': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof SaveDocumentResponse
+     */
+    'versionId': string;
+}
+/**
+ * 
+ * @export
  * @interface SaveServiceTokenDto
  */
 export interface SaveServiceTokenDto {
@@ -10898,6 +11449,19 @@ export interface SessionResponseDto {
      * @memberof SessionResponseDto
      */
     'updatedAt': string;
+}
+/**
+ * 
+ * @export
+ * @interface SetBlogAlbumItemsDto
+ */
+export interface SetBlogAlbumItemsDto {
+    /**
+     * 
+     * @type {Array<BlogAlbumItemInputDto>}
+     * @memberof SetBlogAlbumItemsDto
+     */
+    'items': Array<BlogAlbumItemInputDto>;
 }
 /**
  * 
@@ -17285,6 +17849,155 @@ export class BlogCollectionsApi extends BaseAPI {
 
 
 /**
+ * BlogDocumentApi - axios parameter creator
+ * @export
+ */
+export const BlogDocumentApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} postId 
+         * @param {SaveDocumentDto} saveDocumentDto 
+         * @param {string} [locale] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerSave: async (postId: string, saveDocumentDto: SaveDocumentDto, locale?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postId' is not null or undefined
+            assertParamExists('documentControllerSave', 'postId', postId)
+            // verify required parameter 'saveDocumentDto' is not null or undefined
+            assertParamExists('documentControllerSave', 'saveDocumentDto', saveDocumentDto)
+            const localVarPath = `/blog/posts/{postId}/document`
+                .replace(`{${"postId"}}`, encodeURIComponent(String(postId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (locale !== undefined) {
+                localVarQueryParameter['locale'] = locale;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(saveDocumentDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BlogDocumentApi - functional programming interface
+ * @export
+ */
+export const BlogDocumentApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BlogDocumentApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} postId 
+         * @param {SaveDocumentDto} saveDocumentDto 
+         * @param {string} [locale] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentControllerSave(postId: string, saveDocumentDto: SaveDocumentDto, locale?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SaveDocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerSave(postId, saveDocumentDto, locale, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogDocumentApi.documentControllerSave']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * BlogDocumentApi - factory interface
+ * @export
+ */
+export const BlogDocumentApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BlogDocumentApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {BlogDocumentApiDocumentControllerSaveRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerSave(requestParameters: BlogDocumentApiDocumentControllerSaveRequest, options?: RawAxiosRequestConfig): AxiosPromise<SaveDocumentResponse> {
+            return localVarFp.documentControllerSave(requestParameters.postId, requestParameters.saveDocumentDto, requestParameters.locale, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for documentControllerSave operation in BlogDocumentApi.
+ * @export
+ * @interface BlogDocumentApiDocumentControllerSaveRequest
+ */
+export interface BlogDocumentApiDocumentControllerSaveRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogDocumentApiDocumentControllerSave
+     */
+    readonly postId: string
+
+    /**
+     * 
+     * @type {SaveDocumentDto}
+     * @memberof BlogDocumentApiDocumentControllerSave
+     */
+    readonly saveDocumentDto: SaveDocumentDto
+
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogDocumentApiDocumentControllerSave
+     */
+    readonly locale?: string
+}
+
+/**
+ * BlogDocumentApi - object-oriented interface
+ * @export
+ * @class BlogDocumentApi
+ * @extends {BaseAPI}
+ */
+export class BlogDocumentApi extends BaseAPI {
+    /**
+     * 
+     * @param {BlogDocumentApiDocumentControllerSaveRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogDocumentApi
+     */
+    public documentControllerSave(requestParameters: BlogDocumentApiDocumentControllerSaveRequest, options?: RawAxiosRequestConfig) {
+        return BlogDocumentApiFp(this.configuration).documentControllerSave(requestParameters.postId, requestParameters.saveDocumentDto, requestParameters.locale, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * BlogEditorialCommentsApi - axios parameter creator
  * @export
  */
@@ -20214,6 +20927,940 @@ export class BlogLocalesApi extends BaseAPI {
      */
     public localeControllerList(options?: RawAxiosRequestConfig) {
         return BlogLocalesApiFp(this.configuration).localeControllerList(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * BlogMediaApi - axios parameter creator
+ * @export
+ */
+export const BlogMediaApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CreateBlogAlbumDto} createBlogAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerCreateAlbum: async (createBlogAlbumDto: CreateBlogAlbumDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createBlogAlbumDto' is not null or undefined
+            assertParamExists('mediaControllerCreateAlbum', 'createBlogAlbumDto', createBlogAlbumDto)
+            const localVarPath = `/blog/media/albums`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createBlogAlbumDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerDeleteAlbum: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('mediaControllerDeleteAlbum', 'id', id)
+            const localVarPath = `/blog/media/albums/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerDeleteImage: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('mediaControllerDeleteImage', 'id', id)
+            const localVarPath = `/blog/media/images/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerGetAlbum: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('mediaControllerGetAlbum', 'id', id)
+            const localVarPath = `/blog/media/albums/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerGetImage: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('mediaControllerGetImage', 'id', id)
+            const localVarPath = `/blog/media/images/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerList: async (take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/media`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (take !== undefined) {
+                localVarQueryParameter['take'] = take;
+            }
+
+            if (skip !== undefined) {
+                localVarQueryParameter['skip'] = skip;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerListAlbums: async (take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/media/albums`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (take !== undefined) {
+                localVarQueryParameter['take'] = take;
+            }
+
+            if (skip !== undefined) {
+                localVarQueryParameter['skip'] = skip;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {PatchBlogAlbumDto} patchBlogAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerPatchAlbum: async (id: string, patchBlogAlbumDto: PatchBlogAlbumDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('mediaControllerPatchAlbum', 'id', id)
+            // verify required parameter 'patchBlogAlbumDto' is not null or undefined
+            assertParamExists('mediaControllerPatchAlbum', 'patchBlogAlbumDto', patchBlogAlbumDto)
+            const localVarPath = `/blog/media/albums/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchBlogAlbumDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {SetBlogAlbumItemsDto} setBlogAlbumItemsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerSetAlbumItems: async (id: string, setBlogAlbumItemsDto: SetBlogAlbumItemsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('mediaControllerSetAlbumItems', 'id', id)
+            // verify required parameter 'setBlogAlbumItemsDto' is not null or undefined
+            assertParamExists('mediaControllerSetAlbumItems', 'setBlogAlbumItemsDto', setBlogAlbumItemsDto)
+            const localVarPath = `/blog/media/albums/{id}/items`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setBlogAlbumItemsDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerUpload: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('mediaControllerUpload', 'id', id)
+            const localVarPath = `/blog/media/upload`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (id !== undefined) { 
+                localVarFormParams.append('id', id as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BlogMediaApi - functional programming interface
+ * @export
+ */
+export const BlogMediaApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BlogMediaApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CreateBlogAlbumDto} createBlogAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerCreateAlbum(createBlogAlbumDto: CreateBlogAlbumDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogMediaAlbumResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerCreateAlbum(createBlogAlbumDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerCreateAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerDeleteAlbum(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerDeleteAlbum(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerDeleteAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerDeleteImage(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerDeleteImage(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerDeleteImage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerGetAlbum(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogMediaAlbumResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerGetAlbum(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerGetAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerGetImage(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogMediaImageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerGetImage(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerGetImage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerList(take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogMediaListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerList(take, skip, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerListAlbums(take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogMediaAlbumListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerListAlbums(take, skip, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerListAlbums']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {PatchBlogAlbumDto} patchBlogAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerPatchAlbum(id: string, patchBlogAlbumDto: PatchBlogAlbumDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogMediaAlbumResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerPatchAlbum(id, patchBlogAlbumDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerPatchAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {SetBlogAlbumItemsDto} setBlogAlbumItemsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerSetAlbumItems(id: string, setBlogAlbumItemsDto: SetBlogAlbumItemsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogMediaAlbumResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerSetAlbumItems(id, setBlogAlbumItemsDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerSetAlbumItems']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async mediaControllerUpload(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.mediaControllerUpload(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogMediaApi.mediaControllerUpload']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * BlogMediaApi - factory interface
+ * @export
+ */
+export const BlogMediaApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BlogMediaApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerCreateAlbumRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerCreateAlbum(requestParameters: BlogMediaApiMediaControllerCreateAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogMediaAlbumResponse> {
+            return localVarFp.mediaControllerCreateAlbum(requestParameters.createBlogAlbumDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerDeleteAlbumRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerDeleteAlbum(requestParameters: BlogMediaApiMediaControllerDeleteAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadResponseDto> {
+            return localVarFp.mediaControllerDeleteAlbum(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerDeleteImageRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerDeleteImage(requestParameters: BlogMediaApiMediaControllerDeleteImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadResponseDto> {
+            return localVarFp.mediaControllerDeleteImage(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerGetAlbumRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerGetAlbum(requestParameters: BlogMediaApiMediaControllerGetAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogMediaAlbumResponse> {
+            return localVarFp.mediaControllerGetAlbum(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerGetImageRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerGetImage(requestParameters: BlogMediaApiMediaControllerGetImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogMediaImageResponse> {
+            return localVarFp.mediaControllerGetImage(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerListRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerList(requestParameters: BlogMediaApiMediaControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<BlogMediaListResponse> {
+            return localVarFp.mediaControllerList(requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerListAlbumsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerListAlbums(requestParameters: BlogMediaApiMediaControllerListAlbumsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<BlogMediaAlbumListResponse> {
+            return localVarFp.mediaControllerListAlbums(requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerPatchAlbumRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerPatchAlbum(requestParameters: BlogMediaApiMediaControllerPatchAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogMediaAlbumResponse> {
+            return localVarFp.mediaControllerPatchAlbum(requestParameters.id, requestParameters.patchBlogAlbumDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerSetAlbumItemsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerSetAlbumItems(requestParameters: BlogMediaApiMediaControllerSetAlbumItemsRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogMediaAlbumResponse> {
+            return localVarFp.mediaControllerSetAlbumItems(requestParameters.id, requestParameters.setBlogAlbumItemsDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogMediaApiMediaControllerUploadRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        mediaControllerUpload(requestParameters: BlogMediaApiMediaControllerUploadRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadResponseDto> {
+            return localVarFp.mediaControllerUpload(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for mediaControllerCreateAlbum operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerCreateAlbumRequest
+ */
+export interface BlogMediaApiMediaControllerCreateAlbumRequest {
+    /**
+     * 
+     * @type {CreateBlogAlbumDto}
+     * @memberof BlogMediaApiMediaControllerCreateAlbum
+     */
+    readonly createBlogAlbumDto: CreateBlogAlbumDto
+}
+
+/**
+ * Request parameters for mediaControllerDeleteAlbum operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerDeleteAlbumRequest
+ */
+export interface BlogMediaApiMediaControllerDeleteAlbumRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaApiMediaControllerDeleteAlbum
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for mediaControllerDeleteImage operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerDeleteImageRequest
+ */
+export interface BlogMediaApiMediaControllerDeleteImageRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaApiMediaControllerDeleteImage
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for mediaControllerGetAlbum operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerGetAlbumRequest
+ */
+export interface BlogMediaApiMediaControllerGetAlbumRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaApiMediaControllerGetAlbum
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for mediaControllerGetImage operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerGetImageRequest
+ */
+export interface BlogMediaApiMediaControllerGetImageRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaApiMediaControllerGetImage
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for mediaControllerList operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerListRequest
+ */
+export interface BlogMediaApiMediaControllerListRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogMediaApiMediaControllerList
+     */
+    readonly take?: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogMediaApiMediaControllerList
+     */
+    readonly skip?: number
+}
+
+/**
+ * Request parameters for mediaControllerListAlbums operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerListAlbumsRequest
+ */
+export interface BlogMediaApiMediaControllerListAlbumsRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogMediaApiMediaControllerListAlbums
+     */
+    readonly take?: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogMediaApiMediaControllerListAlbums
+     */
+    readonly skip?: number
+}
+
+/**
+ * Request parameters for mediaControllerPatchAlbum operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerPatchAlbumRequest
+ */
+export interface BlogMediaApiMediaControllerPatchAlbumRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaApiMediaControllerPatchAlbum
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {PatchBlogAlbumDto}
+     * @memberof BlogMediaApiMediaControllerPatchAlbum
+     */
+    readonly patchBlogAlbumDto: PatchBlogAlbumDto
+}
+
+/**
+ * Request parameters for mediaControllerSetAlbumItems operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerSetAlbumItemsRequest
+ */
+export interface BlogMediaApiMediaControllerSetAlbumItemsRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaApiMediaControllerSetAlbumItems
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {SetBlogAlbumItemsDto}
+     * @memberof BlogMediaApiMediaControllerSetAlbumItems
+     */
+    readonly setBlogAlbumItemsDto: SetBlogAlbumItemsDto
+}
+
+/**
+ * Request parameters for mediaControllerUpload operation in BlogMediaApi.
+ * @export
+ * @interface BlogMediaApiMediaControllerUploadRequest
+ */
+export interface BlogMediaApiMediaControllerUploadRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogMediaApiMediaControllerUpload
+     */
+    readonly id: string
+}
+
+/**
+ * BlogMediaApi - object-oriented interface
+ * @export
+ * @class BlogMediaApi
+ * @extends {BaseAPI}
+ */
+export class BlogMediaApi extends BaseAPI {
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerCreateAlbumRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerCreateAlbum(requestParameters: BlogMediaApiMediaControllerCreateAlbumRequest, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerCreateAlbum(requestParameters.createBlogAlbumDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerDeleteAlbumRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerDeleteAlbum(requestParameters: BlogMediaApiMediaControllerDeleteAlbumRequest, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerDeleteAlbum(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerDeleteImageRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerDeleteImage(requestParameters: BlogMediaApiMediaControllerDeleteImageRequest, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerDeleteImage(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerGetAlbumRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerGetAlbum(requestParameters: BlogMediaApiMediaControllerGetAlbumRequest, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerGetAlbum(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerGetImageRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerGetImage(requestParameters: BlogMediaApiMediaControllerGetImageRequest, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerGetImage(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerList(requestParameters: BlogMediaApiMediaControllerListRequest = {}, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerList(requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerListAlbumsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerListAlbums(requestParameters: BlogMediaApiMediaControllerListAlbumsRequest = {}, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerListAlbums(requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerPatchAlbumRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerPatchAlbum(requestParameters: BlogMediaApiMediaControllerPatchAlbumRequest, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerPatchAlbum(requestParameters.id, requestParameters.patchBlogAlbumDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerSetAlbumItemsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerSetAlbumItems(requestParameters: BlogMediaApiMediaControllerSetAlbumItemsRequest, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerSetAlbumItems(requestParameters.id, requestParameters.setBlogAlbumItemsDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogMediaApiMediaControllerUploadRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogMediaApi
+     */
+    public mediaControllerUpload(requestParameters: BlogMediaApiMediaControllerUploadRequest, options?: RawAxiosRequestConfig) {
+        return BlogMediaApiFp(this.configuration).mediaControllerUpload(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
