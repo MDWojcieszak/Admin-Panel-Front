@@ -293,6 +293,7 @@ const BlogCallout = createReactBlockSpec(
         >
           <div style={styles.calloutHeader} contentEditable={false}>
             <span style={{ ...styles.calloutIcon, color: active.color }}>{active.icon}</span>
+            <span style={{ ...styles.calloutVariantLabel, color: active.color }}>{active.value}</span>
             <div style={styles.calloutPills}>
               {variants.map((v) => (
                 <button
@@ -350,7 +351,15 @@ export const CUSTOM_BLOCK_TYPES = new Set([
 ]);
 
 const useBlockStyles = mkUseStyles((t) => ({
-  divider: { height: 1, backgroundColor: t.colors.white + t.colorOpacity(0.18), margin: `${t.spacing.s}px 0` },
+  divider: {
+    display: 'block',
+    width: '100%',
+    height: 2,
+    boxSizing: 'border-box',
+    backgroundColor: t.colors.white + t.colorOpacity(0.22),
+    borderRadius: 1,
+    margin: `${t.spacing.m}px 0`,
+  },
   mediaBlock: { gap: t.spacing.s, padding: t.spacing.s, borderRadius: t.borderRadius.default, backgroundColor: t.colors.gray04 + t.colorOpacity(0.4) },
   image: { width: '100%', maxHeight: 360, borderRadius: t.borderRadius.default, overflow: 'hidden' },
   emptyPick: {
@@ -474,27 +483,40 @@ const useBlockStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
   },
   calloutBlock: {
-    gap: t.spacing.xs,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: t.spacing.s,
     padding: t.spacing.m,
     borderRadius: t.borderRadius.default,
+    width: '100%',
+    boxSizing: 'border-box',
   },
   calloutHeader: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 2,
+    gap: t.spacing.s,
   },
   calloutIcon: {
     display: 'flex',
     alignItems: 'center',
   },
+  calloutVariantLabel: {
+    flex: 1,
+    minWidth: 0,
+    fontSize: 12,
+    fontWeight: 700,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
   calloutPills: {
+    display: 'flex',
     flexDirection: 'row',
-    gap: 2,
+    gap: t.spacing.xs,
   },
   calloutPill: {
-    width: 26,
-    height: 26,
+    width: 28,
+    height: 28,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -504,5 +526,7 @@ const useBlockStyles = mkUseStyles((t) => ({
     color: t.colors.dark05,
     cursor: 'pointer',
   },
-  calloutBody: {},
+  calloutBody: {
+    width: '100%',
+  },
 }));

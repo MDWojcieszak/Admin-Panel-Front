@@ -15,6 +15,13 @@
   width: 100%;
 }
 
+/* Custom block roots fill the content column (don't shrink to content). */
+.bn-block-content[data-content-type^='blog'] > div,
+.bn-block-content[data-content-type='divider'] > div {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /*
  * The app has a global `div { display: flex; flex-direction: column }` (src/index.css).
  * It leaks into BlockNote and breaks list markers / checkbox rows. Neutralise it INSIDE the
