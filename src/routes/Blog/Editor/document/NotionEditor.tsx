@@ -10,6 +10,7 @@ import {
   MdImage,
   MdLink,
   MdMap,
+  MdPermMedia,
   MdPhotoLibrary,
   MdPlace,
   MdViewAgenda,
@@ -74,6 +75,17 @@ export const NotionEditor = ({ postId, locale, onSaved, onSaveStateChange }: Not
     [],
   );
 
+  const insertImageBlock = useCallback(
+    (imageId: string) => {
+      const cur = editor.getTextCursorPosition().block;
+      const content = (cur as { content?: unknown }).content;
+      const block = { type: 'blogImage', props: { imageId } } as BlogPartialBlock;
+      if (Array.isArray(content) && content.length === 0) editor.replaceBlocks([cur], [block]);
+      else editor.insertBlocks([block], cur, 'after');
+    },
+    [editor],
+  );
+
   const setState = useCallback((s: SaveState) => onSaveStateChange?.(s), [onSaveStateChange]);
 
   const doSave = useCallback(async () => {
@@ -132,13 +144,33 @@ export const NotionEditor = ({ postId, locale, onSaved, onSaveStateChange }: Not
   return (
     <BlogEditorBridgeContext.Provider value={bridge}>
       <div style={styles.wrap}>
+        {!mediaOpen ? (
+          <button
+            style={styles.libraryToggle}
+            title='Media library'
+            onClick={() => {
+              pickCbRef.current = null;
+              setMediaOpen(true);
+            }}
+          >
+            <MdPermMedia size={20} />
+          </button>
+        ) : null}
         <BlogMediaPanel
           open={mediaOpen}
-          onClose={() => setMediaOpen(false)}
-          onPick={(id) => {
-            pickCbRef.current?.(id);
+          pickMode={!!pickCbRef.current}
+          onClose={() => {
             pickCbRef.current = null;
             setMediaOpen(false);
+          }}
+          onPick={(id) => {
+            if (pickCbRef.current) {
+              pickCbRef.current(id);
+              pickCbRef.current = null;
+              setMediaOpen(false);
+            } else {
+              insertImageBlock(id);
+            }
             scheduleSave();
           }}
         />
@@ -169,11 +201,28 @@ export const NotionEditor = ({ postId, locale, onSaved, onSaveStateChange }: Not
   );
 };
 
-const useStyles = mkUseStyles(() => ({
+const useStyles = mkUseStyles((t) => ({
   wrap: {
     position: 'relative',
     flex: 1,
     minHeight: 0,
     width: '100%',
+  },
+  libraryToggle: {
+    position: 'fixed',
+    left: 14,
+    top: 120,
+    zIndex: 30,
+    width: 42,
+    height: 42,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.1)}`,
+    backgroundColor: t.colors.gray04,
+    color: t.colors.white,
+    cursor: 'pointer',
+    boxShadow: '0 6px 16px rgba(0,0,0,0.35)',
   },
 }));

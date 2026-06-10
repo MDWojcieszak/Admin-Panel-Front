@@ -12,6 +12,7 @@ export const BLOG_MEDIA_PANEL_WIDTH = 300;
 
 type BlogMediaPanelProps = {
   open: boolean;
+  pickMode?: boolean;
   onClose: () => void;
   onPick: (imageId: string) => void;
 };
@@ -30,7 +31,7 @@ const uploadBlogMedia = async (file: File): Promise<string> => {
   return data.id;
 };
 
-export const BlogMediaPanel = ({ open, onClose, onPick }: BlogMediaPanelProps) => {
+export const BlogMediaPanel = ({ open, pickMode, onClose, onPick }: BlogMediaPanelProps) => {
   const styles = useStyles();
   const { blogMediaApi } = useApi();
   const [images, setImages] = useState<BlogMediaImageResponse[]>([]);
@@ -73,11 +74,12 @@ export const BlogMediaPanel = ({ open, onClose, onPick }: BlogMediaPanelProps) =
       transition={{ type: 'spring', stiffness: 320, damping: 34 }}
     >
       <div style={styles.header}>
-        <span style={styles.title}>Media</span>
+        <span style={styles.title}>{pickMode ? 'Pick image' : 'Media library'}</span>
         <button style={styles.iconBtn} title='Close' onClick={onClose}>
           <MdClose size={18} />
         </button>
       </div>
+      <span style={styles.hint}>{pickMode ? 'Click an image to use it here.' : 'Click an image to insert it into the post.'}</span>
 
       <input
         ref={fileRef}
@@ -120,6 +122,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { fontWeight: 700, fontSize: 16 },
+  hint: { fontSize: 12, color: t.colors.dark05 },
   iconBtn: {
     width: 30,
     height: 30,
