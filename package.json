@@ -13,6 +13,9 @@
     "docs": "openapi-generator-cli generate -i src/api/api.yaml -g typescript-axios -o src/api --additional-properties=useSingleRequestParameter=true"
   },
   "dependencies": {
+    "@blocknote/core": "^0.51.4",
+    "@blocknote/mantine": "^0.51.4",
+    "@blocknote/react": "^0.51.4",
     "@hookform/resolvers": "^3.3.4",
     "@react-google-maps/api": "^2.20.8",
     "@tanstack/react-table": "^8.12.0",
