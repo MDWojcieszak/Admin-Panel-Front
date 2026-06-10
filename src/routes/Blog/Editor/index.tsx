@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MdArrowBack, MdChatBubbleOutline, MdCheckCircle, MdCloudUpload, MdPermMedia, MdTune } from 'react-icons/md';
-import { BlogSectionType } from '~/api/api';
+import { MdArrowBack, MdChatBubbleOutline, MdCheckCircle, MdCloudUpload, MdTune } from 'react-icons/md';
 import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
 import { Badge } from '~/components/Badge';
@@ -10,7 +9,7 @@ import { Loader } from '~/components/Loader';
 import { Scrollbar } from '~/components/Scrollbar';
 import { useBlogLocales } from '~/routes/Blog/hooks/useBlogLocales';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
-import { BlockEditor } from '~/routes/Blog/Editor/components/BlockEditor';
+import { NotionEditor } from '~/routes/Blog/Editor/document/NotionEditor';
 import { EditorialCommentsPanel } from '~/routes/Blog/Editor/components/EditorialCommentsPanel';
 import { MediaPanel } from '~/routes/Blog/Editor/components/MediaPanel';
 import { PostSettingsPanel } from '~/routes/Blog/Editor/components/PostSettingsPanel';
@@ -24,7 +23,7 @@ export const BlogPostEditor = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { blogPostsApi, blogVersioningApi, blogSectionsApi } = useApi();
+  const { blogPostsApi, blogVersioningApi } = useApi();
   const can = useCan();
   const canPublish = can('blog.publish');
 
@@ -32,7 +31,6 @@ export const BlogPostEditor = () => {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [coverPickMode, setCoverPickMode] = useState(false);
-  const [activeSectionId, setActiveSectionId] = useState<string>();
 
   const { locales, defaultLocale } = useBlogLocales();
   const [locale, setLocale] = useState('');
@@ -83,108 +81,16 @@ export const BlogPostEditor = () => {
     }
   };
 
-  const activeSection = draft?.sections.find((s) => s.id === activeSectionId);
-  const activeLabel = activeSection?.type;
-
-  const attachImage = async (imageId: string) => {
-    // Cover-pick mode: the next image click sets the post cover, not a section image.
-    if (coverPickMode) {
-      setCoverPickMode(false);
-      setMediaOpen(false);
-      if (blogPostsApi && id) {
-        try {
-          await blogPostsApi.postControllerPatch({ id, patchPostDto: { coverImageId: imageId } });
-          await refresh();
-        } catch (e) {
-          console.error('Error setting cover image:', e);
-        }
-      }
-      return;
-    }
-    if (!blogSectionsApi || !activeSection) return;
-    const single = activeSection.type === BlogSectionType.Image || activeSection.type === BlogSectionType.MediaText;
+  // Cover-pick mode: an image click from the (owner-gallery) media panel sets the post cover.
+  const attachCover = async (imageId: string) => {
+    setCoverPickMode(false);
+    setMediaOpen(false);
+    if (!blogPostsApi || !id) return;
     try {
-      if (single) {
-        // Single-image blocks hold exactly one image — replace any existing.
-        for (const link of activeSection.images) {
-          await blogSectionsApi.sectionControllerDeleteImage({ imageId: link.id });
-        }
-      }
-      await blogSectionsApi.sectionControllerAddImage({
-        id: activeSection.id,
-        addSectionImageDto: { imageId },
-      });
+      await blogPostsApi.postControllerPatch({ id, patchPostDto: { coverImageId: imageId } });
       await refresh();
     } catch (e) {
-      console.error('Error attaching image:', e);
-    }
-  };
-
-  const removeImage = async (sectionImageId: string) => {
-    if (!blogSectionsApi) return;
-    try {
-      await blogSectionsApi.sectionControllerDeleteImage({ imageId: sectionImageId });
-      await refresh();
-    } catch (e) {
-      console.error('Error removing image:', e);
-    }
-  };
-
-  const addPoi = async (sectionId: string, poiId: string) => {
-    if (!blogSectionsApi) return;
-    const section = draft?.sections.find((s) => s.id === sectionId);
-    try {
-      // PLACE blocks hold a single POI — replace any existing.
-      if (section?.type === BlogSectionType.Place) {
-        for (const link of section.pois) await blogSectionsApi.sectionControllerDeletePoi({ poiLinkId: link.id });
-      }
-      await blogSectionsApi.sectionControllerAddPoi({ id: sectionId, addSectionPoiDto: { poiId } });
-      await refresh();
-    } catch (e) {
-      console.error('Error adding place:', e);
-    }
-  };
-
-  const removePoi = async (poiLinkId: string) => {
-    if (!blogSectionsApi) return;
-    try {
-      await blogSectionsApi.sectionControllerDeletePoi({ poiLinkId });
-      await refresh();
-    } catch (e) {
-      console.error('Error removing place:', e);
-    }
-  };
-
-  const addListItem = async (sectionId: string) => {
-    if (!blogSectionsApi) return;
-    try {
-      await blogSectionsApi.sectionControllerAddItem({ id: sectionId, addSectionListItemDto: { content: '', locale } });
-      await refresh();
-    } catch (e) {
-      console.error('Error adding list item:', e);
-    }
-  };
-
-  const removeListItem = async (itemId: string) => {
-    if (!blogSectionsApi) return;
-    try {
-      await blogSectionsApi.sectionControllerDeleteItem({ itemId });
-      await refresh();
-    } catch (e) {
-      console.error('Error removing list item:', e);
-    }
-  };
-
-  const saveListItem = async (itemId: string, content: string) => {
-    if (!blogSectionsApi) return;
-    try {
-      await blogSectionsApi.sectionControllerUpsertItemTranslation({
-        itemId,
-        locale,
-        upsertSectionListItemTranslationDto: { content },
-      });
-    } catch (e) {
-      console.error('Error saving list item:', e);
+      console.error('Error setting cover image:', e);
     }
   };
 
@@ -263,19 +169,14 @@ export const BlogPostEditor = () => {
 
       <div style={styles.body}>
         <MediaPanel
-          open={mediaOpen}
-          activeLabel={coverPickMode ? 'cover image' : activeLabel}
+          open={mediaOpen && coverPickMode}
+          activeLabel='cover image'
           onClose={() => {
             setMediaOpen(false);
             setCoverPickMode(false);
           }}
-          onPick={attachImage}
+          onPick={attachCover}
         />
-        {!mediaOpen ? (
-          <button style={styles.mediaToggle} title='Media' onClick={() => setMediaOpen(true)}>
-            <MdPermMedia size={20} />
-          </button>
-        ) : null}
         {draft ? (
           <PostSettingsPanel
             open={settingsOpen}
@@ -333,19 +234,11 @@ export const BlogPostEditor = () => {
 
                 <div style={styles.divider} />
 
-                <BlockEditor
+                <NotionEditor
                   postId={draft.postId}
                   locale={locale}
-                  sections={draft.sections}
-                  activeSectionId={activeSectionId}
-                  onActivate={setActiveSectionId}
-                  onRemoveImage={removeImage}
-                  onAddPoi={addPoi}
-                  onRemovePoi={removePoi}
-                  onAddListItem={addListItem}
-                  onRemoveListItem={removeListItem}
-                  onSaveListItem={saveListItem}
-                  onChanged={refresh}
+                  onSaved={() => refresh()}
+                  onSaveStateChange={setSaveState}
                 />
               </>
             )}
