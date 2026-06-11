@@ -4,7 +4,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type DragEvent as ReactDragEvent,
   type MouseEvent as ReactMouseEvent,
 } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -121,34 +120,20 @@ const BlogImage = createReactBlockSpec(
       const { imageId, aspectRatio, caption } = block.props;
       const aspectCss = RATIOS.find((r) => r.value === aspectRatio)?.css;
       const setImage = (id: string) => editor.updateBlock(block, { props: { imageId: id } });
-      const onDrop = (e: ReactDragEvent) => {
-        const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
-        if (id) {
-          e.preventDefault();
-          e.stopPropagation();
-          setImage(id);
-        }
-      };
-      const allowDrop = (e: ReactDragEvent) => {
-        if (e.dataTransfer.types.includes(IMAGE_DND_TYPE)) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      };
       return (
         <div style={styles.mediaBlock} contentEditable={false}>
           {imageId ? (
             aspectCss ? (
-              <div style={{ ...styles.imageFrame, aspectRatio: aspectCss }} onDragOverCapture={allowDrop} onDropCapture={onDrop}>
+              <div style={{ ...styles.imageFrame, aspectRatio: aspectCss }}>
                 <MediaThumb imageId={imageId} res='cover' fit='cover' style={styles.fill} />
               </div>
             ) : (
-              <div style={styles.imageFrame} onDragOverCapture={allowDrop} onDropCapture={onDrop}>
+              <div style={styles.imageFrame}>
                 <MediaThumb imageId={imageId} res='cover' fit='natural' style={styles.fill} />
               </div>
             )
           ) : (
-            <button style={styles.emptyPick} type='button' onDragOverCapture={allowDrop} onDropCapture={onDrop} onClick={() => bridge.pickImage(setImage)}>
+            <button style={styles.emptyPick} type='button' onClick={() => bridge.pickImage(setImage)}>
               <MdImage size={20} /> Pick or drop an image
             </button>
           )}
@@ -411,20 +396,7 @@ const BlogColumns = createReactBlockSpec(
                       <div
                         style={styles.columnImageWrap}
                         contentEditable={false}
-                        onDragOverCapture={(e) => {
-                          if (e.dataTransfer.types.includes(IMAGE_DND_TYPE)) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                          }
-                        }}
-                        onDropCapture={(e) => {
-                          const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
-                          if (id) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            update(i, { imageId: id });
-                          }
-                        }}
+                        data-col-index={i}
                       >
                         <MediaThumb imageId={col.imageId} res='cover' style={styles.fill} />
                         <button style={styles.tileRemove} type='button' onClick={() => update(i, { imageId: '' })}>
@@ -436,20 +408,7 @@ const BlogColumns = createReactBlockSpec(
                         style={styles.columnPick}
                         type='button'
                         contentEditable={false}
-                        onDragOverCapture={(e) => {
-                          if (e.dataTransfer.types.includes(IMAGE_DND_TYPE)) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                          }
-                        }}
-                        onDropCapture={(e) => {
-                          const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
-                          if (id) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            update(i, { imageId: id });
-                          }
-                        }}
+                        data-col-index={i}
                         onClick={() => bridge.pickImage((id) => update(i, { imageId: id }))}
                       >
                         <MdImage size={18} /> Pick or drop

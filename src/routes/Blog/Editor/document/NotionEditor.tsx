@@ -19,7 +19,7 @@ import { useApi } from '~/hooks/useApi';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { BlogEditorBridge, BlogEditorBridgeContext } from '~/routes/Blog/Editor/document/bridge';
 import { BlogMediaPanel } from '~/routes/Blog/Editor/document/BlogMediaPanel';
-import { BlogEditor, BlogPartialBlock, blogSchema } from '~/routes/Blog/Editor/document/schema';
+import { BlogEditor, BlogPartialBlock, IMAGE_DND_TYPE, blogSchema, parseColumns } from '~/routes/Blog/Editor/document/schema';
 import { blocksToDocument, sectionsToBlocks } from '~/routes/Blog/Editor/document/serialize';
 import { mkUseStyles } from '~/utils/theme';
 
@@ -64,6 +64,7 @@ export const NotionEditor = ({ postId, locale, mediaOpen, setMediaOpen, onSaved,
   const savingRef = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout>>();
   const loadedKey = useRef<string>();
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   const bridge = useMemo<BlogEditorBridge>(
     () => ({
@@ -141,9 +142,62 @@ export const NotionEditor = ({ postId, locale, mediaOpen, setMediaOpen, onSaved,
     };
   }, [draft, postId, locale, editor]);
 
+  // Drag an image from the media panel onto a block. ProseMirror swallows block-level React drops,
+  // so handle it on the wrapper in the capture phase and resolve the target block via its data-id.
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const onDragOver = (e: DragEvent) => {
+      if (e.dataTransfer?.types.includes(IMAGE_DND_TYPE)) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+      }
+    };
+    const onDrop = (e: DragEvent) => {
+      if (!e.dataTransfer?.types.includes(IMAGE_DND_TYPE)) return;
+      const imageId = e.dataTransfer.getData(IMAGE_DND_TYPE);
+      if (!imageId) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const target = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
+      const blockId = target?.closest('[data-id]')?.getAttribute('data-id') ?? undefined;
+      const onImage = target?.closest('[data-content-type="blogImage"]');
+      const colPane = target?.closest('[data-col-index]') as HTMLElement | null;
+      try {
+        if (onImage && blockId) {
+          editor.updateBlock(blockId, { props: { imageId } });
+        } else if (colPane && blockId) {
+          const idx = parseInt(colPane.getAttribute('data-col-index') ?? '', 10);
+          const blk = editor.getBlock(blockId);
+          if (blk?.type === 'blogColumns' && !Number.isNaN(idx)) {
+            const cols = parseColumns(blk.props.columns);
+            if (cols[idx]) {
+              cols[idx] = { ...cols[idx], type: 'image', imageId };
+              editor.updateBlock(blockId, { props: { columns: JSON.stringify(cols) } });
+            }
+          }
+        } else if (blockId) {
+          editor.insertBlocks([{ type: 'blogImage', props: { imageId } } as BlogPartialBlock], blockId, 'after');
+        } else {
+          const last = editor.document[editor.document.length - 1];
+          if (last) editor.insertBlocks([{ type: 'blogImage', props: { imageId } } as BlogPartialBlock], last, 'after');
+        }
+        scheduleSave();
+      } catch (err) {
+        console.error('Image drop failed:', err);
+      }
+    };
+    el.addEventListener('dragover', onDragOver, true);
+    el.addEventListener('drop', onDrop, true);
+    return () => {
+      el.removeEventListener('dragover', onDragOver, true);
+      el.removeEventListener('drop', onDrop, true);
+    };
+  }, [editor, scheduleSave]);
+
   return (
     <BlogEditorBridgeContext.Provider value={bridge}>
-      <div style={styles.wrap}>
+      <div ref={wrapRef} style={styles.wrap}>
         <BlogMediaPanel
           open={mediaOpen}
           pickMode={!!pickCbRef.current}

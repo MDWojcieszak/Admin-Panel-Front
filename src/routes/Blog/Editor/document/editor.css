@@ -84,13 +84,10 @@
   color: #fff;
 }
 .blog-media-tile {
-  transition:
-    transform 0.1s ease,
-    box-shadow 0.12s ease;
+  transition: filter 0.12s ease;
 }
 .blog-media-tile:hover {
-  transform: scale(1.03);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  filter: brightness(1.1);
 }
 .blog-media-tile:active {
   cursor: grabbing;
