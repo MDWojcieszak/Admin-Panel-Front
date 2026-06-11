@@ -43,6 +43,10 @@ without extra fields. No response shape change needed — just relax the param a
 - New note from the panel → global (`createCommentDto` without `sectionId`).
 - Section-anchored note → created with `sectionId` (+ optional `anchorStart/anchorEnd/quote`) when the
   author has a block/section selected in the document editor.
+- **Add-comment entry point**: the BlockNote block drag-handle menu (the ⠿ handle, next to "delete")
+  gets an **"Add comment"** item → creates a comment anchored to that block's `sectionId`. Needs the
+  block's `sectionId` (custom blocks already carry it; prose blocks only after the first document save,
+  which assigns section ids). The panel then shows a marker on commented blocks.
 
 ## Current frontend touchpoint
 
