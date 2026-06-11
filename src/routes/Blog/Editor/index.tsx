@@ -293,7 +293,7 @@ const useStyles = mkUseStyles((t) => ({
     paddingLeft: t.spacing.m,
     paddingRight: t.spacing.m,
     borderBottom: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.5),
+    backgroundColor: t.colors.gray045,
   },
   topLeft: {
     flexDirection: 'row',
