@@ -197,15 +197,23 @@ const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: s
     onChange(ref.current?.innerHTML ?? '');
   };
   const colors = [theme.colors.red, theme.colors.blue, theme.colors.lightGreen, theme.colors.yellow];
+  const fmt = (label: ReactNode, cmd: string, value?: string, title?: string) => (
+    <button style={styles.tbBtn} type='button' title={title} onMouseDown={(e) => e.preventDefault()} onClick={() => exec(cmd, value)}>
+      {label}
+    </button>
+  );
   return (
     <div style={styles.columnTextWrap}>
       <div style={styles.columnToolbar} contentEditable={false}>
-        <button style={styles.tbBtn} type='button' title='Bold' onMouseDown={(e) => e.preventDefault()} onClick={() => exec('bold')}>
-          <b>B</b>
-        </button>
-        <button style={styles.tbBtn} type='button' title='Italic' onMouseDown={(e) => e.preventDefault()} onClick={() => exec('italic')}>
-          <i>I</i>
-        </button>
+        {fmt('H1', 'formatBlock', '<h1>', 'Heading 1')}
+        {fmt('H2', 'formatBlock', '<h2>', 'Heading 2')}
+        {fmt('H3', 'formatBlock', '<h3>', 'Heading 3')}
+        {fmt('¶', 'formatBlock', '<p>', 'Normal text')}
+        {fmt('•', 'insertUnorderedList', undefined, 'Bullet list')}
+        {fmt('1.', 'insertOrderedList', undefined, 'Numbered list')}
+        {fmt('❝', 'formatBlock', '<blockquote>', 'Quote')}
+        {fmt(<b>B</b>, 'bold', undefined, 'Bold')}
+        {fmt(<i>I</i>, 'italic', undefined, 'Italic')}
         {colors.map((c) => (
           <button
             key={c}
@@ -216,17 +224,16 @@ const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: s
             onClick={() => exec('foreColor', c)}
           />
         ))}
-        <button
-          style={styles.tbBtn}
-          type='button'
-          title='Reset colour'
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={() => exec('foreColor', theme.colors.white)}
-        >
-          ×
-        </button>
+        {fmt('×', 'foreColor', theme.colors.white, 'Reset colour')}
       </div>
-      <div ref={ref} contentEditable suppressContentEditableWarning style={styles.columnText} onBlur={() => onChange(ref.current?.innerHTML ?? '')} />
+      <div
+        ref={ref}
+        className='blog-col-text'
+        contentEditable
+        suppressContentEditableWarning
+        style={styles.columnText}
+        onBlur={() => onChange(ref.current?.innerHTML ?? '')}
+      />
     </div>
   );
 };
@@ -663,8 +670,9 @@ const useBlockStyles = mkUseStyles((t) => ({
   columnToolbar: {
     display: 'flex',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
-    gap: 4,
+    gap: 3,
   },
   tbBtn: {
     width: 24,

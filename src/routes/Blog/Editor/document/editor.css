@@ -23,6 +23,46 @@
 }
 
 /*
+ * Column rich-text cell (contentEditable). It creates <div> lines on Enter — those must NOT inherit
+ * the custom-block flex restore above, and headings/lists/quotes need readable styling.
+ */
+.bn-block-content[data-content-type='blogColumns'] .blog-col-text,
+.bn-block-content[data-content-type='blogColumns'] .blog-col-text div {
+  display: block;
+  flex-direction: initial;
+  width: auto;
+}
+.blog-col-text h1 {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin: 0.3em 0;
+}
+.blog-col-text h2 {
+  font-size: 1.25em;
+  font-weight: 700;
+  margin: 0.3em 0;
+}
+.blog-col-text h3 {
+  font-size: 1.1em;
+  font-weight: 700;
+  margin: 0.3em 0;
+}
+.blog-col-text ul,
+.blog-col-text ol {
+  margin: 0.3em 0;
+  padding-left: 1.4em;
+}
+.blog-col-text li {
+  display: list-item;
+}
+.blog-col-text blockquote {
+  margin: 0.4em 0;
+  padding-left: 0.8em;
+  border-left: 3px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/*
  * The app has a global `div { display: flex; flex-direction: column }` (src/index.css).
  * It leaks into BlockNote and breaks list markers / checkbox rows. Neutralise it INSIDE the
  * editor with equal specificity (`:where()` adds none) loaded after the global rule, so
