@@ -156,7 +156,7 @@ const useStyles = mkUseStyles((t) => ({
     top: 60,
     bottom: 0,
     width: BLOG_MEDIA_PANEL_WIDTH,
-    zIndex: 40,
+    zIndex: 6,
     gap: t.spacing.m,
     padding: t.spacing.m,
     backgroundColor: t.colors.gray045,
