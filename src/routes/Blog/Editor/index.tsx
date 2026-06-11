@@ -14,7 +14,6 @@ import { useBlogLocales } from '~/routes/Blog/hooks/useBlogLocales';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { NotionEditor } from '~/routes/Blog/Editor/document/NotionEditor';
 import { EditorialCommentsPanel } from '~/routes/Blog/Editor/components/EditorialCommentsPanel';
-import { BlogMediaPanel } from '~/routes/Blog/Editor/document/BlogMediaPanel';
 import { PostSettingsPanel } from '~/routes/Blog/Editor/components/PostSettingsPanel';
 import { postStatusTone } from '~/routes/Blog/utils/status';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -32,11 +31,9 @@ export const BlogPostEditor = () => {
   const publishModal = useModal('blog-publish-confirm', ConfirmModal, { title: 'Publish post' });
   const unpublishModal = useModal('blog-unpublish-confirm', ConfirmModal, { title: 'Unpublish post' });
 
-  const [mediaOpen, setMediaOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(true);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(true);
-  const [coverPickMode, setCoverPickMode] = useState(false);
 
   const { locales, defaultLocale } = useBlogLocales();
   const [locale, setLocale] = useState('');
@@ -83,20 +80,6 @@ export const BlogPostEditor = () => {
     if (!blogVersioningApi || !id) return;
     await blogVersioningApi.versionControllerUnpublish({ id });
     await refresh();
-  };
-
-  // Cover-pick mode: an image click from the (owner-gallery) media panel sets the post cover.
-  const attachCover = async (imageId: string) => {
-    setCoverPickMode(false);
-    setMediaOpen(false);
-    setLibraryOpen(true);
-    if (!blogPostsApi || !id) return;
-    try {
-      await blogPostsApi.postControllerPatch({ id, patchPostDto: { coverImageId: imageId } });
-      await refresh();
-    } catch (e) {
-      console.error('Error setting cover image:', e);
-    }
   };
 
   return (
@@ -223,16 +206,6 @@ export const BlogPostEditor = () => {
       </div>
 
       <div style={styles.body}>
-        <BlogMediaPanel
-          open={mediaOpen && coverPickMode}
-          pickMode
-          onClose={() => {
-            setMediaOpen(false);
-            setCoverPickMode(false);
-            setLibraryOpen(true);
-          }}
-          onPick={attachCover}
-        />
         {draft ? (
           <PostSettingsPanel
             open={settingsOpen}
@@ -241,11 +214,7 @@ export const BlogPostEditor = () => {
             draft={draft}
             onClose={() => setSettingsOpen(false)}
             onChanged={refresh}
-            onRequestCover={() => {
-              setCoverPickMode(true);
-              setMediaOpen(true);
-              setLibraryOpen(false);
-            }}
+            onRequestCover={() => setLibraryOpen(true)}
           />
         ) : null}
         {draft ? (

@@ -10,6 +10,7 @@ import { TextArea } from '~/components/TextArea';
 import { useApi } from '~/hooks/useApi';
 import { categoryLabel, useBlogCategories } from '~/routes/Blog/hooks/useBlogCategories';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
+import { IMAGE_DND_TYPE } from '~/routes/Blog/Editor/document/schema';
 import { mkUseStyles } from '~/utils/theme';
 import '~/routes/Blog/Editor/components/post-settings.css';
 
@@ -213,24 +214,40 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
               onValueChange={(v) => patchPost({ accessTier: v as BlogAccessTier })}
             />
 
-            {/* Cover image */}
-            <div style={styles.field}>
+            {/* Cover image — drag an image from the media library here, or click to open it. */}
+            <div
+              style={styles.field}
+              onDragOver={(e) => {
+                if (e.dataTransfer.types.includes(IMAGE_DND_TYPE)) e.preventDefault();
+              }}
+              onDrop={(e) => {
+                const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
+                if (id) {
+                  e.preventDefault();
+                  patchPost({ coverImageId: id });
+                }
+              }}
+            >
               <span style={styles.label}>Cover image</span>
               {p.draft.coverImageId ? (
                 <div style={styles.coverWrap}>
-                  <MediaThumb imageId={p.draft.coverImageId} style={styles.cover} />
+                  <MediaThumb imageId={p.draft.coverImageId} res='cover' style={styles.cover} />
                   <div style={styles.coverActions}>
-                    <button style={styles.smallBtn} onClick={p.onRequestCover}>
+                    <button style={styles.smallBtn} onMouseDown={(e) => e.preventDefault()} onClick={p.onRequestCover}>
                       Replace
                     </button>
-                    <button style={styles.smallBtn} onClick={() => patchPost({ coverImageId: null })}>
+                    <button
+                      style={styles.smallBtn}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => patchPost({ coverImageId: null })}
+                    >
                       Remove
                     </button>
                   </div>
                 </div>
               ) : (
-                <button style={styles.coverPick} onClick={p.onRequestCover}>
-                  <MdImage size={18} /> Pick from Media
+                <button style={styles.coverPick} onMouseDown={(e) => e.preventDefault()} onClick={p.onRequestCover}>
+                  <MdImage size={18} /> Pick or drag from library
                 </button>
               )}
             </div>
@@ -326,7 +343,7 @@ const useStyles = mkUseStyles((t) => ({
     width: SETTINGS_PANEL_WIDTH,
     zIndex: 5,
     gap: t.spacing.s,
-    backgroundColor: t.colors.gray04,
+    backgroundColor: t.colors.gray045,
     borderLeft: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
   },
   header: {

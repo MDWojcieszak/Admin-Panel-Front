@@ -1,8 +1,7 @@
-import { CSSProperties, HTMLInputTypeAttribute, useEffect, useRef, useState } from 'react';
-import { mkUseStyles, useTheme } from '~/utils/theme';
+import { CSSProperties, HTMLInputTypeAttribute, useState } from 'react';
+import { mkUseStyles } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FieldValues, UseControllerProps, useController } from 'react-hook-form';
-import useMeasure from 'react-use-measure';
 import '~/components/TextArea.css';
 
 type TextAreaProps<T extends FieldValues> = {
@@ -10,128 +9,87 @@ type TextAreaProps<T extends FieldValues> = {
   name: string;
   description: string;
   type?: HTMLInputTypeAttribute;
+  rows?: number;
   style?: CSSProperties;
 } & UseControllerProps<T>;
 
-export const TextArea = <T extends FieldValues>({ label, description, ...p }: TextAreaProps<T>) => {
-  const [showDescription, setShowDescription] = useState(false);
-  const [showLabel, setShowLabel] = useState(true);
-
-  const [ref, { height }] = useMeasure();
+/**
+ * Multiline text field with a STATIC label above the box (not a floating-inside label) — for a textarea
+ * a floating label fights the scrollable content, so the label lives above and the scrollbar spans the
+ * full height cleanly.
+ */
+export const TextArea = <T extends FieldValues>({ label, description, rows = 6, ...p }: TextAreaProps<T>) => {
+  const [focused, setFocused] = useState(false);
   const {
     field,
     formState: { errors },
   } = useController<T>({ name: p.name, control: p.control });
   const styles = useStyles();
-  const theme = useTheme();
-  const inputRef = useRef<HTMLTextAreaElement>(null); // Use HTMLTextAreaElement for multiline input
-  const handleFocus = () => {
-    setShowLabel(false);
-    setShowDescription(true);
-  };
-  const handleBlur = () => {
-    if (!inputRef?.current?.value) setShowLabel(true);
-    setShowDescription(false);
-  };
-
-  useEffect(() => {
-    if (!p.defaultValue || !inputRef.current) return;
-    if (p.defaultValue?.length > 0) setShowLabel(false);
-    inputRef.current.value = p.defaultValue;
-  }, [p.defaultValue]);
-
-  // Float the label up when the field already has a value (pre-filled / form reset), like Input does.
-  useEffect(() => {
-    if (typeof field.value === 'string' && field.value.length > 0) setShowLabel(false);
-  }, [field.value]);
-
-  const renderDescription = errors[p.name] ? <>{errors[p.name]?.message}</> : description;
+  const error = errors[p.name];
 
   return (
-    <div style={{ ...styles.inputContainer, ...p.style }} ref={ref}>
-      <motion.textarea
+    <div style={{ ...styles.container, ...p.style }}>
+      <label style={styles.label}>{label}</label>
+      <textarea
         {...field}
-        ref={inputRef}
         className='app-textarea'
         style={styles.input}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        rows={6} // Set the number of visible rows
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        rows={rows}
       />
-      {/* Opaque band (same colour as the textarea) so scrolled text hides under the floating label. */}
-      <div style={styles.labelMask} />
-      <motion.label
-        animate={{
-          color: showLabel ? theme.colors.lightBlue : theme.colors.blue04,
-          top: showLabel ? theme.spacing.m : 6,
-          fontSize: showLabel ? '16px' : '12px',
-        }}
-        style={styles.label}
-      >
-        {label}
-      </motion.label>
       <AnimatePresence mode='wait'>
-        {(showDescription || errors[p.name]) && (
-          <motion.p
-            initial={{ opacity: 0, translateY: -5 }}
-            animate={{ opacity: 1, translateY: 0, color: errors[p.name] ? theme.colors.red : theme.colors.blue04 }}
-            exit={{ opacity: 0, translateY: -5 }}
-            style={{ ...styles.description, top: height }}
+        {(focused || error) && (description || error) ? (
+          <motion.span
+            initial={{ opacity: 0, y: -3 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -3 }}
+            style={styles.hint}
           >
-            {renderDescription}
-          </motion.p>
-        )}
+            {error ? <span style={styles.errorText}>{`${error.message}`}</span> : description}
+          </motion.span>
+        ) : null}
       </AnimatePresence>
     </div>
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
-  inputContainer: {
-    marginBottom: t.spacing.l,
+  container: {
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: t.spacing.xs,
+    marginBottom: t.spacing.l,
   },
   label: {
-    position: 'absolute',
-    left: t.spacing.m,
+    fontSize: 13,
+    fontWeight: 600,
     color: t.colors.blue04,
-    pointerEvents: 'none',
+    paddingLeft: 2,
   },
   input: {
     padding: t.spacing.m,
-    color: t.colors.white,
-    paddingTop: t.spacing.l + 4,
     minHeight: 130,
     boxSizing: 'border-box',
-    fontSize: '16px',
-    lineHeight: 1.4,
+    color: t.colors.white,
+    fontSize: '15px',
+    lineHeight: 1.45,
     borderRadius: t.borderRadius.default,
     backgroundColor: t.colors.gray03,
     border: 0,
     outline: 'none',
     resize: 'none',
   },
-  labelMask: {
+  hint: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: t.spacing.l + 4,
-    backgroundColor: t.colors.gray03,
-    borderTopLeftRadius: t.borderRadius.default,
-    borderTopRightRadius: t.borderRadius.default,
-    pointerEvents: 'none',
+    top: '100%',
+    left: 2,
+    marginTop: 4,
+    fontSize: 12,
+    color: t.colors.blue04,
   },
-  description: {
-    position: 'absolute',
-    left: t.spacing.m,
-    fontSize: '12px',
-    margin: 0,
-    opacity: 0,
-  },
-  error: {
-    fontSize: '14px',
+  errorText: {
     color: t.colors.red,
-    marginTop: '8px',
   },
 }));

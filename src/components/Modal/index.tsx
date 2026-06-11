@@ -62,6 +62,7 @@ const useStyles = mkUseStyles((t) => ({
     left: 0,
     bottom: 0,
     right: 0,
+    zIndex: 200,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

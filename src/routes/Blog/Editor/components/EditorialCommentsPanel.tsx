@@ -135,7 +135,7 @@ const useStyles = mkUseStyles((t) => ({
     bottom: 0,
     width: COMMENTS_PANEL_WIDTH,
     zIndex: 6,
-    backgroundColor: t.colors.gray04,
+    backgroundColor: t.colors.gray045,
     borderLeft: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
   },
   header: {

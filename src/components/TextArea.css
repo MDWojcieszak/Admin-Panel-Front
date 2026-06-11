@@ -1,6 +1,5 @@
-/* Custom scrollbar for the multiline TextArea — matches the app Scrollbar (subtle thumb, transparent
-   track). A <textarea> scrolls natively, so it can't use the JS <Scrollbar>. The track starts below the
-   floating label so the label band never clips the scrollbar. */
+/* Custom scrollbar for the multiline TextArea — subtle thumb on a transparent track, inset from the
+   rounded corners. A <textarea> scrolls natively, so it can't use the JS <Scrollbar>. */
 .app-textarea {
   scrollbar-width: thin;
   scrollbar-color: #333944 transparent;
@@ -8,10 +7,14 @@
 .app-textarea::-webkit-scrollbar {
   width: 14px;
 }
+.app-textarea::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
 .app-textarea::-webkit-scrollbar-track {
   background: transparent;
-  margin-top: 32px;
-  margin-bottom: 8px;
+  margin: 8px 0;
 }
 .app-textarea::-webkit-scrollbar-thumb {
   background-color: #333944;
