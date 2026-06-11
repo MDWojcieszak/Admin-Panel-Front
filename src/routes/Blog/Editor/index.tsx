@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MdArrowBack, MdChatBubbleOutline, MdCheckCircle, MdCloudUpload, MdPermMedia, MdTune } from 'react-icons/md';
+import { MdArrowBack, MdChatBubbleOutline, MdCheck, MdPermMedia, MdTune } from 'react-icons/md';
 import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
 import { Badge } from '~/components/Badge';
@@ -28,7 +28,7 @@ export const BlogPostEditor = () => {
   const canPublish = can('blog.publish');
 
   const [mediaOpen, setMediaOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(true);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(true);
   const [coverPickMode, setCoverPickMode] = useState(false);
@@ -86,6 +86,7 @@ export const BlogPostEditor = () => {
   const attachCover = async (imageId: string) => {
     setCoverPickMode(false);
     setMediaOpen(false);
+    setLibraryOpen(true);
     if (!blogPostsApi || !id) return;
     try {
       await blogPostsApi.postControllerPatch({ id, patchPostDto: { coverImageId: imageId } });
@@ -133,17 +134,17 @@ export const BlogPostEditor = () => {
         </div>
 
         <div style={styles.topRight}>
-          <span style={styles.saveState}>
-            {saveState === 'saving' ? (
-              <>
-                <MdCloudUpload size={15} color={theme.colors.blue04} /> Saving…
-              </>
-            ) : saveState === 'saved' ? (
-              <>
-                <MdCheckCircle size={15} color={theme.colors.lightGreen} /> Saved
-              </>
-            ) : null}
-          </span>
+          {saveState !== 'idle' ? (
+            <span style={styles.saveState}>
+              {saveState === 'saving' ? (
+                'Saving…'
+              ) : (
+                <>
+                  <MdCheck size={16} color={theme.colors.lightGreen} /> Saved
+                </>
+              )}
+            </span>
+          ) : null}
           <button
             style={{ ...styles.iconBtn, color: libraryOpen ? theme.colors.blue : theme.colors.white }}
             title='Media library'
@@ -182,6 +183,7 @@ export const BlogPostEditor = () => {
           onClose={() => {
             setMediaOpen(false);
             setCoverPickMode(false);
+            setLibraryOpen(true);
           }}
           onPick={attachCover}
         />
@@ -195,8 +197,8 @@ export const BlogPostEditor = () => {
             onChanged={refresh}
             onRequestCover={() => {
               setCoverPickMode(true);
-              setSettingsOpen(false);
               setMediaOpen(true);
+              setLibraryOpen(false);
             }}
           />
         ) : null}
@@ -341,6 +343,7 @@ const useStyles = mkUseStyles((t) => ({
     minWidth: 0,
   },
   saveState: {
+    display: 'inline-flex',
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.xs,
