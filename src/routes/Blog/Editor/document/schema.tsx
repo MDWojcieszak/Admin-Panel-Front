@@ -110,6 +110,8 @@ const BlogImage = createReactBlockSpec(
       aspectRatio: { default: '' },
       overlayPosition: { default: '' },
       caption: { default: '' },
+      focalX: { default: 0.5 },
+      focalY: { default: 0.5 },
     },
     content: 'none',
   },
@@ -117,15 +119,30 @@ const BlogImage = createReactBlockSpec(
     render: ({ block, editor }) => {
       const styles = useBlockStyles();
       const bridge = useBlogEditorBridge();
-      const { imageId, aspectRatio, caption } = block.props;
+      const { imageId, aspectRatio, caption, focalX, focalY } = block.props;
       const aspectCss = RATIOS.find((r) => r.value === aspectRatio)?.css;
       const setImage = (id: string) => editor.updateBlock(block, { props: { imageId: id } });
+      const setFocal = (e: { currentTarget: HTMLElement; clientX: number; clientY: number }) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        editor.updateBlock(block, {
+          props: {
+            focalX: Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width)),
+            focalY: Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height)),
+          },
+        });
+      };
       return (
         <div style={styles.mediaBlock} contentEditable={false}>
           {imageId ? (
             aspectCss ? (
-              <div style={{ ...styles.imageFrame, aspectRatio: aspectCss }}>
-                <MediaThumb imageId={imageId} res='cover' fit='cover' style={styles.fill} />
+              <div
+                style={{ ...styles.imageFrame, aspectRatio: aspectCss, position: 'relative', cursor: 'crosshair' }}
+                title='Click to set the focal point (kept visible when cropped)'
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={setFocal}
+              >
+                <MediaThumb imageId={imageId} res='cover' fit='cover' focalX={focalX} focalY={focalY} style={styles.fill} />
+                <div style={{ ...styles.focalDot, left: `${focalX * 100}%`, top: `${focalY * 100}%` }} />
               </div>
             ) : (
               <div style={styles.imageFrame}>
@@ -634,6 +651,16 @@ const useBlockStyles = mkUseStyles((t) => ({
   },
   mediaBlock: { display: 'flex', flexDirection: 'column', gap: t.spacing.xs, width: '100%' },
   imageFrame: { width: '100%', borderRadius: t.borderRadius.default, overflow: 'hidden' },
+  focalDot: {
+    position: 'absolute',
+    width: 16,
+    height: 16,
+    borderRadius: '50%',
+    border: '2px solid #fff',
+    boxShadow: '0 0 0 2px rgba(0,0,0,0.45)',
+    transform: 'translate(-50%, -50%)',
+    pointerEvents: 'none',
+  },
   ratioRow: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 4 },
   ratioBtn: {
     height: 26,

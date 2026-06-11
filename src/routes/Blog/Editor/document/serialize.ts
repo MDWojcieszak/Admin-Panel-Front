@@ -133,6 +133,8 @@ export const sectionsToBlocks = async (
             aspectRatio: img?.aspectRatio ?? '',
             overlayPosition: img?.overlayPosition ?? '',
             caption: img?.caption ?? '',
+            focalX: img?.focalX ?? 0.5,
+            focalY: img?.focalY ?? 0.5,
           },
         });
         break;
@@ -210,6 +212,8 @@ const customToDoc = (b: BlogBlock): DocumentBlockDto | null => {
         aspectRatio: undef(b.props.aspectRatio) as DocumentBlockDto['aspectRatio'],
         overlayPosition: undef(b.props.overlayPosition) as DocumentBlockDto['overlayPosition'],
         caption: undef(b.props.caption),
+        focalX: b.props.focalX,
+        focalY: b.props.focalY,
       };
     case 'blogGallery': {
       const imageIds = parseIds(b.props.imageIds);
