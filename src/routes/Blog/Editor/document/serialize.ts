@@ -79,8 +79,11 @@ const inlineToText = (content: unknown): string => {
 export const sectionsToBlocks = async (
   editor: BlogEditor,
   sections: ResolvedSectionResponse[],
-): Promise<BlogPartialBlock[]> => {
+): Promise<{ blocks: BlogPartialBlock[]; sectionIds: string[] }> => {
   const blocks: BlogPartialBlock[] = [];
+  // sectionIds[i] is the backend section id that block i belongs to (native blocks can't store it in
+  // props, so the editor keeps this side-map to anchor comments to any block — incl. headings/prose).
+  const sectionIds: string[] = [];
   const ordered = [...sections].sort((a, b) => a.order - b.order);
 
   for (const s of ordered) {
@@ -183,10 +186,15 @@ export const sectionsToBlocks = async (
       default:
         break;
     }
+    // Tag every block produced for this section with its id.
+    while (sectionIds.length < blocks.length) sectionIds.push(s.id);
   }
 
-  if (!blocks.length) blocks.push({ type: 'paragraph' });
-  return blocks;
+  if (!blocks.length) {
+    blocks.push({ type: 'paragraph' });
+    sectionIds.push('');
+  }
+  return { blocks, sectionIds };
 };
 
 // ---- SAVE: BlockNote document → DocumentBlockDto[] ------------------------

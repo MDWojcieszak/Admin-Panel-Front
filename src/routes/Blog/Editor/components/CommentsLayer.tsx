@@ -14,7 +14,9 @@ type CommentsLayerProps = {
   open: boolean;
   postId: string;
   editor: BlogEditor;
-  /** A section the user asked to comment on (from the block menu / hover button), or null. */
+  /** blockId → backend sectionId, for locating any block (incl. native headings/prose). */
+  sectionMap: Record<string, string>;
+  /** A section the user asked to comment on (from the hover gutter), or null. */
   composeFor: string | null;
   onClearCompose: () => void;
 };
@@ -24,7 +26,7 @@ const authorName = (c: EditorialCommentResponse) =>
 
 const estimateHeight = (count: number, composing: boolean) => 54 + count * 64 + (composing ? 96 : 0);
 
-export const CommentsLayer = ({ open, postId, editor, composeFor, onClearCompose }: CommentsLayerProps) => {
+export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, onClearCompose }: CommentsLayerProps) => {
   const styles = useStyles();
   const { blogCommentsApi } = useApi();
   const auth = useAuth();
@@ -68,13 +70,13 @@ export const CommentsLayer = ({ open, postId, editor, composeFor, onClearCompose
     const contTop = cont.getBoundingClientRect().top;
     const map: Record<string, number> = {};
     for (const b of editor.document) {
-      const sid = (b.props as { sectionId?: string }).sectionId;
+      const sid = sectionMap[b.id];
       if (!sid || !bySection[sid]) continue;
       const el = document.querySelector(`[data-id="${b.id}"]`);
       if (el) map[sid] = el.getBoundingClientRect().top - contTop;
     }
     setTargetY(map);
-  }, [editor, bySection]);
+  }, [editor, bySection, sectionMap]);
 
   useEffect(() => {
     if (!open) return;

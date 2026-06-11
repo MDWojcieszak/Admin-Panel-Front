@@ -10,7 +10,6 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   MdAdd,
-  MdChatBubbleOutline,
   MdCheckCircle,
   MdClose,
   MdDelete,
@@ -150,26 +149,6 @@ const OverlayLayer = ({ text, position, themeVal, backdrop }: { text: string; po
   );
 };
 
-/** "Comment on this section" affordance, shown on block hover (top-right). Needs a saved section. */
-const SectionCommentButton = ({ sectionId }: { sectionId: string }) => {
-  const styles = useBlockStyles();
-  const bridge = useBlogEditorBridge();
-  if (!sectionId) return null;
-  return (
-    <button
-      className='blog-block-comment'
-      style={styles.commentBtn}
-      type='button'
-      title='Comment on this section'
-      contentEditable={false}
-      onMouseDown={(e) => e.preventDefault()}
-      onClick={() => bridge.addComment(sectionId)}
-    >
-      <MdChatBubbleOutline size={14} />
-    </button>
-  );
-};
-
 const Divider = createReactBlockSpec(
   { type: 'divider', propSchema: { sectionId: { default: '' } }, content: 'none' },
   {
@@ -248,9 +227,7 @@ const BlogImage = createReactBlockSpec(
         </button>
       );
       return (
-        <div style={styles.mediaBlock} contentEditable={false}>
-          <SectionCommentButton sectionId={block.props.sectionId} />
-          {imageId ? (
+        <div style={styles.mediaBlock} contentEditable={false}>          {imageId ? (
             aspectCss ? (
               <div
                 style={{ ...styles.imageFrame, aspectRatio: aspectCss, position: 'relative', cursor: open ? 'move' : 'default' }}
@@ -389,9 +366,7 @@ const BlogGallery = createReactBlockSpec(
       const ids = parseIds(block.props.imageIds);
       const setIds = (next: string[]) => editor.updateBlock(block, { props: { imageIds: JSON.stringify(next) } });
       return (
-        <div style={styles.galleryBlock} contentEditable={false}>
-          <SectionCommentButton sectionId={block.props.sectionId} />
-          <div style={styles.galleryGrid}>
+        <div style={styles.galleryBlock} contentEditable={false}>          <div style={styles.galleryGrid}>
             {ids.map((id) => (
               <div key={id} style={styles.galleryTile}>
                 <MediaThumb imageId={id} style={styles.fill} />
@@ -572,9 +547,7 @@ const BlogColumns = createReactBlockSpec(
         window.addEventListener('mouseup', onUp);
       };
       return (
-        <div style={styles.columnsBlock}>
-          <SectionCommentButton sectionId={block.props.sectionId} />
-          <div ref={containerRef} style={styles.columnsRow}>
+        <div style={styles.columnsBlock}>          <div ref={containerRef} style={styles.columnsRow}>
             {cols.map((col, i) => (
               <Fragment key={i}>
                 <div style={{ ...styles.column, flexGrow: col.width ?? 1, flexBasis: 0 }}>
@@ -664,9 +637,7 @@ const BlogEmbed = createReactBlockSpec(
     render: ({ block, editor }) => {
       const styles = useBlockStyles();
       return (
-        <div style={styles.embedBlock} contentEditable={false}>
-          <SectionCommentButton sectionId={block.props.sectionId} />
-          <select
+        <div style={styles.embedBlock} contentEditable={false}>          <select
             style={styles.embedSelect}
             value={block.props.provider}
             onChange={(e) => editor.updateBlock(block, { props: { provider: e.target.value } })}
@@ -698,9 +669,7 @@ const BlogMap = createReactBlockSpec(
       const ids = parseIds(block.props.poiIds);
       const setIds = (next: string[]) => editor.updateBlock(block, { props: { poiIds: JSON.stringify(next) } });
       return (
-        <div style={styles.poiBlock} contentEditable={false}>
-          <SectionCommentButton sectionId={block.props.sectionId} />
-          <span style={styles.poiBlockLabel}>Map — places</span>
+        <div style={styles.poiBlock} contentEditable={false}>          <span style={styles.poiBlockLabel}>Map — places</span>
           <div style={styles.poiChips}>
             {ids.map((id) => (
               <PoiChip key={id} poiId={id} onRemove={() => setIds(ids.filter((x) => x !== id))} />
@@ -720,9 +689,7 @@ const BlogPlace = createReactBlockSpec(
       const styles = useBlockStyles();
       const { poiId } = block.props;
       return (
-        <div style={styles.poiBlock} contentEditable={false}>
-          <SectionCommentButton sectionId={block.props.sectionId} />
-          <span style={styles.poiBlockLabel}>Place</span>
+        <div style={styles.poiBlock} contentEditable={false}>          <span style={styles.poiBlockLabel}>Place</span>
           {poiId ? (
             <div style={styles.poiChips}>
               <PoiChip poiId={poiId} onRemove={() => editor.updateBlock(block, { props: { poiId: '' } })} />
@@ -760,9 +727,7 @@ const BlogCallout = createReactBlockSpec(
             backgroundColor: active.color + theme.colorOpacity(0.12),
             borderLeft: `3px solid ${active.color}`,
           }}
-        >
-          <SectionCommentButton sectionId={block.props.sectionId} />
-          <div style={styles.calloutHeader} contentEditable={false}>
+        >          <div style={styles.calloutHeader} contentEditable={false}>
             <span style={{ ...styles.calloutIcon, color: active.color }}>{active.icon}</span>
             <span style={{ ...styles.calloutVariantLabel, color: active.color }}>{active.value}</span>
             <div style={styles.calloutPills}>

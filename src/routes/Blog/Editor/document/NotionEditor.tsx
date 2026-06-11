@@ -19,6 +19,7 @@ import { useApi } from '~/hooks/useApi';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { BlogEditorBridge, BlogEditorBridgeContext } from '~/routes/Blog/Editor/document/bridge';
 import { BlogMediaPanel } from '~/routes/Blog/Editor/document/BlogMediaPanel';
+import { CommentGutter } from '~/routes/Blog/Editor/components/CommentGutter';
 import { CommentsLayer } from '~/routes/Blog/Editor/components/CommentsLayer';
 import { BlogEditor, BlogPartialBlock, IMAGE_DND_TYPE, blogSchema, parseColumns } from '~/routes/Blog/Editor/document/schema';
 import { blocksToDocument, sectionsToBlocks } from '~/routes/Blog/Editor/document/serialize';
@@ -71,6 +72,7 @@ export const NotionEditor = ({
   const editor = useCreateBlockNote({ schema: blogSchema });
   const { draft } = useBlogDraft(postId, locale);
   const [composeFor, setComposeFor] = useState<string | null>(null);
+  const [sectionMap, setSectionMap] = useState<Record<string, string>>({});
 
   const pickCbRef = useRef<((id: string) => void) | null>(null);
   const suppressRef = useRef(false);
@@ -148,11 +150,16 @@ export const NotionEditor = ({
     loadedKey.current = key;
     let active = true;
     (async () => {
-      const blocks = await sectionsToBlocks(editor, draft.sections);
+      const { blocks, sectionIds } = await sectionsToBlocks(editor, draft.sections);
       if (!active) return;
       suppressRef.current = true;
       editor.replaceBlocks(editor.document, blocks);
       suppressRef.current = false;
+      const map: Record<string, string> = {};
+      editor.document.forEach((b, i) => {
+        if (sectionIds[i]) map[b.id] = sectionIds[i];
+      });
+      setSectionMap(map);
     })();
     return () => {
       active = false;
@@ -255,10 +262,19 @@ export const NotionEditor = ({
             }}
           />
         </BlockNoteView>
+        <CommentGutter
+          containerRef={wrapRef}
+          sectionMap={sectionMap}
+          onAdd={(sid) => {
+            setCommentsOpen(true);
+            setComposeFor(sid || null);
+          }}
+        />
         <CommentsLayer
           open={commentsOpen}
           postId={postId}
           editor={editor}
+          sectionMap={sectionMap}
           composeFor={composeFor}
           onClearCompose={() => setComposeFor(null)}
         />
