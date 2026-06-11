@@ -11,6 +11,7 @@ import { useApi } from '~/hooks/useApi';
 import { categoryLabel, useBlogCategories } from '~/routes/Blog/hooks/useBlogCategories';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
 import { mkUseStyles } from '~/utils/theme';
+import '~/routes/Blog/Editor/components/post-settings.css';
 
 export const SETTINGS_PANEL_WIDTH = 340;
 
@@ -258,7 +259,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
                     return (
                       <button
                         key={c.id}
-                        style={{ ...styles.chip, ...(on ? styles.chipOn : null) }}
+                        className={`blog-chip${on ? ' is-active' : ''}`}
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => toggleCategory(c.id)}
                       >
@@ -284,7 +285,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
                       {Object.values(BlogAuthorRole).map((r) => (
                         <button
                           key={r}
-                          style={{ ...styles.roleChip, ...(a.role === r ? styles.roleChipOn : null) }}
+                          className={`blog-chip sm${a.role === r ? ' is-active' : ''}`}
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => saveAuthors(authors.map((x) => (x.userId === a.userId ? { ...x, role: r } : x)))}
                         >

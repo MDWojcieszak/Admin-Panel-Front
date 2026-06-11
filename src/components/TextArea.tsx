@@ -12,7 +12,7 @@ type TextAreaProps<T extends FieldValues> = {
   style?: CSSProperties;
 } & UseControllerProps<T>;
 
-export const TextArea = <T extends FieldValues>({ label, description, type = 'text', ...p }: TextAreaProps<T>) => {
+export const TextArea = <T extends FieldValues>({ label, description, ...p }: TextAreaProps<T>) => {
   const [showDescription, setShowDescription] = useState(false);
   const [showLabel, setShowLabel] = useState(true);
 
@@ -43,6 +43,16 @@ export const TextArea = <T extends FieldValues>({ label, description, type = 'te
 
   return (
     <div style={{ ...styles.inputContainer, ...p.style }} ref={ref}>
+      <motion.textarea
+        {...field}
+        ref={inputRef}
+        style={styles.input}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        rows={4} // Set the number of visible rows
+      />
+      {/* Opaque band (same colour as the textarea) so scrolled text hides under the floating label. */}
+      <div style={styles.labelMask} />
       <motion.label
         animate={{
           color: showLabel ? theme.colors.lightBlue : theme.colors.blue04,
@@ -53,14 +63,6 @@ export const TextArea = <T extends FieldValues>({ label, description, type = 'te
       >
         {label}
       </motion.label>
-      <motion.textarea
-        {...field}
-        ref={inputRef}
-        style={styles.input}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        rows={4} // Set the number of visible rows
-      />
       <AnimatePresence mode='wait'>
         {(showDescription || errors[p.name]) && (
           <motion.p
@@ -94,10 +96,21 @@ const useStyles = mkUseStyles((t) => ({
     paddingTop: t.spacing.l + 4,
     fontSize: '16px',
     borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+    backgroundColor: t.colors.gray03,
     border: 0,
     outline: 'none',
     resize: 'none',
+  },
+  labelMask: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: t.spacing.l + 4,
+    backgroundColor: t.colors.gray03,
+    borderTopLeftRadius: t.borderRadius.default,
+    borderTopRightRadius: t.borderRadius.default,
+    pointerEvents: 'none',
   },
   description: {
     position: 'absolute',
