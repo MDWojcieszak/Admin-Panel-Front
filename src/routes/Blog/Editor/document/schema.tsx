@@ -1,4 +1,5 @@
 import { Fragment, ReactNode, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   MdAdd,
   MdCheckCircle,
@@ -227,9 +228,17 @@ const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: s
   const colors = [theme.colors.red, theme.colors.blue, theme.colors.lightGreen, theme.colors.yellow];
   return (
     <div style={styles.columnTextWrap}>
-      {focused ? (
-        <div style={styles.columnToolbar} contentEditable={false}>
-          {btn('p', <LuPilcrow size={15} />, 'Text', 'formatBlock', '<p>')}
+      <AnimatePresence>
+        {focused ? (
+          <motion.div
+            style={styles.columnToolbar}
+            contentEditable={false}
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15 }}
+          >
+            {btn('p', <LuPilcrow size={15} />, 'Text', 'formatBlock', '<p>')}
           {btn('h1', <LuHeading1 size={16} />, 'Heading 1', 'formatBlock', '<h1>')}
           {btn('h2', <LuHeading2 size={16} />, 'Heading 2', 'formatBlock', '<h2>')}
           {btn('h3', <LuHeading3 size={16} />, 'Heading 3', 'formatBlock', '<h3>')}
@@ -252,9 +261,10 @@ const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: s
               onClick={() => exec('foreColor', c)}
             />
           ))}
-          {btn('reset', <MdFormatColorReset size={16} />, 'Reset colour', 'foreColor', theme.colors.white)}
-        </div>
-      ) : null}
+            {btn('reset', <MdFormatColorReset size={16} />, 'Reset colour', 'foreColor', theme.colors.white)}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
       <div
         ref={ref}
         className='blog-col-text'
