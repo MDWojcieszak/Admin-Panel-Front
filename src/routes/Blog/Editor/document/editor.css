@@ -107,6 +107,12 @@
   color: #fff !important;
 }
 
+/* Hover comment button (right gutter). */
+.blog-gutter-comment:hover {
+  background-color: #3c5665 !important;
+  transform: scale(1.08);
+}
+
 /* Image settings gear button. */
 .blog-img-gear {
   opacity: 0.92;
