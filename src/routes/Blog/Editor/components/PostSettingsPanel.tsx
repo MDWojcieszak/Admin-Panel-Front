@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useForm, useWatch } from 'react-hook-form';
 import { MdClose, MdImage } from 'react-icons/md';
-import {
-  BlogAccessTier,
-  BlogAuthorRole,
-  CategoryKind,
-  PostDraftResponse,
-  UserResponseDto,
-} from '~/api/api';
+import { BlogAccessTier, BlogAuthorRole, CategoryKind, PostDraftResponse, UserResponseDto } from '~/api/api';
+import { Input } from '~/components/Input';
 import { Scrollbar } from '~/components/Scrollbar';
+import { Select } from '~/components/Select';
 import { useApi } from '~/hooks/useApi';
 import { categoryLabel, useBlogCategories } from '~/routes/Blog/hooks/useBlogCategories';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
@@ -27,25 +24,51 @@ type PostSettingsPanelProps = {
 };
 
 type AuthorRow = { userId: string; role: BlogAuthorRole };
+type SettingsForm = { accessTier: string; country: string; region: string; seoKeywords: string; addAuthor: string };
+
+const titleCase = (v: string) =>
+  v
+    .toLowerCase()
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join('-');
+
+const TIER_OPTIONS = Object.values(BlogAccessTier).map((v) => ({ value: v, label: titleCase(v) }));
 
 export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
   const styles = useStyles();
   const { blogPostsApi, userApi } = useApi();
   const { categories } = useBlogCategories(CategoryKind.Post, p.locale);
 
-  const [accessTier, setAccessTier] = useState<BlogAccessTier>(p.draft.accessTier);
-  const [country, setCountry] = useState(p.draft.country ?? '');
-  const [region, setRegion] = useState(p.draft.region ?? '');
-  const [seoKeywords, setSeoKeywords] = useState((p.draft.seoKeywords ?? []).join(', '));
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [authors, setAuthors] = useState<AuthorRow[]>([]);
   const [users, setUsers] = useState<UserResponseDto[]>([]);
 
+  const seoToString = (kw?: string[] | null) => (kw ?? []).join(', ');
+  const { control, reset, setValue } = useForm<SettingsForm>({
+    defaultValues: {
+      accessTier: p.draft.accessTier,
+      country: p.draft.country ?? '',
+      region: p.draft.region ?? '',
+      seoKeywords: seoToString(p.draft.seoKeywords),
+      addAuthor: '',
+    },
+  });
+
+  const country = useWatch({ control, name: 'country' });
+  const region = useWatch({ control, name: 'region' });
+  const seoKeywords = useWatch({ control, name: 'seoKeywords' });
+
+  // Re-seed the form when the underlying draft fields change (locale switch / external refresh).
   useEffect(() => {
-    setAccessTier(p.draft.accessTier);
-    setCountry(p.draft.country ?? '');
-    setRegion(p.draft.region ?? '');
-    setSeoKeywords((p.draft.seoKeywords ?? []).join(', '));
+    reset({
+      accessTier: p.draft.accessTier,
+      country: p.draft.country ?? '',
+      region: p.draft.region ?? '',
+      seoKeywords: seoToString(p.draft.seoKeywords),
+      addAuthor: '',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [p.draft.versionId, p.draft.accessTier, p.draft.country, p.draft.region, p.draft.seoKeywords]);
 
   const loadRelations = useCallback(async () => {
@@ -74,34 +97,55 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
       .catch((e) => console.error('Error loading users:', e));
   }, [userApi, p.open]);
 
-  const patchPost = async (patch: {
-    accessTier?: BlogAccessTier;
-    country?: string | null;
-    region?: string | null;
-    coverImageId?: string | null;
-  }) => {
-    if (!blogPostsApi) return;
-    try {
-      await blogPostsApi.postControllerPatch({ id: p.postId, patchPostDto: patch });
-      p.onChanged();
-    } catch (e) {
-      console.error('Error patching post:', e);
-    }
-  };
+  const patchPost = useCallback(
+    async (patch: { accessTier?: BlogAccessTier; country?: string | null; region?: string | null; coverImageId?: string | null }) => {
+      if (!blogPostsApi) return;
+      try {
+        await blogPostsApi.postControllerPatch({ id: p.postId, patchPostDto: patch });
+        p.onChanged();
+      } catch (e) {
+        console.error('Error patching post:', e);
+      }
+    },
+    [blogPostsApi, p],
+  );
 
-  const saveSeo = async () => {
-    if (!blogPostsApi) return;
-    const list = seoKeywords.split(',').map((k) => k.trim()).filter(Boolean);
-    try {
-      await blogPostsApi.postControllerUpsertTranslation({
-        id: p.postId,
-        locale: p.locale,
-        upsertPostTranslationDto: { seoKeywords: list },
-      });
-    } catch (e) {
-      console.error('Error saving SEO keywords:', e);
-    }
-  };
+  const saveSeo = useCallback(
+    async (value: string) => {
+      if (!blogPostsApi) return;
+      const list = value.split(',').map((k) => k.trim()).filter(Boolean);
+      try {
+        await blogPostsApi.postControllerUpsertTranslation({
+          id: p.postId,
+          locale: p.locale,
+          upsertPostTranslationDto: { seoKeywords: list },
+        });
+      } catch (e) {
+        console.error('Error saving SEO keywords:', e);
+      }
+    },
+    [blogPostsApi, p.postId, p.locale],
+  );
+
+  // Debounced autosave for text fields (Input owns its onBlur, so persist on value change instead).
+  useEffect(() => {
+    if (country === (p.draft.country ?? '')) return;
+    const h = setTimeout(() => patchPost({ country: country || null }), 700);
+    return () => clearTimeout(h);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [country]);
+  useEffect(() => {
+    if (region === (p.draft.region ?? '')) return;
+    const h = setTimeout(() => patchPost({ region: region || null }), 700);
+    return () => clearTimeout(h);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [region]);
+  useEffect(() => {
+    if (seoKeywords === seoToString(p.draft.seoKeywords)) return;
+    const h = setTimeout(() => saveSeo(seoKeywords), 700);
+    return () => clearTimeout(h);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seoKeywords]);
 
   const toggleCategory = async (id: string) => {
     if (!blogPostsApi) return;
@@ -136,6 +180,11 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
   const userEmail = (userId: string) => users.find((u) => u.id === userId)?.email ?? userId;
   const hasAuthor = authors.some((a) => a.role === BlogAuthorRole.Author);
 
+  const addAuthorOptions = [
+    { value: '', label: '+ Add author…' },
+    ...users.filter((u) => !authors.some((a) => a.userId === u.id)).map((u) => ({ value: u.id, label: u.email })),
+  ];
+
   return (
     <motion.div
       style={styles.panel}
@@ -154,23 +203,13 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
         <Scrollbar style={styles.scroll}>
           <div style={styles.content}>
             {/* Access tier */}
-            <div style={styles.field}>
-              <span style={styles.label}>Access tier</span>
-              <select
-                style={styles.select}
-                value={accessTier}
-                onChange={(e) => {
-                  setAccessTier(e.target.value as BlogAccessTier);
-                  patchPost({ accessTier: e.target.value as BlogAccessTier });
-                }}
-              >
-                {Object.values(BlogAccessTier).map((v) => (
-                  <option key={v} value={v}>
-                    {v}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Select
+              label='Access tier'
+              name='accessTier'
+              control={control}
+              options={TIER_OPTIONS}
+              onValueChange={(v) => patchPost({ accessTier: v as BlogAccessTier })}
+            />
 
             {/* Cover image */}
             <div style={styles.field}>
@@ -196,37 +235,17 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
 
             {/* Region */}
             <div style={styles.row2}>
-              <div style={styles.field}>
-                <span style={styles.label}>Country</span>
-                <input
-                  style={styles.input}
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  onBlur={() => country !== (p.draft.country ?? '') && patchPost({ country: country || null })}
-                />
-              </div>
-              <div style={styles.field}>
-                <span style={styles.label}>Region</span>
-                <input
-                  style={styles.input}
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                  onBlur={() => region !== (p.draft.region ?? '') && patchPost({ region: region || null })}
-                />
-              </div>
+              <Input label='Country' name='country' description='' control={control} style={styles.flex1} />
+              <Input label='Region' name='region' description='' control={control} style={styles.flex1} />
             </div>
 
             {/* SEO keywords */}
-            <div style={styles.field}>
-              <span style={styles.label}>SEO keywords ({p.locale.toUpperCase()})</span>
-              <input
-                style={styles.input}
-                placeholder='comma, separated, keywords'
-                value={seoKeywords}
-                onChange={(e) => setSeoKeywords(e.target.value)}
-                onBlur={saveSeo}
-              />
-            </div>
+            <Input
+              label={`SEO keywords (${p.locale.toUpperCase()})`}
+              name='seoKeywords'
+              description='Comma-separated'
+              control={control}
+            />
 
             {/* Categories */}
             <div style={styles.field}>
@@ -259,38 +278,33 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
                 {authors.map((a) => (
                   <div key={a.userId} style={styles.authorRow}>
                     <span style={styles.authorEmail}>{userEmail(a.userId)}</span>
-                    <select
-                      style={styles.roleSelect}
-                      value={a.role}
-                      onChange={(e) =>
-                        saveAuthors(authors.map((x) => (x.userId === a.userId ? { ...x, role: e.target.value as BlogAuthorRole } : x)))
-                      }
-                    >
+                    <div style={styles.roleToggle}>
                       {Object.values(BlogAuthorRole).map((r) => (
-                        <option key={r} value={r}>
-                          {r}
-                        </option>
+                        <button
+                          key={r}
+                          style={{ ...styles.roleChip, ...(a.role === r ? styles.roleChipOn : null) }}
+                          onClick={() => saveAuthors(authors.map((x) => (x.userId === a.userId ? { ...x, role: r } : x)))}
+                        >
+                          {titleCase(r)}
+                        </button>
                       ))}
-                    </select>
-                    <button
-                      style={styles.removeAuthor}
-                      onClick={() => saveAuthors(authors.filter((x) => x.userId !== a.userId))}
-                    >
+                    </div>
+                    <button style={styles.removeAuthor} onClick={() => saveAuthors(authors.filter((x) => x.userId !== a.userId))}>
                       <MdClose size={14} />
                     </button>
                   </div>
                 ))}
               </div>
-              <select style={styles.select} value='' onChange={(e) => addAuthor(e.target.value)}>
-                <option value=''>+ Add author…</option>
-                {users
-                  .filter((u) => !authors.some((a) => a.userId === u.id))
-                  .map((u) => (
-                    <option key={u.id} value={u.id}>
-                      {u.email}
-                    </option>
-                  ))}
-              </select>
+              <Select
+                label='Add author'
+                name='addAuthor'
+                control={control}
+                options={addAuthorOptions}
+                onValueChange={(v) => {
+                  if (v) addAuthor(v);
+                  setValue('addAuthor', '');
+                }}
+              />
             </div>
           </div>
         </Scrollbar>
@@ -318,10 +332,7 @@ const useStyles = mkUseStyles((t) => ({
     padding: t.spacing.m,
     borderBottom: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
   },
-  title: {
-    fontWeight: 700,
-    fontSize: 16,
-  },
+  title: { fontWeight: 700, fontSize: 16 },
   iconBtn: {
     width: 30,
     height: 30,
@@ -334,71 +345,16 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.white,
     cursor: 'pointer',
   },
-  scrollWrap: {
-    flex: 1,
-    minHeight: 0,
-    position: 'relative',
-  },
-  scroll: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  content: {
-    gap: t.spacing.l,
-    padding: t.spacing.m,
-  },
-  field: {
-    gap: t.spacing.xs,
-    flex: 1,
-    minWidth: 0,
-  },
-  row2: {
-    flexDirection: 'row',
-    gap: t.spacing.m,
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: t.colors.blue04,
-  },
-  select: {
-    height: 38,
-    padding: `0 ${t.spacing.s}px`,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    color: t.colors.white,
-    border: 0,
-    outline: 'none',
-    colorScheme: 'dark',
-    fontSize: 14,
-  },
-  input: {
-    height: 38,
-    boxSizing: 'border-box',
-    padding: `0 ${t.spacing.m}px`,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    color: t.colors.white,
-    border: 0,
-    outline: 'none',
-    fontSize: 14,
-  },
-  coverWrap: {
-    gap: t.spacing.s,
-  },
-  cover: {
-    width: '100%',
-    height: 140,
-    borderRadius: t.borderRadius.default,
-    overflow: 'hidden',
-  },
-  coverActions: {
-    flexDirection: 'row',
-    gap: t.spacing.s,
-  },
+  scrollWrap: { flex: 1, minHeight: 0, position: 'relative' },
+  scroll: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+  content: { gap: t.spacing.m, padding: t.spacing.m },
+  field: { gap: t.spacing.xs, flex: 1, minWidth: 0 },
+  flex1: { flex: 1, minWidth: 0 },
+  row2: { flexDirection: 'row', gap: t.spacing.m },
+  label: { fontSize: 12, fontWeight: 600, color: t.colors.blue04 },
+  coverWrap: { gap: t.spacing.s },
+  cover: { width: '100%', height: 140, borderRadius: t.borderRadius.default, overflow: 'hidden' },
+  coverActions: { flexDirection: 'row', gap: t.spacing.s },
   coverPick: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -423,11 +379,7 @@ const useStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
     fontSize: 13,
   },
-  chips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: t.spacing.xs,
-  },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs },
   chip: {
     height: 30,
     padding: `0 ${t.spacing.s}px`,
@@ -443,14 +395,8 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.blue + t.colorOpacity(0.25),
     border: `1px solid ${t.colors.blue + t.colorOpacity(0.4)}`,
   },
-  authorList: {
-    gap: t.spacing.xs,
-  },
-  authorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.s,
-  },
+  authorList: { gap: t.spacing.xs },
+  authorRow: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
   authorEmail: {
     flex: 1,
     minWidth: 0,
@@ -459,15 +405,21 @@ const useStyles = mkUseStyles((t) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  roleSelect: {
-    height: 30,
+  roleToggle: { flexDirection: 'row', gap: 2 },
+  roleChip: {
+    height: 28,
+    padding: `0 ${t.spacing.s}px`,
     borderRadius: t.borderRadius.small,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    color: t.colors.white,
-    border: 0,
-    outline: 'none',
-    colorScheme: 'dark',
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.1)}`,
+    background: 'transparent',
+    color: t.colors.dark05,
+    cursor: 'pointer',
     fontSize: 12,
+  },
+  roleChipOn: {
+    color: t.colors.white,
+    backgroundColor: t.colors.blue + t.colorOpacity(0.25),
+    border: `1px solid ${t.colors.blue + t.colorOpacity(0.4)}`,
   },
   removeAuthor: {
     width: 26,
@@ -481,12 +433,6 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.red,
     cursor: 'pointer',
   },
-  warn: {
-    fontSize: 12,
-    color: t.colors.yellow,
-  },
-  muted: {
-    fontSize: 13,
-    color: t.colors.dark05,
-  },
+  warn: { fontSize: 12, color: t.colors.yellow },
+  muted: { fontSize: 13, color: t.colors.dark05 },
 }));
