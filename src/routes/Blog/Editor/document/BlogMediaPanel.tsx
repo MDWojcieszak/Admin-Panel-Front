@@ -159,7 +159,7 @@ const useStyles = mkUseStyles((t) => ({
     zIndex: 40,
     gap: t.spacing.m,
     padding: t.spacing.m,
-    backgroundColor: t.colors.gray04,
+    backgroundColor: t.colors.gray045,
     borderRight: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
   },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
