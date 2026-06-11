@@ -4,6 +4,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type CSSProperties,
   type MouseEvent as ReactMouseEvent,
 } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -29,7 +30,15 @@ import {
 import { LuHeading1, LuHeading2, LuHeading3, LuPilcrow } from 'react-icons/lu';
 import { Block, BlockNoteEditor, BlockNoteSchema, PartialBlock, defaultBlockSpecs } from '@blocknote/core';
 import { createReactBlockSpec } from '@blocknote/react';
-import { BlogAspectRatio, CalloutVariant, EmbedProvider, PoiAdminResponse } from '~/api/api';
+import {
+  BlogAspectRatio,
+  BlogOverlayBackdrop,
+  BlogOverlayPosition,
+  BlogOverlayTheme,
+  CalloutVariant,
+  EmbedProvider,
+  PoiAdminResponse,
+} from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
 import { PoiPicker } from '~/routes/Blog/Editor/components/PoiPicker';
@@ -90,6 +99,55 @@ const RATIOS: { value: string; label: string; css?: string }[] = [
   { value: BlogAspectRatio.Ratio916, label: '9:16', css: '9 / 16' },
 ];
 
+const OVERLAY_POSITIONS: BlogOverlayPosition[] = [
+  BlogOverlayPosition.TopLeft,
+  BlogOverlayPosition.TopCenter,
+  BlogOverlayPosition.TopRight,
+  BlogOverlayPosition.MiddleLeft,
+  BlogOverlayPosition.MiddleCenter,
+  BlogOverlayPosition.MiddleRight,
+  BlogOverlayPosition.BottomLeft,
+  BlogOverlayPosition.BottomCenter,
+  BlogOverlayPosition.BottomRight,
+];
+
+const posAlign = (pos: string) => ({
+  justifyContent: pos.startsWith('TOP') ? 'flex-start' : pos.startsWith('BOTTOM') ? 'flex-end' : 'center',
+  alignItems: pos.endsWith('LEFT') ? 'flex-start' : pos.endsWith('RIGHT') ? 'flex-end' : 'center',
+  textAlign: (pos.endsWith('LEFT') ? 'left' : pos.endsWith('RIGHT') ? 'right' : 'center') as CSSProperties['textAlign'],
+});
+
+/** Text overlay rendered on top of an image. */
+const OverlayLayer = ({ text, position, themeVal, backdrop }: { text: string; position: string; themeVal: string; backdrop: string }) => {
+  if (!text) return null;
+  const a = posAlign(position);
+  const layer: CSSProperties = { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: a.justifyContent, alignItems: a.alignItems, padding: 18, pointerEvents: 'none' };
+  if (backdrop === BlogOverlayBackdrop.Scrim) layer.backgroundColor = 'rgba(0,0,0,0.35)';
+  else if (backdrop === BlogOverlayBackdrop.Gradient)
+    layer.backgroundImage = `linear-gradient(${position.startsWith('TOP') ? 'to top' : 'to bottom'}, transparent 45%, rgba(0,0,0,0.65))`;
+  const dark = themeVal === BlogOverlayTheme.Dark;
+  const glass = backdrop === BlogOverlayBackdrop.Glass;
+  const textStyle: CSSProperties = {
+    color: dark ? '#0a0a0a' : '#fff',
+    fontWeight: 800,
+    fontSize: 24,
+    lineHeight: 1.2,
+    maxWidth: '88%',
+    textAlign: a.textAlign,
+    whiteSpace: 'pre-wrap',
+    padding: glass ? '8px 12px' : 0,
+    borderRadius: glass ? 8 : 0,
+    backgroundColor: glass ? (dark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.28)') : 'transparent',
+    backdropFilter: glass ? 'blur(8px)' : undefined,
+    textShadow: backdrop === BlogOverlayBackdrop.None ? (dark ? '0 1px 2px rgba(255,255,255,0.5)' : '0 1px 4px rgba(0,0,0,0.65)') : undefined,
+  };
+  return (
+    <div style={layer}>
+      <span style={textStyle}>{text}</span>
+    </div>
+  );
+};
+
 const Divider = createReactBlockSpec(
   { type: 'divider', propSchema: { sectionId: { default: '' } }, content: 'none' },
   {
@@ -108,7 +166,10 @@ const BlogImage = createReactBlockSpec(
       imageId: { default: '' },
       imageSize: { default: '' },
       aspectRatio: { default: '' },
-      overlayPosition: { default: '' },
+      overlayPosition: { default: BlogOverlayPosition.BottomLeft },
+      overlayText: { default: '' },
+      overlayTheme: { default: BlogOverlayTheme.Light },
+      overlayBackdrop: { default: BlogOverlayBackdrop.Scrim },
       caption: { default: '' },
       focalX: { default: 0.5 },
       focalY: { default: 0.5 },
@@ -119,34 +180,49 @@ const BlogImage = createReactBlockSpec(
     render: ({ block, editor }) => {
       const styles = useBlockStyles();
       const bridge = useBlogEditorBridge();
-      const { imageId, aspectRatio, caption, focalX, focalY } = block.props;
+      const { imageId, aspectRatio, caption, focalX, focalY, overlayText, overlayPosition, overlayTheme, overlayBackdrop } =
+        block.props;
       const aspectCss = RATIOS.find((r) => r.value === aspectRatio)?.css;
       const setImage = (id: string) => editor.updateBlock(block, { props: { imageId: id } });
-      const setFocal = (e: { currentTarget: HTMLElement; clientX: number; clientY: number }) => {
+      const overlay = (
+        <OverlayLayer text={overlayText} position={overlayPosition} themeVal={overlayTheme} backdrop={overlayBackdrop} />
+      );
+      const startFocalDrag = (e: ReactMouseEvent) => {
+        e.preventDefault();
         const rect = e.currentTarget.getBoundingClientRect();
-        editor.updateBlock(block, {
-          props: {
-            focalX: Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width)),
-            focalY: Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height)),
-          },
-        });
+        const apply = (cx: number, cy: number) =>
+          editor.updateBlock(block, {
+            props: {
+              focalX: Math.min(1, Math.max(0, (cx - rect.left) / rect.width)),
+              focalY: Math.min(1, Math.max(0, (cy - rect.top) / rect.height)),
+            },
+          });
+        apply(e.clientX, e.clientY);
+        const move = (ev: MouseEvent) => apply(ev.clientX, ev.clientY);
+        const up = () => {
+          window.removeEventListener('mousemove', move);
+          window.removeEventListener('mouseup', up);
+        };
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', up);
       };
       return (
         <div style={styles.mediaBlock} contentEditable={false}>
           {imageId ? (
             aspectCss ? (
               <div
-                style={{ ...styles.imageFrame, aspectRatio: aspectCss, position: 'relative', cursor: 'crosshair' }}
-                title='Click to set the focal point (kept visible when cropped)'
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={setFocal}
+                style={{ ...styles.imageFrame, aspectRatio: aspectCss, position: 'relative', cursor: 'move' }}
+                title='Drag to set the focal point (kept visible when cropped)'
+                onMouseDown={startFocalDrag}
               >
                 <MediaThumb imageId={imageId} res='cover' fit='cover' focalX={focalX} focalY={focalY} style={styles.fill} />
+                {overlay}
                 <div style={{ ...styles.focalDot, left: `${focalX * 100}%`, top: `${focalY * 100}%` }} />
               </div>
             ) : (
-              <div style={styles.imageFrame}>
+              <div style={{ ...styles.imageFrame, position: 'relative' }}>
                 <MediaThumb imageId={imageId} res='cover' fit='natural' style={styles.fill} />
+                {overlay}
               </div>
             )
           ) : (
@@ -178,6 +254,56 @@ const BlogImage = createReactBlockSpec(
               <button style={styles.barBtn} type='button' onMouseDown={(e) => e.preventDefault()} onClick={() => bridge.pickImage(setImage)}>
                 Replace
               </button>
+            </div>
+          ) : null}
+          {imageId ? (
+            <div style={styles.overlaySection}>
+              <input
+                style={styles.caption}
+                placeholder='Overlay text on the image (optional)'
+                defaultValue={overlayText}
+                onBlur={(e) => editor.updateBlock(block, { props: { overlayText: e.target.value } })}
+              />
+              {overlayText ? (
+                <div style={styles.overlayControls}>
+                  <div style={styles.posGrid} title='Text position'>
+                    {OVERLAY_POSITIONS.map((p) => (
+                      <button
+                        key={p}
+                        type='button'
+                        className={`blog-ratio${overlayPosition === p ? ' is-active' : ''}`}
+                        style={styles.posCell}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => editor.updateBlock(block, { props: { overlayPosition: p } })}
+                      />
+                    ))}
+                  </div>
+                  <div style={styles.overlayOpts}>
+                    {[BlogOverlayTheme.Light, BlogOverlayTheme.Dark].map((th) => (
+                      <button
+                        key={th}
+                        type='button'
+                        className={`blog-ratio${overlayTheme === th ? ' is-active' : ''}`}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => editor.updateBlock(block, { props: { overlayTheme: th } })}
+                      >
+                        {th === BlogOverlayTheme.Light ? 'Light' : 'Dark'}
+                      </button>
+                    ))}
+                    {[BlogOverlayBackdrop.None, BlogOverlayBackdrop.Scrim, BlogOverlayBackdrop.Gradient, BlogOverlayBackdrop.Glass].map((bd) => (
+                      <button
+                        key={bd}
+                        type='button'
+                        className={`blog-ratio${overlayBackdrop === bd ? ' is-active' : ''}`}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => editor.updateBlock(block, { props: { overlayBackdrop: bd } })}
+                      >
+                        {bd.charAt(0) + bd.slice(1).toLowerCase()}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </div>
@@ -689,6 +815,11 @@ const useBlockStyles = mkUseStyles((t) => ({
     outline: 'none',
     padding: '2px 0',
   },
+  overlaySection: { display: 'flex', flexDirection: 'column', gap: t.spacing.xs },
+  overlayControls: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: t.spacing.m },
+  posGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, width: 56, flexShrink: 0 },
+  posCell: { width: 16, height: 16, padding: 0, borderRadius: 3 },
+  overlayOpts: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 4 },
   emptyPick: {
     flexDirection: 'row',
     alignItems: 'center',
