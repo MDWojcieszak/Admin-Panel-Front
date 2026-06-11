@@ -5,6 +5,7 @@ import { BlogMediaImageResponse } from '~/api/api';
 import { Scrollbar } from '~/components/Scrollbar';
 import { useApi } from '~/hooks/useApi';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
+import { IMAGE_DND_TYPE } from '~/routes/Blog/Editor/document/schema';
 import { getAccessToken } from '~/utils/accessToken';
 import { mkUseStyles } from '~/utils/theme';
 
@@ -102,7 +103,16 @@ export const BlogMediaPanel = ({ open, pickMode, onClose, onPick }: BlogMediaPan
         <Scrollbar style={styles.scroll}>
           <div style={styles.grid}>
             {images.map((img) => (
-              <button key={img.id} style={styles.tile} onClick={() => onPick(img.id)}>
+              <button
+                key={img.id}
+                style={styles.tile}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData(IMAGE_DND_TYPE, img.id);
+                  e.dataTransfer.effectAllowed = 'copy';
+                }}
+                onClick={() => onPick(img.id)}
+              >
                 <MediaThumb imageId={img.id} style={styles.fill} />
               </button>
             ))}

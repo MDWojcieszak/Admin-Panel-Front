@@ -1,4 +1,12 @@
-import { Fragment, ReactNode, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
+import {
+  Fragment,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+  type DragEvent as ReactDragEvent,
+  type MouseEvent as ReactMouseEvent,
+} from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   MdAdd,
@@ -22,7 +30,7 @@ import {
 import { LuHeading1, LuHeading2, LuHeading3, LuPilcrow } from 'react-icons/lu';
 import { Block, BlockNoteEditor, BlockNoteSchema, PartialBlock, defaultBlockSpecs } from '@blocknote/core';
 import { createReactBlockSpec } from '@blocknote/react';
-import { CalloutVariant, EmbedProvider, PoiAdminResponse } from '~/api/api';
+import { BlogAspectRatio, CalloutVariant, EmbedProvider, PoiAdminResponse } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
 import { PoiPicker } from '~/routes/Blog/Editor/components/PoiPicker';
@@ -66,6 +74,19 @@ const PoiChip = ({ poiId, onRemove }: { poiId: string; onRemove: () => void }) =
 
 // ---- custom block specs ---------------------------------------------------
 
+/** Drag payload key for dropping a blog-media image onto a block. */
+export const IMAGE_DND_TYPE = 'application/x-blog-image';
+
+const RATIOS: { value: string; label: string; css?: string }[] = [
+  { value: BlogAspectRatio.Original, label: 'Original' },
+  { value: BlogAspectRatio.Ratio169, label: '16:9', css: '16 / 9' },
+  { value: BlogAspectRatio.Ratio43, label: '4:3', css: '4 / 3' },
+  { value: BlogAspectRatio.Square, label: '1:1', css: '1 / 1' },
+  { value: BlogAspectRatio.Ratio32, label: '3:2', css: '3 / 2' },
+  { value: BlogAspectRatio.Ratio45, label: '4:5', css: '4 / 5' },
+  { value: BlogAspectRatio.Ratio916, label: '9:16', css: '9 / 16' },
+];
+
 const Divider = createReactBlockSpec(
   { type: 'divider', propSchema: { sectionId: { default: '' } }, content: 'none' },
   {
@@ -93,37 +114,64 @@ const BlogImage = createReactBlockSpec(
     render: ({ block, editor }) => {
       const styles = useBlockStyles();
       const bridge = useBlogEditorBridge();
-      const { imageId, caption } = block.props;
+      const { imageId, aspectRatio, caption } = block.props;
+      const aspectCss = RATIOS.find((r) => r.value === aspectRatio)?.css;
+      const setImage = (id: string) => editor.updateBlock(block, { props: { imageId: id } });
+      const onDrop = (e: ReactDragEvent) => {
+        const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
+        if (id) {
+          e.preventDefault();
+          setImage(id);
+        }
+      };
+      const allowDrop = (e: ReactDragEvent) => {
+        if (e.dataTransfer.types.includes(IMAGE_DND_TYPE)) e.preventDefault();
+      };
       return (
         <div style={styles.mediaBlock} contentEditable={false}>
           {imageId ? (
-            <MediaThumb imageId={imageId} res='cover' style={styles.image} />
+            aspectCss ? (
+              <div style={{ ...styles.imageFrame, aspectRatio: aspectCss }} onDragOver={allowDrop} onDrop={onDrop}>
+                <MediaThumb imageId={imageId} res='cover' fit='cover' style={styles.fill} />
+              </div>
+            ) : (
+              <div style={styles.imageFrame} onDragOver={allowDrop} onDrop={onDrop}>
+                <MediaThumb imageId={imageId} res='cover' fit='natural' style={styles.fill} />
+              </div>
+            )
           ) : (
-            <button
-              style={styles.emptyPick}
-              type='button'
-              onClick={() => bridge.pickImage((id) => editor.updateBlock(block, { props: { imageId: id } }))}
-            >
-              <MdImage size={20} /> Pick an image
+            <button style={styles.emptyPick} type='button' onDragOver={allowDrop} onDrop={onDrop} onClick={() => bridge.pickImage(setImage)}>
+              <MdImage size={20} /> Pick or drop an image
             </button>
           )}
-          <div style={styles.mediaBar}>
-            {imageId ? (
-              <button
-                style={styles.barBtn}
-                type='button'
-                onClick={() => bridge.pickImage((id) => editor.updateBlock(block, { props: { imageId: id } }))}
-              >
-                Replace
-              </button>
-            ) : null}
-            <input
-              style={styles.captionInput}
-              placeholder='Caption (optional)'
-              defaultValue={caption}
-              onBlur={(e) => editor.updateBlock(block, { props: { caption: e.target.value } })}
-            />
-          </div>
+          {imageId ? (
+            <div style={styles.mediaBar}>
+              <div style={styles.ratioRow}>
+                {RATIOS.map((r) => (
+                  <button
+                    key={r.value}
+                    type='button'
+                    style={{
+                      ...styles.ratioBtn,
+                      ...((aspectRatio || BlogAspectRatio.Original) === r.value ? styles.ratioActive : null),
+                    }}
+                    onClick={() => editor.updateBlock(block, { props: { aspectRatio: r.value } })}
+                  >
+                    {r.label}
+                  </button>
+                ))}
+                <button style={styles.barBtn} type='button' onClick={() => bridge.pickImage(setImage)}>
+                  Replace
+                </button>
+              </div>
+              <input
+                style={styles.captionInput}
+                placeholder='Caption (optional)'
+                defaultValue={caption}
+                onBlur={(e) => editor.updateBlock(block, { props: { caption: e.target.value } })}
+              />
+            </div>
+          ) : null}
         </div>
       );
     },
@@ -352,7 +400,18 @@ const BlogColumns = createReactBlockSpec(
                   </div>
                   {col.type === 'image' ? (
                     col.imageId ? (
-                      <div style={styles.columnImageWrap} contentEditable={false}>
+                      <div
+                        style={styles.columnImageWrap}
+                        contentEditable={false}
+                        onDragOver={(e) => e.dataTransfer.types.includes(IMAGE_DND_TYPE) && e.preventDefault()}
+                        onDrop={(e) => {
+                          const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
+                          if (id) {
+                            e.preventDefault();
+                            update(i, { imageId: id });
+                          }
+                        }}
+                      >
                         <MediaThumb imageId={col.imageId} res='cover' style={styles.fill} />
                         <button style={styles.tileRemove} type='button' onClick={() => update(i, { imageId: '' })}>
                           <MdClose size={13} />
@@ -363,9 +422,17 @@ const BlogColumns = createReactBlockSpec(
                         style={styles.columnPick}
                         type='button'
                         contentEditable={false}
+                        onDragOver={(e) => e.dataTransfer.types.includes(IMAGE_DND_TYPE) && e.preventDefault()}
+                        onDrop={(e) => {
+                          const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
+                          if (id) {
+                            e.preventDefault();
+                            update(i, { imageId: id });
+                          }
+                        }}
                         onClick={() => bridge.pickImage((id) => update(i, { imageId: id }))}
                       >
-                        <MdImage size={18} /> Pick
+                        <MdImage size={18} /> Pick or drop
                       </button>
                     )
                   ) : (
@@ -588,8 +655,24 @@ const useBlockStyles = mkUseStyles((t) => ({
     borderRadius: 1,
     margin: `${t.spacing.m}px 0`,
   },
-  mediaBlock: { gap: t.spacing.s, padding: t.spacing.s, borderRadius: t.borderRadius.default, backgroundColor: t.colors.gray04 + t.colorOpacity(0.4) },
-  image: { width: '100%', maxHeight: 360, borderRadius: t.borderRadius.default, overflow: 'hidden' },
+  mediaBlock: { display: 'flex', flexDirection: 'column', gap: t.spacing.xs, width: '100%' },
+  imageFrame: { width: '100%', borderRadius: t.borderRadius.default, overflow: 'hidden' },
+  ratioRow: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 4 },
+  ratioBtn: {
+    height: 26,
+    padding: '0 8px',
+    borderRadius: t.borderRadius.small,
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.1)}`,
+    background: 'transparent',
+    color: t.colors.dark05,
+    cursor: 'pointer',
+    fontSize: 12,
+  },
+  ratioActive: {
+    color: t.colors.white,
+    backgroundColor: t.colors.blue + t.colorOpacity(0.25),
+    border: `1px solid ${t.colors.blue + t.colorOpacity(0.4)}`,
+  },
   emptyPick: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -603,7 +686,7 @@ const useBlockStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
     display: 'flex',
   },
-  mediaBar: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
+  mediaBar: { display: 'flex', flexDirection: 'column', gap: t.spacing.xs },
   barBtn: {
     height: 30,
     padding: `0 ${t.spacing.m}px`,
