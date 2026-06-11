@@ -10,6 +10,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   MdAdd,
+  MdChatBubbleOutline,
   MdCheckCircle,
   MdClose,
   MdDelete,
@@ -149,6 +150,26 @@ const OverlayLayer = ({ text, position, themeVal, backdrop }: { text: string; po
   );
 };
 
+/** "Comment on this section" affordance, shown on block hover (top-right). Needs a saved section. */
+const SectionCommentButton = ({ sectionId }: { sectionId: string }) => {
+  const styles = useBlockStyles();
+  const bridge = useBlogEditorBridge();
+  if (!sectionId) return null;
+  return (
+    <button
+      className='blog-block-comment'
+      style={styles.commentBtn}
+      type='button'
+      title='Comment on this section'
+      contentEditable={false}
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={() => bridge.addComment(sectionId)}
+    >
+      <MdChatBubbleOutline size={14} />
+    </button>
+  );
+};
+
 const Divider = createReactBlockSpec(
   { type: 'divider', propSchema: { sectionId: { default: '' } }, content: 'none' },
   {
@@ -228,6 +249,7 @@ const BlogImage = createReactBlockSpec(
       );
       return (
         <div style={styles.mediaBlock} contentEditable={false}>
+          <SectionCommentButton sectionId={block.props.sectionId} />
           {imageId ? (
             aspectCss ? (
               <div
@@ -368,6 +390,7 @@ const BlogGallery = createReactBlockSpec(
       const setIds = (next: string[]) => editor.updateBlock(block, { props: { imageIds: JSON.stringify(next) } });
       return (
         <div style={styles.galleryBlock} contentEditable={false}>
+          <SectionCommentButton sectionId={block.props.sectionId} />
           <div style={styles.galleryGrid}>
             {ids.map((id) => (
               <div key={id} style={styles.galleryTile}>
@@ -550,6 +573,7 @@ const BlogColumns = createReactBlockSpec(
       };
       return (
         <div style={styles.columnsBlock}>
+          <SectionCommentButton sectionId={block.props.sectionId} />
           <div ref={containerRef} style={styles.columnsRow}>
             {cols.map((col, i) => (
               <Fragment key={i}>
@@ -641,6 +665,7 @@ const BlogEmbed = createReactBlockSpec(
       const styles = useBlockStyles();
       return (
         <div style={styles.embedBlock} contentEditable={false}>
+          <SectionCommentButton sectionId={block.props.sectionId} />
           <select
             style={styles.embedSelect}
             value={block.props.provider}
@@ -674,6 +699,7 @@ const BlogMap = createReactBlockSpec(
       const setIds = (next: string[]) => editor.updateBlock(block, { props: { poiIds: JSON.stringify(next) } });
       return (
         <div style={styles.poiBlock} contentEditable={false}>
+          <SectionCommentButton sectionId={block.props.sectionId} />
           <span style={styles.poiBlockLabel}>Map — places</span>
           <div style={styles.poiChips}>
             {ids.map((id) => (
@@ -695,6 +721,7 @@ const BlogPlace = createReactBlockSpec(
       const { poiId } = block.props;
       return (
         <div style={styles.poiBlock} contentEditable={false}>
+          <SectionCommentButton sectionId={block.props.sectionId} />
           <span style={styles.poiBlockLabel}>Place</span>
           {poiId ? (
             <div style={styles.poiChips}>
@@ -734,6 +761,7 @@ const BlogCallout = createReactBlockSpec(
             borderLeft: `3px solid ${active.color}`,
           }}
         >
+          <SectionCommentButton sectionId={block.props.sectionId} />
           <div style={styles.calloutHeader} contentEditable={false}>
             <span style={{ ...styles.calloutIcon, color: active.color }}>{active.icon}</span>
             <span style={{ ...styles.calloutVariantLabel, color: active.color }}>{active.value}</span>
@@ -862,6 +890,22 @@ const useBlockStyles = mkUseStyles((t) => ({
   posGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, width: 56, flexShrink: 0 },
   posCell: { width: 16, height: 16, padding: 0, borderRadius: 3 },
   overlayOpts: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 4 },
+  commentBtn: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    width: 26,
+    height: 26,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    border: 0,
+    cursor: 'pointer',
+    color: '#fff',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 3,
+  },
   gearBtn: {
     position: 'absolute',
     bottom: 8,

@@ -13,7 +13,6 @@ import { Scrollbar } from '~/components/Scrollbar';
 import { useBlogLocales } from '~/routes/Blog/hooks/useBlogLocales';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { NotionEditor } from '~/routes/Blog/Editor/document/NotionEditor';
-import { EditorialCommentsPanel } from '~/routes/Blog/Editor/components/EditorialCommentsPanel';
 import { PostSettingsPanel } from '~/routes/Blog/Editor/components/PostSettingsPanel';
 import { postStatusTone } from '~/routes/Blog/utils/status';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -217,9 +216,6 @@ export const BlogPostEditor = () => {
             onRequestCover={() => setLibraryOpen(true)}
           />
         ) : null}
-        {draft ? (
-          <EditorialCommentsPanel open={commentsOpen} postId={draft.postId} onClose={() => setCommentsOpen(false)} />
-        ) : null}
         <Scrollbar style={styles.scroll}>
           <div style={styles.doc}>
             {loading && !draft ? (
@@ -264,6 +260,8 @@ export const BlogPostEditor = () => {
                   locale={locale}
                   mediaOpen={libraryOpen}
                   setMediaOpen={setLibraryOpen}
+                  commentsOpen={commentsOpen}
+                  setCommentsOpen={setCommentsOpen}
                   onSaved={() => refresh()}
                   onSaveStateChange={setSaveState}
                 />

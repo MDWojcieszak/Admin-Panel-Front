@@ -1,7 +1,7 @@
 import '@blocknote/core/fonts/inter.css';
 import '@blocknote/mantine/style.css';
 import '~/routes/Blog/Editor/document/editor.css';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { filterSuggestionItems } from '@blocknote/core';
 import { BlockNoteView } from '@blocknote/mantine';
 import { SuggestionMenuController, getDefaultReactSlashMenuItems, useCreateBlockNote } from '@blocknote/react';
@@ -19,6 +19,7 @@ import { useApi } from '~/hooks/useApi';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { BlogEditorBridge, BlogEditorBridgeContext } from '~/routes/Blog/Editor/document/bridge';
 import { BlogMediaPanel } from '~/routes/Blog/Editor/document/BlogMediaPanel';
+import { CommentsLayer } from '~/routes/Blog/Editor/components/CommentsLayer';
 import { BlogEditor, BlogPartialBlock, IMAGE_DND_TYPE, blogSchema, parseColumns } from '~/routes/Blog/Editor/document/schema';
 import { blocksToDocument, sectionsToBlocks } from '~/routes/Blog/Editor/document/serialize';
 import { mkUseStyles } from '~/utils/theme';
@@ -36,6 +37,8 @@ type NotionEditorProps = {
   locale: string;
   mediaOpen: boolean;
   setMediaOpen: (open: boolean) => void;
+  commentsOpen: boolean;
+  setCommentsOpen: (open: boolean) => void;
   onSaved?: (hasUnpublishedChanges: boolean) => void;
   onSaveStateChange?: (state: SaveState) => void;
 };
@@ -53,11 +56,21 @@ const slashItems = (editor: BlogEditor) => [
   { title: 'Divider', group: 'Blog', icon: <MdHorizontalRule size={18} />, onItemClick: () => insertBlock(editor, 'divider') },
 ];
 
-export const NotionEditor = ({ postId, locale, mediaOpen, setMediaOpen, onSaved, onSaveStateChange }: NotionEditorProps) => {
+export const NotionEditor = ({
+  postId,
+  locale,
+  mediaOpen,
+  setMediaOpen,
+  commentsOpen,
+  setCommentsOpen,
+  onSaved,
+  onSaveStateChange,
+}: NotionEditorProps) => {
   const styles = useStyles();
   const { blogDocumentApi } = useApi();
   const editor = useCreateBlockNote({ schema: blogSchema });
   const { draft } = useBlogDraft(postId, locale);
+  const [composeFor, setComposeFor] = useState<string | null>(null);
 
   const pickCbRef = useRef<((id: string) => void) | null>(null);
   const suppressRef = useRef(false);
@@ -71,6 +84,10 @@ export const NotionEditor = ({ postId, locale, mediaOpen, setMediaOpen, onSaved,
       pickImage: (cb) => {
         pickCbRef.current = cb;
         setMediaOpen(true);
+      },
+      addComment: (sectionId) => {
+        setCommentsOpen(true);
+        setComposeFor(sectionId || null);
       },
     }),
     [],
@@ -238,6 +255,13 @@ export const NotionEditor = ({ postId, locale, mediaOpen, setMediaOpen, onSaved,
             }}
           />
         </BlockNoteView>
+        <CommentsLayer
+          open={commentsOpen}
+          postId={postId}
+          editor={editor}
+          composeFor={composeFor}
+          onClearCompose={() => setComposeFor(null)}
+        />
       </div>
     </BlogEditorBridgeContext.Provider>
   );

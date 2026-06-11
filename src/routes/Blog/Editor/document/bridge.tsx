@@ -7,9 +7,11 @@ import { createContext, useContext } from 'react';
 export type BlogEditorBridge = {
   /** Open the blog-media panel; the callback fires with the chosen blog-media imageId. */
   pickImage: (onPick: (imageId: string) => void) => void;
+  /** Open the comments rail and start a note anchored to this block's section. */
+  addComment: (sectionId: string) => void;
 };
 
-const noop: BlogEditorBridge = { pickImage: () => undefined };
+const noop: BlogEditorBridge = { pickImage: () => undefined, addComment: () => undefined };
 
 export const BlogEditorBridgeContext = createContext<BlogEditorBridge>(noop);
 
