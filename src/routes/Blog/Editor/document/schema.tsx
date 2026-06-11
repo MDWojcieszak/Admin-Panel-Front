@@ -23,6 +23,7 @@ import {
   MdInfoOutline,
   MdLightbulb,
   MdPlace,
+  MdSettings,
   MdSwapHoriz,
   MdTextFields,
   MdWarningAmber,
@@ -180,8 +181,7 @@ const BlogImage = createReactBlockSpec(
     render: ({ block, editor }) => {
       const styles = useBlockStyles();
       const bridge = useBlogEditorBridge();
-      const [hovered, setHovered] = useState(false);
-      const [focused, setFocused] = useState(false);
+      const [open, setOpen] = useState(false);
       const { imageId, aspectRatio, caption, focalX, focalY, overlayText, overlayPosition, overlayTheme, overlayBackdrop } =
         block.props;
       const aspectCss = RATIOS.find((r) => r.value === aspectRatio)?.css;
@@ -208,17 +208,26 @@ const BlogImage = createReactBlockSpec(
         window.addEventListener('mousemove', move);
         window.addEventListener('mouseup', up);
       };
-      return (
-        <div
-          style={styles.mediaBlock}
-          contentEditable={false}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          onFocusCapture={() => setFocused(true)}
-          onBlurCapture={(e) => {
-            if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocused(false);
+      const gearBtn = (
+        <button
+          className='blog-img-gear'
+          style={{ ...styles.gearBtn, ...(open ? styles.gearBtnActive : null) }}
+          type='button'
+          title='Image settings'
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen((o) => !o);
           }}
         >
+          <MdSettings size={16} />
+        </button>
+      );
+      return (
+        <div style={styles.mediaBlock} contentEditable={false}>
           {imageId ? (
             aspectCss ? (
               <div
@@ -229,11 +238,13 @@ const BlogImage = createReactBlockSpec(
                 <MediaThumb imageId={imageId} res='cover' fit='cover' focalX={focalX} focalY={focalY} style={styles.fill} />
                 {overlay}
                 <div style={{ ...styles.focalDot, left: `${focalX * 100}%`, top: `${focalY * 100}%` }} />
+                {gearBtn}
               </div>
             ) : (
               <div style={{ ...styles.imageFrame, position: 'relative' }}>
                 <MediaThumb imageId={imageId} res='cover' fit='natural' style={styles.fill} />
                 {overlay}
+                {gearBtn}
               </div>
             )
           ) : (
@@ -242,7 +253,7 @@ const BlogImage = createReactBlockSpec(
             </button>
           )}
           <AnimatePresence>
-            {imageId && (hovered || focused) ? (
+            {imageId && open ? (
               <motion.div
                 style={styles.imgControls}
                 initial={{ opacity: 0, y: -8 }}
@@ -851,6 +862,24 @@ const useBlockStyles = mkUseStyles((t) => ({
   posGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, width: 56, flexShrink: 0 },
   posCell: { width: 16, height: 16, padding: 0, borderRadius: 3 },
   overlayOpts: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 4 },
+  gearBtn: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    width: 30,
+    height: 30,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    border: 0,
+    cursor: 'pointer',
+    color: '#fff',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  gearBtnActive: {
+    backgroundColor: t.colors.blue,
+  },
   imgControls: {
     display: 'flex',
     flexDirection: 'column',

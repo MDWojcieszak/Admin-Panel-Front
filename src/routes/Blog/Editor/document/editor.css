@@ -107,6 +107,17 @@
   color: #fff !important;
 }
 
+/* Image settings gear button. */
+.blog-img-gear {
+  opacity: 0.85;
+  transition:
+    opacity 0.12s ease,
+    background-color 0.12s ease;
+}
+.blog-img-gear:hover {
+  opacity: 1;
+}
+
 /* Media panel — upload zone + tile hover. */
 .blog-upload-zone {
   transition:
