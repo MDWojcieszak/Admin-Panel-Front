@@ -258,6 +258,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
                       <button
                         key={c.id}
                         style={{ ...styles.chip, ...(on ? styles.chipOn : null) }}
+                        onMouseDown={(e) => e.preventDefault()}
                         onClick={() => toggleCategory(c.id)}
                       >
                         {categoryLabel(c, p.locale)}
@@ -283,6 +284,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
                         <button
                           key={r}
                           style={{ ...styles.roleChip, ...(a.role === r ? styles.roleChipOn : null) }}
+                          onMouseDown={(e) => e.preventDefault()}
                           onClick={() => saveAuthors(authors.map((x) => (x.userId === a.userId ? { ...x, role: r } : x)))}
                         >
                           {titleCase(r)}
