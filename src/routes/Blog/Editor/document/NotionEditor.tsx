@@ -13,7 +13,7 @@ import {
   MdPermMedia,
   MdPhotoLibrary,
   MdPlace,
-  MdViewAgenda,
+  MdViewColumn,
   MdWarningAmber,
 } from 'react-icons/md';
 import { useApi } from '~/hooks/useApi';
@@ -44,7 +44,7 @@ export type SaveState = 'idle' | 'saving' | 'saved';
 const slashItems = (editor: BlogEditor) => [
   { title: 'Image', group: 'Blog', icon: <MdImage size={18} />, onItemClick: () => insertBlock(editor, 'blogImage') },
   { title: 'Gallery', group: 'Blog', icon: <MdPhotoLibrary size={18} />, onItemClick: () => insertBlock(editor, 'blogGallery') },
-  { title: 'Image + text', group: 'Blog', icon: <MdViewAgenda size={18} />, onItemClick: () => insertBlock(editor, 'blogMediaText') },
+  { title: 'Columns', group: 'Blog', icon: <MdViewColumn size={18} />, onItemClick: () => insertBlock(editor, 'blogColumns') },
   { title: 'Callout', group: 'Blog', icon: <MdWarningAmber size={18} />, onItemClick: () => insertBlock(editor, 'blogCallout') },
   { title: 'Embed', group: 'Blog', icon: <MdLink size={18} />, onItemClick: () => insertBlock(editor, 'blogEmbed') },
   { title: 'Map', group: 'Blog', icon: <MdMap size={18} />, onItemClick: () => insertBlock(editor, 'blogMap') },

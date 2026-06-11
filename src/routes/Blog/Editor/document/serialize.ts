@@ -5,7 +5,50 @@ import {
   DocumentBlockType,
   ResolvedSectionResponse,
 } from '~/api/api';
-import { BlogBlock, BlogEditor, BlogPartialBlock, CUSTOM_BLOCK_TYPES } from '~/routes/Blog/Editor/document/schema';
+import {
+  BlogBlock,
+  BlogEditor,
+  BlogPartialBlock,
+  ColumnDef,
+  CUSTOM_BLOCK_TYPES,
+  parseColumns,
+} from '~/routes/Blog/Editor/document/schema';
+
+// ---- columns <-> grid HTML (stored inside a prose block; no backend column type) ----
+
+const columnsToHTML = (cols: ColumnDef[]): string => {
+  const inner = cols
+    .map((c) =>
+      c.type === 'image'
+        ? `<div data-col-type="image" data-image-id="${c.imageId ?? ''}"></div>`
+        : `<div data-col-type="text">${c.html ?? ''}</div>`,
+    )
+    .join('');
+  return `<div data-blog-columns="${cols.length}" style="display:grid;grid-template-columns:repeat(${cols.length},1fr);gap:16px">${inner}</div>`;
+};
+
+const parseColumnsFromHTML = (body: string): ColumnDef[] | null => {
+  if (!body || !body.includes('data-blog-columns')) return null;
+  try {
+    const doc = new DOMParser().parseFromString(body, 'text/html');
+    const root = doc.querySelector('[data-blog-columns]');
+    if (!root) return null;
+    const cols: ColumnDef[] = [];
+    root.querySelectorAll(':scope > [data-col-type]').forEach((el) => {
+      if (el.getAttribute('data-col-type') === 'image') {
+        cols.push({ type: 'image', imageId: el.getAttribute('data-image-id') ?? '' });
+      } else {
+        cols.push({ type: 'text', html: el.innerHTML });
+      }
+    });
+    return cols.length ? cols : null;
+  } catch {
+    return null;
+  }
+};
+
+const columnIsEmpty = (c: ColumnDef): boolean =>
+  c.type === 'image' ? !c.imageId : !(c.html ?? '').replace(/<[^>]*>/g, '').trim();
 
 const clampLevel = (lvl?: number | null): 1 | 2 | 3 => (lvl === 1 ? 1 : lvl === 3 ? 3 : 2);
 const undef = (v?: string | null): string | undefined => v || undefined;
@@ -37,10 +80,17 @@ export const sectionsToBlocks = async (
   for (const s of ordered) {
     switch (s.type) {
       case BlogSectionType.Paragraph: {
+        const body = s.body || '';
+        // A prose section may carry an encoded columns layout — rebuild it as a columns block.
+        const cols = parseColumnsFromHTML(body);
+        if (cols) {
+          blocks.push({ type: 'blogColumns', props: { sectionId: s.id, columns: JSON.stringify(cols) } });
+          break;
+        }
         // Prose is stored as HTML to preserve inline formatting (bold/italic/colour/links).
-        const parsed = s.body?.trim().startsWith('<')
-          ? await editor.tryParseHTMLToBlocks(s.body)
-          : await editor.tryParseMarkdownToBlocks(s.body || '');
+        const parsed = body.trim().startsWith('<')
+          ? await editor.tryParseHTMLToBlocks(body)
+          : await editor.tryParseMarkdownToBlocks(body);
         blocks.push(...(parsed as BlogPartialBlock[]));
         break;
       }
@@ -95,19 +145,13 @@ export const sectionsToBlocks = async (
         });
         break;
       case BlogSectionType.MediaText: {
+        // Legacy image+text section → two-column block (image | text).
         const img = s.images[0];
-        blocks.push({
-          type: 'blogMediaText',
-          props: {
-            sectionId: s.id,
-            imageId: img?.imageId ?? '',
-            mediaPosition: s.mediaPosition ?? '',
-            mediaSplit: s.mediaSplit ?? '',
-            mobileStackOrder: s.mobileStackOrder ?? '',
-            caption: img?.caption ?? '',
-          },
-          content: s.body || '',
-        });
+        const cols: ColumnDef[] = [
+          { type: 'image', imageId: img?.imageId ?? '' },
+          { type: 'text', html: s.body ?? '' },
+        ];
+        blocks.push({ type: 'blogColumns', props: { sectionId: s.id, columns: JSON.stringify(cols) } });
         break;
       }
       case BlogSectionType.Embed:
@@ -174,18 +218,11 @@ const customToDoc = (b: BlogBlock): DocumentBlockDto | null => {
         galleryLayout: undef(b.props.galleryLayout) as DocumentBlockDto['galleryLayout'],
       };
     }
-    case 'blogMediaText':
-      if (!b.props.imageId) return null;
-      return {
-        ...ref(b.props.sectionId, b.id),
-        type: DocumentBlockType.MediaText,
-        imageId: b.props.imageId,
-        markdown: inlineToText(b.content),
-        mediaPosition: undef(b.props.mediaPosition) as DocumentBlockDto['mediaPosition'],
-        mediaSplit: undef(b.props.mediaSplit) as DocumentBlockDto['mediaSplit'],
-        mobileStackOrder: undef(b.props.mobileStackOrder) as DocumentBlockDto['mobileStackOrder'],
-        caption: undef(b.props.caption),
-      };
+    case 'blogColumns': {
+      const cols = parseColumns(b.props.columns).filter((c) => !columnIsEmpty(c));
+      if (!cols.length) return null;
+      return { ...ref(b.props.sectionId, b.id), type: DocumentBlockType.Prose, markdown: columnsToHTML(cols) };
+    }
     case 'blogEmbed':
       if (!b.props.url) return null;
       return {

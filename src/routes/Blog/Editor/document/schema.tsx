@@ -1,5 +1,16 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { MdCheckCircle, MdClose, MdImage, MdInfoOutline, MdLightbulb, MdPlace, MdWarningAmber } from 'react-icons/md';
+import { ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  MdAdd,
+  MdCheckCircle,
+  MdClose,
+  MdDelete,
+  MdImage,
+  MdInfoOutline,
+  MdLightbulb,
+  MdPlace,
+  MdTextFields,
+  MdWarningAmber,
+} from 'react-icons/md';
 import { Block, BlockNoteEditor, BlockNoteSchema, PartialBlock, defaultBlockSpecs } from '@blocknote/core';
 import { createReactBlockSpec } from '@blocknote/react';
 import { CalloutVariant, EmbedProvider, PoiAdminResponse } from '~/api/api';
@@ -147,40 +158,124 @@ const BlogGallery = createReactBlockSpec(
   },
 )();
 
-const BlogMediaText = createReactBlockSpec(
+// ---- columns block: N panes (2–4), each image or text ----------------------
+
+export type ColumnDef = { type: 'text' | 'image'; imageId?: string; html?: string };
+
+export const parseColumns = (raw: string): ColumnDef[] => {
+  try {
+    const v = JSON.parse(raw || '[]');
+    if (Array.isArray(v) && v.length) {
+      return v.map((c) => ({
+        type: c?.type === 'image' ? 'image' : 'text',
+        imageId: typeof c?.imageId === 'string' ? c.imageId : '',
+        html: typeof c?.html === 'string' ? c.html : '',
+      }));
+    }
+  } catch {
+    /* ignore */
+  }
+  return [
+    { type: 'text', html: '' },
+    { type: 'image', imageId: '' },
+  ];
+};
+
+/** contentEditable text cell — native Ctrl+B / Ctrl+I; HTML persisted on blur. */
+const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: string) => void }) => {
+  const styles = useBlockStyles();
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.innerHTML = html || '';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <div
+      ref={ref}
+      contentEditable
+      suppressContentEditableWarning
+      style={styles.columnText}
+      onBlur={() => onChange(ref.current?.innerHTML ?? '')}
+    />
+  );
+};
+
+const BlogColumns = createReactBlockSpec(
   {
-    type: 'blogMediaText',
+    type: 'blogColumns',
     propSchema: {
       sectionId: { default: '' },
-      imageId: { default: '' },
-      mediaPosition: { default: '' },
-      mediaSplit: { default: '' },
-      mobileStackOrder: { default: '' },
-      caption: { default: '' },
+      columns: { default: '[{"type":"text","html":""},{"type":"image","imageId":""}]' },
     },
-    content: 'inline',
+    content: 'none',
   },
   {
-    render: ({ block, editor, contentRef }) => {
+    render: ({ block, editor }) => {
       const styles = useBlockStyles();
       const bridge = useBlogEditorBridge();
-      const { imageId } = block.props;
+      const cols = parseColumns(block.props.columns);
+      const save = (next: ColumnDef[]) => editor.updateBlock(block, { props: { columns: JSON.stringify(next) } });
+      const update = (i: number, patch: Partial<ColumnDef>) =>
+        save(cols.map((c, idx) => (idx === i ? { ...c, ...patch } : c)));
       return (
-        <div style={styles.mediaTextBlock}>
-          <div style={styles.mediaTextMedia} contentEditable={false}>
-            {imageId ? (
-              <MediaThumb imageId={imageId} style={styles.image} />
-            ) : (
-              <button
-                style={styles.emptyPick}
-                type='button'
-                onClick={() => bridge.pickImage((id) => editor.updateBlock(block, { props: { imageId: id } }))}
-              >
-                <MdImage size={18} /> Image
-              </button>
-            )}
+        <div style={styles.columnsBlock}>
+          <div style={{ ...styles.columnsGrid, gridTemplateColumns: `repeat(${cols.length}, 1fr)` }}>
+            {cols.map((col, i) => (
+              <div key={i} style={styles.column}>
+                <div style={styles.columnHead} contentEditable={false}>
+                  <button
+                    style={styles.columnTypeBtn}
+                    type='button'
+                    title={col.type === 'text' ? 'Switch to image' : 'Switch to text'}
+                    onClick={() => update(i, col.type === 'text' ? { type: 'image' } : { type: 'text' })}
+                  >
+                    {col.type === 'text' ? <MdImage size={14} /> : <MdTextFields size={14} />}
+                  </button>
+                  {cols.length > 1 ? (
+                    <button
+                      style={styles.columnRemove}
+                      type='button'
+                      title='Remove column'
+                      onClick={() => save(cols.filter((_, idx) => idx !== i))}
+                    >
+                      <MdDelete size={14} />
+                    </button>
+                  ) : null}
+                </div>
+                {col.type === 'image' ? (
+                  col.imageId ? (
+                    <div style={styles.columnImageWrap} contentEditable={false}>
+                      <MediaThumb imageId={col.imageId} style={styles.fill} />
+                      <button style={styles.tileRemove} type='button' onClick={() => update(i, { imageId: '' })}>
+                        <MdClose size={13} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      style={styles.columnPick}
+                      type='button'
+                      contentEditable={false}
+                      onClick={() => bridge.pickImage((id) => update(i, { imageId: id }))}
+                    >
+                      <MdImage size={18} /> Pick
+                    </button>
+                  )
+                ) : (
+                  <ColumnTextEditor html={col.html ?? ''} onChange={(h) => update(i, { html: h })} />
+                )}
+              </div>
+            ))}
           </div>
-          <div style={styles.mediaTextBody} ref={contentRef} />
+          {cols.length < 4 ? (
+            <button
+              style={styles.columnsAdd}
+              type='button'
+              contentEditable={false}
+              onClick={() => save([...cols, { type: 'text', html: '' }])}
+            >
+              <MdAdd size={16} /> Add column
+            </button>
+          ) : null}
         </div>
       );
     },
@@ -324,7 +419,7 @@ export const blogSchema = BlockNoteSchema.create({
     divider: Divider,
     blogImage: BlogImage,
     blogGallery: BlogGallery,
-    blogMediaText: BlogMediaText,
+    blogColumns: BlogColumns,
     blogEmbed: BlogEmbed,
     blogMap: BlogMap,
     blogPlace: BlogPlace,
@@ -343,7 +438,7 @@ export const CUSTOM_BLOCK_TYPES = new Set([
   'divider',
   'blogImage',
   'blogGallery',
-  'blogMediaText',
+  'blogColumns',
   'blogEmbed',
   'blogMap',
   'blogPlace',
@@ -429,9 +524,96 @@ const useBlockStyles = mkUseStyles((t) => ({
     color: t.colors.white,
     cursor: 'pointer',
   },
-  mediaTextBlock: { flexDirection: 'row', gap: t.spacing.m, alignItems: 'flex-start' },
-  mediaTextMedia: { width: '40%', minWidth: 0 },
-  mediaTextBody: { flex: 1, minWidth: 0 },
+  columnsBlock: { display: 'flex', flexDirection: 'column', gap: t.spacing.s, width: '100%' },
+  columnsGrid: { display: 'grid', gap: t.spacing.m, width: '100%' },
+  column: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: t.spacing.xs,
+    minWidth: 0,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.35),
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.05)}`,
+  },
+  columnHead: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 2,
+  },
+  columnTypeBtn: {
+    width: 24,
+    height: 24,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: t.borderRadius.small,
+    border: 0,
+    background: 'transparent',
+    color: t.colors.dark05,
+    cursor: 'pointer',
+  },
+  columnRemove: {
+    width: 24,
+    height: 24,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: t.borderRadius.small,
+    border: 0,
+    background: 'transparent',
+    color: t.colors.red,
+    cursor: 'pointer',
+  },
+  columnImageWrap: {
+    display: 'block',
+    position: 'relative',
+    width: '100%',
+    borderRadius: t.borderRadius.default,
+    overflow: 'hidden',
+  },
+  columnPick: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: t.spacing.s,
+    height: 100,
+    borderRadius: t.borderRadius.default,
+    border: `1px dashed ${t.colors.white + t.colorOpacity(0.2)}`,
+    background: 'transparent',
+    color: t.colors.white,
+    cursor: 'pointer',
+  },
+  columnText: {
+    display: 'block',
+    minHeight: 80,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.4),
+    color: t.colors.white,
+    outline: 'none',
+    fontSize: 14,
+    lineHeight: 1.5,
+  },
+  columnsAdd: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: t.spacing.xs,
+    alignSelf: 'flex-start',
+    height: 32,
+    padding: `0 ${t.spacing.m}px`,
+    borderRadius: t.borderRadius.default,
+    border: `1px dashed ${t.colors.white + t.colorOpacity(0.2)}`,
+    background: 'transparent',
+    color: t.colors.white,
+    cursor: 'pointer',
+    fontSize: 13,
+  },
   embedBlock: { flexDirection: 'row', gap: t.spacing.s, alignItems: 'center' },
   embedSelect: {
     height: 36,
