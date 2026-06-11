@@ -76,6 +76,37 @@
   user-select: none;
 }
 
+/* Aspect-ratio pills — own all states so Mantine's inherited button styling can't leave a
+   stuck grey on previously-selected ones (and to restore a clean hover). */
+.blog-ratio {
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease;
+}
+.blog-ratio:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+}
+.blog-ratio:focus,
+.blog-ratio:focus-visible,
+.blog-ratio:active {
+  outline: none !important;
+}
+.blog-ratio.is-active {
+  background-color: rgba(100, 160, 255, 0.25) !important;
+  border-color: rgba(100, 160, 255, 0.45) !important;
+  color: #fff !important;
+}
+
 /* Media panel — upload zone + tile hover. */
 .blog-upload-zone {
   transition:

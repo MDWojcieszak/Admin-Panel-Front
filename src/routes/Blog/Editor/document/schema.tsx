@@ -151,10 +151,7 @@ const BlogImage = createReactBlockSpec(
                 <button
                   key={r.value}
                   type='button'
-                  style={{
-                    ...styles.ratioBtn,
-                    ...((aspectRatio || BlogAspectRatio.Original) === r.value ? styles.ratioActive : null),
-                  }}
+                  className={`blog-ratio${(aspectRatio || BlogAspectRatio.Original) === r.value ? ' is-active' : ''}`}
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => editor.updateBlock(block, { props: { aspectRatio: r.value } })}
                 >
