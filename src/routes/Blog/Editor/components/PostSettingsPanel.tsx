@@ -6,6 +6,7 @@ import { BlogAccessTier, BlogAuthorRole, CategoryKind, PostDraftResponse, UserRe
 import { Input } from '~/components/Input';
 import { Scrollbar } from '~/components/Scrollbar';
 import { Select } from '~/components/Select';
+import { TextArea } from '~/components/TextArea';
 import { useApi } from '~/hooks/useApi';
 import { categoryLabel, useBlogCategories } from '~/routes/Blog/hooks/useBlogCategories';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
@@ -240,7 +241,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
             </div>
 
             {/* SEO keywords */}
-            <Input
+            <TextArea
               label={`SEO keywords (${p.locale.toUpperCase()})`}
               name='seoKeywords'
               description='Comma-separated'
