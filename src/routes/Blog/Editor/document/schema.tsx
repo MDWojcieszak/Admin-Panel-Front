@@ -4,6 +4,12 @@ import {
   MdCheckCircle,
   MdClose,
   MdDelete,
+  MdFormatBold,
+  MdFormatColorReset,
+  MdFormatItalic,
+  MdFormatListBulleted,
+  MdFormatListNumbered,
+  MdFormatQuote,
   MdImage,
   MdInfoOutline,
   MdLightbulb,
@@ -12,6 +18,7 @@ import {
   MdTextFields,
   MdWarningAmber,
 } from 'react-icons/md';
+import { LuHeading1, LuHeading2, LuHeading3, LuPilcrow } from 'react-icons/lu';
 import { Block, BlockNoteEditor, BlockNoteSchema, PartialBlock, defaultBlockSpecs } from '@blocknote/core';
 import { createReactBlockSpec } from '@blocknote/react';
 import { CalloutVariant, EmbedProvider, PoiAdminResponse } from '~/api/api';
@@ -183,11 +190,12 @@ export const parseColumns = (raw: string): ColumnDef[] => {
   ];
 };
 
-/** contentEditable text cell with a small toolbar (bold / italic / colour). */
+/** contentEditable text cell with an icon toolbar that appears while editing. */
 const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: string) => void }) => {
   const styles = useBlockStyles();
   const theme = useTheme();
   const ref = useRef<HTMLDivElement>(null);
+  const [focused, setFocused] = useState(false);
   useEffect(() => {
     if (ref.current) ref.current.innerHTML = html || '<p><br></p>';
     try {
@@ -203,43 +211,61 @@ const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: s
     document.execCommand(cmd, false, value);
     onChange(ref.current?.innerHTML ?? '');
   };
-  const colors = [theme.colors.red, theme.colors.blue, theme.colors.lightGreen, theme.colors.yellow];
-  const fmt = (label: ReactNode, cmd: string, value?: string, title?: string) => (
-    <button style={styles.tbBtn} type='button' title={title} onMouseDown={(e) => e.preventDefault()} onClick={() => exec(cmd, value)}>
-      {label}
+  const btn = (key: string, icon: ReactNode, title: string, cmd: string, value?: string) => (
+    <button
+      key={key}
+      className='blog-tb-btn'
+      style={styles.tbBtn}
+      type='button'
+      title={title}
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={() => exec(cmd, value)}
+    >
+      {icon}
     </button>
   );
+  const colors = [theme.colors.red, theme.colors.blue, theme.colors.lightGreen, theme.colors.yellow];
   return (
     <div style={styles.columnTextWrap}>
-      <div style={styles.columnToolbar} contentEditable={false}>
-        {fmt('H1', 'formatBlock', '<h1>', 'Heading 1')}
-        {fmt('H2', 'formatBlock', '<h2>', 'Heading 2')}
-        {fmt('H3', 'formatBlock', '<h3>', 'Heading 3')}
-        {fmt('¶', 'formatBlock', '<p>', 'Normal text')}
-        {fmt('•', 'insertUnorderedList', undefined, 'Bullet list')}
-        {fmt('1.', 'insertOrderedList', undefined, 'Numbered list')}
-        {fmt('❝', 'formatBlock', '<blockquote>', 'Quote')}
-        {fmt(<b>B</b>, 'bold', undefined, 'Bold')}
-        {fmt(<i>I</i>, 'italic', undefined, 'Italic')}
-        {colors.map((c) => (
-          <button
-            key={c}
-            style={{ ...styles.tbColor, backgroundColor: c }}
-            type='button'
-            title='Colour'
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => exec('foreColor', c)}
-          />
-        ))}
-        {fmt('×', 'foreColor', theme.colors.white, 'Reset colour')}
-      </div>
+      {focused ? (
+        <div style={styles.columnToolbar} contentEditable={false}>
+          {btn('p', <LuPilcrow size={15} />, 'Text', 'formatBlock', '<p>')}
+          {btn('h1', <LuHeading1 size={16} />, 'Heading 1', 'formatBlock', '<h1>')}
+          {btn('h2', <LuHeading2 size={16} />, 'Heading 2', 'formatBlock', '<h2>')}
+          {btn('h3', <LuHeading3 size={16} />, 'Heading 3', 'formatBlock', '<h3>')}
+          <span style={styles.tbDivider} />
+          {btn('b', <MdFormatBold size={17} />, 'Bold', 'bold')}
+          {btn('i', <MdFormatItalic size={17} />, 'Italic', 'italic')}
+          <span style={styles.tbDivider} />
+          {btn('ul', <MdFormatListBulleted size={17} />, 'Bullet list', 'insertUnorderedList')}
+          {btn('ol', <MdFormatListNumbered size={17} />, 'Numbered list', 'insertOrderedList')}
+          {btn('q', <MdFormatQuote size={17} />, 'Quote', 'formatBlock', '<blockquote>')}
+          <span style={styles.tbDivider} />
+          {colors.map((c) => (
+            <button
+              key={c}
+              className='blog-tb-color'
+              style={{ ...styles.tbColor, backgroundColor: c }}
+              type='button'
+              title='Colour'
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => exec('foreColor', c)}
+            />
+          ))}
+          {btn('reset', <MdFormatColorReset size={16} />, 'Reset colour', 'foreColor', theme.colors.white)}
+        </div>
+      ) : null}
       <div
         ref={ref}
         className='blog-col-text'
         contentEditable
         suppressContentEditableWarning
         style={styles.columnText}
-        onBlur={() => onChange(ref.current?.innerHTML ?? '')}
+        onFocus={() => setFocused(true)}
+        onBlur={() => {
+          onChange(ref.current?.innerHTML ?? '');
+          setFocused(false);
+        }}
       />
     </div>
   );
@@ -688,17 +714,23 @@ const useBlockStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.7),
   },
   tbBtn: {
-    width: 24,
-    height: 24,
+    width: 28,
+    height: 28,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: t.borderRadius.small,
-    border: `1px solid ${t.colors.white + t.colorOpacity(0.1)}`,
+    border: 0,
     background: 'transparent',
-    color: t.colors.white,
+    color: t.colors.dark05,
     cursor: 'pointer',
-    fontSize: 13,
+  },
+  tbDivider: {
+    width: 1,
+    height: 18,
+    flexShrink: 0,
+    backgroundColor: t.colors.white + t.colorOpacity(0.12),
+    margin: '0 3px',
   },
   tbColor: {
     width: 18,

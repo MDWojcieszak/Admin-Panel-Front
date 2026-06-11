@@ -70,6 +70,23 @@
   outline: none;
 }
 
+/* Column text toolbar buttons. */
+.blog-tb-btn {
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+.blog-tb-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.blog-tb-color {
+  transition: transform 0.1s ease;
+}
+.blog-tb-color:hover {
+  transform: scale(1.18);
+}
+
 /* Column resize handle — faint arrows that brighten on hover. */
 .blog-col-resize {
   color: rgba(255, 255, 255, 0.22);
