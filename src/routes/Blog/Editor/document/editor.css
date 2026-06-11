@@ -62,6 +62,19 @@
   color: rgba(255, 255, 255, 0.75);
 }
 
+/* Column resize handle — faint arrows that brighten on hover. */
+.blog-col-resize {
+  color: rgba(255, 255, 255, 0.22);
+  transition:
+    color 0.12s ease,
+    background-color 0.12s ease;
+}
+.blog-col-resize:hover {
+  color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
 /*
  * The app has a global `div { display: flex; flex-direction: column }` (src/index.css).
  * It leaks into BlockNote and breaks list markers / checkbox rows. Neutralise it INSIDE the

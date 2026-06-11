@@ -8,6 +8,7 @@ import {
   MdInfoOutline,
   MdLightbulb,
   MdPlace,
+  MdSwapHoriz,
   MdTextFields,
   MdWarningAmber,
 } from 'react-icons/md';
@@ -88,7 +89,7 @@ const BlogImage = createReactBlockSpec(
       return (
         <div style={styles.mediaBlock} contentEditable={false}>
           {imageId ? (
-            <MediaThumb imageId={imageId} style={styles.image} />
+            <MediaThumb imageId={imageId} res='cover' style={styles.image} />
           ) : (
             <button
               style={styles.emptyPick}
@@ -188,10 +189,16 @@ const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: s
   const theme = useTheme();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (ref.current) ref.current.innerHTML = html || '';
+    if (ref.current) ref.current.innerHTML = html || '<p><br></p>';
+    try {
+      document.execCommand('defaultParagraphSeparator', false, 'p');
+    } catch {
+      /* not supported */
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const exec = (cmd: string, value?: string) => {
+    ref.current?.focus();
     document.execCommand('styleWithCSS', false, 'true');
     document.execCommand(cmd, false, value);
     onChange(ref.current?.innerHTML ?? '');
@@ -310,7 +317,7 @@ const BlogColumns = createReactBlockSpec(
                   {col.type === 'image' ? (
                     col.imageId ? (
                       <div style={styles.columnImageWrap} contentEditable={false}>
-                        <MediaThumb imageId={col.imageId} style={styles.fill} />
+                        <MediaThumb imageId={col.imageId} res='cover' style={styles.fill} />
                         <button style={styles.tileRemove} type='button' onClick={() => update(i, { imageId: '' })}>
                           <MdClose size={13} />
                         </button>
@@ -330,7 +337,14 @@ const BlogColumns = createReactBlockSpec(
                   )}
                 </div>
                 {i < cols.length - 1 ? (
-                  <div style={styles.resizeHandle} contentEditable={false} onMouseDown={(e) => startResize(i, e)} />
+                  <div
+                    className='blog-col-resize'
+                    style={styles.resizeHandle}
+                    contentEditable={false}
+                    onMouseDown={(e) => startResize(i, e)}
+                  >
+                    <MdSwapHoriz size={14} />
+                  </div>
                 ) : null}
               </Fragment>
             ))}
@@ -596,24 +610,20 @@ const useBlockStyles = mkUseStyles((t) => ({
   columnsBlock: { display: 'flex', flexDirection: 'column', gap: t.spacing.s, width: '100%' },
   columnsRow: { display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'stretch' },
   resizeHandle: {
-    width: 10,
+    width: 18,
     flexShrink: 0,
-    cursor: 'col-resize',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     alignSelf: 'stretch',
-    backgroundImage: `linear-gradient(${t.colors.white + t.colorOpacity(0.12)}, ${t.colors.white + t.colorOpacity(0.12)})`,
-    backgroundSize: '2px 100%',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
+    cursor: 'col-resize',
   },
   column: {
     display: 'flex',
     flexDirection: 'column',
     gap: t.spacing.xs,
     minWidth: 0,
-    padding: t.spacing.s,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.35),
-    border: `1px solid ${t.colors.white + t.colorOpacity(0.05)}`,
+    padding: t.spacing.xs,
   },
   columnHead: {
     display: 'flex',
@@ -673,6 +683,9 @@ const useBlockStyles = mkUseStyles((t) => ({
     flexWrap: 'wrap',
     alignItems: 'center',
     gap: 3,
+    padding: 4,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.7),
   },
   tbBtn: {
     width: 24,
@@ -698,9 +711,7 @@ const useBlockStyles = mkUseStyles((t) => ({
   columnText: {
     display: 'block',
     minHeight: 80,
-    padding: t.spacing.s,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.4),
+    padding: `${t.spacing.xs}px 0`,
     color: t.colors.white,
     outline: 'none',
     fontSize: 14,
