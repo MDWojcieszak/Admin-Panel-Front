@@ -62,14 +62,12 @@
   color: rgba(255, 255, 255, 0.75);
 }
 
-/* Tone down BlockNote's harsh 4px blue node-selection outline on our custom blocks. */
+/* Drop BlockNote's harsh 4px blue node-selection outline on our custom blocks entirely. */
 .bn-block-content[data-content-type^='blog'].ProseMirror-selectednode > *,
 .ProseMirror-selectednode > .bn-block-content[data-content-type^='blog'] > *,
 .bn-block-content[data-content-type='divider'].ProseMirror-selectednode > *,
 .ProseMirror-selectednode > .bn-block-content[data-content-type='divider'] > * {
-  outline: 1.5px solid rgba(255, 255, 255, 0.18);
-  outline-offset: 3px;
-  border-radius: 8px;
+  outline: none;
 }
 
 /* Column resize handle — faint arrows that brighten on hover. */
