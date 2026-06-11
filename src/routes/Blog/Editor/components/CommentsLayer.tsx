@@ -274,7 +274,7 @@ const Composer = ({ value, onChange, onSubmit, onCancel, placeholder, autoFocus 
 const useStyles = mkUseStyles((t) => ({
   layer: {
     position: 'fixed',
-    right: 0,
+    right: 16,
     top: 60,
     bottom: 0,
     width: COMMENTS_LAYER_WIDTH,
@@ -304,7 +304,6 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray04,
     border: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
     pointerEvents: 'auto',
-    transition: 'top 0.15s ease',
   },
   comment: { gap: 3, paddingBottom: t.spacing.xs },
   commentHead: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: t.spacing.s },
