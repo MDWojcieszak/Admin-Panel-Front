@@ -70,6 +70,12 @@
   outline: none;
 }
 
+/* Control buttons inside custom blocks shouldn't be text-selectable (avoids the stray selection
+   highlight when clicking e.g. the aspect-ratio buttons inside the contentEditable editor). */
+.bn-block-content[data-content-type^='blog'] button {
+  user-select: none;
+}
+
 /* Media panel — upload zone + tile hover. */
 .blog-upload-zone {
   transition:

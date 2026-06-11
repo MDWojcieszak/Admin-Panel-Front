@@ -155,12 +155,13 @@ const BlogImage = createReactBlockSpec(
                     ...styles.ratioBtn,
                     ...((aspectRatio || BlogAspectRatio.Original) === r.value ? styles.ratioActive : null),
                   }}
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => editor.updateBlock(block, { props: { aspectRatio: r.value } })}
                 >
                   {r.label}
                 </button>
               ))}
-              <button style={styles.barBtn} type='button' onClick={() => bridge.pickImage(setImage)}>
+              <button style={styles.barBtn} type='button' onMouseDown={(e) => e.preventDefault()} onClick={() => bridge.pickImage(setImage)}>
                 Replace
               </button>
             </div>
