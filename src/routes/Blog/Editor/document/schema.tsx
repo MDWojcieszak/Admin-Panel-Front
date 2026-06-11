@@ -532,9 +532,23 @@ const BlogCallout = createReactBlockSpec(
   },
 )();
 
+// Drop BlockNote's native media blocks so a dropped/pasted file can't become a native image/embed —
+// our blogImage/blogGallery/blogColumns own all media (stored as blog-media, not external URLs).
+const {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  image: _img,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  video: _vid,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  audio: _aud,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  file: _file,
+  ...defaultsNoMedia
+} = defaultBlockSpecs;
+
 export const blogSchema = BlockNoteSchema.create({
   blockSpecs: {
-    ...defaultBlockSpecs,
+    ...defaultsNoMedia,
     divider: Divider,
     blogImage: BlogImage,
     blogGallery: BlogGallery,

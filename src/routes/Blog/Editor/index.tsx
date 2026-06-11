@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MdArrowBack, MdChatBubbleOutline, MdCheckCircle, MdCloudUpload, MdTune } from 'react-icons/md';
+import { MdArrowBack, MdChatBubbleOutline, MdCheckCircle, MdCloudUpload, MdPermMedia, MdTune } from 'react-icons/md';
 import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
 import { Badge } from '~/components/Badge';
@@ -30,6 +30,7 @@ export const BlogPostEditor = () => {
   const [mediaOpen, setMediaOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [coverPickMode, setCoverPickMode] = useState(false);
 
   const { locales, defaultLocale } = useBlogLocales();
@@ -144,6 +145,13 @@ export const BlogPostEditor = () => {
             ) : null}
           </span>
           <button
+            style={{ ...styles.iconBtn, color: libraryOpen ? theme.colors.blue : theme.colors.white }}
+            title='Media library'
+            onClick={() => setLibraryOpen((o) => !o)}
+          >
+            <MdPermMedia size={18} />
+          </button>
+          <button
             style={{ ...styles.iconBtn, color: commentsOpen ? theme.colors.blue : theme.colors.white }}
             title='Editorial notes'
             onClick={() => {
@@ -237,6 +245,8 @@ export const BlogPostEditor = () => {
                 <NotionEditor
                   postId={draft.postId}
                   locale={locale}
+                  mediaOpen={libraryOpen}
+                  setMediaOpen={setLibraryOpen}
                   onSaved={() => refresh()}
                   onSaveStateChange={setSaveState}
                 />

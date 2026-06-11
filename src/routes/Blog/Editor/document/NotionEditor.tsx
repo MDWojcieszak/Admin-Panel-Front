@@ -1,7 +1,7 @@
 import '@blocknote/core/fonts/inter.css';
 import '@blocknote/mantine/style.css';
 import '~/routes/Blog/Editor/document/editor.css';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { filterSuggestionItems } from '@blocknote/core';
 import { BlockNoteView } from '@blocknote/mantine';
 import { SuggestionMenuController, getDefaultReactSlashMenuItems, useCreateBlockNote } from '@blocknote/react';
@@ -10,7 +10,6 @@ import {
   MdImage,
   MdLink,
   MdMap,
-  MdPermMedia,
   MdPhotoLibrary,
   MdPlace,
   MdViewColumn,
@@ -35,6 +34,8 @@ const insertBlock = (editor: BlogEditor, type: BlogPartialBlock['type']) => {
 type NotionEditorProps = {
   postId: string;
   locale: string;
+  mediaOpen: boolean;
+  setMediaOpen: (open: boolean) => void;
   onSaved?: (hasUnpublishedChanges: boolean) => void;
   onSaveStateChange?: (state: SaveState) => void;
 };
@@ -52,13 +53,12 @@ const slashItems = (editor: BlogEditor) => [
   { title: 'Divider', group: 'Blog', icon: <MdHorizontalRule size={18} />, onItemClick: () => insertBlock(editor, 'divider') },
 ];
 
-export const NotionEditor = ({ postId, locale, onSaved, onSaveStateChange }: NotionEditorProps) => {
+export const NotionEditor = ({ postId, locale, mediaOpen, setMediaOpen, onSaved, onSaveStateChange }: NotionEditorProps) => {
   const styles = useStyles();
   const { blogDocumentApi } = useApi();
   const editor = useCreateBlockNote({ schema: blogSchema });
   const { draft } = useBlogDraft(postId, locale);
 
-  const [mediaOpen, setMediaOpen] = useState(false);
   const pickCbRef = useRef<((id: string) => void) | null>(null);
   const suppressRef = useRef(false);
   const savingRef = useRef(false);
@@ -144,18 +144,6 @@ export const NotionEditor = ({ postId, locale, onSaved, onSaveStateChange }: Not
   return (
     <BlogEditorBridgeContext.Provider value={bridge}>
       <div style={styles.wrap}>
-        {!mediaOpen ? (
-          <button
-            style={styles.libraryToggle}
-            title='Media library'
-            onClick={() => {
-              pickCbRef.current = null;
-              setMediaOpen(true);
-            }}
-          >
-            <MdPermMedia size={20} />
-          </button>
-        ) : null}
         <BlogMediaPanel
           open={mediaOpen}
           pickMode={!!pickCbRef.current}
@@ -201,28 +189,11 @@ export const NotionEditor = ({ postId, locale, onSaved, onSaveStateChange }: Not
   );
 };
 
-const useStyles = mkUseStyles((t) => ({
+const useStyles = mkUseStyles(() => ({
   wrap: {
     position: 'relative',
     flex: 1,
     minHeight: 0,
     width: '100%',
-  },
-  libraryToggle: {
-    position: 'fixed',
-    left: 14,
-    top: 120,
-    zIndex: 30,
-    width: 42,
-    height: 42,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '50%',
-    border: `1px solid ${t.colors.white + t.colorOpacity(0.1)}`,
-    backgroundColor: t.colors.gray04,
-    color: t.colors.white,
-    cursor: 'pointer',
-    boxShadow: '0 6px 16px rgba(0,0,0,0.35)',
   },
 }));
