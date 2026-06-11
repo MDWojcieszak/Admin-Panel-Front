@@ -30,7 +30,7 @@ export const BlogPostEditor = () => {
   const [mediaOpen, setMediaOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(true);
   const [coverPickMode, setCoverPickMode] = useState(false);
 
   const { locales, defaultLocale } = useBlogLocales();

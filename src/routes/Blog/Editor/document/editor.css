@@ -109,7 +109,7 @@
 
 /* Image settings gear button. */
 .blog-img-gear {
-  opacity: 0.85;
+  opacity: 0.92;
   transition:
     opacity 0.12s ease,
     background-color 0.12s ease;

@@ -231,13 +231,13 @@ const BlogImage = createReactBlockSpec(
           {imageId ? (
             aspectCss ? (
               <div
-                style={{ ...styles.imageFrame, aspectRatio: aspectCss, position: 'relative', cursor: 'move' }}
-                title='Drag to set the focal point (kept visible when cropped)'
-                onMouseDown={startFocalDrag}
+                style={{ ...styles.imageFrame, aspectRatio: aspectCss, position: 'relative', cursor: open ? 'move' : 'default' }}
+                title={open ? 'Drag to set the focal point (kept visible when cropped)' : undefined}
+                onMouseDown={open ? startFocalDrag : undefined}
               >
                 <MediaThumb imageId={imageId} res='cover' fit='cover' focalX={focalX} focalY={focalY} style={styles.fill} />
                 {overlay}
-                <div style={{ ...styles.focalDot, left: `${focalX * 100}%`, top: `${focalY * 100}%` }} />
+                {open ? <div style={{ ...styles.focalDot, left: `${focalX * 100}%`, top: `${focalY * 100}%` }} /> : null}
                 {gearBtn}
               </div>
             ) : (
@@ -866,18 +866,20 @@ const useBlockStyles = mkUseStyles((t) => ({
     position: 'absolute',
     bottom: 8,
     right: 8,
-    width: 30,
-    height: 30,
+    width: 32,
+    height: 32,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: '50%',
     border: 0,
     cursor: 'pointer',
-    color: '#fff',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    color: '#1a1a1a',
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
   },
   gearBtnActive: {
+    color: '#fff',
     backgroundColor: t.colors.blue,
   },
   imgControls: {
