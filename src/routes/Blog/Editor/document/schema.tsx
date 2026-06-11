@@ -80,9 +80,13 @@ export const IMAGE_DND_TYPE = 'application/x-blog-image';
 const RATIOS: { value: string; label: string; css?: string }[] = [
   { value: BlogAspectRatio.Original, label: 'Original' },
   { value: BlogAspectRatio.Ratio169, label: '16:9', css: '16 / 9' },
+  { value: BlogAspectRatio.Ratio219, label: '21:9', css: '21 / 9' },
+  { value: BlogAspectRatio.Ratio6524, label: '65:24', css: '65 / 24' },
   { value: BlogAspectRatio.Ratio43, label: '4:3', css: '4 / 3' },
-  { value: BlogAspectRatio.Square, label: '1:1', css: '1 / 1' },
   { value: BlogAspectRatio.Ratio32, label: '3:2', css: '3 / 2' },
+  { value: BlogAspectRatio.Square, label: '1:1', css: '1 / 1' },
+  { value: BlogAspectRatio.Ratio34, label: '3:4', css: '3 / 4' },
+  { value: BlogAspectRatio.Ratio23, label: '2:3', css: '2 / 3' },
   { value: BlogAspectRatio.Ratio45, label: '4:5', css: '4 / 5' },
   { value: BlogAspectRatio.Ratio916, label: '9:16', css: '9 / 16' },
 ];
@@ -121,55 +125,59 @@ const BlogImage = createReactBlockSpec(
         const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
         if (id) {
           e.preventDefault();
+          e.stopPropagation();
           setImage(id);
         }
       };
       const allowDrop = (e: ReactDragEvent) => {
-        if (e.dataTransfer.types.includes(IMAGE_DND_TYPE)) e.preventDefault();
+        if (e.dataTransfer.types.includes(IMAGE_DND_TYPE)) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
       };
       return (
         <div style={styles.mediaBlock} contentEditable={false}>
           {imageId ? (
             aspectCss ? (
-              <div style={{ ...styles.imageFrame, aspectRatio: aspectCss }} onDragOver={allowDrop} onDrop={onDrop}>
+              <div style={{ ...styles.imageFrame, aspectRatio: aspectCss }} onDragOverCapture={allowDrop} onDropCapture={onDrop}>
                 <MediaThumb imageId={imageId} res='cover' fit='cover' style={styles.fill} />
               </div>
             ) : (
-              <div style={styles.imageFrame} onDragOver={allowDrop} onDrop={onDrop}>
+              <div style={styles.imageFrame} onDragOverCapture={allowDrop} onDropCapture={onDrop}>
                 <MediaThumb imageId={imageId} res='cover' fit='natural' style={styles.fill} />
               </div>
             )
           ) : (
-            <button style={styles.emptyPick} type='button' onDragOver={allowDrop} onDrop={onDrop} onClick={() => bridge.pickImage(setImage)}>
+            <button style={styles.emptyPick} type='button' onDragOverCapture={allowDrop} onDropCapture={onDrop} onClick={() => bridge.pickImage(setImage)}>
               <MdImage size={20} /> Pick or drop an image
             </button>
           )}
           {imageId ? (
-            <div style={styles.mediaBar}>
-              <div style={styles.ratioRow}>
-                {RATIOS.map((r) => (
-                  <button
-                    key={r.value}
-                    type='button'
-                    style={{
-                      ...styles.ratioBtn,
-                      ...((aspectRatio || BlogAspectRatio.Original) === r.value ? styles.ratioActive : null),
-                    }}
-                    onClick={() => editor.updateBlock(block, { props: { aspectRatio: r.value } })}
-                  >
-                    {r.label}
-                  </button>
-                ))}
-                <button style={styles.barBtn} type='button' onClick={() => bridge.pickImage(setImage)}>
-                  Replace
+            <input
+              style={styles.caption}
+              placeholder='Add a caption…'
+              defaultValue={caption}
+              onBlur={(e) => editor.updateBlock(block, { props: { caption: e.target.value } })}
+            />
+          ) : null}
+          {imageId ? (
+            <div style={styles.ratioRow}>
+              {RATIOS.map((r) => (
+                <button
+                  key={r.value}
+                  type='button'
+                  style={{
+                    ...styles.ratioBtn,
+                    ...((aspectRatio || BlogAspectRatio.Original) === r.value ? styles.ratioActive : null),
+                  }}
+                  onClick={() => editor.updateBlock(block, { props: { aspectRatio: r.value } })}
+                >
+                  {r.label}
                 </button>
-              </div>
-              <input
-                style={styles.captionInput}
-                placeholder='Caption (optional)'
-                defaultValue={caption}
-                onBlur={(e) => editor.updateBlock(block, { props: { caption: e.target.value } })}
-              />
+              ))}
+              <button style={styles.barBtn} type='button' onClick={() => bridge.pickImage(setImage)}>
+                Replace
+              </button>
             </div>
           ) : null}
         </div>
@@ -403,11 +411,17 @@ const BlogColumns = createReactBlockSpec(
                       <div
                         style={styles.columnImageWrap}
                         contentEditable={false}
-                        onDragOver={(e) => e.dataTransfer.types.includes(IMAGE_DND_TYPE) && e.preventDefault()}
-                        onDrop={(e) => {
+                        onDragOverCapture={(e) => {
+                          if (e.dataTransfer.types.includes(IMAGE_DND_TYPE)) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }
+                        }}
+                        onDropCapture={(e) => {
                           const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
                           if (id) {
                             e.preventDefault();
+                            e.stopPropagation();
                             update(i, { imageId: id });
                           }
                         }}
@@ -422,11 +436,17 @@ const BlogColumns = createReactBlockSpec(
                         style={styles.columnPick}
                         type='button'
                         contentEditable={false}
-                        onDragOver={(e) => e.dataTransfer.types.includes(IMAGE_DND_TYPE) && e.preventDefault()}
-                        onDrop={(e) => {
+                        onDragOverCapture={(e) => {
+                          if (e.dataTransfer.types.includes(IMAGE_DND_TYPE)) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }
+                        }}
+                        onDropCapture={(e) => {
                           const id = e.dataTransfer.getData(IMAGE_DND_TYPE);
                           if (id) {
                             e.preventDefault();
+                            e.stopPropagation();
                             update(i, { imageId: id });
                           }
                         }}
@@ -672,6 +692,18 @@ const useBlockStyles = mkUseStyles((t) => ({
     color: t.colors.white,
     backgroundColor: t.colors.blue + t.colorOpacity(0.25),
     border: `1px solid ${t.colors.blue + t.colorOpacity(0.4)}`,
+  },
+  caption: {
+    width: '100%',
+    boxSizing: 'border-box',
+    textAlign: 'center',
+    fontStyle: 'italic',
+    fontSize: 13,
+    color: t.colors.dark05,
+    background: 'transparent',
+    border: 0,
+    outline: 'none',
+    padding: '2px 0',
   },
   emptyPick: {
     flexDirection: 'row',
