@@ -180,6 +180,8 @@ const BlogImage = createReactBlockSpec(
     render: ({ block, editor }) => {
       const styles = useBlockStyles();
       const bridge = useBlogEditorBridge();
+      const [hovered, setHovered] = useState(false);
+      const [focused, setFocused] = useState(false);
       const { imageId, aspectRatio, caption, focalX, focalY, overlayText, overlayPosition, overlayTheme, overlayBackdrop } =
         block.props;
       const aspectCss = RATIOS.find((r) => r.value === aspectRatio)?.css;
@@ -207,7 +209,16 @@ const BlogImage = createReactBlockSpec(
         window.addEventListener('mouseup', up);
       };
       return (
-        <div style={styles.mediaBlock} contentEditable={false}>
+        <div
+          style={styles.mediaBlock}
+          contentEditable={false}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          onFocusCapture={() => setFocused(true)}
+          onBlurCapture={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocused(false);
+          }}
+        >
           {imageId ? (
             aspectCss ? (
               <div
@@ -230,82 +241,102 @@ const BlogImage = createReactBlockSpec(
               <MdImage size={20} /> Pick or drop an image
             </button>
           )}
-          {imageId ? (
-            <input
-              style={styles.caption}
-              placeholder='Add a caption…'
-              defaultValue={caption}
-              onBlur={(e) => editor.updateBlock(block, { props: { caption: e.target.value } })}
-            />
-          ) : null}
-          {imageId ? (
-            <div style={styles.ratioRow}>
-              {RATIOS.map((r) => (
-                <button
-                  key={r.value}
-                  type='button'
-                  className={`blog-ratio${(aspectRatio || BlogAspectRatio.Original) === r.value ? ' is-active' : ''}`}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => editor.updateBlock(block, { props: { aspectRatio: r.value } })}
-                >
-                  {r.label}
-                </button>
-              ))}
-              <button style={styles.barBtn} type='button' onMouseDown={(e) => e.preventDefault()} onClick={() => bridge.pickImage(setImage)}>
-                Replace
-              </button>
-            </div>
-          ) : null}
-          {imageId ? (
-            <div style={styles.overlaySection}>
-              <input
-                style={styles.caption}
-                placeholder='Overlay text on the image (optional)'
-                defaultValue={overlayText}
-                onBlur={(e) => editor.updateBlock(block, { props: { overlayText: e.target.value } })}
-              />
-              {overlayText ? (
-                <div style={styles.overlayControls}>
-                  <div style={styles.posGrid} title='Text position'>
-                    {OVERLAY_POSITIONS.map((p) => (
+          <AnimatePresence>
+            {imageId && (hovered || focused) ? (
+              <motion.div
+                style={styles.imgControls}
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.16 }}
+              >
+                <div style={styles.ctrlGroup}>
+                  <span style={styles.ctrlLabel}>Aspect ratio</span>
+                  <div style={styles.ratioRow}>
+                    {RATIOS.map((r) => (
                       <button
-                        key={p}
+                        key={r.value}
                         type='button'
-                        className={`blog-ratio${overlayPosition === p ? ' is-active' : ''}`}
-                        style={styles.posCell}
+                        className={`blog-ratio${(aspectRatio || BlogAspectRatio.Original) === r.value ? ' is-active' : ''}`}
                         onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => editor.updateBlock(block, { props: { overlayPosition: p } })}
-                      />
-                    ))}
-                  </div>
-                  <div style={styles.overlayOpts}>
-                    {[BlogOverlayTheme.Light, BlogOverlayTheme.Dark].map((th) => (
-                      <button
-                        key={th}
-                        type='button'
-                        className={`blog-ratio${overlayTheme === th ? ' is-active' : ''}`}
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => editor.updateBlock(block, { props: { overlayTheme: th } })}
+                        onClick={() => editor.updateBlock(block, { props: { aspectRatio: r.value } })}
                       >
-                        {th === BlogOverlayTheme.Light ? 'Light' : 'Dark'}
-                      </button>
-                    ))}
-                    {[BlogOverlayBackdrop.None, BlogOverlayBackdrop.Scrim, BlogOverlayBackdrop.Gradient, BlogOverlayBackdrop.Glass].map((bd) => (
-                      <button
-                        key={bd}
-                        type='button'
-                        className={`blog-ratio${overlayBackdrop === bd ? ' is-active' : ''}`}
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => editor.updateBlock(block, { props: { overlayBackdrop: bd } })}
-                      >
-                        {bd.charAt(0) + bd.slice(1).toLowerCase()}
+                        {r.label}
                       </button>
                     ))}
                   </div>
                 </div>
-              ) : null}
-            </div>
-          ) : null}
+                <div style={styles.ctrlGroup}>
+                  <span style={styles.ctrlLabel}>Caption</span>
+                  <input
+                    style={styles.ctrlInput}
+                    placeholder='Shown under the image'
+                    defaultValue={caption}
+                    onBlur={(e) => editor.updateBlock(block, { props: { caption: e.target.value } })}
+                  />
+                </div>
+                <div style={styles.ctrlGroup}>
+                  <span style={styles.ctrlLabel}>Text overlay</span>
+                  <input
+                    style={styles.ctrlInput}
+                    placeholder='Text on the image (optional)'
+                    defaultValue={overlayText}
+                    onBlur={(e) => editor.updateBlock(block, { props: { overlayText: e.target.value } })}
+                  />
+                  {overlayText ? (
+                    <div style={styles.overlayControls}>
+                      <div style={styles.posGrid} title='Text position'>
+                        {OVERLAY_POSITIONS.map((p) => (
+                          <button
+                            key={p}
+                            type='button'
+                            className={`blog-ratio${overlayPosition === p ? ' is-active' : ''}`}
+                            style={styles.posCell}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => editor.updateBlock(block, { props: { overlayPosition: p } })}
+                          />
+                        ))}
+                      </div>
+                      <div style={styles.overlayOpts}>
+                        {[BlogOverlayTheme.Light, BlogOverlayTheme.Dark].map((th) => (
+                          <button
+                            key={th}
+                            type='button'
+                            className={`blog-ratio${overlayTheme === th ? ' is-active' : ''}`}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => editor.updateBlock(block, { props: { overlayTheme: th } })}
+                          >
+                            {th === BlogOverlayTheme.Light ? 'Light' : 'Dark'}
+                          </button>
+                        ))}
+                        {[BlogOverlayBackdrop.None, BlogOverlayBackdrop.Scrim, BlogOverlayBackdrop.Gradient, BlogOverlayBackdrop.Glass].map(
+                          (bd) => (
+                            <button
+                              key={bd}
+                              type='button'
+                              className={`blog-ratio${overlayBackdrop === bd ? ' is-active' : ''}`}
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => editor.updateBlock(block, { props: { overlayBackdrop: bd } })}
+                            >
+                              {bd.charAt(0) + bd.slice(1).toLowerCase()}
+                            </button>
+                          ),
+                        )}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+                <button
+                  style={styles.barBtn}
+                  type='button'
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => bridge.pickImage(setImage)}
+                >
+                  Replace image
+                </button>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </div>
       );
     },
@@ -820,6 +851,29 @@ const useBlockStyles = mkUseStyles((t) => ({
   posGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, width: 56, flexShrink: 0 },
   posCell: { width: 16, height: 16, padding: 0, borderRadius: 3 },
   overlayOpts: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 4 },
+  imgControls: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: t.spacing.m,
+    marginTop: t.spacing.xs,
+    padding: t.spacing.m,
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.05)}`,
+  },
+  ctrlGroup: { display: 'flex', flexDirection: 'column', gap: t.spacing.xs },
+  ctrlLabel: { fontSize: 11, fontWeight: 700, letterSpacing: 0.5, textTransform: 'uppercase', color: t.colors.blue04 },
+  ctrlInput: {
+    height: 36,
+    boxSizing: 'border-box',
+    padding: `0 ${t.spacing.m}px`,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+    color: t.colors.white,
+    border: 0,
+    outline: 'none',
+    fontSize: 14,
+  },
   emptyPick: {
     flexDirection: 'row',
     alignItems: 'center',
