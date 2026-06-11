@@ -3,6 +3,7 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FieldValues, UseControllerProps, useController } from 'react-hook-form';
 import useMeasure from 'react-use-measure';
+import '~/components/TextArea.css';
 
 type TextAreaProps<T extends FieldValues> = {
   label: string;
@@ -39,6 +40,11 @@ export const TextArea = <T extends FieldValues>({ label, description, ...p }: Te
     inputRef.current.value = p.defaultValue;
   }, [p.defaultValue]);
 
+  // Float the label up when the field already has a value (pre-filled / form reset), like Input does.
+  useEffect(() => {
+    if (typeof field.value === 'string' && field.value.length > 0) setShowLabel(false);
+  }, [field.value]);
+
   const renderDescription = errors[p.name] ? <>{errors[p.name]?.message}</> : description;
 
   return (
@@ -46,10 +52,11 @@ export const TextArea = <T extends FieldValues>({ label, description, ...p }: Te
       <motion.textarea
         {...field}
         ref={inputRef}
+        className='app-textarea'
         style={styles.input}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        rows={4} // Set the number of visible rows
+        rows={6} // Set the number of visible rows
       />
       {/* Opaque band (same colour as the textarea) so scrolled text hides under the floating label. */}
       <div style={styles.labelMask} />
@@ -94,7 +101,10 @@ const useStyles = mkUseStyles((t) => ({
     padding: t.spacing.m,
     color: t.colors.white,
     paddingTop: t.spacing.l + 4,
+    minHeight: 130,
+    boxSizing: 'border-box',
     fontSize: '16px',
+    lineHeight: 1.4,
     borderRadius: t.borderRadius.default,
     backgroundColor: t.colors.gray03,
     border: 0,
