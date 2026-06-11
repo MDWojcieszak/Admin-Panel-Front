@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdArrowBack, MdChatBubbleOutline, MdCheck, MdPermMedia, MdTune } from 'react-icons/md';
+import { BlogPostStatus } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
+import { useModal } from '~/hooks/useModal';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
+import { ConfirmModal } from '~/components/ConfirmModal';
 import { Loader } from '~/components/Loader';
 import { Scrollbar } from '~/components/Scrollbar';
 import { useBlogLocales } from '~/routes/Blog/hooks/useBlogLocales';
@@ -26,6 +29,8 @@ export const BlogPostEditor = () => {
   const { blogPostsApi, blogVersioningApi } = useApi();
   const can = useCan();
   const canPublish = can('blog.publish');
+  const publishModal = useModal('blog-publish-confirm', ConfirmModal, { title: 'Publish post' });
+  const unpublishModal = useModal('blog-unpublish-confirm', ConfirmModal, { title: 'Unpublish post' });
 
   const [mediaOpen, setMediaOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(true);
@@ -45,7 +50,6 @@ export const BlogPostEditor = () => {
   const [subtitle, setSubtitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [saveState, setSaveState] = useState<SaveState>('idle');
-  const [publishing, setPublishing] = useState(false);
 
   useEffect(() => {
     setTitle(draft?.title ?? '');
@@ -69,17 +73,16 @@ export const BlogPostEditor = () => {
     }
   };
 
-  const handlePublish = async () => {
+  // Errors propagate so ConfirmModal keeps itself open on failure.
+  const doPublish = async () => {
     if (!blogVersioningApi || !id) return;
-    setPublishing(true);
-    try {
-      await blogVersioningApi.versionControllerPublish({ id });
-      await refresh();
-    } catch (e) {
-      console.error('Error publishing post:', e);
-    } finally {
-      setPublishing(false);
-    }
+    await blogVersioningApi.versionControllerPublish({ id });
+    await refresh();
+  };
+  const doUnpublish = async () => {
+    if (!blogVersioningApi || !id) return;
+    await blogVersioningApi.versionControllerUnpublish({ id });
+    await refresh();
   };
 
   // Cover-pick mode: an image click from the (owner-gallery) media panel sets the post cover.
@@ -172,7 +175,50 @@ export const BlogPostEditor = () => {
           >
             <MdTune size={18} />
           </button>
-          {canPublish ? <Button label='Publish' onClick={handlePublish} loading={publishing} /> : null}
+          {canPublish && draft ? (
+            draft.status === BlogPostStatus.Published ? (
+              <>
+                {draft.hasUnpublishedChanges ? (
+                  <Button
+                    label='Publish changes'
+                    onClick={() =>
+                      publishModal.show({
+                        message: 'Publish your latest changes?',
+                        description: 'Readers will see the updated version.',
+                        confirmLabel: 'Publish changes',
+                        onConfirm: doPublish,
+                      })
+                    }
+                  />
+                ) : null}
+                <Button
+                  label='Unpublish'
+                  variant='secondary'
+                  onClick={() =>
+                    unpublishModal.show({
+                      message: 'Unpublish this post?',
+                      description: 'It will no longer be visible to readers.',
+                      confirmLabel: 'Unpublish',
+                      danger: true,
+                      onConfirm: doUnpublish,
+                    })
+                  }
+                />
+              </>
+            ) : (
+              <Button
+                label='Publish'
+                onClick={() =>
+                  publishModal.show({
+                    message: 'Publish this post?',
+                    description: 'It will become visible to readers.',
+                    confirmLabel: 'Publish',
+                    onConfirm: doPublish,
+                  })
+                }
+              />
+            )
+          ) : null}
         </div>
       </div>
 
