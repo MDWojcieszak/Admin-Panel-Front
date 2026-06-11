@@ -32,7 +32,7 @@ export const EditorialCommentsPanel = ({ open, postId, onClose }: EditorialComme
   const load = useCallback(async () => {
     if (!blogCommentsApi) return;
     try {
-      const { data } = await blogCommentsApi.commentControllerList({ postId, sectionId: '' });
+      const { data } = await blogCommentsApi.commentControllerList({ postId });
       setComments(data.comments);
     } catch (e) {
       console.error('Error loading comments:', e);

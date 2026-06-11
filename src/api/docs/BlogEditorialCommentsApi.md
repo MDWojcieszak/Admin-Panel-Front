@@ -186,11 +186,13 @@ const configuration = new Configuration();
 const apiInstance = new BlogEditorialCommentsApi(configuration);
 
 let postId: string; // (default to undefined)
-let sectionId: string; // (default to undefined)
+let sectionId: string; //Filter to one section thread; omit for the whole post. (optional) (default to undefined)
+let global: boolean; //true → only post-level (global) comments. Ignored if sectionId is set. (optional) (default to undefined)
 
 const { status, data } = await apiInstance.commentControllerList(
     postId,
-    sectionId
+    sectionId,
+    global
 );
 ```
 
@@ -199,7 +201,8 @@ const { status, data } = await apiInstance.commentControllerList(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **postId** | [**string**] |  | defaults to undefined|
-| **sectionId** | [**string**] |  | defaults to undefined|
+| **sectionId** | [**string**] | Filter to one section thread; omit for the whole post. | (optional) defaults to undefined|
+| **global** | [**boolean**] | true → only post-level (global) comments. Ignored if sectionId is set. | (optional) defaults to undefined|
 
 
 ### Return type

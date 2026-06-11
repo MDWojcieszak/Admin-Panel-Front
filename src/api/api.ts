@@ -18167,15 +18167,14 @@ export const BlogEditorialCommentsApiAxiosParamCreator = function (configuration
         /**
          * 
          * @param {string} postId 
-         * @param {string} sectionId 
+         * @param {string} [sectionId] Filter to one section thread; omit for the whole post.
+         * @param {boolean} [global] true → only post-level (global) comments. Ignored if sectionId is set.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        commentControllerList: async (postId: string, sectionId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        commentControllerList: async (postId: string, sectionId?: string, global?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'postId' is not null or undefined
             assertParamExists('commentControllerList', 'postId', postId)
-            // verify required parameter 'sectionId' is not null or undefined
-            assertParamExists('commentControllerList', 'sectionId', sectionId)
             const localVarPath = `/blog/posts/{postId}/comments`
                 .replace(`{${"postId"}}`, encodeURIComponent(String(postId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -18195,6 +18194,10 @@ export const BlogEditorialCommentsApiAxiosParamCreator = function (configuration
 
             if (sectionId !== undefined) {
                 localVarQueryParameter['sectionId'] = sectionId;
+            }
+
+            if (global !== undefined) {
+                localVarQueryParameter['global'] = global;
             }
 
 
@@ -18307,12 +18310,13 @@ export const BlogEditorialCommentsApiFp = function(configuration?: Configuration
         /**
          * 
          * @param {string} postId 
-         * @param {string} sectionId 
+         * @param {string} [sectionId] Filter to one section thread; omit for the whole post.
+         * @param {boolean} [global] true → only post-level (global) comments. Ignored if sectionId is set.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async commentControllerList(postId: string, sectionId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommentListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.commentControllerList(postId, sectionId, options);
+        async commentControllerList(postId: string, sectionId?: string, global?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommentListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.commentControllerList(postId, sectionId, global, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BlogEditorialCommentsApi.commentControllerList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -18375,7 +18379,7 @@ export const BlogEditorialCommentsApiFactory = function (configuration?: Configu
          * @throws {RequiredError}
          */
         commentControllerList(requestParameters: BlogEditorialCommentsApiCommentControllerListRequest, options?: RawAxiosRequestConfig): AxiosPromise<CommentListResponse> {
-            return localVarFp.commentControllerList(requestParameters.postId, requestParameters.sectionId, options).then((request) => request(axios, basePath));
+            return localVarFp.commentControllerList(requestParameters.postId, requestParameters.sectionId, requestParameters.global, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -18466,11 +18470,18 @@ export interface BlogEditorialCommentsApiCommentControllerListRequest {
     readonly postId: string
 
     /**
-     * 
+     * Filter to one section thread; omit for the whole post.
      * @type {string}
      * @memberof BlogEditorialCommentsApiCommentControllerList
      */
-    readonly sectionId: string
+    readonly sectionId?: string
+
+    /**
+     * true → only post-level (global) comments. Ignored if sectionId is set.
+     * @type {boolean}
+     * @memberof BlogEditorialCommentsApiCommentControllerList
+     */
+    readonly global?: boolean
 }
 
 /**
@@ -18549,7 +18560,7 @@ export class BlogEditorialCommentsApi extends BaseAPI {
      * @memberof BlogEditorialCommentsApi
      */
     public commentControllerList(requestParameters: BlogEditorialCommentsApiCommentControllerListRequest, options?: RawAxiosRequestConfig) {
-        return BlogEditorialCommentsApiFp(this.configuration).commentControllerList(requestParameters.postId, requestParameters.sectionId, options).then((request) => request(this.axios, this.basePath));
+        return BlogEditorialCommentsApiFp(this.configuration).commentControllerList(requestParameters.postId, requestParameters.sectionId, requestParameters.global, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

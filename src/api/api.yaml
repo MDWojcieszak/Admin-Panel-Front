@@ -5334,10 +5334,17 @@ paths:
           schema:
             type: string
         - name: sectionId
-          required: true
+          required: false
           in: query
+          description: Filter to one section thread; omit for the whole post.
           schema:
             type: string
+        - name: global
+          required: false
+          in: query
+          description: true → only post-level (global) comments. Ignored if sectionId is set.
+          schema:
+            type: boolean
       responses:
         '200':
           description: List comments
