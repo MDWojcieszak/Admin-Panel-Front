@@ -71,12 +71,13 @@ export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, on
     const map: Record<string, number> = {};
     for (const b of editor.document) {
       const sid = sectionMap[b.id];
-      if (!sid || !bySection[sid]) continue;
+      // Measure sections that have comments, plus the one being composed on (even if still empty).
+      if (!sid || (!bySection[sid] && sid !== composeFor)) continue;
       const el = document.querySelector(`[data-id="${b.id}"]`);
       if (el) map[sid] = el.getBoundingClientRect().top - contTop;
     }
     setTargetY(map);
-  }, [editor, bySection, sectionMap]);
+  }, [editor, bySection, sectionMap, composeFor]);
 
   useEffect(() => {
     if (!open) return;
