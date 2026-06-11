@@ -12502,6 +12502,14 @@ components:
           type: string
           nullable: true
           description: Caption for a single-image block (image/mediaText).
+        alt:
+          type: string
+          nullable: true
+          description: Alt text for a single-image block (per-locale).
+        overlayText:
+          type: string
+          nullable: true
+          description: Overlay text rendered on the image (per-locale).
         variant:
           $ref: '#/components/schemas/CalloutVariant'
         imageId:
@@ -12516,8 +12524,22 @@ components:
           $ref: '#/components/schemas/BlogImageSize'
         aspectRatio:
           $ref: '#/components/schemas/BlogAspectRatio'
+        focalX:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Focal point X, 0..1 (left→right). image/mediaText only.
+        focalY:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Focal point Y, 0..1 (top→bottom).
         overlayPosition:
           $ref: '#/components/schemas/BlogOverlayPosition'
+        overlayTheme:
+          $ref: '#/components/schemas/BlogOverlayTheme'
+        overlayBackdrop:
+          $ref: '#/components/schemas/BlogOverlayBackdrop'
         mediaPosition:
           $ref: '#/components/schemas/BlogMediaPosition'
         mediaSplit:

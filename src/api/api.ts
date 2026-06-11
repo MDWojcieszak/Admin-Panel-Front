@@ -3396,6 +3396,18 @@ export interface DocumentBlockDto {
      */
     'caption'?: string | null;
     /**
+     * Alt text for a single-image block (per-locale).
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'alt'?: string | null;
+    /**
+     * Overlay text rendered on the image (per-locale).
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'overlayText'?: string | null;
+    /**
      * 
      * @type {CalloutVariant}
      * @memberof DocumentBlockDto
@@ -3432,11 +3444,35 @@ export interface DocumentBlockDto {
      */
     'aspectRatio'?: BlogAspectRatio;
     /**
+     * Focal point X, 0..1 (left→right). image/mediaText only.
+     * @type {number}
+     * @memberof DocumentBlockDto
+     */
+    'focalX'?: number;
+    /**
+     * Focal point Y, 0..1 (top→bottom).
+     * @type {number}
+     * @memberof DocumentBlockDto
+     */
+    'focalY'?: number;
+    /**
      * 
      * @type {BlogOverlayPosition}
      * @memberof DocumentBlockDto
      */
     'overlayPosition'?: BlogOverlayPosition;
+    /**
+     * 
+     * @type {BlogOverlayTheme}
+     * @memberof DocumentBlockDto
+     */
+    'overlayTheme'?: BlogOverlayTheme;
+    /**
+     * 
+     * @type {BlogOverlayBackdrop}
+     * @memberof DocumentBlockDto
+     */
+    'overlayBackdrop'?: BlogOverlayBackdrop;
     /**
      * 
      * @type {BlogMediaPosition}

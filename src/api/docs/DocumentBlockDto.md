@@ -11,13 +11,19 @@ Name | Type | Description | Notes
 **markdown** | **string** | Markdown body (prose/callout/mediaText/quote). | [optional] [default to undefined]
 **text** | **string** | Heading text (heading block). | [optional] [default to undefined]
 **caption** | **string** | Caption for a single-image block (image/mediaText). | [optional] [default to undefined]
+**alt** | **string** | Alt text for a single-image block (per-locale). | [optional] [default to undefined]
+**overlayText** | **string** | Overlay text rendered on the image (per-locale). | [optional] [default to undefined]
 **variant** | [**CalloutVariant**](CalloutVariant.md) |  | [optional] [default to undefined]
 **imageId** | **string** |  | [optional] [default to undefined]
 **imageIds** | **Array&lt;string&gt;** |  | [optional] [default to undefined]
 **galleryLayout** | [**GalleryLayout**](GalleryLayout.md) |  | [optional] [default to undefined]
 **imageSize** | [**BlogImageSize**](BlogImageSize.md) |  | [optional] [default to undefined]
 **aspectRatio** | [**BlogAspectRatio**](BlogAspectRatio.md) |  | [optional] [default to undefined]
+**focalX** | **number** | Focal point X, 0..1 (left→right). image/mediaText only. | [optional] [default to undefined]
+**focalY** | **number** | Focal point Y, 0..1 (top→bottom). | [optional] [default to undefined]
 **overlayPosition** | [**BlogOverlayPosition**](BlogOverlayPosition.md) |  | [optional] [default to undefined]
+**overlayTheme** | [**BlogOverlayTheme**](BlogOverlayTheme.md) |  | [optional] [default to undefined]
+**overlayBackdrop** | [**BlogOverlayBackdrop**](BlogOverlayBackdrop.md) |  | [optional] [default to undefined]
 **mediaPosition** | [**BlogMediaPosition**](BlogMediaPosition.md) |  | [optional] [default to undefined]
 **mediaSplit** | [**BlogMediaSplit**](BlogMediaSplit.md) |  | [optional] [default to undefined]
 **mobileStackOrder** | [**BlogMobileStackOrder**](BlogMobileStackOrder.md) |  | [optional] [default to undefined]
@@ -42,13 +48,19 @@ const instance: DocumentBlockDto = {
     markdown,
     text,
     caption,
+    alt,
+    overlayText,
     variant,
     imageId,
     imageIds,
     galleryLayout,
     imageSize,
     aspectRatio,
+    focalX,
+    focalY,
     overlayPosition,
+    overlayTheme,
+    overlayBackdrop,
     mediaPosition,
     mediaSplit,
     mobileStackOrder,
