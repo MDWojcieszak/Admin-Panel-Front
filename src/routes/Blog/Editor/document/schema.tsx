@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { Fragment, ReactNode, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
 import {
   MdAdd,
   MdCheckCircle,
@@ -160,7 +160,7 @@ const BlogGallery = createReactBlockSpec(
 
 // ---- columns block: N panes (2–4), each image or text ----------------------
 
-export type ColumnDef = { type: 'text' | 'image'; imageId?: string; html?: string };
+export type ColumnDef = { type: 'text' | 'image'; imageId?: string; html?: string; width?: number };
 
 export const parseColumns = (raw: string): ColumnDef[] => {
   try {
@@ -170,33 +170,64 @@ export const parseColumns = (raw: string): ColumnDef[] => {
         type: c?.type === 'image' ? 'image' : 'text',
         imageId: typeof c?.imageId === 'string' ? c.imageId : '',
         html: typeof c?.html === 'string' ? c.html : '',
+        width: typeof c?.width === 'number' && c.width > 0 ? c.width : 1,
       }));
     }
   } catch {
     /* ignore */
   }
   return [
-    { type: 'text', html: '' },
-    { type: 'image', imageId: '' },
+    { type: 'text', html: '', width: 1 },
+    { type: 'image', imageId: '', width: 1 },
   ];
 };
 
-/** contentEditable text cell — native Ctrl+B / Ctrl+I; HTML persisted on blur. */
+/** contentEditable text cell with a small toolbar (bold / italic / colour). */
 const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: string) => void }) => {
   const styles = useBlockStyles();
+  const theme = useTheme();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (ref.current) ref.current.innerHTML = html || '';
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const exec = (cmd: string, value?: string) => {
+    document.execCommand('styleWithCSS', false, 'true');
+    document.execCommand(cmd, false, value);
+    onChange(ref.current?.innerHTML ?? '');
+  };
+  const colors = [theme.colors.red, theme.colors.blue, theme.colors.lightGreen, theme.colors.yellow];
   return (
-    <div
-      ref={ref}
-      contentEditable
-      suppressContentEditableWarning
-      style={styles.columnText}
-      onBlur={() => onChange(ref.current?.innerHTML ?? '')}
-    />
+    <div style={styles.columnTextWrap}>
+      <div style={styles.columnToolbar} contentEditable={false}>
+        <button style={styles.tbBtn} type='button' title='Bold' onMouseDown={(e) => e.preventDefault()} onClick={() => exec('bold')}>
+          <b>B</b>
+        </button>
+        <button style={styles.tbBtn} type='button' title='Italic' onMouseDown={(e) => e.preventDefault()} onClick={() => exec('italic')}>
+          <i>I</i>
+        </button>
+        {colors.map((c) => (
+          <button
+            key={c}
+            style={{ ...styles.tbColor, backgroundColor: c }}
+            type='button'
+            title='Colour'
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => exec('foreColor', c)}
+          />
+        ))}
+        <button
+          style={styles.tbBtn}
+          type='button'
+          title='Reset colour'
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => exec('foreColor', theme.colors.white)}
+        >
+          ×
+        </button>
+      </div>
+      <div ref={ref} contentEditable suppressContentEditableWarning style={styles.columnText} onBlur={() => onChange(ref.current?.innerHTML ?? '')} />
+    </div>
   );
 };
 
@@ -213,57 +244,88 @@ const BlogColumns = createReactBlockSpec(
     render: ({ block, editor }) => {
       const styles = useBlockStyles();
       const bridge = useBlogEditorBridge();
+      const containerRef = useRef<HTMLDivElement>(null);
       const cols = parseColumns(block.props.columns);
       const save = (next: ColumnDef[]) => editor.updateBlock(block, { props: { columns: JSON.stringify(next) } });
       const update = (i: number, patch: Partial<ColumnDef>) =>
         save(cols.map((c, idx) => (idx === i ? { ...c, ...patch } : c)));
+      const startResize = (i: number, e: ReactMouseEvent) => {
+        e.preventDefault();
+        const container = containerRef.current;
+        if (!container) return;
+        const totalWidth = container.getBoundingClientRect().width;
+        const startX = e.clientX;
+        const start = parseColumns(block.props.columns);
+        const totalFr = start.reduce((s, c) => s + (c.width ?? 1), 0);
+        const pair = (start[i].width ?? 1) + (start[i + 1].width ?? 1);
+        const wi0 = start[i].width ?? 1;
+        const onMove = (ev: MouseEvent) => {
+          const dxFr = ((ev.clientX - startX) / totalWidth) * totalFr;
+          const wi = Math.max(0.3, Math.min(pair - 0.3, wi0 + dxFr));
+          const next = start.map((c, idx) =>
+            idx === i ? { ...c, width: wi } : idx === i + 1 ? { ...c, width: pair - wi } : c,
+          );
+          editor.updateBlock(block, { props: { columns: JSON.stringify(next) } });
+        };
+        const onUp = () => {
+          window.removeEventListener('mousemove', onMove);
+          window.removeEventListener('mouseup', onUp);
+        };
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+      };
       return (
         <div style={styles.columnsBlock}>
-          <div style={{ ...styles.columnsGrid, gridTemplateColumns: `repeat(${cols.length}, 1fr)` }}>
+          <div ref={containerRef} style={styles.columnsRow}>
             {cols.map((col, i) => (
-              <div key={i} style={styles.column}>
-                <div style={styles.columnHead} contentEditable={false}>
-                  <button
-                    style={styles.columnTypeBtn}
-                    type='button'
-                    title={col.type === 'text' ? 'Switch to image' : 'Switch to text'}
-                    onClick={() => update(i, col.type === 'text' ? { type: 'image' } : { type: 'text' })}
-                  >
-                    {col.type === 'text' ? <MdImage size={14} /> : <MdTextFields size={14} />}
-                  </button>
-                  {cols.length > 1 ? (
+              <Fragment key={i}>
+                <div style={{ ...styles.column, flexGrow: col.width ?? 1, flexBasis: 0 }}>
+                  <div style={styles.columnHead} contentEditable={false}>
                     <button
-                      style={styles.columnRemove}
+                      style={styles.columnTypeBtn}
                       type='button'
-                      title='Remove column'
-                      onClick={() => save(cols.filter((_, idx) => idx !== i))}
+                      title={col.type === 'text' ? 'Switch to image' : 'Switch to text'}
+                      onClick={() => update(i, col.type === 'text' ? { type: 'image' } : { type: 'text' })}
                     >
-                      <MdDelete size={14} />
+                      {col.type === 'text' ? <MdImage size={14} /> : <MdTextFields size={14} />}
                     </button>
-                  ) : null}
-                </div>
-                {col.type === 'image' ? (
-                  col.imageId ? (
-                    <div style={styles.columnImageWrap} contentEditable={false}>
-                      <MediaThumb imageId={col.imageId} style={styles.fill} />
-                      <button style={styles.tileRemove} type='button' onClick={() => update(i, { imageId: '' })}>
-                        <MdClose size={13} />
+                    {cols.length > 1 ? (
+                      <button
+                        style={styles.columnRemove}
+                        type='button'
+                        title='Remove column'
+                        onClick={() => save(cols.filter((_, idx) => idx !== i))}
+                      >
+                        <MdDelete size={14} />
                       </button>
-                    </div>
+                    ) : null}
+                  </div>
+                  {col.type === 'image' ? (
+                    col.imageId ? (
+                      <div style={styles.columnImageWrap} contentEditable={false}>
+                        <MediaThumb imageId={col.imageId} style={styles.fill} />
+                        <button style={styles.tileRemove} type='button' onClick={() => update(i, { imageId: '' })}>
+                          <MdClose size={13} />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        style={styles.columnPick}
+                        type='button'
+                        contentEditable={false}
+                        onClick={() => bridge.pickImage((id) => update(i, { imageId: id }))}
+                      >
+                        <MdImage size={18} /> Pick
+                      </button>
+                    )
                   ) : (
-                    <button
-                      style={styles.columnPick}
-                      type='button'
-                      contentEditable={false}
-                      onClick={() => bridge.pickImage((id) => update(i, { imageId: id }))}
-                    >
-                      <MdImage size={18} /> Pick
-                    </button>
-                  )
-                ) : (
-                  <ColumnTextEditor html={col.html ?? ''} onChange={(h) => update(i, { html: h })} />
-                )}
-              </div>
+                    <ColumnTextEditor html={col.html ?? ''} onChange={(h) => update(i, { html: h })} />
+                  )}
+                </div>
+                {i < cols.length - 1 ? (
+                  <div style={styles.resizeHandle} contentEditable={false} onMouseDown={(e) => startResize(i, e)} />
+                ) : null}
+              </Fragment>
             ))}
           </div>
           {cols.length < 4 ? (
@@ -525,7 +587,17 @@ const useBlockStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
   },
   columnsBlock: { display: 'flex', flexDirection: 'column', gap: t.spacing.s, width: '100%' },
-  columnsGrid: { display: 'grid', gap: t.spacing.m, width: '100%' },
+  columnsRow: { display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'stretch' },
+  resizeHandle: {
+    width: 10,
+    flexShrink: 0,
+    cursor: 'col-resize',
+    alignSelf: 'stretch',
+    backgroundImage: `linear-gradient(${t.colors.white + t.colorOpacity(0.12)}, ${t.colors.white + t.colorOpacity(0.12)})`,
+    backgroundSize: '2px 100%',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+  },
   column: {
     display: 'flex',
     flexDirection: 'column',
@@ -586,6 +658,34 @@ const useBlockStyles = mkUseStyles((t) => ({
     background: 'transparent',
     color: t.colors.white,
     cursor: 'pointer',
+  },
+  columnTextWrap: { display: 'flex', flexDirection: 'column', gap: t.spacing.xs },
+  columnToolbar: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  tbBtn: {
+    width: 24,
+    height: 24,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: t.borderRadius.small,
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.1)}`,
+    background: 'transparent',
+    color: t.colors.white,
+    cursor: 'pointer',
+    fontSize: 13,
+  },
+  tbColor: {
+    width: 18,
+    height: 18,
+    borderRadius: '50%',
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.2)}`,
+    cursor: 'pointer',
+    padding: 0,
   },
   columnText: {
     display: 'block',

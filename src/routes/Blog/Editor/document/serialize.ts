@@ -18,13 +18,15 @@ import {
 
 const columnsToHTML = (cols: ColumnDef[]): string => {
   const inner = cols
-    .map((c) =>
-      c.type === 'image'
-        ? `<div data-col-type="image" data-image-id="${c.imageId ?? ''}"></div>`
-        : `<div data-col-type="text">${c.html ?? ''}</div>`,
-    )
+    .map((c) => {
+      const w = c.width ?? 1;
+      return c.type === 'image'
+        ? `<div data-col-type="image" data-col-width="${w}" data-image-id="${c.imageId ?? ''}"></div>`
+        : `<div data-col-type="text" data-col-width="${w}">${c.html ?? ''}</div>`;
+    })
     .join('');
-  return `<div data-blog-columns="${cols.length}" style="display:grid;grid-template-columns:repeat(${cols.length},1fr);gap:16px">${inner}</div>`;
+  const template = cols.map((c) => `${c.width ?? 1}fr`).join(' ');
+  return `<div data-blog-columns="${cols.length}" style="display:grid;grid-template-columns:${template};gap:16px">${inner}</div>`;
 };
 
 const parseColumnsFromHTML = (body: string): ColumnDef[] | null => {
@@ -35,10 +37,11 @@ const parseColumnsFromHTML = (body: string): ColumnDef[] | null => {
     if (!root) return null;
     const cols: ColumnDef[] = [];
     root.querySelectorAll(':scope > [data-col-type]').forEach((el) => {
+      const width = parseFloat(el.getAttribute('data-col-width') || '1') || 1;
       if (el.getAttribute('data-col-type') === 'image') {
-        cols.push({ type: 'image', imageId: el.getAttribute('data-image-id') ?? '' });
+        cols.push({ type: 'image', imageId: el.getAttribute('data-image-id') ?? '', width });
       } else {
-        cols.push({ type: 'text', html: el.innerHTML });
+        cols.push({ type: 'text', html: el.innerHTML, width });
       }
     });
     return cols.length ? cols : null;
