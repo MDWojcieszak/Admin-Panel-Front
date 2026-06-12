@@ -5,6 +5,7 @@ import { EditorialCommentResponse } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import { useAuth } from '~/hooks/useAuth';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import '~/routes/Blog/Editor/components/GlobalComments.css';
 
 type GlobalCommentsProps = {
   postId: string;
@@ -81,7 +82,7 @@ export const GlobalComments = ({ postId }: GlobalCommentsProps) => {
       <span style={styles.hint}>Internal — never shown to readers.</span>
 
       {comments.map((c) => (
-        <div key={c.id} style={styles.row}>
+        <div key={c.id} className='gc-comment'>
           <div style={styles.avatar}>{initials(c)}</div>
           <div style={styles.bubble}>
             <div style={styles.head}>
@@ -110,7 +111,7 @@ export const GlobalComments = ({ postId }: GlobalCommentsProps) => {
               <>
                 <span style={styles.body}>{c.body}</span>
                 {auth.userData?.id === c.authorId ? (
-                  <div style={styles.actions}>
+                  <div className='gc-actions' style={styles.actions}>
                     <button style={styles.linkBtn} onClick={() => setEditing({ id: c.id, body: c.body })}>
                       Edit
                     </button>
@@ -157,7 +158,15 @@ const useStyles = mkUseStyles((t) => ({
   },
   heading: { fontSize: 13, fontWeight: 700, color: t.colors.blue04 },
   hint: { fontSize: 11, color: t.colors.dark05, marginTop: -6 },
-  row: { flexDirection: 'row', gap: t.spacing.s, alignItems: 'flex-start' },
+  row: {
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+    padding: 8,
+    paddingTop: t.spacing.s,
+    marginTop: t.spacing.xs,
+    borderTop: `1px solid ${t.colors.white + t.colorOpacity(0.05)}`,
+  },
   avatar: {
     width: 26,
     height: 26,

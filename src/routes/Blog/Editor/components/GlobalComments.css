@@ -1,0 +1,19 @@
+/* Post-notes (global comments) — keep Edit/Delete hidden until the row is hovered, like Notion. */
+.gc-comment {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.12s ease;
+}
+.gc-comment:hover {
+  background-color: rgba(255, 255, 255, 0.035);
+}
+.gc-actions {
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.gc-comment:hover .gc-actions {
+  opacity: 1;
+}
