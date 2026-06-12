@@ -139,7 +139,7 @@ export const GlobalComments = ({ postId }: GlobalCommentsProps) => {
             }}
           />
           <button style={styles.send} onClick={submit} disabled={!draft.trim()}>
-            <MdSend size={15} color={theme.colors.white} />
+            <MdSend size={14} color={theme.colors.white} />
           </button>
         </div>
       </div>
@@ -164,8 +164,10 @@ const useStyles = mkUseStyles((t) => ({
     minWidth: 26,
     borderRadius: '50%',
     display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    lineHeight: 1,
     fontSize: 11,
     fontWeight: 700,
     color: t.colors.white,
@@ -178,8 +180,10 @@ const useStyles = mkUseStyles((t) => ({
     minWidth: 26,
     borderRadius: '50%',
     display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    lineHeight: 1,
     fontSize: 11,
     fontWeight: 700,
     color: t.colors.white,
@@ -212,9 +216,9 @@ const useStyles = mkUseStyles((t) => ({
     fontFamily: 'inherit',
   },
   send: {
-    width: 34,
-    height: 34,
-    minWidth: 34,
+    width: 30,
+    height: 30,
+    minWidth: 30,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
