@@ -43,3 +43,38 @@ export const colors = {
   ...fallSeasonPalette,
   ...palette,
 } as const;
+
+/**
+ * Light variant — same KEYS as the dark palette so `mkUseStyles` styles adapt just by swapping the
+ * theme. Semantics are preserved: `gray05` = main background (lightest here), `white` = primary text /
+ * subtle borders (dark here), `dark05` = muted text.
+ */
+export const lightColors: Record<keyof typeof colors, string> = {
+  background: '#FFFFFF',
+  blue01: '#E6F1FA',
+  blue02: '#CFE3F1',
+  blue03: '#3F7592',
+  blue04: '#356179',
+  purple01: '#6A45E6',
+  purple02: '#5B39C8',
+  purple03: '#4C2FA8',
+  gray01: '#CED4DA',
+  gray02: '#DEE3E9',
+  gray03: '#E8ECF0',
+  gray04: '#F1F3F5',
+  gray045: '#F7F8FA',
+  gray05: '#FFFFFF',
+  mainGreen: '#2E8C6A',
+  lightGreen: '#4F9B3C',
+  yellow: '#B58900',
+  red: '#DC3545',
+  blue: '#0086D6',
+  lightBlue: '#2C7DA0',
+  dark01: '#1E2025',
+  dark02: '#29343D',
+  dark03: '#3C5665',
+  dark04: '#5A7480',
+  dark05: '#6B7785',
+  white: '#1A1D21',
+  black: '#000000',
+};

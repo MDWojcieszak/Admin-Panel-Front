@@ -1,7 +1,5 @@
-import { useMemo } from 'react';
-import { colors } from './colors';
-
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
+import { colors, lightColors } from './colors';
 import { ThemeContext } from '~/contexts/Theme/ThemeContext';
 
 export const baseTheme = {
@@ -23,15 +21,31 @@ export const baseTheme = {
   },
 };
 
-const colorOpacity = (value: number) => Math.round(value * 255).toString(16);
+const colorOpacity = (value: number) => Math.round(value * 255).toString(16).padStart(2, '0');
 
-export const theme = {
-  ...baseTheme,
-  colors,
-  colorOpacity: colorOpacity,
+export type ThemeColors = Record<keyof typeof colors, string>;
+
+export type Theme = typeof baseTheme & {
+  colors: ThemeColors;
+  colorOpacity: (value: number) => string;
+  mode: 'dark' | 'light';
 };
 
-export type Theme = typeof theme;
+export const theme: Theme = {
+  ...baseTheme,
+  colors,
+  colorOpacity,
+  mode: 'dark',
+};
+
+/** Dark is the app default; the blog editor can switch its subtree to light via a nested provider. */
+export const darkTheme: Theme = theme;
+export const lightTheme: Theme = {
+  ...baseTheme,
+  colors: lightColors,
+  colorOpacity,
+  mode: 'light',
+};
 
 export const useTheme = () => {
   const ctx = useContext(ThemeContext);

@@ -58,8 +58,8 @@
 .blog-col-text blockquote {
   margin: 0.4em 0;
   padding-left: 0.8em;
-  border-left: 3px solid rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.75);
+  border-left: 3px solid rgba(var(--blog-fg, 255, 255, 255), 0.25);
+  color: rgba(var(--blog-fg, 255, 255, 255), 0.75);
 }
 
 /* Drop BlockNote's harsh 4px blue node-selection outline on our custom blocks entirely. */
@@ -84,17 +84,17 @@
   border-radius: 6px;
   font-size: 12px;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(var(--blog-fg, 255, 255, 255), 0.1) !important;
   background-color: transparent !important;
-  color: rgba(255, 255, 255, 0.55) !important;
+  color: rgba(var(--blog-fg, 255, 255, 255), 0.55) !important;
   transition:
     background-color 0.12s ease,
     color 0.12s ease,
     border-color 0.12s ease;
 }
 .blog-ratio:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  color: #fff !important;
+  background-color: rgba(var(--blog-fg, 255, 255, 255), 0.08) !important;
+  color: rgb(var(--blog-fg, 255, 255, 255)) !important;
 }
 .blog-ratio:focus,
 .blog-ratio:focus-visible,
@@ -104,7 +104,7 @@
 .blog-ratio.is-active {
   background-color: rgba(100, 160, 255, 0.25) !important;
   border-color: rgba(100, 160, 255, 0.45) !important;
-  color: #fff !important;
+  color: rgb(var(--blog-fg, 255, 255, 255)) !important;
 }
 
 /* Hover comment button (right gutter). */
@@ -135,7 +135,7 @@
 .blog-upload-zone.over {
   border-color: rgba(100, 160, 255, 0.6) !important;
   background-color: rgba(100, 160, 255, 0.08);
-  color: #fff;
+  color: rgb(var(--blog-fg, 255, 255, 255));
 }
 .blog-media-tile {
   transition: filter 0.12s ease;
@@ -154,8 +154,8 @@
     color 0.12s ease;
 }
 .blog-tb-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background-color: rgba(var(--blog-fg, 255, 255, 255), 0.1);
+  color: rgb(var(--blog-fg, 255, 255, 255));
 }
 .blog-tb-color {
   transition: transform 0.1s ease;
@@ -166,14 +166,14 @@
 
 /* Column resize handle — faint arrows that brighten on hover. */
 .blog-col-resize {
-  color: rgba(255, 255, 255, 0.22);
+  color: rgba(var(--blog-fg, 255, 255, 255), 0.22);
   transition:
     color 0.12s ease,
     background-color 0.12s ease;
 }
 .blog-col-resize:hover {
-  color: rgba(255, 255, 255, 0.75);
-  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(var(--blog-fg, 255, 255, 255), 0.75);
+  background-color: rgba(var(--blog-fg, 255, 255, 255), 0.05);
   border-radius: 6px;
 }
 

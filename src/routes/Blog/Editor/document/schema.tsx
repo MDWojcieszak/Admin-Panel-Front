@@ -29,8 +29,11 @@ import {
   MdWarningAmber,
 } from 'react-icons/md';
 import { LuHeading1, LuHeading2, LuHeading3, LuPilcrow } from 'react-icons/lu';
+import { useForm, useWatch } from 'react-hook-form';
 import { Block, BlockNoteEditor, BlockNoteSchema, PartialBlock, defaultBlockSpecs } from '@blocknote/core';
 import { createReactBlockSpec } from '@blocknote/react';
+import { Input } from '~/components/Input';
+import { Select } from '~/components/Select';
 import {
   BlogAspectRatio,
   BlogOverlayBackdrop,
@@ -636,25 +639,32 @@ const BlogEmbed = createReactBlockSpec(
   {
     render: ({ block, editor }) => {
       const styles = useBlockStyles();
+      const { control } = useForm<{ provider: string; url: string }>({
+        defaultValues: { provider: block.props.provider, url: block.props.url },
+      });
+      const url = useWatch({ control, name: 'url' });
+      // Input owns its own onBlur, so persist the URL via a debounced watch instead.
+      useEffect(() => {
+        if (url === block.props.url) return;
+        const h = setTimeout(() => editor.updateBlock(block, { props: { url } }), 600);
+        return () => clearTimeout(h);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [url]);
+      const providerOptions = [
+        { value: '', label: 'Provider…' },
+        ...Object.values(EmbedProvider).map((p) => ({ value: p, label: p })),
+      ];
       return (
-        <div style={styles.embedBlock} contentEditable={false}>          <select
-            style={styles.embedSelect}
-            value={block.props.provider}
-            onChange={(e) => editor.updateBlock(block, { props: { provider: e.target.value } })}
-          >
-            <option value=''>Provider…</option>
-            {Object.values(EmbedProvider).map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-          <input
-            style={styles.embedInput}
-            placeholder='Embed URL'
-            defaultValue={block.props.url}
-            onBlur={(e) => editor.updateBlock(block, { props: { url: e.target.value } })}
+        <div style={styles.embedBlock} contentEditable={false}>
+          <Select
+            label='Provider'
+            name='provider'
+            control={control}
+            variant='secondary'
+            options={providerOptions}
+            onValueChange={(v) => editor.updateBlock(block, { props: { provider: v } })}
           />
+          <Input label='Embed URL' name='url' description='' control={control} />
         </div>
       );
     },
@@ -1113,17 +1123,7 @@ const useBlockStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
     fontSize: 13,
   },
-  embedBlock: { flexDirection: 'row', gap: t.spacing.s, alignItems: 'center' },
-  embedSelect: {
-    height: 36,
-    borderRadius: t.borderRadius.small,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    color: t.colors.white,
-    border: 0,
-    outline: 'none',
-    colorScheme: 'dark',
-    fontSize: 13,
-  },
+  embedBlock: { display: 'flex', flexDirection: 'column', gap: t.spacing.xs, width: '100%' },
   embedInput: {
     flex: 1,
     minWidth: 0,

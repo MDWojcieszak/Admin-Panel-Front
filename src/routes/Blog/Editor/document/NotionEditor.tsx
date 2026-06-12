@@ -23,7 +23,7 @@ import { CommentGutter } from '~/routes/Blog/Editor/components/CommentGutter';
 import { CommentsLayer } from '~/routes/Blog/Editor/components/CommentsLayer';
 import { BlogEditor, BlogPartialBlock, IMAGE_DND_TYPE, blogSchema, parseColumns } from '~/routes/Blog/Editor/document/schema';
 import { blocksToDocument, sectionsToBlocks } from '~/routes/Blog/Editor/document/serialize';
-import { mkUseStyles } from '~/utils/theme';
+import { mkUseStyles, useTheme } from '~/utils/theme';
 
 /** Insert a block at the cursor: convert the current block if empty, else insert after it. */
 const insertBlock = (editor: BlogEditor, type: BlogPartialBlock['type']) => {
@@ -68,6 +68,7 @@ export const NotionEditor = ({
   onSaveStateChange,
 }: NotionEditorProps) => {
   const styles = useStyles();
+  const { mode } = useTheme();
   const { blogDocumentApi } = useApi();
   const editor = useCreateBlockNote({ schema: blogSchema });
   const { draft } = useBlogDraft(postId, locale);
@@ -242,7 +243,7 @@ export const NotionEditor = ({
         />
         <BlockNoteView
           editor={editor}
-          theme='dark'
+          theme={mode}
           slashMenu={false}
           onChange={scheduleSave}
           onBlur={() => {

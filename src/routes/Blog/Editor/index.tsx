@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MdArrowBack, MdChatBubbleOutline, MdCheck, MdPermMedia, MdTune } from 'react-icons/md';
+import { MdArrowBack, MdChatBubbleOutline, MdCheck, MdDarkMode, MdLightMode, MdPermMedia, MdTune } from 'react-icons/md';
 import { BlogPostStatus } from '~/api/api';
+import { ThemeProvider } from '~/contexts/Theme/ThemeProvider';
 import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
 import { useModal } from '~/hooks/useModal';
@@ -16,11 +17,29 @@ import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { NotionEditor } from '~/routes/Blog/Editor/document/NotionEditor';
 import { PostSettingsPanel } from '~/routes/Blog/Editor/components/PostSettingsPanel';
 import { postStatusTone } from '~/routes/Blog/utils/status';
-import { mkUseStyles, useTheme } from '~/utils/theme';
+import { darkTheme, lightTheme, mkUseStyles, useTheme } from '~/utils/theme';
 
 type SaveState = 'idle' | 'saving' | 'saved';
+type ThemeMode = 'dark' | 'light';
 
+const THEME_KEY = 'blog-editor-theme';
+
+/** Wrapper that owns the editor's light/dark mode and provides the matching theme to the subtree. */
 export const BlogPostEditor = () => {
+  const [mode, setMode] = useState<ThemeMode>(() =>
+    (typeof localStorage !== 'undefined' && localStorage.getItem(THEME_KEY)) === 'light' ? 'light' : 'dark',
+  );
+  useEffect(() => {
+    localStorage.setItem(THEME_KEY, mode);
+  }, [mode]);
+  return (
+    <ThemeProvider theme={mode === 'light' ? lightTheme : darkTheme}>
+      <BlogPostEditorInner mode={mode} setMode={setMode} />
+    </ThemeProvider>
+  );
+};
+
+const BlogPostEditorInner = ({ mode, setMode }: { mode: ThemeMode; setMode: (m: ThemeMode) => void }) => {
   const styles = useStyles();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -34,6 +53,15 @@ export const BlogPostEditor = () => {
   const [settingsOpen, setSettingsOpen] = useState(true);
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(true);
+
+  // Settings and comments share the right side — keep them mutually exclusive (e.g. a comment opened
+  // from the block gutter should hide the settings panel).
+  useEffect(() => {
+    if (commentsOpen) setSettingsOpen(false);
+  }, [commentsOpen]);
+  useEffect(() => {
+    if (settingsOpen) setCommentsOpen(false);
+  }, [settingsOpen]);
 
   const { locales, defaultLocale } = useBlogLocales();
   const [locale, setLocale] = useState('');
@@ -83,7 +111,7 @@ export const BlogPostEditor = () => {
   };
 
   return (
-    <div style={styles.screen}>
+    <div style={{ ...styles.screen, ['--blog-fg']: mode === 'light' ? '26, 29, 33' : '255, 255, 255' } as CSSProperties}>
       <div style={styles.topbar}>
         <div style={styles.topLeft}>
           <button style={styles.iconBtn} title='Back to posts' onClick={() => navigate('/blog')}>
@@ -131,6 +159,13 @@ export const BlogPostEditor = () => {
               )}
             </span>
           ) : null}
+          <button
+            style={styles.iconBtn}
+            title={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+            onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
+          >
+            {mode === 'light' ? <MdDarkMode size={18} /> : <MdLightMode size={18} />}
+          </button>
           <button
             style={{ ...styles.iconBtn, color: libraryOpen ? theme.colors.blue : theme.colors.white }}
             title='Media library'
@@ -283,6 +318,7 @@ const useStyles = mkUseStyles((t) => ({
     height: '100%',
     minWidth: 0,
     backgroundColor: t.colors.gray05,
+    color: t.colors.white,
   },
   topbar: {
     flexDirection: 'row',

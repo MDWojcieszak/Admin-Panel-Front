@@ -26,7 +26,7 @@ export type SelectRef = {
 export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
   const [isExtended, setIsExtended] = useState(false);
   const [isOnList, setIsOnList] = useState(false);
-  const [coords, setCoords] = useState<{ left: number; top: number; width: number } | null>(null);
+  const [coords, setCoords] = useState<{ left: number; top?: number; bottom?: number; width: number } | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -56,7 +56,14 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
     const el = inputRef.current ?? containerRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    setCoords({ left: r.left, top: r.bottom + theme.spacing.m, width: r.width });
+    const spaceBelow = window.innerHeight - r.bottom;
+    // Flip the list above the field when there isn't room below (e.g. near the bottom of the page).
+    const openUp = spaceBelow < 260 && r.top > spaceBelow;
+    setCoords({
+      left: r.left,
+      width: r.width,
+      ...(openUp ? { bottom: window.innerHeight - r.top + theme.spacing.s } : { top: r.bottom + theme.spacing.s }),
+    });
   };
 
   useLayoutEffect(() => {
@@ -125,6 +132,9 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
                 position: 'fixed',
                 left: coords.left,
                 top: coords.top,
+                bottom: coords.bottom,
+                maxHeight: 280,
+                overflowY: 'auto',
                 width: coords.width,
                 zIndex: 1000,
                 boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
@@ -143,7 +153,6 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
         style={{
           ...styles.input,
           width: variant === 'secondary' ? '100%' : undefined,
-          color: variant === 'secondary' ? theme.colors.white : undefined,
           paddingTop: variant === 'secondary' ? theme.spacing.m : theme.spacing.l + 4,
         }}
         readOnly
@@ -219,11 +228,13 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.s,
     borderRadius: t.borderRadius.default,
     backgroundColor: t.colors.gray04,
+    color: t.colors.white,
   },
   option: {
     padding: t.spacing.s,
     borderRadius: t.borderRadius.default,
     cursor: 'pointer',
+    color: t.colors.white,
   },
   chevron: {
     position: 'absolute',
