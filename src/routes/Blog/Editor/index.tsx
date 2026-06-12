@@ -10,6 +10,7 @@ import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
 import { Loader } from '~/components/Loader';
 import { Scrollbar } from '~/components/Scrollbar';
+import { GlobalComments } from '~/routes/Blog/Editor/components/GlobalComments';
 import { useBlogLocales } from '~/routes/Blog/hooks/useBlogLocales';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { NotionEditor } from '~/routes/Blog/Editor/document/NotionEditor';
@@ -252,6 +253,8 @@ export const BlogPostEditor = () => {
                   onChange={(e) => setExcerpt(e.target.value)}
                   onBlur={() => excerpt !== (draft.excerpt ?? '') && saveTranslation({ excerpt })}
                 />
+
+                <GlobalComments postId={draft.postId} />
 
                 <div style={styles.divider} />
 

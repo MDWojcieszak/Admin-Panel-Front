@@ -34,7 +34,6 @@ export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, on
 
   const [comments, setComments] = useState<EditorialCommentResponse[]>([]);
   const [targetY, setTargetY] = useState<Record<string, number>>({});
-  const [globalDraft, setGlobalDraft] = useState('');
   const [sectionDraft, setSectionDraft] = useState<Record<string, string>>({});
   const [editing, setEditing] = useState<{ id: string; body: string } | null>(null);
 
@@ -52,15 +51,13 @@ export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, on
     if (open) load();
   }, [open, load]);
 
-  // Group comments: global (no sectionId) vs per-section.
-  const { global, bySection } = useMemo(() => {
-    const g: EditorialCommentResponse[] = [];
+  // Per-section comments (global notes are shown separately, under the summary).
+  const bySection = useMemo(() => {
     const s: Record<string, EditorialCommentResponse[]> = {};
     for (const c of comments) {
       if (c.sectionId) (s[c.sectionId] ??= []).push(c);
-      else g.push(c);
     }
-    return { global: g, bySection: s };
+    return s;
   }, [comments]);
 
   // Measure each commented section's vertical position from its block in the document DOM.
@@ -189,14 +186,7 @@ export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, on
       animate={{ x: open ? 0 : COMMENTS_LAYER_WIDTH + 12, opacity: open ? 1 : 0 }}
       transition={{ type: 'spring', stiffness: 320, damping: 34 }}
     >
-      {/* Global thread, pinned at the top. */}
-      <div style={styles.globalCard}>
-        <span style={styles.globalTitle}>Post notes</span>
-        {global.length ? global.map(renderComment) : <span style={styles.empty}>No post-level notes yet.</span>}
-        <Composer value={globalDraft} onChange={setGlobalDraft} onSubmit={async () => { await post(null, globalDraft); setGlobalDraft(''); }} placeholder='Add a post note…' />
-      </div>
-
-      {/* Section cards positioned next to their block. */}
+      {/* Section cards positioned next to their block. Global notes live under the summary (GlobalComments). */}
       {placed.map(({ sectionId, top }) => (
         <div key={sectionId} style={{ ...styles.sectionCard, top }}>
           {bySection[sectionId].map(renderComment)}
