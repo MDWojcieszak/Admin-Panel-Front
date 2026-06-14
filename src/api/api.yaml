@@ -4361,6 +4361,46 @@ paths:
         - Blog · Categories
       security:
         - bearer: []
+  /blog/collections/public:
+    get:
+      operationId: CollectionController_listPublic
+      parameters:
+        - name: country
+          required: false
+          in: query
+          description: Country slug filter.
+          schema:
+            type: string
+        - name: region
+          required: false
+          in: query
+          description: Region scope filter.
+          schema:
+            type: string
+        - name: locale
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: take
+          required: false
+          in: query
+          schema:
+            type: number
+        - name: skip
+          required: false
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Public collection list (filter by country slug / region)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCollectionListResponse'
+      tags:
+        - Blog · Collections
   /blog/collections/by-slug/{slug}:
     get:
       operationId: CollectionController_getPublic
@@ -4410,6 +4450,7 @@ paths:
         - name: country
           required: false
           in: query
+          description: Country slug filter.
           schema:
             type: string
         - name: region
@@ -8852,6 +8893,7 @@ components:
         - GALLERY
         - MAP
         - PLACE
+        - COLLECTION
         - EMBED
         - DIVIDER
         - COLUMNS
@@ -9096,6 +9138,28 @@ components:
         - categoryIds
         - bestSeasons
         - untranslated
+    ResolvedSectionCollectionResponse:
+      type: object
+      properties:
+        collectionId:
+          type: string
+        slug:
+          type: string
+        coverImageId:
+          type: string
+          nullable: true
+        itemCount:
+          type: integer
+        country:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+      required:
+        - collectionId
+        - slug
+        - itemCount
     VisibleSectionResponse:
       type: object
       properties:
@@ -9156,6 +9220,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ResolvedSectionPoiResponse'
+        collection:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/ResolvedSectionCollectionResponse'
         locked:
           type: boolean
       required:
@@ -9433,6 +9501,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ResolvedSectionPoiResponse'
+        collection:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/ResolvedSectionCollectionResponse'
       required:
         - id
         - type
@@ -9932,6 +10004,25 @@ components:
         - poiId
         - order
         - poi
+    SectionCollectionResponse:
+      type: object
+      properties:
+        collectionId:
+          type: string
+        slug:
+          type: string
+        coverImageId:
+          type: string
+          nullable: true
+        itemCount:
+          type: integer
+        country:
+          type: string
+          nullable: true
+      required:
+        - collectionId
+        - slug
+        - itemCount
     SectionResponse:
       type: object
       properties:
@@ -9987,6 +10078,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SectionPoiResponse'
+        collection:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/SectionCollectionResponse'
         createdAt:
           type: string
           format: date-time
@@ -10041,6 +10136,10 @@ components:
           type: string
         embedProvider:
           $ref: '#/components/schemas/EmbedProvider'
+        collectionId:
+          type: string
+          nullable: true
+          description: PoiCollection id (FK) — only for a COLLECTION section.
         locale:
           type: string
           description: Locale for the initial translation. Defaults to the default locale.
@@ -10101,6 +10200,10 @@ components:
         embedProvider:
           nullable: true
           $ref: '#/components/schemas/EmbedProvider'
+        collectionId:
+          type: string
+          nullable: true
+          description: PoiCollection id (FK) for a COLLECTION section; null clears.
     UpsertSectionTranslationDto:
       type: object
       properties:
@@ -10906,6 +11009,46 @@ components:
           type: string
           nullable: true
           description: Localized label; null clears it.
+    PublicCollectionSummaryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        country:
+          type: string
+          nullable: true
+        region:
+          type: string
+          nullable: true
+        coverImageId:
+          type: string
+          nullable: true
+        itemCount:
+          type: integer
+        title:
+          type: string
+          nullable: true
+        untranslated:
+          type: boolean
+      required:
+        - id
+        - slug
+        - itemCount
+        - untranslated
+    PublicCollectionListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicCollectionSummaryResponse'
+      required:
+        - total
+        - collections
     PublicCollectionItemResponse:
       type: object
       properties:
@@ -11076,10 +11219,10 @@ components:
           description: Initial locale. Defaults to the default locale.
         description:
           type: string
-        country:
+        countryId:
           type: string
           nullable: true
-          description: Scope country.
+          description: Scope country — BlogCountry id (FK). null = thematic.
         region:
           type: string
           nullable: true
@@ -11135,9 +11278,10 @@ components:
       properties:
         slug:
           type: string
-        country:
+        countryId:
           type: string
           nullable: true
+          description: Scope country — BlogCountry id (FK). null = clear.
         region:
           type: string
           nullable: true
@@ -11630,6 +11774,7 @@ components:
         - embed
         - map
         - place
+        - collection
         - list
         - heading
         - quote
@@ -11707,6 +11852,9 @@ components:
           type: array
           items:
             type: string
+        collectionId:
+          type: string
+          description: PoiCollection id (collection block).
         level:
           type: integer
           minimum: 1
@@ -11807,6 +11955,9 @@ components:
           type: array
           items:
             type: string
+        collectionId:
+          type: string
+          description: PoiCollection id (collection block).
         level:
           type: integer
           minimum: 1
@@ -11926,6 +12077,8 @@ components:
           type: integer
         poiCount:
           type: integer
+        collectionCount:
+          type: integer
         translations:
           type: array
           items:
@@ -11941,6 +12094,7 @@ components:
         - slug
         - postCount
         - poiCount
+        - collectionCount
         - translations
         - createdAt
         - updatedAt
@@ -11994,11 +12148,14 @@ components:
           type: integer
         poiCount:
           type: integer
+        collectionCount:
+          type: integer
       required:
         - slug
         - name
         - postCount
         - poiCount
+        - collectionCount
     BlogCountryMenuResponse:
       type: object
       properties:
@@ -12025,11 +12182,14 @@ components:
           type: integer
         poiCount:
           type: integer
+        collectionCount:
+          type: integer
       required:
         - slug
         - name
         - postCount
         - poiCount
+        - collectionCount
     AccessGrantSource:
       type: string
       enum:

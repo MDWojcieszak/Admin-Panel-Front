@@ -290,7 +290,9 @@ docs/ProcessLogListResponseDto.md
 docs/ProcessPointDto.md
 docs/ProcessResponseDto.md
 docs/PublicCollectionItemResponse.md
+docs/PublicCollectionListResponse.md
 docs/PublicCollectionResponse.md
+docs/PublicCollectionSummaryResponse.md
 docs/PublicHomeResponse.md
 docs/PublicKeyResponse.md
 docs/PublicPostCardResponse.md
@@ -310,6 +312,7 @@ docs/ReorderPostsDto.md
 docs/RequestResetPasswordDto.md
 docs/ResetPasswordDto.md
 docs/ResolvedCategoryResponse.md
+docs/ResolvedSectionCollectionResponse.md
 docs/ResolvedSectionImageResponse.md
 docs/ResolvedSectionListItemResponse.md
 docs/ResolvedSectionPoiResponse.md
@@ -323,6 +326,7 @@ docs/SaveServiceTokenResponseDto.md
 docs/ScheduleDto.md
 docs/SearchResultResponse.md
 docs/SearchResultsResponse.md
+docs/SectionCollectionResponse.md
 docs/SectionImageResponse.md
 docs/SectionImageTranslationResponse.md
 docs/SectionListItemResponse.md

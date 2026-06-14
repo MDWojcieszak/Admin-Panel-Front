@@ -76,7 +76,7 @@ export const BlogCountries = () => {
                     <span style={styles.slug}>{c.slug}</span>
                   </div>
                   <span style={styles.counts}>
-                    {c.postCount} posts · {c.poiCount} places
+                    {c.postCount} posts · {c.poiCount} places · {c.collectionCount} rankings
                   </span>
                   {canManage ? (
                     <div style={styles.actions}>

@@ -22,6 +22,7 @@ Name | Type | Description | Notes
 **images** | [**Array&lt;SectionImageResponse&gt;**](SectionImageResponse.md) |  | [default to undefined]
 **items** | [**Array&lt;SectionListItemResponse&gt;**](SectionListItemResponse.md) |  | [default to undefined]
 **pois** | [**Array&lt;SectionPoiResponse&gt;**](SectionPoiResponse.md) |  | [default to undefined]
+**collection** | [**SectionCollectionResponse**](SectionCollectionResponse.md) |  | [optional] [default to undefined]
 **createdAt** | **string** |  | [default to undefined]
 **updatedAt** | **string** |  | [default to undefined]
 
@@ -48,6 +49,7 @@ const instance: SectionResponse = {
     images,
     items,
     pois,
+    collection,
     createdAt,
     updatedAt,
 };

@@ -19,6 +19,8 @@
 
 * `Place` (value: `'place'`)
 
+* `Collection` (value: `'collection'`)
+
 * `List` (value: `'list'`)
 
 * `Heading` (value: `'heading'`)

@@ -3,6 +3,7 @@ import { ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table
 import { FaPlus } from 'react-icons/fa6';
 import { PermissionGroupResponseDto } from '~/api/api';
 import { Button } from '~/components/Button';
+import { ConfirmModal } from '~/components/ConfirmModal';
 import { Table } from '~/components/Table';
 import { ActionButtons } from '~/components/Table/ActionButtons';
 import { useCan } from '~/hooks/usePermissions';
@@ -30,6 +31,7 @@ export const GroupsPanel = () => {
       },
     },
   );
+  const deleteModal = useModal('acl-group-delete', ConfirmModal, { title: 'Delete group' });
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -84,14 +86,24 @@ export const GroupsPanel = () => {
               <ActionButtons
                 id={info.row.original.id}
                 onEdit={() => editorModal.show({ group: info.row.original, canManage })}
-                onDelete={handleDelete}
+                onDelete={() =>
+                  deleteModal.show({
+                    message: `Delete “${info.row.original.name}”?`,
+                    description: info.row.original.userCount
+                      ? `${info.row.original.userCount} user(s) lose this group's permissions. This cannot be undone.`
+                      : 'This cannot be undone.',
+                    confirmLabel: 'Delete',
+                    danger: true,
+                    onConfirm: () => handleDelete(info.row.original.id),
+                  })
+                }
               />
             </div>
           ) : null,
         maxSize: 110,
       },
     ],
-    [theme, canManage, editorModal, handleDelete],
+    [theme, canManage, editorModal, deleteModal, handleDelete],
   );
 
   const table = useReactTable({

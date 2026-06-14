@@ -91,6 +91,8 @@ const buildBlocks = (s: ResolvedSectionResponse, keepSectionId: boolean): BlogPa
       ];
     case BlogSectionType.Place:
       return [{ type: 'blogPlace', props: { sectionId: sid, poiId: s.pois[0]?.poiId ?? '' } }];
+    case BlogSectionType.Collection:
+      return [{ type: 'blogCollection', props: { sectionId: sid, collectionId: s.collection?.collectionId ?? '' } }];
     default:
       return [];
   }
@@ -239,6 +241,9 @@ function customToDoc(b: BlogBlock, sectionMap?: Record<string, string>): Documen
     case 'blogPlace':
       if (!b.props.poiId) return null;
       return { ...ref(b.props.sectionId, b.id), type: DocumentBlockType.Place, poiId: b.props.poiId };
+    case 'blogCollection':
+      if (!b.props.collectionId) return null;
+      return { ...ref(b.props.sectionId, b.id), type: DocumentBlockType.Collection, collectionId: b.props.collectionId };
     case 'blogCallout':
       return {
         ...ref(b.props.sectionId, b.id),

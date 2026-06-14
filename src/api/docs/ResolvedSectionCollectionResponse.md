@@ -1,29 +1,29 @@
-# BlogCountryMenuItemResponse
+# ResolvedSectionCollectionResponse
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**collectionId** | **string** |  | [default to undefined]
 **slug** | **string** |  | [default to undefined]
-**name** | **string** |  | [default to undefined]
 **coverImageId** | **string** |  | [optional] [default to undefined]
-**postCount** | **number** |  | [default to undefined]
-**poiCount** | **number** |  | [default to undefined]
-**collectionCount** | **number** |  | [default to undefined]
+**itemCount** | **number** |  | [default to undefined]
+**country** | **string** |  | [optional] [default to undefined]
+**title** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { BlogCountryMenuItemResponse } from './api';
+import { ResolvedSectionCollectionResponse } from './api';
 
-const instance: BlogCountryMenuItemResponse = {
+const instance: ResolvedSectionCollectionResponse = {
+    collectionId,
     slug,
-    name,
     coverImageId,
-    postCount,
-    poiCount,
-    collectionCount,
+    itemCount,
+    country,
+    title,
 };
 ```
 

@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   MdCheckCircle,
   MdClose,
+  MdCollectionsBookmark,
   MdImage,
   MdInfoOutline,
   MdLightbulb,
@@ -22,10 +23,12 @@ import {
   BlogOverlayPosition,
   BlogOverlayTheme,
   CalloutVariant,
+  CollectionResponse,
   EmbedProvider,
   PoiAdminResponse,
 } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
+import { CollectionPicker } from '~/routes/Blog/Editor/components/CollectionPicker';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
 import { PoiPicker } from '~/routes/Blog/Editor/components/PoiPicker';
 import { useBlogEditorBridge } from '~/routes/Blog/Editor/document/bridge';
@@ -61,6 +64,40 @@ const PoiChip = ({ poiId, onRemove }: { poiId: string; onRemove: () => void }) =
       <span style={styles.poiChipName}>{poi?.name ?? poiId}</span>
       <button style={styles.poiChipRemove} onClick={onRemove} type='button'>
         <MdClose size={13} />
+      </button>
+    </div>
+  );
+};
+
+/** Teaser for an embedded collection: cover + title + place count (full ranking is rendered publicly). */
+const CollectionChip = ({ collectionId, onRemove }: { collectionId: string; onRemove: () => void }) => {
+  const styles = useBlockStyles();
+  const theme = useTheme();
+  const { blogCollectionsApi } = useApi();
+  const [col, setCol] = useState<CollectionResponse>();
+  useEffect(() => {
+    if (!blogCollectionsApi) return;
+    blogCollectionsApi
+      .collectionControllerGetById({ id: collectionId })
+      .then((r) => setCol(r.data))
+      .catch(() => undefined);
+  }, [blogCollectionsApi, collectionId]);
+  const title = col ? col.translations[0]?.title ?? col.slug : collectionId;
+  return (
+    <div style={styles.collectionChip} contentEditable={false}>
+      {col?.coverImageId ? (
+        <MediaThumb imageId={col.coverImageId} res='cover' style={styles.collectionCover} />
+      ) : (
+        <div style={styles.collectionCoverPlaceholder}>
+          <MdCollectionsBookmark size={18} color={theme.colors.blue04} />
+        </div>
+      )}
+      <div style={styles.collectionInfo}>
+        <span style={styles.collectionTitle}>{title}</span>
+        <span style={styles.collectionMeta}>{col ? `${col.items.length} ranked place(s)` : '…'}</span>
+      </div>
+      <button style={styles.poiChipRemove} onClick={onRemove} type='button'>
+        <MdClose size={14} />
       </button>
     </div>
   );
@@ -468,6 +505,26 @@ const BlogPlace = createReactBlockSpec(
   },
 )();
 
+const BlogCollection = createReactBlockSpec(
+  { type: 'blogCollection', propSchema: { sectionId: { default: '' }, collectionId: { default: '' } }, content: 'none' },
+  {
+    render: ({ block, editor }) => {
+      const styles = useBlockStyles();
+      const { collectionId } = block.props;
+      return (
+        <div style={styles.poiBlock} contentEditable={false}>
+          <span style={styles.poiBlockLabel}>Collection</span>
+          {collectionId ? (
+            <CollectionChip collectionId={collectionId} onRemove={() => editor.updateBlock(block, { props: { collectionId: '' } })} />
+          ) : (
+            <CollectionPicker onPick={(id) => editor.updateBlock(block, { props: { collectionId: id } })} />
+          )}
+        </div>
+      );
+    },
+  },
+)();
+
 const BlogCallout = createReactBlockSpec(
   {
     type: 'blogCallout',
@@ -541,6 +598,7 @@ export const blogSchema = withMultiColumn(
       blogEmbed: BlogEmbed,
       blogMap: BlogMap,
       blogPlace: BlogPlace,
+      blogCollection: BlogCollection,
       blogCallout: BlogCallout,
     },
   }),
@@ -561,6 +619,7 @@ export const CUSTOM_BLOCK_TYPES = new Set([
   'blogEmbed',
   'blogMap',
   'blogPlace',
+  'blogCollection',
   'blogCallout',
 ]);
 
@@ -904,6 +963,29 @@ const useBlockStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
   },
   poiChipName: { fontSize: 13 },
+  collectionChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    padding: 6,
+    paddingRight: 4,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+  },
+  collectionCover: { width: 44, height: 44, minWidth: 44, borderRadius: t.borderRadius.small, overflow: 'hidden' },
+  collectionCoverPlaceholder: {
+    width: 44,
+    height: 44,
+    minWidth: 44,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: t.borderRadius.small,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
+  },
+  collectionInfo: { flex: 1, minWidth: 0, gap: 2 },
+  collectionTitle: { fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+  collectionMeta: { fontSize: 12, color: t.colors.dark05 },
   poiChipRemove: {
     width: 20,
     height: 20,

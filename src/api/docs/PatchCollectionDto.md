@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **slug** | **string** |  | [optional] [default to undefined]
-**country** | **string** |  | [optional] [default to undefined]
+**countryId** | **string** | Scope country — BlogCountry id (FK). null &#x3D; clear. | [optional] [default to undefined]
 **region** | **string** |  | [optional] [default to undefined]
 **isPublic** | **boolean** |  | [optional] [default to undefined]
 **coverImageId** | **string** |  | [optional] [default to undefined]
@@ -18,7 +18,7 @@ import { PatchCollectionDto } from './api';
 
 const instance: PatchCollectionDto = {
     slug,
-    country,
+    countryId,
     region,
     isPublic,
     coverImageId,

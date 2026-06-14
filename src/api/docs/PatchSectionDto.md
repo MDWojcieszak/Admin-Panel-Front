@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **galleryLayout** | [**GalleryLayout**](GalleryLayout.md) |  | [optional] [default to undefined]
 **embedUrl** | **string** |  | [optional] [default to undefined]
 **embedProvider** | [**EmbedProvider**](EmbedProvider.md) |  | [optional] [default to undefined]
+**collectionId** | **string** | PoiCollection id (FK) for a COLLECTION section; null clears. | [optional] [default to undefined]
 
 ## Example
 
@@ -28,6 +29,7 @@ const instance: PatchSectionDto = {
     galleryLayout,
     embedUrl,
     embedProvider,
+    collectionId,
 };
 ```
 

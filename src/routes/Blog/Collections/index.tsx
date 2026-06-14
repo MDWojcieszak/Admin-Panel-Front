@@ -8,6 +8,7 @@ import { Scrollbar } from '~/components/Scrollbar';
 import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
 import { useModal } from '~/hooks/useModal';
+import { countryName, useBlogCountries } from '~/routes/Blog/hooks/useBlogCountries';
 import { useBlogLocales } from '~/routes/Blog/hooks/useBlogLocales';
 import { useCollections } from '~/routes/Blog/Collections/hooks/useCollections';
 import { CollectionEditorModal } from '~/routes/Blog/Collections/modals/CollectionEditorModal';
@@ -27,6 +28,12 @@ export const BlogCollections = () => {
   }, [defaultLocale, locale]);
 
   const { collections, search, setSearch, refresh } = useCollections();
+  const { countries } = useBlogCountries();
+  const countryDisplay = (slug?: string | null) => {
+    if (!slug) return undefined;
+    const c = countries.find((x) => x.slug === slug);
+    return c ? countryName(c, locale || 'en') : slug;
+  };
 
   const editor = useModal(
     'blog-collection-editor',
@@ -60,7 +67,7 @@ export const BlogCollections = () => {
             <input style={styles.searchInput} placeholder='Search…' value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           {canManage ? (
-            <Button label='New collection' icon={<FaPlus />} onClick={() => editor.show({ locale, canManage, collection: undefined })} />
+            <Button label='New collection' icon={<FaPlus />} onClick={() => editor.show({ canManage, collection: undefined })} />
           ) : null}
         </div>
       </div>
@@ -80,13 +87,13 @@ export const BlogCollections = () => {
                   <div style={styles.info}>
                     <span style={styles.name}>{col.title || col.slug}</span>
                     <span style={styles.meta}>
-                      {[col.country, col.region].filter(Boolean).join(' · ') || 'No scope'} · {col.itemCount} place(s)
+                      {[countryDisplay(col.country), col.region].filter(Boolean).join(' · ') || 'No scope'} · {col.itemCount} place(s)
                     </span>
                   </div>
                   <Badge label={col.isPublic ? 'public' : 'private'} tone={col.isPublic ? 'green' : 'neutral'} />
                   {canManage ? (
                     <div style={styles.actions}>
-                      <button style={styles.iconBtn} title='Edit' onClick={() => editor.show({ collection: col, locale, canManage })}>
+                      <button style={styles.iconBtn} title='Edit' onClick={() => editor.show({ collection: col, canManage })}>
                         <MdEdit size={18} color={theme.colors.blue04} />
                       </button>
                       <button style={styles.iconBtn} title='Delete' onClick={() => handleDelete(col.id)}>

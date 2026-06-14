@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **title** | **string** | Title for the initial locale. | [default to undefined]
 **locale** | **string** | Initial locale. Defaults to the default locale. | [optional] [default to undefined]
 **description** | **string** |  | [optional] [default to undefined]
-**country** | **string** | Scope country. | [optional] [default to undefined]
+**countryId** | **string** | Scope country — BlogCountry id (FK). null &#x3D; thematic. | [optional] [default to undefined]
 **region** | **string** | Scope region. | [optional] [default to undefined]
 **isPublic** | **boolean** | Public (blog) vs internal (planning). Default true. | [optional] [default to undefined]
 **coverImageId** | **string** |  | [optional] [default to undefined]
@@ -24,7 +24,7 @@ const instance: CreateCollectionDto = {
     title,
     locale,
     description,
-    country,
+    countryId,
     region,
     isPublic,
     coverImageId,

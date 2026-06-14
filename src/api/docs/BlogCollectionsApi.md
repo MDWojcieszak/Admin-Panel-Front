@@ -11,6 +11,7 @@ All URIs are relative to *http://localhost*
 |[**collectionControllerGetById**](#collectioncontrollergetbyid) | **GET** /blog/collections/{id} | |
 |[**collectionControllerGetPublic**](#collectioncontrollergetpublic) | **GET** /blog/collections/by-slug/{slug} | |
 |[**collectionControllerList**](#collectioncontrollerlist) | **GET** /blog/collections | |
+|[**collectionControllerListPublic**](#collectioncontrollerlistpublic) | **GET** /blog/collections/public | |
 |[**collectionControllerPatch**](#collectioncontrollerpatch) | **PATCH** /blog/collections/{id} | |
 |[**collectionControllerPatchItem**](#collectioncontrollerpatchitem) | **PATCH** /blog/collections/{id}/items/{itemId} | |
 |[**collectionControllerReorderItems**](#collectioncontrollerreorderitems) | **PATCH** /blog/collections/{id}/items/reorder | |
@@ -345,7 +346,7 @@ const apiInstance = new BlogCollectionsApi(configuration);
 let take: number; // (optional) (default to undefined)
 let skip: number; // (optional) (default to 0)
 let isPublic: boolean; // (optional) (default to undefined)
-let country: string; // (optional) (default to undefined)
+let country: string; //Country slug filter. (optional) (default to undefined)
 let region: string; // (optional) (default to undefined)
 let search: string; //Slug contains (case-insensitive). (optional) (default to undefined)
 
@@ -366,7 +367,7 @@ const { status, data } = await apiInstance.collectionControllerList(
 | **take** | [**number**] |  | (optional) defaults to undefined|
 | **skip** | [**number**] |  | (optional) defaults to 0|
 | **isPublic** | [**boolean**] |  | (optional) defaults to undefined|
-| **country** | [**string**] |  | (optional) defaults to undefined|
+| **country** | [**string**] | Country slug filter. | (optional) defaults to undefined|
 | **region** | [**string**] |  | (optional) defaults to undefined|
 | **search** | [**string**] | Slug contains (case-insensitive). | (optional) defaults to undefined|
 
@@ -389,6 +390,68 @@ const { status, data } = await apiInstance.collectionControllerList(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Admin collection list |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **collectionControllerListPublic**
+> PublicCollectionListResponse collectionControllerListPublic()
+
+
+### Example
+
+```typescript
+import {
+    BlogCollectionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new BlogCollectionsApi(configuration);
+
+let country: string; //Country slug filter. (optional) (default to undefined)
+let region: string; //Region scope filter. (optional) (default to undefined)
+let locale: string; // (optional) (default to undefined)
+let take: number; // (optional) (default to undefined)
+let skip: number; // (optional) (default to undefined)
+
+const { status, data } = await apiInstance.collectionControllerListPublic(
+    country,
+    region,
+    locale,
+    take,
+    skip
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **country** | [**string**] | Country slug filter. | (optional) defaults to undefined|
+| **region** | [**string**] | Region scope filter. | (optional) defaults to undefined|
+| **locale** | [**string**] |  | (optional) defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
+| **skip** | [**number**] |  | (optional) defaults to undefined|
+
+
+### Return type
+
+**PublicCollectionListResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Public collection list (filter by country slug / region) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

@@ -24,6 +24,7 @@ Name | Type | Description | Notes
 **images** | [**Array&lt;ResolvedSectionImageResponse&gt;**](ResolvedSectionImageResponse.md) |  | [default to undefined]
 **items** | [**Array&lt;ResolvedSectionListItemResponse&gt;**](ResolvedSectionListItemResponse.md) |  | [default to undefined]
 **pois** | [**Array&lt;ResolvedSectionPoiResponse&gt;**](ResolvedSectionPoiResponse.md) |  | [default to undefined]
+**collection** | [**ResolvedSectionCollectionResponse**](ResolvedSectionCollectionResponse.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -50,6 +51,7 @@ const instance: ResolvedSectionResponse = {
     images,
     items,
     pois,
+    collection,
 };
 ```
 

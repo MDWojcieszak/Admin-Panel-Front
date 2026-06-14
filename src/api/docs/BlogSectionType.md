@@ -21,6 +21,8 @@
 
 * `Place` (value: `'PLACE'`)
 
+* `Collection` (value: `'COLLECTION'`)
+
 * `Embed` (value: `'EMBED'`)
 
 * `Divider` (value: `'DIVIDER'`)

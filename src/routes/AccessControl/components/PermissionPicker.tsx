@@ -86,9 +86,12 @@ export const PermissionPicker = ({ grouped, value, onChange, disabled }: Permiss
 
 const useStyles = mkUseStyles((t) => ({
   scroll: {
-    height: 340,
+    height: 'min(460px, 60vh)',
   },
   container: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    alignItems: 'start',
     gap: t.spacing.m,
     paddingRight: t.spacing.m,
   },

@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PermissionGroupResponseDto } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
+import { TextArea } from '~/components/TextArea';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { usePermissions } from '~/hooks/usePermissions';
@@ -63,7 +64,7 @@ export const GroupEditorModal = (p: GroupEditorModalProps) => {
     <FormProvider {...formMethods}>
       <div style={styles.container}>
         <Input name='name' label='Name' description='e.g. Server operators' />
-        <Input name='description' label='Description' description='Optional description' />
+        <TextArea name='description' label='Description' description='Optional description' />
         <div style={styles.field}>
           <label style={styles.label}>Permissions ({permissions.length})</label>
           <PermissionPicker grouped={grouped} value={permissions} onChange={setPermissions} disabled={!canManage} />
@@ -82,7 +83,7 @@ export const GroupEditorModal = (p: GroupEditorModalProps) => {
 const useStyles = mkUseStyles((t) => ({
   container: {
     gap: t.spacing.m,
-    width: 460,
+    width: 'min(760px, 88vw)',
   },
   field: {
     gap: t.spacing.s,

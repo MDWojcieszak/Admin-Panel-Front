@@ -692,6 +692,12 @@ export interface BlogCountryAdminResponse {
     'poiCount': number;
     /**
      * 
+     * @type {number}
+     * @memberof BlogCountryAdminResponse
+     */
+    'collectionCount': number;
+    /**
+     * 
      * @type {Array<BlogCountryTranslationResponse>}
      * @memberof BlogCountryAdminResponse
      */
@@ -764,6 +770,12 @@ export interface BlogCountryMenuItemResponse {
      * @memberof BlogCountryMenuItemResponse
      */
     'poiCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryMenuItemResponse
+     */
+    'collectionCount': number;
 }
 /**
  * 
@@ -820,6 +832,12 @@ export interface BlogCountryPageResponse {
      * @memberof BlogCountryPageResponse
      */
     'poiCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryPageResponse
+     */
+    'collectionCount': number;
 }
 /**
  * 
@@ -1239,6 +1257,7 @@ export const BlogSectionType = {
     Gallery: 'GALLERY',
     Map: 'MAP',
     Place: 'PLACE',
+    Collection: 'COLLECTION',
     Embed: 'EMBED',
     Divider: 'DIVIDER',
     Columns: 'COLUMNS',
@@ -2177,11 +2196,11 @@ export interface CreateCollectionDto {
      */
     'description'?: string;
     /**
-     * Scope country.
+     * Scope country — BlogCountry id (FK). null = thematic.
      * @type {string}
      * @memberof CreateCollectionDto
      */
-    'country'?: string | null;
+    'countryId'?: string | null;
     /**
      * Scope region.
      * @type {string}
@@ -2729,6 +2748,12 @@ export interface CreateSectionDto {
      * @memberof CreateSectionDto
      */
     'embedProvider'?: EmbedProvider;
+    /**
+     * PoiCollection id (FK) — only for a COLLECTION section.
+     * @type {string}
+     * @memberof CreateSectionDto
+     */
+    'collectionId'?: string | null;
     /**
      * Locale for the initial translation. Defaults to the default locale.
      * @type {string}
@@ -3482,6 +3507,12 @@ export interface DocumentBlockDto {
      */
     'poiIds'?: Array<string>;
     /**
+     * PoiCollection id (collection block).
+     * @type {string}
+     * @memberof DocumentBlockDto
+     */
+    'collectionId'?: string;
+    /**
      * 
      * @type {number}
      * @memberof DocumentBlockDto
@@ -3529,6 +3560,7 @@ export const DocumentBlockType = {
     Embed: 'embed',
     Map: 'map',
     Place: 'place',
+    Collection: 'collection',
     List: 'list',
     Heading: 'heading',
     Quote: 'quote',
@@ -3713,6 +3745,12 @@ export interface DocumentLeafBlockDto {
      * @memberof DocumentLeafBlockDto
      */
     'poiIds'?: Array<string>;
+    /**
+     * PoiCollection id (collection block).
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'collectionId'?: string;
     /**
      * 
      * @type {number}
@@ -5494,11 +5532,11 @@ export interface PatchCollectionDto {
      */
     'slug'?: string;
     /**
-     * 
+     * Scope country — BlogCountry id (FK). null = clear.
      * @type {string}
      * @memberof PatchCollectionDto
      */
-    'country'?: string | null;
+    'countryId'?: string | null;
     /**
      * 
      * @type {string}
@@ -5909,6 +5947,12 @@ export interface PatchSectionDto {
      * @memberof PatchSectionDto
      */
     'embedProvider'?: EmbedProvider;
+    /**
+     * PoiCollection id (FK) for a COLLECTION section; null clears.
+     * @type {string}
+     * @memberof PatchSectionDto
+     */
+    'collectionId'?: string | null;
 }
 
 
@@ -8818,6 +8862,25 @@ export interface PublicCollectionItemResponse {
 /**
  * 
  * @export
+ * @interface PublicCollectionListResponse
+ */
+export interface PublicCollectionListResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof PublicCollectionListResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<PublicCollectionSummaryResponse>}
+     * @memberof PublicCollectionListResponse
+     */
+    'collections': Array<PublicCollectionSummaryResponse>;
+}
+/**
+ * 
+ * @export
  * @interface PublicCollectionResponse
  */
 export interface PublicCollectionResponse {
@@ -8875,6 +8938,61 @@ export interface PublicCollectionResponse {
      * @memberof PublicCollectionResponse
      */
     'items': Array<PublicCollectionItemResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface PublicCollectionSummaryResponse
+ */
+export interface PublicCollectionSummaryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicCollectionSummaryResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicCollectionSummaryResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicCollectionSummaryResponse
+     */
+    'country'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicCollectionSummaryResponse
+     */
+    'region'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicCollectionSummaryResponse
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublicCollectionSummaryResponse
+     */
+    'itemCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicCollectionSummaryResponse
+     */
+    'title'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PublicCollectionSummaryResponse
+     */
+    'untranslated': boolean;
 }
 /**
  * 
@@ -9492,6 +9610,49 @@ export interface ResolvedCategoryResponse {
 /**
  * 
  * @export
+ * @interface ResolvedSectionCollectionResponse
+ */
+export interface ResolvedSectionCollectionResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ResolvedSectionCollectionResponse
+     */
+    'collectionId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResolvedSectionCollectionResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResolvedSectionCollectionResponse
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ResolvedSectionCollectionResponse
+     */
+    'itemCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResolvedSectionCollectionResponse
+     */
+    'country'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ResolvedSectionCollectionResponse
+     */
+    'title'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface ResolvedSectionImageResponse
  */
 export interface ResolvedSectionImageResponse {
@@ -9892,6 +10053,12 @@ export interface ResolvedSectionResponse {
      * @memberof ResolvedSectionResponse
      */
     'pois': Array<ResolvedSectionPoiResponse>;
+    /**
+     * 
+     * @type {ResolvedSectionCollectionResponse}
+     * @memberof ResolvedSectionResponse
+     */
+    'collection'?: ResolvedSectionCollectionResponse | null;
 }
 
 
@@ -10132,6 +10299,43 @@ export interface SearchResultsResponse {
      * @memberof SearchResultsResponse
      */
     'locale': string;
+}
+/**
+ * 
+ * @export
+ * @interface SectionCollectionResponse
+ */
+export interface SectionCollectionResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SectionCollectionResponse
+     */
+    'collectionId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SectionCollectionResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SectionCollectionResponse
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof SectionCollectionResponse
+     */
+    'itemCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SectionCollectionResponse
+     */
+    'country'?: string | null;
 }
 /**
  * 
@@ -10510,6 +10714,12 @@ export interface SectionResponse {
      * @memberof SectionResponse
      */
     'pois': Array<SectionPoiResponse>;
+    /**
+     * 
+     * @type {SectionCollectionResponse}
+     * @memberof SectionResponse
+     */
+    'collection'?: SectionCollectionResponse | null;
     /**
      * 
      * @type {string}
@@ -12369,6 +12579,12 @@ export interface VisibleSectionResponse {
      * @memberof VisibleSectionResponse
      */
     'pois': Array<ResolvedSectionPoiResponse>;
+    /**
+     * 
+     * @type {ResolvedSectionCollectionResponse}
+     * @memberof VisibleSectionResponse
+     */
+    'collection'?: ResolvedSectionCollectionResponse | null;
     /**
      * 
      * @type {boolean}
@@ -16487,7 +16703,7 @@ export const BlogCollectionsApiAxiosParamCreator = function (configuration?: Con
          * @param {number} [take] 
          * @param {number} [skip] 
          * @param {boolean} [isPublic] 
-         * @param {string} [country] 
+         * @param {string} [country] Country slug filter.
          * @param {string} [region] 
          * @param {string} [search] Slug contains (case-insensitive).
          * @param {*} [options] Override http request option.
@@ -16532,6 +16748,60 @@ export const BlogCollectionsApiAxiosParamCreator = function (configuration?: Con
 
             if (search !== undefined) {
                 localVarQueryParameter['search'] = search;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [country] Country slug filter.
+         * @param {string} [region] Region scope filter.
+         * @param {string} [locale] 
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        collectionControllerListPublic: async (country?: string, region?: string, locale?: string, take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/collections/public`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (country !== undefined) {
+                localVarQueryParameter['country'] = country;
+            }
+
+            if (region !== undefined) {
+                localVarQueryParameter['region'] = region;
+            }
+
+            if (locale !== undefined) {
+                localVarQueryParameter['locale'] = locale;
+            }
+
+            if (take !== undefined) {
+                localVarQueryParameter['take'] = take;
+            }
+
+            if (skip !== undefined) {
+                localVarQueryParameter['skip'] = skip;
             }
 
 
@@ -16815,7 +17085,7 @@ export const BlogCollectionsApiFp = function(configuration?: Configuration) {
          * @param {number} [take] 
          * @param {number} [skip] 
          * @param {boolean} [isPublic] 
-         * @param {string} [country] 
+         * @param {string} [country] Country slug filter.
          * @param {string} [region] 
          * @param {string} [search] Slug contains (case-insensitive).
          * @param {*} [options] Override http request option.
@@ -16825,6 +17095,22 @@ export const BlogCollectionsApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.collectionControllerList(take, skip, isPublic, country, region, search, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BlogCollectionsApi.collectionControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} [country] Country slug filter.
+         * @param {string} [region] Region scope filter.
+         * @param {string} [locale] 
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async collectionControllerListPublic(country?: string, region?: string, locale?: string, take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicCollectionListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.collectionControllerListPublic(country, region, locale, take, skip, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCollectionsApi.collectionControllerListPublic']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -16953,6 +17239,15 @@ export const BlogCollectionsApiFactory = function (configuration?: Configuration
          */
         collectionControllerList(requestParameters: BlogCollectionsApiCollectionControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<CollectionListResponse> {
             return localVarFp.collectionControllerList(requestParameters.take, requestParameters.skip, requestParameters.isPublic, requestParameters.country, requestParameters.region, requestParameters.search, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogCollectionsApiCollectionControllerListPublicRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        collectionControllerListPublic(requestParameters: BlogCollectionsApiCollectionControllerListPublicRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PublicCollectionListResponse> {
+            return localVarFp.collectionControllerListPublic(requestParameters.country, requestParameters.region, requestParameters.locale, requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -17126,7 +17421,7 @@ export interface BlogCollectionsApiCollectionControllerListRequest {
     readonly isPublic?: boolean
 
     /**
-     * 
+     * Country slug filter.
      * @type {string}
      * @memberof BlogCollectionsApiCollectionControllerList
      */
@@ -17145,6 +17440,48 @@ export interface BlogCollectionsApiCollectionControllerListRequest {
      * @memberof BlogCollectionsApiCollectionControllerList
      */
     readonly search?: string
+}
+
+/**
+ * Request parameters for collectionControllerListPublic operation in BlogCollectionsApi.
+ * @export
+ * @interface BlogCollectionsApiCollectionControllerListPublicRequest
+ */
+export interface BlogCollectionsApiCollectionControllerListPublicRequest {
+    /**
+     * Country slug filter.
+     * @type {string}
+     * @memberof BlogCollectionsApiCollectionControllerListPublic
+     */
+    readonly country?: string
+
+    /**
+     * Region scope filter.
+     * @type {string}
+     * @memberof BlogCollectionsApiCollectionControllerListPublic
+     */
+    readonly region?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCollectionsApiCollectionControllerListPublic
+     */
+    readonly locale?: string
+
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCollectionsApiCollectionControllerListPublic
+     */
+    readonly take?: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCollectionsApiCollectionControllerListPublic
+     */
+    readonly skip?: number
 }
 
 /**
@@ -17327,6 +17664,17 @@ export class BlogCollectionsApi extends BaseAPI {
      */
     public collectionControllerList(requestParameters: BlogCollectionsApiCollectionControllerListRequest = {}, options?: RawAxiosRequestConfig) {
         return BlogCollectionsApiFp(this.configuration).collectionControllerList(requestParameters.take, requestParameters.skip, requestParameters.isPublic, requestParameters.country, requestParameters.region, requestParameters.search, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogCollectionsApiCollectionControllerListPublicRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCollectionsApi
+     */
+    public collectionControllerListPublic(requestParameters: BlogCollectionsApiCollectionControllerListPublicRequest = {}, options?: RawAxiosRequestConfig) {
+        return BlogCollectionsApiFp(this.configuration).collectionControllerListPublic(requestParameters.country, requestParameters.region, requestParameters.locale, requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

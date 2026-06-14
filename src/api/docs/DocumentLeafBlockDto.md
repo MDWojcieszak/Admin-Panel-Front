@@ -28,6 +28,7 @@ Name | Type | Description | Notes
 **url** | **string** |  | [optional] [default to undefined]
 **poiId** | **string** |  | [optional] [default to undefined]
 **poiIds** | **Array&lt;string&gt;** |  | [optional] [default to undefined]
+**collectionId** | **string** | PoiCollection id (collection block). | [optional] [default to undefined]
 **level** | **number** |  | [optional] [default to undefined]
 **author** | **string** |  | [optional] [default to undefined]
 **items** | [**Array&lt;DocumentListItemInputDto&gt;**](DocumentListItemInputDto.md) |  | [optional] [default to undefined]
@@ -62,6 +63,7 @@ const instance: DocumentLeafBlockDto = {
     url,
     poiId,
     poiIds,
+    collectionId,
     level,
     author,
     items,

@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **coverImageId** | **string** |  | [optional] [default to undefined]
 **postCount** | **number** |  | [default to undefined]
 **poiCount** | **number** |  | [default to undefined]
+**collectionCount** | **number** |  | [default to undefined]
 
 ## Example
 
@@ -24,6 +25,7 @@ const instance: BlogCountryPageResponse = {
     coverImageId,
     postCount,
     poiCount,
+    collectionCount,
 };
 ```
 

@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **order** | **number** |  | [optional] [default to undefined]
 **postCount** | **number** |  | [default to undefined]
 **poiCount** | **number** |  | [default to undefined]
+**collectionCount** | **number** |  | [default to undefined]
 **translations** | [**Array&lt;BlogCountryTranslationResponse&gt;**](BlogCountryTranslationResponse.md) |  | [default to undefined]
 **createdAt** | **string** |  | [default to undefined]
 **updatedAt** | **string** |  | [default to undefined]
@@ -29,6 +30,7 @@ const instance: BlogCountryAdminResponse = {
     order,
     postCount,
     poiCount,
+    collectionCount,
     translations,
     createdAt,
     updatedAt,

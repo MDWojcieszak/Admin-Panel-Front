@@ -1,39 +1,34 @@
 import { useEffect, useState } from 'react';
 import { MdSearch } from 'react-icons/md';
-import { PoiAdminResponse } from '~/api/api';
+import { CollectionSummaryResponse } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
-type PoiPickerProps = {
-  onPick: (poiId: string, poiName: string) => void;
+type CollectionPickerProps = {
+  onPick: (collectionId: string) => void;
 };
 
-const poiLocation = (poi: PoiAdminResponse) =>
-  [poi.city, poi.region, poi.country].filter(Boolean).join(', ');
-
-export const PoiPicker = ({ onPick }: PoiPickerProps) => {
+/** Search the admin collections and pick one to embed (by collectionId). */
+export const CollectionPicker = ({ onPick }: CollectionPickerProps) => {
   const styles = useStyles();
   const theme = useTheme();
-  const { blogPoiApi } = useApi();
+  const { blogCollectionsApi } = useApi();
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<PoiAdminResponse[]>([]);
+  const [results, setResults] = useState<CollectionSummaryResponse[]>([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (!blogPoiApi || !query.trim()) {
-      setResults([]);
-      return;
-    }
+    if (!blogCollectionsApi) return;
     const handle = setTimeout(async () => {
       try {
-        const { data } = await blogPoiApi.poiControllerListAdmin({ search: query.trim(), take: 8 });
-        setResults(data.pois);
+        const { data } = await blogCollectionsApi.collectionControllerList({ search: query.trim() || undefined, take: 8 });
+        setResults(data.collections);
       } catch (e) {
-        console.error('Error searching POIs:', e);
+        console.error('Error searching collections:', e);
       }
     }, 300);
     return () => clearTimeout(handle);
-  }, [query, blogPoiApi]);
+  }, [query, blogCollectionsApi]);
 
   return (
     <div style={styles.wrap}>
@@ -42,7 +37,7 @@ export const PoiPicker = ({ onPick }: PoiPickerProps) => {
         <input
           style={styles.input}
           value={query}
-          placeholder='Search a place to add…'
+          placeholder='Search a collection to embed…'
           onChange={(e) => {
             setQuery(e.target.value);
             setOpen(true);
@@ -52,19 +47,21 @@ export const PoiPicker = ({ onPick }: PoiPickerProps) => {
       </div>
       {open && results.length ? (
         <div style={styles.results}>
-          {results.map((poi) => (
+          {results.map((c) => (
             <button
-              key={poi.id}
+              key={c.id}
               style={styles.result}
               onClick={() => {
-                onPick(poi.id, poi.name);
+                onPick(c.id);
                 setQuery('');
                 setResults([]);
                 setOpen(false);
               }}
             >
-              <span style={styles.resultName}>{poi.name}</span>
-              {poiLocation(poi) ? <span style={styles.resultLoc}>{poiLocation(poi)}</span> : null}
+              <span style={styles.resultName}>{c.title || c.slug}</span>
+              <span style={styles.resultMeta}>
+                {c.itemCount} place(s){c.isPublic ? '' : ' · private'}
+              </span>
             </button>
           ))}
         </div>
@@ -74,9 +71,7 @@ export const PoiPicker = ({ onPick }: PoiPickerProps) => {
 };
 
 const useStyles = mkUseStyles((t) => ({
-  wrap: {
-    position: 'relative',
-  },
+  wrap: { position: 'relative' },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -120,12 +115,6 @@ const useStyles = mkUseStyles((t) => ({
     textAlign: 'left',
     color: t.colors.white,
   },
-  resultName: {
-    fontSize: 14,
-    fontWeight: 600,
-  },
-  resultLoc: {
-    fontSize: 12,
-    color: t.colors.dark05,
-  },
+  resultName: { fontSize: 14, fontWeight: 600 },
+  resultMeta: { fontSize: 12, color: t.colors.dark05 },
 }));

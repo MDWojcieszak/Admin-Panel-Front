@@ -7,7 +7,7 @@ import { BlockNoteView } from '@blocknote/mantine';
 import { en as enDictionary } from '@blocknote/core/locales';
 import { SuggestionMenuController, getDefaultReactSlashMenuItems, useCreateBlockNote } from '@blocknote/react';
 import { getMultiColumnSlashMenuItems, locales as multiColumnLocales, multiColumnDropCursor } from '@blocknote/xl-multi-column';
-import { MdHorizontalRule, MdImage, MdLink, MdMap, MdPhotoLibrary, MdPlace, MdWarningAmber } from 'react-icons/md';
+import { MdCollectionsBookmark, MdHorizontalRule, MdImage, MdLink, MdMap, MdPhotoLibrary, MdPlace, MdWarningAmber } from 'react-icons/md';
 import { useApi } from '~/hooks/useApi';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { BlogEditorBridge, BlogEditorBridgeContext } from '~/routes/Blog/Editor/document/bridge';
@@ -46,6 +46,7 @@ const slashItems = (editor: BlogEditor) => [
   { title: 'Embed', group: 'Blog', icon: <MdLink size={18} />, onItemClick: () => insertBlock(editor, 'blogEmbed') },
   { title: 'Map', group: 'Blog', icon: <MdMap size={18} />, onItemClick: () => insertBlock(editor, 'blogMap') },
   { title: 'Place', group: 'Blog', icon: <MdPlace size={18} />, onItemClick: () => insertBlock(editor, 'blogPlace') },
+  { title: 'Collection', group: 'Blog', icon: <MdCollectionsBookmark size={18} />, onItemClick: () => insertBlock(editor, 'blogCollection') },
   { title: 'Divider', group: 'Blog', icon: <MdHorizontalRule size={18} />, onItemClick: () => insertBlock(editor, 'divider') },
 ];
 

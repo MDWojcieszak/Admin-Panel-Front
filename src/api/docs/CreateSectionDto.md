@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **galleryLayout** | [**GalleryLayout**](GalleryLayout.md) |  | [optional] [default to undefined]
 **embedUrl** | **string** |  | [optional] [default to undefined]
 **embedProvider** | [**EmbedProvider**](EmbedProvider.md) |  | [optional] [default to undefined]
+**collectionId** | **string** | PoiCollection id (FK) — only for a COLLECTION section. | [optional] [default to undefined]
 **locale** | **string** | Locale for the initial translation. Defaults to the default locale. | [optional] [default to undefined]
 **title** | **string** |  | [optional] [default to undefined]
 **body** | **string** | Markdown body for the initial locale. | [optional] [default to undefined]
@@ -34,6 +35,7 @@ const instance: CreateSectionDto = {
     galleryLayout,
     embedUrl,
     embedProvider,
+    collectionId,
     locale,
     title,
     body,
