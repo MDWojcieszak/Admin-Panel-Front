@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **string** |  | [optional] [default to undefined]
-**country** | **string** |  | [optional] [default to undefined]
+**countryId** | **string** | BlogCountry id (FK). | [optional] [default to undefined]
 **region** | **string** |  | [optional] [default to undefined]
 **city** | **string** |  | [optional] [default to undefined]
 **address** | **string** |  | [optional] [default to undefined]
@@ -37,7 +37,7 @@ import { PatchPoiDto } from './api';
 
 const instance: PatchPoiDto = {
     name,
-    country,
+    countryId,
     region,
     city,
     address,

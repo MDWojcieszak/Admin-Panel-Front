@@ -16,9 +16,8 @@ Name | Type | Description | Notes
 **galleryLayout** | [**GalleryLayout**](GalleryLayout.md) |  | [optional] [default to undefined]
 **embedUrl** | **string** |  | [optional] [default to undefined]
 **embedProvider** | [**EmbedProvider**](EmbedProvider.md) |  | [optional] [default to undefined]
-**mediaPosition** | [**BlogMediaPosition**](BlogMediaPosition.md) |  | [optional] [default to undefined]
-**mediaSplit** | [**BlogMediaSplit**](BlogMediaSplit.md) |  | [optional] [default to undefined]
-**mobileStackOrder** | [**BlogMobileStackOrder**](BlogMobileStackOrder.md) |  | [optional] [default to undefined]
+**parentId** | **string** | Parent section id (COLUMNS→COLUMN→block nesting); null at top level. | [optional] [default to undefined]
+**columnWidth** | **number** | COLUMN width share, 0..1 (relative). | [optional] [default to undefined]
 **translations** | [**Array&lt;SectionTranslationResponse&gt;**](SectionTranslationResponse.md) |  | [default to undefined]
 **images** | [**Array&lt;SectionImageResponse&gt;**](SectionImageResponse.md) |  | [default to undefined]
 **items** | [**Array&lt;SectionListItemResponse&gt;**](SectionListItemResponse.md) |  | [default to undefined]
@@ -43,9 +42,8 @@ const instance: SectionResponse = {
     galleryLayout,
     embedUrl,
     embedProvider,
-    mediaPosition,
-    mediaSplit,
-    mobileStackOrder,
+    parentId,
+    columnWidth,
     translations,
     images,
     items,

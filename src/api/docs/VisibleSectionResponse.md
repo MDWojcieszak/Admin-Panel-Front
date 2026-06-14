@@ -15,9 +15,8 @@ Name | Type | Description | Notes
 **galleryLayout** | [**GalleryLayout**](GalleryLayout.md) |  | [optional] [default to undefined]
 **embedUrl** | **string** |  | [optional] [default to undefined]
 **embedProvider** | [**EmbedProvider**](EmbedProvider.md) |  | [optional] [default to undefined]
-**mediaPosition** | [**BlogMediaPosition**](BlogMediaPosition.md) |  | [optional] [default to undefined]
-**mediaSplit** | [**BlogMediaSplit**](BlogMediaSplit.md) |  | [optional] [default to undefined]
-**mobileStackOrder** | [**BlogMobileStackOrder**](BlogMobileStackOrder.md) |  | [optional] [default to undefined]
+**parentId** | **string** | Parent section id (COLUMNS→COLUMN nesting); null at top level. | [optional] [default to undefined]
+**columnWidth** | **number** |  | [optional] [default to undefined]
 **title** | **string** |  | [optional] [default to undefined]
 **body** | **string** |  | [optional] [default to undefined]
 **keywords** | **Array&lt;string&gt;** |  | [default to undefined]
@@ -43,9 +42,8 @@ const instance: VisibleSectionResponse = {
     galleryLayout,
     embedUrl,
     embedProvider,
-    mediaPosition,
-    mediaSplit,
-    mobileStackOrder,
+    parentId,
+    columnWidth,
     title,
     body,
     keywords,

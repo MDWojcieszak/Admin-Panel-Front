@@ -1,37 +1,19 @@
-import {
-  Fragment,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type MouseEvent as ReactMouseEvent,
-} from 'react';
+import { ReactNode, useEffect, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  MdAdd,
   MdCheckCircle,
   MdClose,
-  MdDelete,
-  MdFormatBold,
-  MdFormatColorReset,
-  MdFormatItalic,
-  MdFormatListBulleted,
-  MdFormatListNumbered,
-  MdFormatQuote,
   MdImage,
   MdInfoOutline,
   MdLightbulb,
   MdPlace,
   MdSettings,
-  MdSwapHoriz,
-  MdTextFields,
   MdWarningAmber,
 } from 'react-icons/md';
-import { LuHeading1, LuHeading2, LuHeading3, LuPilcrow } from 'react-icons/lu';
 import { useForm, useWatch } from 'react-hook-form';
 import { Block, BlockNoteEditor, BlockNoteSchema, PartialBlock, defaultBlockSpecs } from '@blocknote/core';
 import { createReactBlockSpec } from '@blocknote/react';
+import { withMultiColumn } from '@blocknote/xl-multi-column';
 import { Input } from '~/components/Input';
 import { Select } from '~/components/Select';
 import {
@@ -175,6 +157,7 @@ const BlogImage = createReactBlockSpec(
       overlayTheme: { default: BlogOverlayTheme.Light },
       overlayBackdrop: { default: BlogOverlayBackdrop.Scrim },
       caption: { default: '' },
+      alt: { default: '' },
       focalX: { default: 0.5 },
       focalY: { default: 0.5 },
     },
@@ -185,7 +168,7 @@ const BlogImage = createReactBlockSpec(
       const styles = useBlockStyles();
       const bridge = useBlogEditorBridge();
       const [open, setOpen] = useState(false);
-      const { imageId, aspectRatio, caption, focalX, focalY, overlayText, overlayPosition, overlayTheme, overlayBackdrop } =
+      const { imageId, aspectRatio, caption, alt, focalX, focalY, overlayText, overlayPosition, overlayTheme, overlayBackdrop } =
         block.props;
       const aspectCss = RATIOS.find((r) => r.value === aspectRatio)?.css;
       const setImage = (id: string) => editor.updateBlock(block, { props: { imageId: id } });
@@ -286,6 +269,15 @@ const BlogImage = createReactBlockSpec(
                     placeholder='Shown under the image'
                     defaultValue={caption}
                     onBlur={(e) => editor.updateBlock(block, { props: { caption: e.target.value } })}
+                  />
+                </div>
+                <div style={styles.ctrlGroup}>
+                  <span style={styles.ctrlLabel}>Alt text</span>
+                  <input
+                    style={styles.ctrlInput}
+                    placeholder='Describe the image (accessibility / SEO)'
+                    defaultValue={alt}
+                    onBlur={(e) => editor.updateBlock(block, { props: { alt: e.target.value } })}
                   />
                 </div>
                 <div style={styles.ctrlGroup}>
@@ -392,243 +384,6 @@ const BlogGallery = createReactBlockSpec(
   },
 )();
 
-// ---- columns block: N panes (2–4), each image or text ----------------------
-
-export type ColumnDef = { type: 'text' | 'image'; imageId?: string; html?: string; width?: number };
-
-export const parseColumns = (raw: string): ColumnDef[] => {
-  try {
-    const v = JSON.parse(raw || '[]');
-    if (Array.isArray(v) && v.length) {
-      return v.map((c) => ({
-        type: c?.type === 'image' ? 'image' : 'text',
-        imageId: typeof c?.imageId === 'string' ? c.imageId : '',
-        html: typeof c?.html === 'string' ? c.html : '',
-        width: typeof c?.width === 'number' && c.width > 0 ? c.width : 1,
-      }));
-    }
-  } catch {
-    /* ignore */
-  }
-  return [
-    { type: 'text', html: '', width: 1 },
-    { type: 'image', imageId: '', width: 1 },
-  ];
-};
-
-/** contentEditable text cell with an icon toolbar that appears while editing. */
-const ColumnTextEditor = ({ html, onChange }: { html: string; onChange: (html: string) => void }) => {
-  const styles = useBlockStyles();
-  const theme = useTheme();
-  const ref = useRef<HTMLDivElement>(null);
-  const [focused, setFocused] = useState(false);
-  useEffect(() => {
-    if (ref.current) ref.current.innerHTML = html || '<p><br></p>';
-    try {
-      document.execCommand('defaultParagraphSeparator', false, 'p');
-    } catch {
-      /* not supported */
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const exec = (cmd: string, value?: string) => {
-    ref.current?.focus();
-    document.execCommand('styleWithCSS', false, 'true');
-    document.execCommand(cmd, false, value);
-    onChange(ref.current?.innerHTML ?? '');
-  };
-  const btn = (key: string, icon: ReactNode, title: string, cmd: string, value?: string) => (
-    <button
-      key={key}
-      className='blog-tb-btn'
-      style={styles.tbBtn}
-      type='button'
-      title={title}
-      onMouseDown={(e) => e.preventDefault()}
-      onClick={() => exec(cmd, value)}
-    >
-      {icon}
-    </button>
-  );
-  const colors = [theme.colors.red, theme.colors.blue, theme.colors.lightGreen, theme.colors.yellow];
-  return (
-    <div style={styles.columnTextWrap}>
-      <AnimatePresence>
-        {focused ? (
-          <motion.div
-            style={styles.columnToolbar}
-            contentEditable={false}
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.15 }}
-          >
-            {btn('p', <LuPilcrow size={15} />, 'Text', 'formatBlock', '<p>')}
-          {btn('h1', <LuHeading1 size={16} />, 'Heading 1', 'formatBlock', '<h1>')}
-          {btn('h2', <LuHeading2 size={16} />, 'Heading 2', 'formatBlock', '<h2>')}
-          {btn('h3', <LuHeading3 size={16} />, 'Heading 3', 'formatBlock', '<h3>')}
-          <span style={styles.tbDivider} />
-          {btn('b', <MdFormatBold size={17} />, 'Bold', 'bold')}
-          {btn('i', <MdFormatItalic size={17} />, 'Italic', 'italic')}
-          <span style={styles.tbDivider} />
-          {btn('ul', <MdFormatListBulleted size={17} />, 'Bullet list', 'insertUnorderedList')}
-          {btn('ol', <MdFormatListNumbered size={17} />, 'Numbered list', 'insertOrderedList')}
-          {btn('q', <MdFormatQuote size={17} />, 'Quote', 'formatBlock', '<blockquote>')}
-          <span style={styles.tbDivider} />
-          {colors.map((c) => (
-            <button
-              key={c}
-              className='blog-tb-color'
-              style={{ ...styles.tbColor, backgroundColor: c }}
-              type='button'
-              title='Colour'
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => exec('foreColor', c)}
-            />
-          ))}
-            {btn('reset', <MdFormatColorReset size={16} />, 'Reset colour', 'foreColor', theme.colors.white)}
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-      <div
-        ref={ref}
-        className='blog-col-text'
-        contentEditable
-        suppressContentEditableWarning
-        style={styles.columnText}
-        onFocus={() => setFocused(true)}
-        onBlur={() => {
-          onChange(ref.current?.innerHTML ?? '');
-          setFocused(false);
-        }}
-      />
-    </div>
-  );
-};
-
-const BlogColumns = createReactBlockSpec(
-  {
-    type: 'blogColumns',
-    propSchema: {
-      sectionId: { default: '' },
-      columns: { default: '[{"type":"text","html":""},{"type":"image","imageId":""}]' },
-    },
-    content: 'none',
-  },
-  {
-    render: ({ block, editor }) => {
-      const styles = useBlockStyles();
-      const bridge = useBlogEditorBridge();
-      const containerRef = useRef<HTMLDivElement>(null);
-      const cols = parseColumns(block.props.columns);
-      const save = (next: ColumnDef[]) => editor.updateBlock(block, { props: { columns: JSON.stringify(next) } });
-      const update = (i: number, patch: Partial<ColumnDef>) =>
-        save(cols.map((c, idx) => (idx === i ? { ...c, ...patch } : c)));
-      const startResize = (i: number, e: ReactMouseEvent) => {
-        e.preventDefault();
-        const container = containerRef.current;
-        if (!container) return;
-        const totalWidth = container.getBoundingClientRect().width;
-        const startX = e.clientX;
-        const start = parseColumns(block.props.columns);
-        const totalFr = start.reduce((s, c) => s + (c.width ?? 1), 0);
-        const pair = (start[i].width ?? 1) + (start[i + 1].width ?? 1);
-        const wi0 = start[i].width ?? 1;
-        const onMove = (ev: MouseEvent) => {
-          const dxFr = ((ev.clientX - startX) / totalWidth) * totalFr;
-          const wi = Math.max(0.3, Math.min(pair - 0.3, wi0 + dxFr));
-          const next = start.map((c, idx) =>
-            idx === i ? { ...c, width: wi } : idx === i + 1 ? { ...c, width: pair - wi } : c,
-          );
-          editor.updateBlock(block, { props: { columns: JSON.stringify(next) } });
-        };
-        const onUp = () => {
-          window.removeEventListener('mousemove', onMove);
-          window.removeEventListener('mouseup', onUp);
-        };
-        window.addEventListener('mousemove', onMove);
-        window.addEventListener('mouseup', onUp);
-      };
-      return (
-        <div style={styles.columnsBlock}>          <div ref={containerRef} style={styles.columnsRow}>
-            {cols.map((col, i) => (
-              <Fragment key={i}>
-                <div style={{ ...styles.column, flexGrow: col.width ?? 1, flexBasis: 0 }}>
-                  <div style={styles.columnHead} contentEditable={false}>
-                    <button
-                      style={styles.columnTypeBtn}
-                      type='button'
-                      title={col.type === 'text' ? 'Switch to image' : 'Switch to text'}
-                      onClick={() => update(i, col.type === 'text' ? { type: 'image' } : { type: 'text' })}
-                    >
-                      {col.type === 'text' ? <MdImage size={14} /> : <MdTextFields size={14} />}
-                    </button>
-                    {cols.length > 1 ? (
-                      <button
-                        style={styles.columnRemove}
-                        type='button'
-                        title='Remove column'
-                        onClick={() => save(cols.filter((_, idx) => idx !== i))}
-                      >
-                        <MdDelete size={14} />
-                      </button>
-                    ) : null}
-                  </div>
-                  {col.type === 'image' ? (
-                    col.imageId ? (
-                      <div
-                        style={styles.columnImageWrap}
-                        contentEditable={false}
-                        data-col-index={i}
-                      >
-                        <MediaThumb imageId={col.imageId} res='cover' style={styles.fill} />
-                        <button style={styles.tileRemove} type='button' onClick={() => update(i, { imageId: '' })}>
-                          <MdClose size={13} />
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        style={styles.columnPick}
-                        type='button'
-                        contentEditable={false}
-                        data-col-index={i}
-                        onClick={() => bridge.pickImage((id) => update(i, { imageId: id }))}
-                      >
-                        <MdImage size={18} /> Pick or drop
-                      </button>
-                    )
-                  ) : (
-                    <ColumnTextEditor html={col.html ?? ''} onChange={(h) => update(i, { html: h })} />
-                  )}
-                </div>
-                {i < cols.length - 1 ? (
-                  <div
-                    className='blog-col-resize'
-                    style={styles.resizeHandle}
-                    contentEditable={false}
-                    onMouseDown={(e) => startResize(i, e)}
-                  >
-                    <MdSwapHoriz size={14} />
-                  </div>
-                ) : null}
-              </Fragment>
-            ))}
-          </div>
-          {cols.length < 4 ? (
-            <button
-              style={styles.columnsAdd}
-              type='button'
-              contentEditable={false}
-              onClick={() => save([...cols, { type: 'text', html: '' }])}
-            >
-              <MdAdd size={16} /> Add column
-            </button>
-          ) : null}
-        </div>
-      );
-    },
-  },
-)();
 
 const BlogEmbed = createReactBlockSpec(
   {
@@ -746,10 +501,8 @@ const BlogCallout = createReactBlockSpec(
                   key={v.value}
                   type='button'
                   title={v.value}
-                  style={{
-                    ...styles.calloutPill,
-                    ...(v.value === active.value ? { color: v.color, backgroundColor: v.color + theme.colorOpacity(0.18) } : null),
-                  }}
+                  className={`blog-callout-pill${v.value === active.value ? ' is-active' : ''}`}
+                  style={{ ['--pill-color']: v.color, ['--pill-bg']: v.color + theme.colorOpacity(0.18) } as CSSProperties}
                   onClick={() => editor.updateBlock(block, { props: { variant: v.value } })}
                 >
                   {v.icon}
@@ -778,19 +531,20 @@ const {
   ...defaultsNoMedia
 } = defaultBlockSpecs;
 
-export const blogSchema = BlockNoteSchema.create({
-  blockSpecs: {
-    ...defaultsNoMedia,
-    divider: Divider,
-    blogImage: BlogImage,
-    blogGallery: BlogGallery,
-    blogColumns: BlogColumns,
-    blogEmbed: BlogEmbed,
-    blogMap: BlogMap,
-    blogPlace: BlogPlace,
-    blogCallout: BlogCallout,
-  },
-});
+export const blogSchema = withMultiColumn(
+  BlockNoteSchema.create({
+    blockSpecs: {
+      ...defaultsNoMedia,
+      divider: Divider,
+      blogImage: BlogImage,
+      blogGallery: BlogGallery,
+      blogEmbed: BlogEmbed,
+      blogMap: BlogMap,
+      blogPlace: BlogPlace,
+      blogCallout: BlogCallout,
+    },
+  }),
+);
 
 type ExtractSchema<T> = T extends BlockNoteSchema<infer B, infer I, infer S> ? [B, I, S] : never;
 type S = ExtractSchema<typeof blogSchema>;
@@ -803,7 +557,7 @@ export const CUSTOM_BLOCK_TYPES = new Set([
   'divider',
   'blogImage',
   'blogGallery',
-  'blogColumns',
+  'columnList',
   'blogEmbed',
   'blogMap',
   'blogPlace',
@@ -991,7 +745,6 @@ const useBlockStyles = mkUseStyles((t) => ({
     color: t.colors.white,
     cursor: 'pointer',
   },
-  columnsBlock: { display: 'flex', flexDirection: 'column', gap: t.spacing.s, width: '100%' },
   columnsRow: { display: 'flex', flexDirection: 'row', width: '100%', alignItems: 'stretch' },
   resizeHandle: {
     width: 18,

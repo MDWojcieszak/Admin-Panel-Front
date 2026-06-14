@@ -3,12 +3,12 @@ import { motion } from 'framer-motion';
 import { useForm, useWatch } from 'react-hook-form';
 import { MdClose, MdImage } from 'react-icons/md';
 import { BlogAccessTier, BlogAuthorRole, CategoryKind, PostDraftResponse, UserResponseDto } from '~/api/api';
-import { Input } from '~/components/Input';
 import { Scrollbar } from '~/components/Scrollbar';
 import { Select } from '~/components/Select';
 import { TextArea } from '~/components/TextArea';
 import { useApi } from '~/hooks/useApi';
 import { categoryLabel, useBlogCategories } from '~/routes/Blog/hooks/useBlogCategories';
+import { countryName, useBlogCountries } from '~/routes/Blog/hooks/useBlogCountries';
 import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
 import { IMAGE_DND_TYPE } from '~/routes/Blog/Editor/document/schema';
 import { mkUseStyles } from '~/utils/theme';
@@ -27,7 +27,7 @@ type PostSettingsPanelProps = {
 };
 
 type AuthorRow = { userId: string; role: BlogAuthorRole };
-type SettingsForm = { accessTier: string; country: string; region: string; seoKeywords: string; addAuthor: string };
+type SettingsForm = { accessTier: string; countryId: string; seoKeywords: string; addAuthor: string };
 
 const titleCase = (v: string) =>
   v
@@ -42,6 +42,11 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
   const styles = useStyles();
   const { blogPostsApi, userApi } = useApi();
   const { categories } = useBlogCategories(CategoryKind.Post, p.locale);
+  const { countries } = useBlogCountries();
+  const countryOptions = [
+    { value: '', label: 'No country' },
+    ...countries.map((c) => ({ value: c.id, label: countryName(c, p.locale) })),
+  ];
 
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [authors, setAuthors] = useState<AuthorRow[]>([]);
@@ -51,28 +56,25 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
   const { control, reset, setValue } = useForm<SettingsForm>({
     defaultValues: {
       accessTier: p.draft.accessTier,
-      country: p.draft.country ?? '',
-      region: p.draft.region ?? '',
+      countryId: '',
       seoKeywords: seoToString(p.draft.seoKeywords),
       addAuthor: '',
     },
   });
 
-  const country = useWatch({ control, name: 'country' });
-  const region = useWatch({ control, name: 'region' });
   const seoKeywords = useWatch({ control, name: 'seoKeywords' });
 
-  // Re-seed the form when the underlying draft fields change (locale switch / external refresh).
+  // Re-seed when the draft changes. The draft carries the country as a slug; resolve it to the FK once
+  // the countries list is loaded (re-runs when `countries` arrives).
   useEffect(() => {
     reset({
       accessTier: p.draft.accessTier,
-      country: p.draft.country ?? '',
-      region: p.draft.region ?? '',
+      countryId: countries.find((c) => c.slug === p.draft.country)?.id ?? '',
       seoKeywords: seoToString(p.draft.seoKeywords),
       addAuthor: '',
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [p.draft.versionId, p.draft.accessTier, p.draft.country, p.draft.region, p.draft.seoKeywords]);
+  }, [p.draft.versionId, p.draft.accessTier, p.draft.country, p.draft.seoKeywords, countries]);
 
   const loadRelations = useCallback(async () => {
     if (!blogPostsApi) return;
@@ -101,7 +103,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
   }, [userApi, p.open]);
 
   const patchPost = useCallback(
-    async (patch: { accessTier?: BlogAccessTier; country?: string | null; region?: string | null; coverImageId?: string | null }) => {
+    async (patch: { accessTier?: BlogAccessTier; countryId?: string | null; coverImageId?: string | null }) => {
       if (!blogPostsApi) return;
       try {
         await blogPostsApi.postControllerPatch({ id: p.postId, patchPostDto: patch });
@@ -130,19 +132,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
     [blogPostsApi, p.postId, p.locale],
   );
 
-  // Debounced autosave for text fields (Input owns its onBlur, so persist on value change instead).
-  useEffect(() => {
-    if (country === (p.draft.country ?? '')) return;
-    const h = setTimeout(() => patchPost({ country: country || null }), 700);
-    return () => clearTimeout(h);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [country]);
-  useEffect(() => {
-    if (region === (p.draft.region ?? '')) return;
-    const h = setTimeout(() => patchPost({ region: region || null }), 700);
-    return () => clearTimeout(h);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [region]);
+  // Debounced autosave for SEO keywords (TextArea persists on value change).
   useEffect(() => {
     if (seoKeywords === seoToString(p.draft.seoKeywords)) return;
     const h = setTimeout(() => saveSeo(seoKeywords), 700);
@@ -180,12 +170,17 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
     saveAuthors([...authors, { userId, role }]);
   };
 
-  const userEmail = (userId: string) => users.find((u) => u.id === userId)?.email ?? userId;
+  // Prefer a real name; fall back to email (then id) so the row stays readable while users load.
+  const userLabel = (u?: UserResponseDto) => {
+    const name = u ? `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim() : '';
+    return name || u?.email || '';
+  };
+  const userName = (userId: string) => userLabel(users.find((u) => u.id === userId)) || userId;
   const hasAuthor = authors.some((a) => a.role === BlogAuthorRole.Author);
 
   const addAuthorOptions = [
     { value: '', label: '+ Add author…' },
-    ...users.filter((u) => !authors.some((a) => a.userId === u.id)).map((u) => ({ value: u.id, label: u.email })),
+    ...users.filter((u) => !authors.some((a) => a.userId === u.id)).map((u) => ({ value: u.id, label: userLabel(u) })),
   ];
 
   return (
@@ -211,6 +206,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
               name='accessTier'
               control={control}
               options={TIER_OPTIONS}
+              style={styles.noMargin}
               onValueChange={(v) => patchPost({ accessTier: v as BlogAccessTier })}
             />
 
@@ -252,11 +248,15 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
               )}
             </div>
 
-            {/* Region */}
-            <div style={styles.row2}>
-              <Input label='Country' name='country' description='' control={control} style={styles.flex1} />
-              <Input label='Region' name='region' description='' control={control} style={styles.flex1} />
-            </div>
+            {/* Country (tags the post to a country entity) */}
+            <Select
+              label='Country'
+              name='countryId'
+              control={control}
+              options={countryOptions}
+              style={styles.noMargin}
+              onValueChange={(v) => patchPost({ countryId: v || null })}
+            />
 
             {/* SEO keywords */}
             <TextArea
@@ -264,6 +264,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
               name='seoKeywords'
               description='Comma-separated'
               control={control}
+              style={styles.noMargin}
             />
 
             {/* Categories */}
@@ -297,7 +298,12 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
               <div style={styles.authorList}>
                 {authors.map((a) => (
                   <div key={a.userId} style={styles.authorRow}>
-                    <span style={styles.authorEmail}>{userEmail(a.userId)}</span>
+                    <div style={styles.authorTop}>
+                      <span style={styles.authorEmail}>{userName(a.userId)}</span>
+                      <button style={styles.removeAuthor} onClick={() => saveAuthors(authors.filter((x) => x.userId !== a.userId))}>
+                        <MdClose size={14} />
+                      </button>
+                    </div>
                     <div style={styles.roleToggle}>
                       {Object.values(BlogAuthorRole).map((r) => (
                         <button
@@ -310,9 +316,6 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
                         </button>
                       ))}
                     </div>
-                    <button style={styles.removeAuthor} onClick={() => saveAuthors(authors.filter((x) => x.userId !== a.userId))}>
-                      <MdClose size={14} />
-                    </button>
                   </div>
                 ))}
               </div>
@@ -321,6 +324,7 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
                 name='addAuthor'
                 control={control}
                 options={addAuthorOptions}
+                style={styles.noMargin}
                 onValueChange={(v) => {
                   if (v) addAuthor(v);
                   setValue('addAuthor', '');
@@ -371,6 +375,9 @@ const useStyles = mkUseStyles((t) => ({
   content: { gap: t.spacing.m, padding: t.spacing.m },
   field: { gap: t.spacing.xs, flex: 1, minWidth: 0 },
   flex1: { flex: 1, minWidth: 0 },
+  // Form components ship their own marginBottom; drop it so the panel's single `content` gap rules spacing.
+  noMargin: { marginBottom: 0 },
+  flex1Field: { flex: 1, minWidth: 0, marginBottom: 0 },
   row2: { flexDirection: 'row', gap: t.spacing.m },
   label: { fontSize: 12, fontWeight: 600, color: t.colors.blue04 },
   coverWrap: { gap: t.spacing.s },
@@ -416,12 +423,19 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.blue + t.colorOpacity(0.25),
     border: `1px solid ${t.colors.blue + t.colorOpacity(0.4)}`,
   },
-  authorList: { gap: t.spacing.xs },
-  authorRow: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
+  authorList: { gap: t.spacing.s, marginTop: t.spacing.xs, marginBottom: t.spacing.m },
+  authorRow: {
+    gap: t.spacing.s,
+    padding: `${t.spacing.s}px`,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray03,
+  },
+  authorTop: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
   authorEmail: {
     flex: 1,
     minWidth: 0,
     fontSize: 13,
+    fontWeight: 600,
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',

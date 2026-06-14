@@ -13,8 +13,6 @@
 
 * `Gallery` (value: `'gallery'`)
 
-* `MediaText` (value: `'mediaText'`)
-
 * `Embed` (value: `'embed'`)
 
 * `Map` (value: `'map'`)
@@ -26,5 +24,7 @@
 * `Heading` (value: `'heading'`)
 
 * `Quote` (value: `'quote'`)
+
+* `Columns` (value: `'columns'`)
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

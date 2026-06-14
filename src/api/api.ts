@@ -61,25 +61,6 @@ export interface AddCollectionItemDto {
 /**
  * 
  * @export
- * @interface AddHomeBlockPostDto
- */
-export interface AddHomeBlockPostDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof AddHomeBlockPostDto
-     */
-    'postId': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof AddHomeBlockPostDto
-     */
-    'order'?: number;
-}
-/**
- * 
- * @export
  * @interface AddPoiImageDto
  */
 export interface AddPoiImageDto {
@@ -431,19 +412,6 @@ export type AppPlatform = typeof AppPlatform[keyof typeof AppPlatform];
 /**
  * 
  * @export
- * @interface ApplyTemplateResponse
- */
-export interface ApplyTemplateResponse {
-    /**
-     * 
-     * @type {Array<SectionResponse>}
-     * @memberof ApplyTemplateResponse
-     */
-    'created': Array<SectionResponse>;
-}
-/**
- * 
- * @export
  * @interface AstroObjectDetailsResponse
  */
 export interface AstroObjectDetailsResponse {
@@ -661,6 +629,223 @@ export const BlogAuthorRole = {
 export type BlogAuthorRole = typeof BlogAuthorRole[keyof typeof BlogAuthorRole];
 
 
+/**
+ * 
+ * @export
+ * @interface BlogColorsResponse
+ */
+export interface BlogColorsResponse {
+    /**
+     * Allowed inline color tokens (used for both text `fg` and background `bg`).
+     * @type {Array<string>}
+     * @memberof BlogColorsResponse
+     */
+    'colors': Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface BlogCountryAdminResponse
+ */
+export interface BlogCountryAdminResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryAdminResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryAdminResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryAdminResponse
+     */
+    'code'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryAdminResponse
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryAdminResponse
+     */
+    'order'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryAdminResponse
+     */
+    'postCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryAdminResponse
+     */
+    'poiCount': number;
+    /**
+     * 
+     * @type {Array<BlogCountryTranslationResponse>}
+     * @memberof BlogCountryAdminResponse
+     */
+    'translations': Array<BlogCountryTranslationResponse>;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryAdminResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryAdminResponse
+     */
+    'updatedAt': string;
+}
+/**
+ * 
+ * @export
+ * @interface BlogCountryListResponse
+ */
+export interface BlogCountryListResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryListResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<BlogCountryAdminResponse>}
+     * @memberof BlogCountryListResponse
+     */
+    'countries': Array<BlogCountryAdminResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface BlogCountryMenuItemResponse
+ */
+export interface BlogCountryMenuItemResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryMenuItemResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryMenuItemResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryMenuItemResponse
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryMenuItemResponse
+     */
+    'postCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryMenuItemResponse
+     */
+    'poiCount': number;
+}
+/**
+ * 
+ * @export
+ * @interface BlogCountryMenuResponse
+ */
+export interface BlogCountryMenuResponse {
+    /**
+     * 
+     * @type {Array<BlogCountryMenuItemResponse>}
+     * @memberof BlogCountryMenuResponse
+     */
+    'countries': Array<BlogCountryMenuItemResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface BlogCountryPageResponse
+ */
+export interface BlogCountryPageResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryPageResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryPageResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryPageResponse
+     */
+    'intro'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryPageResponse
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryPageResponse
+     */
+    'postCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BlogCountryPageResponse
+     */
+    'poiCount': number;
+}
+/**
+ * 
+ * @export
+ * @interface BlogCountryTranslationResponse
+ */
+export interface BlogCountryTranslationResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryTranslationResponse
+     */
+    'locale': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryTranslationResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountryTranslationResponse
+     */
+    'intro'?: string | null;
+}
 /**
  * 
  * @export
@@ -977,51 +1162,6 @@ export interface BlogMediaListResponse {
  * @enum {string}
  */
 
-export const BlogMediaPosition = {
-    Left: 'LEFT',
-    Right: 'RIGHT'
-} as const;
-
-export type BlogMediaPosition = typeof BlogMediaPosition[keyof typeof BlogMediaPosition];
-
-
-/**
- * 
- * @export
- * @enum {string}
- */
-
-export const BlogMediaSplit = {
-    OneThird: 'ONE_THIRD',
-    TwoFifths: 'TWO_FIFTHS',
-    Half: 'HALF',
-    ThreeFifths: 'THREE_FIFTHS',
-    TwoThirds: 'TWO_THIRDS'
-} as const;
-
-export type BlogMediaSplit = typeof BlogMediaSplit[keyof typeof BlogMediaSplit];
-
-
-/**
- * 
- * @export
- * @enum {string}
- */
-
-export const BlogMobileStackOrder = {
-    MediaFirst: 'MEDIA_FIRST',
-    TextFirst: 'TEXT_FIRST'
-} as const;
-
-export type BlogMobileStackOrder = typeof BlogMobileStackOrder[keyof typeof BlogMobileStackOrder];
-
-
-/**
- * 
- * @export
- * @enum {string}
- */
-
 export const BlogOverlayBackdrop = {
     None: 'NONE',
     Scrim: 'SCRIM',
@@ -1097,11 +1237,12 @@ export const BlogSectionType = {
     List: 'LIST',
     Image: 'IMAGE',
     Gallery: 'GALLERY',
-    MediaText: 'MEDIA_TEXT',
     Map: 'MAP',
     Place: 'PLACE',
     Embed: 'EMBED',
-    Divider: 'DIVIDER'
+    Divider: 'DIVIDER',
+    Columns: 'COLUMNS',
+    Column: 'COLUMN'
 } as const;
 
 export type BlogSectionType = typeof BlogSectionType[keyof typeof BlogSectionType];
@@ -1926,6 +2067,55 @@ export interface CreateBlogCategoryDto {
 /**
  * 
  * @export
+ * @interface CreateBlogCountryDto
+ */
+export interface CreateBlogCountryDto {
+    /**
+     * Canonical key (normalized lowercase).
+     * @type {string}
+     * @memberof CreateBlogCountryDto
+     */
+    'slug': string;
+    /**
+     * ISO-3166-1 alpha-2.
+     * @type {string}
+     * @memberof CreateBlogCountryDto
+     */
+    'code'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBlogCountryDto
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateBlogCountryDto
+     */
+    'order'?: number | null;
+    /**
+     * Locale for the initial name/intro; defaults to default locale.
+     * @type {string}
+     * @memberof CreateBlogCountryDto
+     */
+    'locale'?: string;
+    /**
+     * Localized country name.
+     * @type {string}
+     * @memberof CreateBlogCountryDto
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBlogCountryDto
+     */
+    'intro'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface CreateCodeDto
  */
 export interface CreateCodeDto {
@@ -2141,58 +2331,6 @@ export interface CreateGrantDto {
 /**
  * 
  * @export
- * @interface CreateHomeBlockDto
- */
-export interface CreateHomeBlockDto {
-    /**
-     * 
-     * @type {HomeBlockType}
-     * @memberof CreateHomeBlockDto
-     */
-    'type': HomeBlockType;
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateHomeBlockDto
-     */
-    'order': number;
-    /**
-     * Required for CATEGORY_ROW; must be kind=POST.
-     * @type {string}
-     * @memberof CreateHomeBlockDto
-     */
-    'categoryId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateHomeBlockDto
-     */
-    'imageId'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateHomeBlockDto
-     */
-    'limit'?: number;
-}
-
-
-/**
- * 
- * @export
- * @interface CreateHomeLayoutDto
- */
-export interface CreateHomeLayoutDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateHomeLayoutDto
-     */
-    'name': string;
-}
-/**
- * 
- * @export
  * @interface CreateImmichAlbumDto
  */
 export interface CreateImmichAlbumDto {
@@ -2298,59 +2436,59 @@ export interface CreatePoiDto {
      */
     'longitude': number;
     /**
-     * 
+     * BlogCountry id (FK).
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'country'?: string;
+    'countryId'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'region'?: string;
+    'region'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'city'?: string;
+    'city'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'address'?: string;
+    'address'?: string | null;
     /**
      * IANA timezone, e.g. Atlantic/Reykjavik.
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'timezone'?: string;
+    'timezone'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'googlePlaceId'?: string;
+    'googlePlaceId'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'osmId'?: string;
+    'osmId'?: string | null;
     /**
      * 
      * @type {number}
      * @memberof CreatePoiDto
      */
-    'visitDurationMin'?: number;
+    'visitDurationMin'?: number | null;
     /**
      * Public AI weight 1–5.
      * @type {number}
      * @memberof CreatePoiDto
      */
-    'creatorRating'?: number;
+    'creatorRating'?: number | null;
     /**
      * 
      * @type {PoiVerdict}
@@ -2362,7 +2500,7 @@ export interface CreatePoiDto {
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'internalNote'?: string;
+    'internalNote'?: string | null;
     /**
      * 
      * @type {PoiPriceLevel}
@@ -2374,25 +2512,25 @@ export interface CreatePoiDto {
      * @type {Array<PoiSeason>}
      * @memberof CreatePoiDto
      */
-    'bestSeasons'?: Array<PoiSeason>;
+    'bestSeasons'?: Array<PoiSeason> | null;
     /**
      * 
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'websiteUrl'?: string;
+    'websiteUrl'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'bookingUrl'?: string;
+    'bookingUrl'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'mapsUrl'?: string;
+    'mapsUrl'?: string | null;
     /**
      * 
      * @type {PoiDifficulty}
@@ -2404,13 +2542,13 @@ export interface CreatePoiDto {
      * @type {number}
      * @memberof CreatePoiDto
      */
-    'distanceKm'?: number;
+    'distanceKm'?: number | null;
     /**
      * 
      * @type {number}
      * @memberof CreatePoiDto
      */
-    'elevationGainM'?: number;
+    'elevationGainM'?: number | null;
     /**
      * 
      * @type {PoiStatus}
@@ -2422,31 +2560,31 @@ export interface CreatePoiDto {
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'coverImageId'?: string;
+    'coverImageId'?: string | null;
     /**
      * ATTRACTION category ids.
      * @type {Array<string>}
      * @memberof CreatePoiDto
      */
-    'categoryIds'?: Array<string>;
+    'categoryIds'?: Array<string> | null;
     /**
      * Locale for the initial translation. Defaults to the default locale.
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'locale'?: string;
+    'locale'?: string | null;
     /**
      * Localized name override for `locale`.
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'localizedName'?: string;
+    'localizedName'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof CreatePoiDto
      */
-    'description'?: string;
+    'description'?: string | null;
 }
 
 
@@ -2493,11 +2631,11 @@ export interface CreatePostDto {
      */
     'accessTier'?: BlogAccessTier;
     /**
-     * 
+     * BlogCountry id (FK).
      * @type {string}
      * @memberof CreatePostDto
      */
-    'country'?: string;
+    'countryId'?: string | null;
     /**
      * 
      * @type {string}
@@ -2591,24 +2729,6 @@ export interface CreateSectionDto {
      * @memberof CreateSectionDto
      */
     'embedProvider'?: EmbedProvider;
-    /**
-     * 
-     * @type {BlogMediaPosition}
-     * @memberof CreateSectionDto
-     */
-    'mediaPosition'?: BlogMediaPosition;
-    /**
-     * 
-     * @type {BlogMediaSplit}
-     * @memberof CreateSectionDto
-     */
-    'mediaSplit'?: BlogMediaSplit;
-    /**
-     * 
-     * @type {BlogMobileStackOrder}
-     * @memberof CreateSectionDto
-     */
-    'mobileStackOrder'?: BlogMobileStackOrder;
     /**
      * Locale for the initial translation. Defaults to the default locale.
      * @type {string}
@@ -2736,142 +2856,6 @@ export interface CreateServerTransferDto {
 }
 
 
-/**
- * 
- * @export
- * @interface CreateTemplateBlockDto
- */
-export interface CreateTemplateBlockDto {
-    /**
-     * 
-     * @type {BlogSectionType}
-     * @memberof CreateTemplateBlockDto
-     */
-    'type': BlogSectionType;
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateTemplateBlockDto
-     */
-    'order'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateTemplateBlockDto
-     */
-    'headingLevel'?: number;
-    /**
-     * 
-     * @type {CalloutVariant}
-     * @memberof CreateTemplateBlockDto
-     */
-    'calloutVariant'?: CalloutVariant;
-    /**
-     * 
-     * @type {GalleryLayout}
-     * @memberof CreateTemplateBlockDto
-     */
-    'galleryLayout'?: GalleryLayout;
-    /**
-     * 
-     * @type {BlogMediaPosition}
-     * @memberof CreateTemplateBlockDto
-     */
-    'mediaPosition'?: BlogMediaPosition;
-    /**
-     * 
-     * @type {BlogMediaSplit}
-     * @memberof CreateTemplateBlockDto
-     */
-    'mediaSplit'?: BlogMediaSplit;
-    /**
-     * 
-     * @type {BlogMobileStackOrder}
-     * @memberof CreateTemplateBlockDto
-     */
-    'mobileStackOrder'?: BlogMobileStackOrder;
-    /**
-     * 
-     * @type {BlogImageSize}
-     * @memberof CreateTemplateBlockDto
-     */
-    'imageSize'?: BlogImageSize;
-    /**
-     * 
-     * @type {BlogAspectRatio}
-     * @memberof CreateTemplateBlockDto
-     */
-    'aspectRatio'?: BlogAspectRatio;
-    /**
-     * 
-     * @type {BlogOverlayPosition}
-     * @memberof CreateTemplateBlockDto
-     */
-    'overlayPosition'?: BlogOverlayPosition;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateTemplateBlockDto
-     */
-    'placeholderTitle'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateTemplateBlockDto
-     */
-    'placeholderBody'?: string;
-}
-
-
-/**
- * 
- * @export
- * @interface CreateTemplateDto
- */
-export interface CreateTemplateDto {
-    /**
-     * Stable key (normalized server-side); unique.
-     * @type {string}
-     * @memberof CreateTemplateDto
-     */
-    'key': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateTemplateDto
-     */
-    'name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateTemplateDto
-     */
-    'description'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateTemplateDto
-     */
-    'icon'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateTemplateDto
-     */
-    'group'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateTemplateDto
-     */
-    'order'?: number | null;
-    /**
-     * 
-     * @type {Array<CreateTemplateBlockDto>}
-     * @memberof CreateTemplateDto
-     */
-    'blocks'?: Array<CreateTemplateBlockDto>;
-}
 /**
  * 
  * @export
@@ -3378,31 +3362,31 @@ export interface DocumentBlockDto {
      */
     'type': DocumentBlockType;
     /**
-     * Markdown body (prose/callout/mediaText/quote).
+     * Markdown body (prose/callout/quote).
      * @type {string}
      * @memberof DocumentBlockDto
      */
     'markdown'?: string | null;
     /**
-     * Heading text (heading block).
+     * Heading text.
      * @type {string}
      * @memberof DocumentBlockDto
      */
     'text'?: string | null;
     /**
-     * Caption for a single-image block (image/mediaText).
+     * Caption for a single-image block (image).
      * @type {string}
      * @memberof DocumentBlockDto
      */
     'caption'?: string | null;
     /**
-     * Alt text for a single-image block (per-locale).
+     * 
      * @type {string}
      * @memberof DocumentBlockDto
      */
     'alt'?: string | null;
     /**
-     * Overlay text rendered on the image (per-locale).
+     * 
      * @type {string}
      * @memberof DocumentBlockDto
      */
@@ -3444,13 +3428,13 @@ export interface DocumentBlockDto {
      */
     'aspectRatio'?: BlogAspectRatio;
     /**
-     * Focal point X, 0..1 (left→right). image/mediaText only.
+     * 
      * @type {number}
      * @memberof DocumentBlockDto
      */
     'focalX'?: number;
     /**
-     * Focal point Y, 0..1 (top→bottom).
+     * 
      * @type {number}
      * @memberof DocumentBlockDto
      */
@@ -3473,24 +3457,6 @@ export interface DocumentBlockDto {
      * @memberof DocumentBlockDto
      */
     'overlayBackdrop'?: BlogOverlayBackdrop;
-    /**
-     * 
-     * @type {BlogMediaPosition}
-     * @memberof DocumentBlockDto
-     */
-    'mediaPosition'?: BlogMediaPosition;
-    /**
-     * 
-     * @type {BlogMediaSplit}
-     * @memberof DocumentBlockDto
-     */
-    'mediaSplit'?: BlogMediaSplit;
-    /**
-     * 
-     * @type {BlogMobileStackOrder}
-     * @memberof DocumentBlockDto
-     */
-    'mobileStackOrder'?: BlogMobileStackOrder;
     /**
      * 
      * @type {EmbedProvider}
@@ -3539,6 +3505,12 @@ export interface DocumentBlockDto {
      * @memberof DocumentBlockDto
      */
     'minAccessTier'?: BlogAccessTier;
+    /**
+     * 
+     * @type {Array<DocumentColumnDto>}
+     * @memberof DocumentBlockDto
+     */
+    'columns'?: Array<DocumentColumnDto>;
 }
 
 
@@ -3554,16 +3526,218 @@ export const DocumentBlockType = {
     Divider: 'divider',
     Image: 'image',
     Gallery: 'gallery',
-    MediaText: 'mediaText',
     Embed: 'embed',
     Map: 'map',
     Place: 'place',
     List: 'list',
     Heading: 'heading',
-    Quote: 'quote'
+    Quote: 'quote',
+    Columns: 'columns'
 } as const;
 
 export type DocumentBlockType = typeof DocumentBlockType[keyof typeof DocumentBlockType];
+
+
+/**
+ * 
+ * @export
+ * @interface DocumentColumnDto
+ */
+export interface DocumentColumnDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentColumnDto
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentColumnDto
+     */
+    'clientKey'?: string;
+    /**
+     * Column width share, 0..1 (relative; FE normalizes).
+     * @type {number}
+     * @memberof DocumentColumnDto
+     */
+    'width'?: number;
+    /**
+     * 
+     * @type {Array<DocumentLeafBlockDto>}
+     * @memberof DocumentColumnDto
+     */
+    'blocks': Array<DocumentLeafBlockDto>;
+}
+/**
+ * 
+ * @export
+ * @interface DocumentLeafBlockDto
+ */
+export interface DocumentLeafBlockDto {
+    /**
+     * Existing sectionId (update).
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'id'?: string;
+    /**
+     * Client key for a new block.
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'clientKey'?: string;
+    /**
+     * 
+     * @type {DocumentBlockType}
+     * @memberof DocumentLeafBlockDto
+     */
+    'type': DocumentBlockType;
+    /**
+     * Markdown body (prose/callout/quote).
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'markdown'?: string | null;
+    /**
+     * Heading text.
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'text'?: string | null;
+    /**
+     * Caption for a single-image block (image).
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'caption'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'alt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'overlayText'?: string | null;
+    /**
+     * 
+     * @type {CalloutVariant}
+     * @memberof DocumentLeafBlockDto
+     */
+    'variant'?: CalloutVariant;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'imageId'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof DocumentLeafBlockDto
+     */
+    'imageIds'?: Array<string>;
+    /**
+     * 
+     * @type {GalleryLayout}
+     * @memberof DocumentLeafBlockDto
+     */
+    'galleryLayout'?: GalleryLayout;
+    /**
+     * 
+     * @type {BlogImageSize}
+     * @memberof DocumentLeafBlockDto
+     */
+    'imageSize'?: BlogImageSize;
+    /**
+     * 
+     * @type {BlogAspectRatio}
+     * @memberof DocumentLeafBlockDto
+     */
+    'aspectRatio'?: BlogAspectRatio;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentLeafBlockDto
+     */
+    'focalX'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentLeafBlockDto
+     */
+    'focalY'?: number;
+    /**
+     * 
+     * @type {BlogOverlayPosition}
+     * @memberof DocumentLeafBlockDto
+     */
+    'overlayPosition'?: BlogOverlayPosition;
+    /**
+     * 
+     * @type {BlogOverlayTheme}
+     * @memberof DocumentLeafBlockDto
+     */
+    'overlayTheme'?: BlogOverlayTheme;
+    /**
+     * 
+     * @type {BlogOverlayBackdrop}
+     * @memberof DocumentLeafBlockDto
+     */
+    'overlayBackdrop'?: BlogOverlayBackdrop;
+    /**
+     * 
+     * @type {EmbedProvider}
+     * @memberof DocumentLeafBlockDto
+     */
+    'provider'?: EmbedProvider;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'url'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'poiId'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof DocumentLeafBlockDto
+     */
+    'poiIds'?: Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentLeafBlockDto
+     */
+    'level'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLeafBlockDto
+     */
+    'author'?: string | null;
+    /**
+     * 
+     * @type {Array<DocumentListItemInputDto>}
+     * @memberof DocumentLeafBlockDto
+     */
+    'items'?: Array<DocumentListItemInputDto>;
+    /**
+     * 
+     * @type {BlogAccessTier}
+     * @memberof DocumentLeafBlockDto
+     */
+    'minAccessTier'?: BlogAccessTier;
+}
 
 
 /**
@@ -4092,275 +4266,84 @@ export interface GrantResponse {
 /**
  * 
  * @export
- * @interface HomeBlockPostInputDto
+ * @interface HomeConfigResponse
  */
-export interface HomeBlockPostInputDto {
+export interface HomeConfigResponse {
     /**
      * 
      * @type {string}
-     * @memberof HomeBlockPostInputDto
+     * @memberof HomeConfigResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof HomeConfigResponse
+     */
+    'postCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof HomeConfigResponse
+     */
+    'updatedAt': string;
+}
+/**
+ * 
+ * @export
+ * @interface HomePinInputDto
+ */
+export interface HomePinInputDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof HomePinInputDto
+     */
+    'postId': string;
+    /**
+     * Slot position (1-based).
+     * @type {number}
+     * @memberof HomePinInputDto
+     */
+    'position': number;
+}
+/**
+ * 
+ * @export
+ * @interface HomePinResponse
+ */
+export interface HomePinResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof HomePinResponse
      */
     'postId': string;
     /**
      * 
-     * @type {number}
-     * @memberof HomeBlockPostInputDto
+     * @type {string}
+     * @memberof HomePinResponse
      */
-    'order': number;
+    'slug': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof HomePinResponse
+     */
+    'position': number;
 }
 /**
  * 
  * @export
- * @interface HomeBlockPostResponse
+ * @interface HomePinsResponse
  */
-export interface HomeBlockPostResponse {
+export interface HomePinsResponse {
     /**
      * 
-     * @type {string}
-     * @memberof HomeBlockPostResponse
+     * @type {Array<HomePinResponse>}
+     * @memberof HomePinsResponse
      */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockPostResponse
-     */
-    'postId': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof HomeBlockPostResponse
-     */
-    'order': number;
-    /**
-     * 
-     * @type {PublicPostCardResponse}
-     * @memberof HomeBlockPostResponse
-     */
-    'post'?: PublicPostCardResponse | null;
-}
-/**
- * 
- * @export
- * @interface HomeBlockResponse
- */
-export interface HomeBlockResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockResponse
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockResponse
-     */
-    'layoutId': string;
-    /**
-     * 
-     * @type {HomeBlockType}
-     * @memberof HomeBlockResponse
-     */
-    'type': HomeBlockType;
-    /**
-     * 
-     * @type {number}
-     * @memberof HomeBlockResponse
-     */
-    'order': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockResponse
-     */
-    'categoryId'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockResponse
-     */
-    'imageId'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof HomeBlockResponse
-     */
-    'limit'?: number | null;
-    /**
-     * 
-     * @type {Array<HomeBlockTranslationResponse>}
-     * @memberof HomeBlockResponse
-     */
-    'translations': Array<HomeBlockTranslationResponse>;
-    /**
-     * 
-     * @type {Array<HomeBlockPostResponse>}
-     * @memberof HomeBlockResponse
-     */
-    'posts': Array<HomeBlockPostResponse>;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockResponse
-     */
-    'createdAt': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockResponse
-     */
-    'updatedAt': string;
-}
-
-
-/**
- * 
- * @export
- * @interface HomeBlockTranslationResponse
- */
-export interface HomeBlockTranslationResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockTranslationResponse
-     */
-    'locale': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockTranslationResponse
-     */
-    'title'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeBlockTranslationResponse
-     */
-    'body'?: string | null;
-}
-/**
- * 
- * @export
- * @enum {string}
- */
-
-export const HomeBlockType = {
-    Hero: 'HERO',
-    FeaturedPosts: 'FEATURED_POSTS',
-    CategoryRow: 'CATEGORY_ROW',
-    PostGrid: 'POST_GRID',
-    Map: 'MAP',
-    Text: 'TEXT'
-} as const;
-
-export type HomeBlockType = typeof HomeBlockType[keyof typeof HomeBlockType];
-
-
-/**
- * 
- * @export
- * @interface HomeLayoutListResponse
- */
-export interface HomeLayoutListResponse {
-    /**
-     * 
-     * @type {number}
-     * @memberof HomeLayoutListResponse
-     */
-    'total': number;
-    /**
-     * 
-     * @type {Array<HomeLayoutSummaryResponse>}
-     * @memberof HomeLayoutListResponse
-     */
-    'layouts': Array<HomeLayoutSummaryResponse>;
-}
-/**
- * 
- * @export
- * @interface HomeLayoutResponse
- */
-export interface HomeLayoutResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeLayoutResponse
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeLayoutResponse
-     */
-    'name': string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof HomeLayoutResponse
-     */
-    'isActive': boolean;
-    /**
-     * 
-     * @type {Array<HomeBlockResponse>}
-     * @memberof HomeLayoutResponse
-     */
-    'blocks': Array<HomeBlockResponse>;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeLayoutResponse
-     */
-    'createdAt': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeLayoutResponse
-     */
-    'updatedAt': string;
-}
-/**
- * 
- * @export
- * @interface HomeLayoutSummaryResponse
- */
-export interface HomeLayoutSummaryResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeLayoutSummaryResponse
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeLayoutSummaryResponse
-     */
-    'name': string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof HomeLayoutSummaryResponse
-     */
-    'isActive': boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof HomeLayoutSummaryResponse
-     */
-    'blockCount': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeLayoutSummaryResponse
-     */
-    'createdAt': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof HomeLayoutSummaryResponse
-     */
-    'updatedAt': string;
+    'pins': Array<HomePinResponse>;
 }
 /**
  * 
@@ -5470,6 +5453,37 @@ export interface PatchBlogCategoryDto {
 /**
  * 
  * @export
+ * @interface PatchBlogCountryDto
+ */
+export interface PatchBlogCountryDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchBlogCountryDto
+     */
+    'slug'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchBlogCountryDto
+     */
+    'code'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchBlogCountryDto
+     */
+    'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchBlogCountryDto
+     */
+    'order'?: number | null;
+}
+/**
+ * 
+ * @export
  * @interface PatchCollectionDto
  */
 export interface PatchCollectionDto {
@@ -5554,54 +5568,15 @@ export interface PatchDiskDto {
 /**
  * 
  * @export
- * @interface PatchHomeBlockDto
+ * @interface PatchHomeConfigDto
  */
-export interface PatchHomeBlockDto {
+export interface PatchHomeConfigDto {
     /**
-     * 
-     * @type {HomeBlockType}
-     * @memberof PatchHomeBlockDto
-     */
-    'type'?: HomeBlockType;
-    /**
-     * 
+     * How many posts the homepage shows.
      * @type {number}
-     * @memberof PatchHomeBlockDto
+     * @memberof PatchHomeConfigDto
      */
-    'order'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchHomeBlockDto
-     */
-    'categoryId'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchHomeBlockDto
-     */
-    'imageId'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchHomeBlockDto
-     */
-    'limit'?: number | null;
-}
-
-
-/**
- * 
- * @export
- * @interface PatchHomeLayoutDto
- */
-export interface PatchHomeLayoutDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchHomeLayoutDto
-     */
-    'name'?: string;
+    'postCount'?: number;
 }
 /**
  * 
@@ -5670,11 +5645,11 @@ export interface PatchPoiDto {
      */
     'name'?: string;
     /**
-     * 
+     * BlogCountry id (FK).
      * @type {string}
      * @memberof PatchPoiDto
      */
-    'country'?: string | null;
+    'countryId'?: string | null;
     /**
      * 
      * @type {string}
@@ -5854,11 +5829,11 @@ export interface PatchPostDto {
      */
     'seriesOrder'?: number | null;
     /**
-     * 
+     * BlogCountry id (FK).
      * @type {string}
      * @memberof PatchPostDto
      */
-    'country'?: string | null;
+    'countryId'?: string | null;
     /**
      * 
      * @type {string}
@@ -5934,24 +5909,6 @@ export interface PatchSectionDto {
      * @memberof PatchSectionDto
      */
     'embedProvider'?: EmbedProvider;
-    /**
-     * 
-     * @type {BlogMediaPosition}
-     * @memberof PatchSectionDto
-     */
-    'mediaPosition'?: BlogMediaPosition;
-    /**
-     * 
-     * @type {BlogMediaSplit}
-     * @memberof PatchSectionDto
-     */
-    'mediaSplit'?: BlogMediaSplit;
-    /**
-     * 
-     * @type {BlogMobileStackOrder}
-     * @memberof PatchSectionDto
-     */
-    'mobileStackOrder'?: BlogMobileStackOrder;
 }
 
 
@@ -6164,124 +6121,6 @@ export interface PatchServerTransferDto {
 }
 
 
-/**
- * 
- * @export
- * @interface PatchTemplateBlockDto
- */
-export interface PatchTemplateBlockDto {
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchTemplateBlockDto
-     */
-    'order'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchTemplateBlockDto
-     */
-    'headingLevel'?: number | null;
-    /**
-     * 
-     * @type {CalloutVariant}
-     * @memberof PatchTemplateBlockDto
-     */
-    'calloutVariant'?: CalloutVariant;
-    /**
-     * 
-     * @type {GalleryLayout}
-     * @memberof PatchTemplateBlockDto
-     */
-    'galleryLayout'?: GalleryLayout;
-    /**
-     * 
-     * @type {BlogMediaPosition}
-     * @memberof PatchTemplateBlockDto
-     */
-    'mediaPosition'?: BlogMediaPosition;
-    /**
-     * 
-     * @type {BlogMediaSplit}
-     * @memberof PatchTemplateBlockDto
-     */
-    'mediaSplit'?: BlogMediaSplit;
-    /**
-     * 
-     * @type {BlogMobileStackOrder}
-     * @memberof PatchTemplateBlockDto
-     */
-    'mobileStackOrder'?: BlogMobileStackOrder;
-    /**
-     * 
-     * @type {BlogImageSize}
-     * @memberof PatchTemplateBlockDto
-     */
-    'imageSize'?: BlogImageSize;
-    /**
-     * 
-     * @type {BlogAspectRatio}
-     * @memberof PatchTemplateBlockDto
-     */
-    'aspectRatio'?: BlogAspectRatio;
-    /**
-     * 
-     * @type {BlogOverlayPosition}
-     * @memberof PatchTemplateBlockDto
-     */
-    'overlayPosition'?: BlogOverlayPosition;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchTemplateBlockDto
-     */
-    'placeholderTitle'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchTemplateBlockDto
-     */
-    'placeholderBody'?: string | null;
-}
-
-
-/**
- * 
- * @export
- * @interface PatchTemplateDto
- */
-export interface PatchTemplateDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchTemplateDto
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchTemplateDto
-     */
-    'description'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchTemplateDto
-     */
-    'icon'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchTemplateDto
-     */
-    'group'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchTemplateDto
-     */
-    'order'?: number | null;
-}
 /**
  * 
  * @export
@@ -9040,6 +8879,19 @@ export interface PublicCollectionResponse {
 /**
  * 
  * @export
+ * @interface PublicHomeResponse
+ */
+export interface PublicHomeResponse {
+    /**
+     * 
+     * @type {Array<PublicPostCardResponse>}
+     * @memberof PublicHomeResponse
+     */
+    'posts': Array<PublicPostCardResponse>;
+}
+/**
+ * 
+ * @export
  * @interface PublicKeyResponse
  */
 export interface PublicKeyResponse {
@@ -9538,51 +9390,6 @@ export interface ReorderDto {
 /**
  * 
  * @export
- * @interface ReorderHomeBlockItemDto
- */
-export interface ReorderHomeBlockItemDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof ReorderHomeBlockItemDto
-     */
-    'blockId': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof ReorderHomeBlockItemDto
-     */
-    'order': number;
-}
-/**
- * 
- * @export
- * @interface ReorderHomeBlockPostsDto
- */
-export interface ReorderHomeBlockPostsDto {
-    /**
-     * 
-     * @type {Array<HomeBlockPostInputDto>}
-     * @memberof ReorderHomeBlockPostsDto
-     */
-    'posts': Array<HomeBlockPostInputDto>;
-}
-/**
- * 
- * @export
- * @interface ReorderHomeBlocksDto
- */
-export interface ReorderHomeBlocksDto {
-    /**
-     * 
-     * @type {Array<ReorderHomeBlockItemDto>}
-     * @memberof ReorderHomeBlocksDto
-     */
-    'blocks': Array<ReorderHomeBlockItemDto>;
-}
-/**
- * 
- * @export
  * @interface ReorderPostsDto
  */
 export interface ReorderPostsDto {
@@ -9682,112 +9489,6 @@ export interface ResolvedCategoryResponse {
 }
 
 
-/**
- * 
- * @export
- * @interface ResolvedHomeBlockResponse
- */
-export interface ResolvedHomeBlockResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'id': string;
-    /**
-     * 
-     * @type {HomeBlockType}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'type': HomeBlockType;
-    /**
-     * 
-     * @type {number}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'order': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'imageId'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'title'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'body'?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'untranslated': boolean;
-    /**
-     * 
-     * @type {Array<PublicPostCardResponse>}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'posts'?: Array<PublicPostCardResponse> | null;
-    /**
-     * 
-     * @type {ResolvedCategoryResponse}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'category'?: ResolvedCategoryResponse | null;
-    /**
-     * 
-     * @type {Array<PoiPublicResponse>}
-     * @memberof ResolvedHomeBlockResponse
-     */
-    'pois'?: Array<PoiPublicResponse> | null;
-}
-
-
-/**
- * 
- * @export
- * @interface ResolvedHomeResponse
- */
-export interface ResolvedHomeResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof ResolvedHomeResponse
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ResolvedHomeResponse
-     */
-    'name': string;
-    /**
-     * 
-     * @type {Array<ResolvedHomeBlockResponse>}
-     * @memberof ResolvedHomeResponse
-     */
-    'blocks': Array<ResolvedHomeBlockResponse>;
-    /**
-     * 
-     * @type {string}
-     * @memberof ResolvedHomeResponse
-     */
-    'createdAt': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ResolvedHomeResponse
-     */
-    'updatedAt': string;
-}
 /**
  * 
  * @export
@@ -10138,23 +9839,17 @@ export interface ResolvedSectionResponse {
      */
     'embedProvider'?: EmbedProvider;
     /**
-     * 
-     * @type {BlogMediaPosition}
+     * Parent section id (COLUMNS→COLUMN nesting); null at top level.
+     * @type {string}
      * @memberof ResolvedSectionResponse
      */
-    'mediaPosition'?: BlogMediaPosition;
+    'parentId'?: string | null;
     /**
      * 
-     * @type {BlogMediaSplit}
+     * @type {number}
      * @memberof ResolvedSectionResponse
      */
-    'mediaSplit'?: BlogMediaSplit;
-    /**
-     * 
-     * @type {BlogMobileStackOrder}
-     * @memberof ResolvedSectionResponse
-     */
-    'mobileStackOrder'?: BlogMobileStackOrder;
+    'columnWidth'?: number | null;
     /**
      * 
      * @type {string}
@@ -10780,23 +10475,17 @@ export interface SectionResponse {
      */
     'embedProvider'?: EmbedProvider;
     /**
-     * 
-     * @type {BlogMediaPosition}
+     * Parent section id (COLUMNS→COLUMN→block nesting); null at top level.
+     * @type {string}
      * @memberof SectionResponse
      */
-    'mediaPosition'?: BlogMediaPosition;
+    'parentId'?: string | null;
     /**
-     * 
-     * @type {BlogMediaSplit}
+     * COLUMN width share, 0..1 (relative).
+     * @type {number}
      * @memberof SectionResponse
      */
-    'mediaSplit'?: BlogMediaSplit;
-    /**
-     * 
-     * @type {BlogMobileStackOrder}
-     * @memberof SectionResponse
-     */
-    'mobileStackOrder'?: BlogMobileStackOrder;
+    'columnWidth'?: number | null;
     /**
      * 
      * @type {Array<SectionTranslationResponse>}
@@ -11502,15 +11191,15 @@ export interface SetBlogAlbumItemsDto {
 /**
  * 
  * @export
- * @interface SetHomeBlockPostsDto
+ * @interface SetHomePinsDto
  */
-export interface SetHomeBlockPostsDto {
+export interface SetHomePinsDto {
     /**
      * 
-     * @type {Array<HomeBlockPostInputDto>}
-     * @memberof SetHomeBlockPostsDto
+     * @type {Array<HomePinInputDto>}
+     * @memberof SetHomePinsDto
      */
-    'posts': Array<HomeBlockPostInputDto>;
+    'pins': Array<HomePinInputDto>;
 }
 /**
  * 
@@ -11814,197 +11503,6 @@ export interface TaskCommentUserResponseDto {
 /**
  * 
  * @export
- * @interface TemplateBlockResponse
- */
-export interface TemplateBlockResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateBlockResponse
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateBlockResponse
-     */
-    'templateId': string;
-    /**
-     * 
-     * @type {BlogSectionType}
-     * @memberof TemplateBlockResponse
-     */
-    'type': BlogSectionType;
-    /**
-     * 
-     * @type {number}
-     * @memberof TemplateBlockResponse
-     */
-    'order': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof TemplateBlockResponse
-     */
-    'headingLevel'?: number | null;
-    /**
-     * 
-     * @type {CalloutVariant}
-     * @memberof TemplateBlockResponse
-     */
-    'calloutVariant'?: CalloutVariant;
-    /**
-     * 
-     * @type {GalleryLayout}
-     * @memberof TemplateBlockResponse
-     */
-    'galleryLayout'?: GalleryLayout;
-    /**
-     * 
-     * @type {BlogMediaPosition}
-     * @memberof TemplateBlockResponse
-     */
-    'mediaPosition'?: BlogMediaPosition;
-    /**
-     * 
-     * @type {BlogMediaSplit}
-     * @memberof TemplateBlockResponse
-     */
-    'mediaSplit'?: BlogMediaSplit;
-    /**
-     * 
-     * @type {BlogMobileStackOrder}
-     * @memberof TemplateBlockResponse
-     */
-    'mobileStackOrder'?: BlogMobileStackOrder;
-    /**
-     * 
-     * @type {BlogImageSize}
-     * @memberof TemplateBlockResponse
-     */
-    'imageSize'?: BlogImageSize;
-    /**
-     * 
-     * @type {BlogAspectRatio}
-     * @memberof TemplateBlockResponse
-     */
-    'aspectRatio'?: BlogAspectRatio;
-    /**
-     * 
-     * @type {BlogOverlayPosition}
-     * @memberof TemplateBlockResponse
-     */
-    'overlayPosition'?: BlogOverlayPosition;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateBlockResponse
-     */
-    'placeholderTitle'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateBlockResponse
-     */
-    'placeholderBody'?: string | null;
-}
-
-
-/**
- * 
- * @export
- * @interface TemplateListResponse
- */
-export interface TemplateListResponse {
-    /**
-     * 
-     * @type {number}
-     * @memberof TemplateListResponse
-     */
-    'total': number;
-    /**
-     * 
-     * @type {Array<TemplateResponse>}
-     * @memberof TemplateListResponse
-     */
-    'templates': Array<TemplateResponse>;
-}
-/**
- * 
- * @export
- * @interface TemplateResponse
- */
-export interface TemplateResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateResponse
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateResponse
-     */
-    'key': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateResponse
-     */
-    'name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateResponse
-     */
-    'description'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateResponse
-     */
-    'icon'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateResponse
-     */
-    'group'?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof TemplateResponse
-     */
-    'isSystem': boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof TemplateResponse
-     */
-    'order'?: number | null;
-    /**
-     * 
-     * @type {Array<TemplateBlockResponse>}
-     * @memberof TemplateResponse
-     */
-    'blocks': Array<TemplateBlockResponse>;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateResponse
-     */
-    'createdAt': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TemplateResponse
-     */
-    'updatedAt': string;
-}
-/**
- * 
- * @export
  * @interface TokenListResponseDto
  */
 export interface TokenListResponseDto {
@@ -12290,6 +11788,25 @@ export interface UpsertCollectionTranslationDto {
 /**
  * 
  * @export
+ * @interface UpsertCountryTranslationDto
+ */
+export interface UpsertCountryTranslationDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertCountryTranslationDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertCountryTranslationDto
+     */
+    'intro'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface UpsertFeedbackDto
  */
 export interface UpsertFeedbackDto {
@@ -12308,25 +11825,6 @@ export interface UpsertFeedbackDto {
 }
 
 
-/**
- * 
- * @export
- * @interface UpsertHomeBlockTranslationDto
- */
-export interface UpsertHomeBlockTranslationDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof UpsertHomeBlockTranslationDto
-     */
-    'title'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpsertHomeBlockTranslationDto
-     */
-    'body'?: string | null;
-}
 /**
  * 
  * @export
@@ -12818,23 +12316,17 @@ export interface VisibleSectionResponse {
      */
     'embedProvider'?: EmbedProvider;
     /**
-     * 
-     * @type {BlogMediaPosition}
+     * Parent section id (COLUMNS→COLUMN nesting); null at top level.
+     * @type {string}
      * @memberof VisibleSectionResponse
      */
-    'mediaPosition'?: BlogMediaPosition;
+    'parentId'?: string | null;
     /**
      * 
-     * @type {BlogMediaSplit}
+     * @type {number}
      * @memberof VisibleSectionResponse
      */
-    'mediaSplit'?: BlogMediaSplit;
-    /**
-     * 
-     * @type {BlogMobileStackOrder}
-     * @memberof VisibleSectionResponse
-     */
-    'mobileStackOrder'?: BlogMobileStackOrder;
+    'columnWidth'?: number | null;
     /**
      * 
      * @type {string}
@@ -17885,6 +17377,872 @@ export class BlogCollectionsApi extends BaseAPI {
 
 
 /**
+ * BlogColorsApi - axios parameter creator
+ * @export
+ */
+export const BlogColorsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        colorsControllerList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/colors`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BlogColorsApi - functional programming interface
+ * @export
+ */
+export const BlogColorsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BlogColorsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async colorsControllerList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogColorsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.colorsControllerList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogColorsApi.colorsControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * BlogColorsApi - factory interface
+ * @export
+ */
+export const BlogColorsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BlogColorsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        colorsControllerList(options?: RawAxiosRequestConfig): AxiosPromise<BlogColorsResponse> {
+            return localVarFp.colorsControllerList(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * BlogColorsApi - object-oriented interface
+ * @export
+ * @class BlogColorsApi
+ * @extends {BaseAPI}
+ */
+export class BlogColorsApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogColorsApi
+     */
+    public colorsControllerList(options?: RawAxiosRequestConfig) {
+        return BlogColorsApiFp(this.configuration).colorsControllerList(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * BlogCountriesApi - axios parameter creator
+ * @export
+ */
+export const BlogCountriesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} [locale] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryPublicControllerMenu: async (locale?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/countries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (locale !== undefined) {
+                localVarQueryParameter['locale'] = locale;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} slug 
+         * @param {string} [locale] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryPublicControllerPage: async (slug: string, locale?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'slug' is not null or undefined
+            assertParamExists('countryPublicControllerPage', 'slug', slug)
+            const localVarPath = `/blog/countries/by-slug/{slug}`
+                .replace(`{${"slug"}}`, encodeURIComponent(String(slug)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (locale !== undefined) {
+                localVarQueryParameter['locale'] = locale;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BlogCountriesApi - functional programming interface
+ * @export
+ */
+export const BlogCountriesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BlogCountriesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} [locale] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async countryPublicControllerMenu(locale?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogCountryMenuResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.countryPublicControllerMenu(locale, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCountriesApi.countryPublicControllerMenu']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} slug 
+         * @param {string} [locale] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async countryPublicControllerPage(slug: string, locale?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogCountryPageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.countryPublicControllerPage(slug, locale, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCountriesApi.countryPublicControllerPage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * BlogCountriesApi - factory interface
+ * @export
+ */
+export const BlogCountriesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BlogCountriesApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {BlogCountriesApiCountryPublicControllerMenuRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryPublicControllerMenu(requestParameters: BlogCountriesApiCountryPublicControllerMenuRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<BlogCountryMenuResponse> {
+            return localVarFp.countryPublicControllerMenu(requestParameters.locale, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogCountriesApiCountryPublicControllerPageRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryPublicControllerPage(requestParameters: BlogCountriesApiCountryPublicControllerPageRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogCountryPageResponse> {
+            return localVarFp.countryPublicControllerPage(requestParameters.slug, requestParameters.locale, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for countryPublicControllerMenu operation in BlogCountriesApi.
+ * @export
+ * @interface BlogCountriesApiCountryPublicControllerMenuRequest
+ */
+export interface BlogCountriesApiCountryPublicControllerMenuRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountriesApiCountryPublicControllerMenu
+     */
+    readonly locale?: string
+}
+
+/**
+ * Request parameters for countryPublicControllerPage operation in BlogCountriesApi.
+ * @export
+ * @interface BlogCountriesApiCountryPublicControllerPageRequest
+ */
+export interface BlogCountriesApiCountryPublicControllerPageRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountriesApiCountryPublicControllerPage
+     */
+    readonly slug: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountriesApiCountryPublicControllerPage
+     */
+    readonly locale?: string
+}
+
+/**
+ * BlogCountriesApi - object-oriented interface
+ * @export
+ * @class BlogCountriesApi
+ * @extends {BaseAPI}
+ */
+export class BlogCountriesApi extends BaseAPI {
+    /**
+     * 
+     * @param {BlogCountriesApiCountryPublicControllerMenuRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCountriesApi
+     */
+    public countryPublicControllerMenu(requestParameters: BlogCountriesApiCountryPublicControllerMenuRequest = {}, options?: RawAxiosRequestConfig) {
+        return BlogCountriesApiFp(this.configuration).countryPublicControllerMenu(requestParameters.locale, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogCountriesApiCountryPublicControllerPageRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCountriesApi
+     */
+    public countryPublicControllerPage(requestParameters: BlogCountriesApiCountryPublicControllerPageRequest, options?: RawAxiosRequestConfig) {
+        return BlogCountriesApiFp(this.configuration).countryPublicControllerPage(requestParameters.slug, requestParameters.locale, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * BlogCountriesAdminApi - axios parameter creator
+ * @export
+ */
+export const BlogCountriesAdminApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CreateBlogCountryDto} createBlogCountryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerCreate: async (createBlogCountryDto: CreateBlogCountryDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createBlogCountryDto' is not null or undefined
+            assertParamExists('countryControllerCreate', 'createBlogCountryDto', createBlogCountryDto)
+            const localVarPath = `/blog/countries/manage`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createBlogCountryDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerDelete: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('countryControllerDelete', 'id', id)
+            const localVarPath = `/blog/countries/manage/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerGetById: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('countryControllerGetById', 'id', id)
+            const localVarPath = `/blog/countries/manage/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/countries/manage`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {PatchBlogCountryDto} patchBlogCountryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerPatch: async (id: string, patchBlogCountryDto: PatchBlogCountryDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('countryControllerPatch', 'id', id)
+            // verify required parameter 'patchBlogCountryDto' is not null or undefined
+            assertParamExists('countryControllerPatch', 'patchBlogCountryDto', patchBlogCountryDto)
+            const localVarPath = `/blog/countries/manage/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchBlogCountryDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} locale 
+         * @param {UpsertCountryTranslationDto} upsertCountryTranslationDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerUpsertTranslation: async (id: string, locale: string, upsertCountryTranslationDto: UpsertCountryTranslationDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('countryControllerUpsertTranslation', 'id', id)
+            // verify required parameter 'locale' is not null or undefined
+            assertParamExists('countryControllerUpsertTranslation', 'locale', locale)
+            // verify required parameter 'upsertCountryTranslationDto' is not null or undefined
+            assertParamExists('countryControllerUpsertTranslation', 'upsertCountryTranslationDto', upsertCountryTranslationDto)
+            const localVarPath = `/blog/countries/manage/{id}/translations/{locale}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"locale"}}`, encodeURIComponent(String(locale)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upsertCountryTranslationDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BlogCountriesAdminApi - functional programming interface
+ * @export
+ */
+export const BlogCountriesAdminApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BlogCountriesAdminApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CreateBlogCountryDto} createBlogCountryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async countryControllerCreate(createBlogCountryDto: CreateBlogCountryDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogCountryAdminResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.countryControllerCreate(createBlogCountryDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCountriesAdminApi.countryControllerCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async countryControllerDelete(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogCountryAdminResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.countryControllerDelete(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCountriesAdminApi.countryControllerDelete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async countryControllerGetById(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogCountryAdminResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.countryControllerGetById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCountriesAdminApi.countryControllerGetById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async countryControllerList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogCountryListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.countryControllerList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCountriesAdminApi.countryControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {PatchBlogCountryDto} patchBlogCountryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async countryControllerPatch(id: string, patchBlogCountryDto: PatchBlogCountryDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogCountryAdminResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.countryControllerPatch(id, patchBlogCountryDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCountriesAdminApi.countryControllerPatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} locale 
+         * @param {UpsertCountryTranslationDto} upsertCountryTranslationDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async countryControllerUpsertTranslation(id: string, locale: string, upsertCountryTranslationDto: UpsertCountryTranslationDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogCountryAdminResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.countryControllerUpsertTranslation(id, locale, upsertCountryTranslationDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCountriesAdminApi.countryControllerUpsertTranslation']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * BlogCountriesAdminApi - factory interface
+ * @export
+ */
+export const BlogCountriesAdminApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BlogCountriesAdminApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {BlogCountriesAdminApiCountryControllerCreateRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerCreate(requestParameters: BlogCountriesAdminApiCountryControllerCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogCountryAdminResponse> {
+            return localVarFp.countryControllerCreate(requestParameters.createBlogCountryDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogCountriesAdminApiCountryControllerDeleteRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerDelete(requestParameters: BlogCountriesAdminApiCountryControllerDeleteRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogCountryAdminResponse> {
+            return localVarFp.countryControllerDelete(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogCountriesAdminApiCountryControllerGetByIdRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerGetById(requestParameters: BlogCountriesAdminApiCountryControllerGetByIdRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogCountryAdminResponse> {
+            return localVarFp.countryControllerGetById(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerList(options?: RawAxiosRequestConfig): AxiosPromise<BlogCountryListResponse> {
+            return localVarFp.countryControllerList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogCountriesAdminApiCountryControllerPatchRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerPatch(requestParameters: BlogCountriesAdminApiCountryControllerPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogCountryAdminResponse> {
+            return localVarFp.countryControllerPatch(requestParameters.id, requestParameters.patchBlogCountryDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogCountriesAdminApiCountryControllerUpsertTranslationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countryControllerUpsertTranslation(requestParameters: BlogCountriesAdminApiCountryControllerUpsertTranslationRequest, options?: RawAxiosRequestConfig): AxiosPromise<BlogCountryAdminResponse> {
+            return localVarFp.countryControllerUpsertTranslation(requestParameters.id, requestParameters.locale, requestParameters.upsertCountryTranslationDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for countryControllerCreate operation in BlogCountriesAdminApi.
+ * @export
+ * @interface BlogCountriesAdminApiCountryControllerCreateRequest
+ */
+export interface BlogCountriesAdminApiCountryControllerCreateRequest {
+    /**
+     * 
+     * @type {CreateBlogCountryDto}
+     * @memberof BlogCountriesAdminApiCountryControllerCreate
+     */
+    readonly createBlogCountryDto: CreateBlogCountryDto
+}
+
+/**
+ * Request parameters for countryControllerDelete operation in BlogCountriesAdminApi.
+ * @export
+ * @interface BlogCountriesAdminApiCountryControllerDeleteRequest
+ */
+export interface BlogCountriesAdminApiCountryControllerDeleteRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountriesAdminApiCountryControllerDelete
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for countryControllerGetById operation in BlogCountriesAdminApi.
+ * @export
+ * @interface BlogCountriesAdminApiCountryControllerGetByIdRequest
+ */
+export interface BlogCountriesAdminApiCountryControllerGetByIdRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountriesAdminApiCountryControllerGetById
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for countryControllerPatch operation in BlogCountriesAdminApi.
+ * @export
+ * @interface BlogCountriesAdminApiCountryControllerPatchRequest
+ */
+export interface BlogCountriesAdminApiCountryControllerPatchRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountriesAdminApiCountryControllerPatch
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {PatchBlogCountryDto}
+     * @memberof BlogCountriesAdminApiCountryControllerPatch
+     */
+    readonly patchBlogCountryDto: PatchBlogCountryDto
+}
+
+/**
+ * Request parameters for countryControllerUpsertTranslation operation in BlogCountriesAdminApi.
+ * @export
+ * @interface BlogCountriesAdminApiCountryControllerUpsertTranslationRequest
+ */
+export interface BlogCountriesAdminApiCountryControllerUpsertTranslationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountriesAdminApiCountryControllerUpsertTranslation
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCountriesAdminApiCountryControllerUpsertTranslation
+     */
+    readonly locale: string
+
+    /**
+     * 
+     * @type {UpsertCountryTranslationDto}
+     * @memberof BlogCountriesAdminApiCountryControllerUpsertTranslation
+     */
+    readonly upsertCountryTranslationDto: UpsertCountryTranslationDto
+}
+
+/**
+ * BlogCountriesAdminApi - object-oriented interface
+ * @export
+ * @class BlogCountriesAdminApi
+ * @extends {BaseAPI}
+ */
+export class BlogCountriesAdminApi extends BaseAPI {
+    /**
+     * 
+     * @param {BlogCountriesAdminApiCountryControllerCreateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCountriesAdminApi
+     */
+    public countryControllerCreate(requestParameters: BlogCountriesAdminApiCountryControllerCreateRequest, options?: RawAxiosRequestConfig) {
+        return BlogCountriesAdminApiFp(this.configuration).countryControllerCreate(requestParameters.createBlogCountryDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogCountriesAdminApiCountryControllerDeleteRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCountriesAdminApi
+     */
+    public countryControllerDelete(requestParameters: BlogCountriesAdminApiCountryControllerDeleteRequest, options?: RawAxiosRequestConfig) {
+        return BlogCountriesAdminApiFp(this.configuration).countryControllerDelete(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogCountriesAdminApiCountryControllerGetByIdRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCountriesAdminApi
+     */
+    public countryControllerGetById(requestParameters: BlogCountriesAdminApiCountryControllerGetByIdRequest, options?: RawAxiosRequestConfig) {
+        return BlogCountriesAdminApiFp(this.configuration).countryControllerGetById(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCountriesAdminApi
+     */
+    public countryControllerList(options?: RawAxiosRequestConfig) {
+        return BlogCountriesAdminApiFp(this.configuration).countryControllerList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogCountriesAdminApiCountryControllerPatchRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCountriesAdminApi
+     */
+    public countryControllerPatch(requestParameters: BlogCountriesAdminApiCountryControllerPatchRequest, options?: RawAxiosRequestConfig) {
+        return BlogCountriesAdminApiFp(this.configuration).countryControllerPatch(requestParameters.id, requestParameters.patchBlogCountryDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogCountriesAdminApiCountryControllerUpsertTranslationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCountriesAdminApi
+     */
+    public countryControllerUpsertTranslation(requestParameters: BlogCountriesAdminApiCountryControllerUpsertTranslationRequest, options?: RawAxiosRequestConfig) {
+        return BlogCountriesAdminApiFp(this.configuration).countryControllerUpsertTranslation(requestParameters.id, requestParameters.locale, requestParameters.upsertCountryTranslationDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * BlogDocumentApi - axios parameter creator
  * @export
  */
@@ -18585,13 +18943,11 @@ export const BlogHomeApiAxiosParamCreator = function (configuration?: Configurat
     return {
         /**
          * 
-         * @param {string} locale 
+         * @param {string} [locale] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homePublicControllerGetHome: async (locale: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'locale' is not null or undefined
-            assertParamExists('homePublicControllerGetHome', 'locale', locale)
+        homePublicControllerGetHome: async (locale?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/blog/home`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -18631,11 +18987,11 @@ export const BlogHomeApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {string} locale 
+         * @param {string} [locale] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async homePublicControllerGetHome(locale: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResolvedHomeResponse>> {
+        async homePublicControllerGetHome(locale?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicHomeResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.homePublicControllerGetHome(locale, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BlogHomeApi.homePublicControllerGetHome']?.[localVarOperationServerIndex]?.url;
@@ -18657,7 +19013,7 @@ export const BlogHomeApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homePublicControllerGetHome(requestParameters: BlogHomeApiHomePublicControllerGetHomeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ResolvedHomeResponse> {
+        homePublicControllerGetHome(requestParameters: BlogHomeApiHomePublicControllerGetHomeRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PublicHomeResponse> {
             return localVarFp.homePublicControllerGetHome(requestParameters.locale, options).then((request) => request(axios, basePath));
         },
     };
@@ -18674,7 +19030,7 @@ export interface BlogHomeApiHomePublicControllerGetHomeRequest {
      * @type {string}
      * @memberof BlogHomeApiHomePublicControllerGetHome
      */
-    readonly locale: string
+    readonly locale?: string
 }
 
 /**
@@ -18691,7 +19047,7 @@ export class BlogHomeApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof BlogHomeApi
      */
-    public homePublicControllerGetHome(requestParameters: BlogHomeApiHomePublicControllerGetHomeRequest, options?: RawAxiosRequestConfig) {
+    public homePublicControllerGetHome(requestParameters: BlogHomeApiHomePublicControllerGetHomeRequest = {}, options?: RawAxiosRequestConfig) {
         return BlogHomeApiFp(this.configuration).homePublicControllerGetHome(requestParameters.locale, options).then((request) => request(this.axios, this.basePath));
     }
 }
@@ -18706,259 +19062,11 @@ export const BlogHomeAdminApiAxiosParamCreator = function (configuration?: Confi
     return {
         /**
          * 
-         * @param {string} layoutId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homeControllerActivate: async (layoutId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerActivate', 'layoutId', layoutId)
-            const localVarPath = `/blog/home/layouts/{layoutId}/activate`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {AddHomeBlockPostDto} addHomeBlockPostDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerAddBlockPost: async (layoutId: string, blockId: string, addHomeBlockPostDto: AddHomeBlockPostDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerAddBlockPost', 'layoutId', layoutId)
-            // verify required parameter 'blockId' is not null or undefined
-            assertParamExists('homeControllerAddBlockPost', 'blockId', blockId)
-            // verify required parameter 'addHomeBlockPostDto' is not null or undefined
-            assertParamExists('homeControllerAddBlockPost', 'addHomeBlockPostDto', addHomeBlockPostDto)
-            const localVarPath = `/blog/home/layouts/{layoutId}/blocks/{blockId}/posts`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)))
-                .replace(`{${"blockId"}}`, encodeURIComponent(String(blockId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(addHomeBlockPostDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {CreateHomeLayoutDto} createHomeLayoutDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerCreate: async (createHomeLayoutDto: CreateHomeLayoutDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'createHomeLayoutDto' is not null or undefined
-            assertParamExists('homeControllerCreate', 'createHomeLayoutDto', createHomeLayoutDto)
-            const localVarPath = `/blog/home/layouts`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(createHomeLayoutDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {CreateHomeBlockDto} createHomeBlockDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerCreateBlock: async (layoutId: string, createHomeBlockDto: CreateHomeBlockDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerCreateBlock', 'layoutId', layoutId)
-            // verify required parameter 'createHomeBlockDto' is not null or undefined
-            assertParamExists('homeControllerCreateBlock', 'createHomeBlockDto', createHomeBlockDto)
-            const localVarPath = `/blog/home/layouts/{layoutId}/blocks`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(createHomeBlockDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerDelete: async (layoutId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerDelete', 'layoutId', layoutId)
-            const localVarPath = `/blog/home/layouts/{layoutId}`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerDeleteBlock: async (layoutId: string, blockId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerDeleteBlock', 'layoutId', layoutId)
-            // verify required parameter 'blockId' is not null or undefined
-            assertParamExists('homeControllerDeleteBlock', 'blockId', blockId)
-            const localVarPath = `/blog/home/layouts/{layoutId}/blocks/{blockId}`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)))
-                .replace(`{${"blockId"}}`, encodeURIComponent(String(blockId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerGet: async (layoutId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerGet', 'layoutId', layoutId)
-            const localVarPath = `/blog/home/layouts/{layoutId}`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)));
+        homeControllerGetConfig: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/home/config`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -18987,14 +19095,11 @@ export const BlogHomeAdminApiAxiosParamCreator = function (configuration?: Confi
         },
         /**
          * 
-         * @param {number} [take] 
-         * @param {number} [skip] 
-         * @param {string} [search] Name contains (case-insensitive).
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homeControllerList: async (take?: number, skip?: number, search?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/blog/home/layouts`;
+        homeControllerGetPins: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/home/pins`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -19010,18 +19115,6 @@ export const BlogHomeAdminApiAxiosParamCreator = function (configuration?: Confi
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (take !== undefined) {
-                localVarQueryParameter['take'] = take;
-            }
-
-            if (skip !== undefined) {
-                localVarQueryParameter['skip'] = skip;
-            }
-
-            if (search !== undefined) {
-                localVarQueryParameter['search'] = search;
-            }
-
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -19035,18 +19128,14 @@ export const BlogHomeAdminApiAxiosParamCreator = function (configuration?: Confi
         },
         /**
          * 
-         * @param {string} layoutId 
-         * @param {PatchHomeLayoutDto} patchHomeLayoutDto 
+         * @param {PatchHomeConfigDto} patchHomeConfigDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homeControllerPatch: async (layoutId: string, patchHomeLayoutDto: PatchHomeLayoutDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerPatch', 'layoutId', layoutId)
-            // verify required parameter 'patchHomeLayoutDto' is not null or undefined
-            assertParamExists('homeControllerPatch', 'patchHomeLayoutDto', patchHomeLayoutDto)
-            const localVarPath = `/blog/home/layouts/{layoutId}`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)));
+        homeControllerPatchConfig: async (patchHomeConfigDto: PatchHomeConfigDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'patchHomeConfigDto' is not null or undefined
+            assertParamExists('homeControllerPatchConfig', 'patchHomeConfigDto', patchHomeConfigDto)
+            const localVarPath = `/blog/home/config`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -19069,7 +19158,7 @@ export const BlogHomeAdminApiAxiosParamCreator = function (configuration?: Confi
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(patchHomeLayoutDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(patchHomeConfigDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -19078,204 +19167,14 @@ export const BlogHomeAdminApiAxiosParamCreator = function (configuration?: Confi
         },
         /**
          * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {PatchHomeBlockDto} patchHomeBlockDto 
+         * @param {SetHomePinsDto} setHomePinsDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homeControllerPatchBlock: async (layoutId: string, blockId: string, patchHomeBlockDto: PatchHomeBlockDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerPatchBlock', 'layoutId', layoutId)
-            // verify required parameter 'blockId' is not null or undefined
-            assertParamExists('homeControllerPatchBlock', 'blockId', blockId)
-            // verify required parameter 'patchHomeBlockDto' is not null or undefined
-            assertParamExists('homeControllerPatchBlock', 'patchHomeBlockDto', patchHomeBlockDto)
-            const localVarPath = `/blog/home/layouts/{layoutId}/blocks/{blockId}`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)))
-                .replace(`{${"blockId"}}`, encodeURIComponent(String(blockId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(patchHomeBlockDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {string} postId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerRemoveBlockPost: async (layoutId: string, blockId: string, postId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerRemoveBlockPost', 'layoutId', layoutId)
-            // verify required parameter 'blockId' is not null or undefined
-            assertParamExists('homeControllerRemoveBlockPost', 'blockId', blockId)
-            // verify required parameter 'postId' is not null or undefined
-            assertParamExists('homeControllerRemoveBlockPost', 'postId', postId)
-            const localVarPath = `/blog/home/layouts/{layoutId}/blocks/{blockId}/posts/{postId}`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)))
-                .replace(`{${"blockId"}}`, encodeURIComponent(String(blockId)))
-                .replace(`{${"postId"}}`, encodeURIComponent(String(postId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {ReorderHomeBlockPostsDto} reorderHomeBlockPostsDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerReorderBlockPosts: async (layoutId: string, blockId: string, reorderHomeBlockPostsDto: ReorderHomeBlockPostsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerReorderBlockPosts', 'layoutId', layoutId)
-            // verify required parameter 'blockId' is not null or undefined
-            assertParamExists('homeControllerReorderBlockPosts', 'blockId', blockId)
-            // verify required parameter 'reorderHomeBlockPostsDto' is not null or undefined
-            assertParamExists('homeControllerReorderBlockPosts', 'reorderHomeBlockPostsDto', reorderHomeBlockPostsDto)
-            const localVarPath = `/blog/home/layouts/{layoutId}/blocks/{blockId}/posts/reorder`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)))
-                .replace(`{${"blockId"}}`, encodeURIComponent(String(blockId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(reorderHomeBlockPostsDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {ReorderHomeBlocksDto} reorderHomeBlocksDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerReorderBlocks: async (layoutId: string, reorderHomeBlocksDto: ReorderHomeBlocksDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerReorderBlocks', 'layoutId', layoutId)
-            // verify required parameter 'reorderHomeBlocksDto' is not null or undefined
-            assertParamExists('homeControllerReorderBlocks', 'reorderHomeBlocksDto', reorderHomeBlocksDto)
-            const localVarPath = `/blog/home/layouts/{layoutId}/blocks/reorder`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(reorderHomeBlocksDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {SetHomeBlockPostsDto} setHomeBlockPostsDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerSetBlockPosts: async (layoutId: string, blockId: string, setHomeBlockPostsDto: SetHomeBlockPostsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerSetBlockPosts', 'layoutId', layoutId)
-            // verify required parameter 'blockId' is not null or undefined
-            assertParamExists('homeControllerSetBlockPosts', 'blockId', blockId)
-            // verify required parameter 'setHomeBlockPostsDto' is not null or undefined
-            assertParamExists('homeControllerSetBlockPosts', 'setHomeBlockPostsDto', setHomeBlockPostsDto)
-            const localVarPath = `/blog/home/layouts/{layoutId}/blocks/{blockId}/posts`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)))
-                .replace(`{${"blockId"}}`, encodeURIComponent(String(blockId)));
+        homeControllerSetPins: async (setHomePinsDto: SetHomePinsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'setHomePinsDto' is not null or undefined
+            assertParamExists('homeControllerSetPins', 'setHomePinsDto', setHomePinsDto)
+            const localVarPath = `/blog/home/pins`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -19298,58 +19197,7 @@ export const BlogHomeAdminApiAxiosParamCreator = function (configuration?: Confi
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(setHomeBlockPostsDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {string} locale 
-         * @param {UpsertHomeBlockTranslationDto} upsertHomeBlockTranslationDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerUpsertBlockTranslation: async (layoutId: string, blockId: string, locale: string, upsertHomeBlockTranslationDto: UpsertHomeBlockTranslationDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'layoutId' is not null or undefined
-            assertParamExists('homeControllerUpsertBlockTranslation', 'layoutId', layoutId)
-            // verify required parameter 'blockId' is not null or undefined
-            assertParamExists('homeControllerUpsertBlockTranslation', 'blockId', blockId)
-            // verify required parameter 'locale' is not null or undefined
-            assertParamExists('homeControllerUpsertBlockTranslation', 'locale', locale)
-            // verify required parameter 'upsertHomeBlockTranslationDto' is not null or undefined
-            assertParamExists('homeControllerUpsertBlockTranslation', 'upsertHomeBlockTranslationDto', upsertHomeBlockTranslationDto)
-            const localVarPath = `/blog/home/layouts/{layoutId}/blocks/{blockId}/translations/{locale}`
-                .replace(`{${"layoutId"}}`, encodeURIComponent(String(layoutId)))
-                .replace(`{${"blockId"}}`, encodeURIComponent(String(blockId)))
-                .replace(`{${"locale"}}`, encodeURIComponent(String(locale)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(upsertHomeBlockTranslationDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(setHomePinsDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -19368,201 +19216,48 @@ export const BlogHomeAdminApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {string} layoutId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async homeControllerActivate(layoutId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeLayoutResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerActivate(layoutId, options);
+        async homeControllerGetConfig(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeConfigResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerGetConfig(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerActivate']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerGetConfig']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {AddHomeBlockPostDto} addHomeBlockPostDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async homeControllerAddBlockPost(layoutId: string, blockId: string, addHomeBlockPostDto: AddHomeBlockPostDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeBlockResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerAddBlockPost(layoutId, blockId, addHomeBlockPostDto, options);
+        async homeControllerGetPins(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomePinsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerGetPins(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerAddBlockPost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerGetPins']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {CreateHomeLayoutDto} createHomeLayoutDto 
+         * @param {PatchHomeConfigDto} patchHomeConfigDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async homeControllerCreate(createHomeLayoutDto: CreateHomeLayoutDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeLayoutResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerCreate(createHomeLayoutDto, options);
+        async homeControllerPatchConfig(patchHomeConfigDto: PatchHomeConfigDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeConfigResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerPatchConfig(patchHomeConfigDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerCreate']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerPatchConfig']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} layoutId 
-         * @param {CreateHomeBlockDto} createHomeBlockDto 
+         * @param {SetHomePinsDto} setHomePinsDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async homeControllerCreateBlock(layoutId: string, createHomeBlockDto: CreateHomeBlockDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeBlockResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerCreateBlock(layoutId, createHomeBlockDto, options);
+        async homeControllerSetPins(setHomePinsDto: SetHomePinsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomePinsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerSetPins(setHomePinsDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerCreateBlock']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerDelete(layoutId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeLayoutResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerDelete(layoutId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerDelete']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerDeleteBlock(layoutId: string, blockId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeBlockResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerDeleteBlock(layoutId, blockId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerDeleteBlock']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerGet(layoutId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeLayoutResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerGet(layoutId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerGet']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {number} [take] 
-         * @param {number} [skip] 
-         * @param {string} [search] Name contains (case-insensitive).
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerList(take?: number, skip?: number, search?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeLayoutListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerList(take, skip, search, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerList']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {PatchHomeLayoutDto} patchHomeLayoutDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerPatch(layoutId: string, patchHomeLayoutDto: PatchHomeLayoutDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeLayoutResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerPatch(layoutId, patchHomeLayoutDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerPatch']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {PatchHomeBlockDto} patchHomeBlockDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerPatchBlock(layoutId: string, blockId: string, patchHomeBlockDto: PatchHomeBlockDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeBlockResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerPatchBlock(layoutId, blockId, patchHomeBlockDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerPatchBlock']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {string} postId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerRemoveBlockPost(layoutId: string, blockId: string, postId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeBlockResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerRemoveBlockPost(layoutId, blockId, postId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerRemoveBlockPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {ReorderHomeBlockPostsDto} reorderHomeBlockPostsDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerReorderBlockPosts(layoutId: string, blockId: string, reorderHomeBlockPostsDto: ReorderHomeBlockPostsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeBlockResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerReorderBlockPosts(layoutId, blockId, reorderHomeBlockPostsDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerReorderBlockPosts']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {ReorderHomeBlocksDto} reorderHomeBlocksDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerReorderBlocks(layoutId: string, reorderHomeBlocksDto: ReorderHomeBlocksDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeLayoutResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerReorderBlocks(layoutId, reorderHomeBlocksDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerReorderBlocks']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {SetHomeBlockPostsDto} setHomeBlockPostsDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerSetBlockPosts(layoutId: string, blockId: string, setHomeBlockPostsDto: SetHomeBlockPostsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeBlockResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerSetBlockPosts(layoutId, blockId, setHomeBlockPostsDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerSetBlockPosts']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} layoutId 
-         * @param {string} blockId 
-         * @param {string} locale 
-         * @param {UpsertHomeBlockTranslationDto} upsertHomeBlockTranslationDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async homeControllerUpsertBlockTranslation(layoutId: string, blockId: string, locale: string, upsertHomeBlockTranslationDto: UpsertHomeBlockTranslationDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HomeBlockResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.homeControllerUpsertBlockTranslation(layoutId, blockId, locale, upsertHomeBlockTranslationDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerUpsertBlockTranslation']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['BlogHomeAdminApi.homeControllerSetPins']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -19577,483 +19272,67 @@ export const BlogHomeAdminApiFactory = function (configuration?: Configuration, 
     return {
         /**
          * 
-         * @param {BlogHomeAdminApiHomeControllerActivateRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homeControllerActivate(requestParameters: BlogHomeAdminApiHomeControllerActivateRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeLayoutResponse> {
-            return localVarFp.homeControllerActivate(requestParameters.layoutId, options).then((request) => request(axios, basePath));
+        homeControllerGetConfig(options?: RawAxiosRequestConfig): AxiosPromise<HomeConfigResponse> {
+            return localVarFp.homeControllerGetConfig(options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {BlogHomeAdminApiHomeControllerAddBlockPostRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homeControllerAddBlockPost(requestParameters: BlogHomeAdminApiHomeControllerAddBlockPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeBlockResponse> {
-            return localVarFp.homeControllerAddBlockPost(requestParameters.layoutId, requestParameters.blockId, requestParameters.addHomeBlockPostDto, options).then((request) => request(axios, basePath));
+        homeControllerGetPins(options?: RawAxiosRequestConfig): AxiosPromise<HomePinsResponse> {
+            return localVarFp.homeControllerGetPins(options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {BlogHomeAdminApiHomeControllerCreateRequest} requestParameters Request parameters.
+         * @param {BlogHomeAdminApiHomeControllerPatchConfigRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homeControllerCreate(requestParameters: BlogHomeAdminApiHomeControllerCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeLayoutResponse> {
-            return localVarFp.homeControllerCreate(requestParameters.createHomeLayoutDto, options).then((request) => request(axios, basePath));
+        homeControllerPatchConfig(requestParameters: BlogHomeAdminApiHomeControllerPatchConfigRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeConfigResponse> {
+            return localVarFp.homeControllerPatchConfig(requestParameters.patchHomeConfigDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {BlogHomeAdminApiHomeControllerCreateBlockRequest} requestParameters Request parameters.
+         * @param {BlogHomeAdminApiHomeControllerSetPinsRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        homeControllerCreateBlock(requestParameters: BlogHomeAdminApiHomeControllerCreateBlockRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeBlockResponse> {
-            return localVarFp.homeControllerCreateBlock(requestParameters.layoutId, requestParameters.createHomeBlockDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerDeleteRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerDelete(requestParameters: BlogHomeAdminApiHomeControllerDeleteRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeLayoutResponse> {
-            return localVarFp.homeControllerDelete(requestParameters.layoutId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerDeleteBlockRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerDeleteBlock(requestParameters: BlogHomeAdminApiHomeControllerDeleteBlockRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeBlockResponse> {
-            return localVarFp.homeControllerDeleteBlock(requestParameters.layoutId, requestParameters.blockId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerGetRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerGet(requestParameters: BlogHomeAdminApiHomeControllerGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeLayoutResponse> {
-            return localVarFp.homeControllerGet(requestParameters.layoutId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerListRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerList(requestParameters: BlogHomeAdminApiHomeControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<HomeLayoutListResponse> {
-            return localVarFp.homeControllerList(requestParameters.take, requestParameters.skip, requestParameters.search, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerPatchRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerPatch(requestParameters: BlogHomeAdminApiHomeControllerPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeLayoutResponse> {
-            return localVarFp.homeControllerPatch(requestParameters.layoutId, requestParameters.patchHomeLayoutDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerPatchBlockRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerPatchBlock(requestParameters: BlogHomeAdminApiHomeControllerPatchBlockRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeBlockResponse> {
-            return localVarFp.homeControllerPatchBlock(requestParameters.layoutId, requestParameters.blockId, requestParameters.patchHomeBlockDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerRemoveBlockPostRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerRemoveBlockPost(requestParameters: BlogHomeAdminApiHomeControllerRemoveBlockPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeBlockResponse> {
-            return localVarFp.homeControllerRemoveBlockPost(requestParameters.layoutId, requestParameters.blockId, requestParameters.postId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerReorderBlockPostsRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerReorderBlockPosts(requestParameters: BlogHomeAdminApiHomeControllerReorderBlockPostsRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeBlockResponse> {
-            return localVarFp.homeControllerReorderBlockPosts(requestParameters.layoutId, requestParameters.blockId, requestParameters.reorderHomeBlockPostsDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerReorderBlocksRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerReorderBlocks(requestParameters: BlogHomeAdminApiHomeControllerReorderBlocksRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeLayoutResponse> {
-            return localVarFp.homeControllerReorderBlocks(requestParameters.layoutId, requestParameters.reorderHomeBlocksDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerSetBlockPostsRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerSetBlockPosts(requestParameters: BlogHomeAdminApiHomeControllerSetBlockPostsRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeBlockResponse> {
-            return localVarFp.homeControllerSetBlockPosts(requestParameters.layoutId, requestParameters.blockId, requestParameters.setHomeBlockPostsDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogHomeAdminApiHomeControllerUpsertBlockTranslationRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        homeControllerUpsertBlockTranslation(requestParameters: BlogHomeAdminApiHomeControllerUpsertBlockTranslationRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomeBlockResponse> {
-            return localVarFp.homeControllerUpsertBlockTranslation(requestParameters.layoutId, requestParameters.blockId, requestParameters.locale, requestParameters.upsertHomeBlockTranslationDto, options).then((request) => request(axios, basePath));
+        homeControllerSetPins(requestParameters: BlogHomeAdminApiHomeControllerSetPinsRequest, options?: RawAxiosRequestConfig): AxiosPromise<HomePinsResponse> {
+            return localVarFp.homeControllerSetPins(requestParameters.setHomePinsDto, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * Request parameters for homeControllerActivate operation in BlogHomeAdminApi.
+ * Request parameters for homeControllerPatchConfig operation in BlogHomeAdminApi.
  * @export
- * @interface BlogHomeAdminApiHomeControllerActivateRequest
+ * @interface BlogHomeAdminApiHomeControllerPatchConfigRequest
  */
-export interface BlogHomeAdminApiHomeControllerActivateRequest {
+export interface BlogHomeAdminApiHomeControllerPatchConfigRequest {
     /**
      * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerActivate
+     * @type {PatchHomeConfigDto}
+     * @memberof BlogHomeAdminApiHomeControllerPatchConfig
      */
-    readonly layoutId: string
+    readonly patchHomeConfigDto: PatchHomeConfigDto
 }
 
 /**
- * Request parameters for homeControllerAddBlockPost operation in BlogHomeAdminApi.
+ * Request parameters for homeControllerSetPins operation in BlogHomeAdminApi.
  * @export
- * @interface BlogHomeAdminApiHomeControllerAddBlockPostRequest
+ * @interface BlogHomeAdminApiHomeControllerSetPinsRequest
  */
-export interface BlogHomeAdminApiHomeControllerAddBlockPostRequest {
+export interface BlogHomeAdminApiHomeControllerSetPinsRequest {
     /**
      * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerAddBlockPost
+     * @type {SetHomePinsDto}
+     * @memberof BlogHomeAdminApiHomeControllerSetPins
      */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerAddBlockPost
-     */
-    readonly blockId: string
-
-    /**
-     * 
-     * @type {AddHomeBlockPostDto}
-     * @memberof BlogHomeAdminApiHomeControllerAddBlockPost
-     */
-    readonly addHomeBlockPostDto: AddHomeBlockPostDto
-}
-
-/**
- * Request parameters for homeControllerCreate operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerCreateRequest
- */
-export interface BlogHomeAdminApiHomeControllerCreateRequest {
-    /**
-     * 
-     * @type {CreateHomeLayoutDto}
-     * @memberof BlogHomeAdminApiHomeControllerCreate
-     */
-    readonly createHomeLayoutDto: CreateHomeLayoutDto
-}
-
-/**
- * Request parameters for homeControllerCreateBlock operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerCreateBlockRequest
- */
-export interface BlogHomeAdminApiHomeControllerCreateBlockRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerCreateBlock
-     */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {CreateHomeBlockDto}
-     * @memberof BlogHomeAdminApiHomeControllerCreateBlock
-     */
-    readonly createHomeBlockDto: CreateHomeBlockDto
-}
-
-/**
- * Request parameters for homeControllerDelete operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerDeleteRequest
- */
-export interface BlogHomeAdminApiHomeControllerDeleteRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerDelete
-     */
-    readonly layoutId: string
-}
-
-/**
- * Request parameters for homeControllerDeleteBlock operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerDeleteBlockRequest
- */
-export interface BlogHomeAdminApiHomeControllerDeleteBlockRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerDeleteBlock
-     */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerDeleteBlock
-     */
-    readonly blockId: string
-}
-
-/**
- * Request parameters for homeControllerGet operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerGetRequest
- */
-export interface BlogHomeAdminApiHomeControllerGetRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerGet
-     */
-    readonly layoutId: string
-}
-
-/**
- * Request parameters for homeControllerList operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerListRequest
- */
-export interface BlogHomeAdminApiHomeControllerListRequest {
-    /**
-     * 
-     * @type {number}
-     * @memberof BlogHomeAdminApiHomeControllerList
-     */
-    readonly take?: number
-
-    /**
-     * 
-     * @type {number}
-     * @memberof BlogHomeAdminApiHomeControllerList
-     */
-    readonly skip?: number
-
-    /**
-     * Name contains (case-insensitive).
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerList
-     */
-    readonly search?: string
-}
-
-/**
- * Request parameters for homeControllerPatch operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerPatchRequest
- */
-export interface BlogHomeAdminApiHomeControllerPatchRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerPatch
-     */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {PatchHomeLayoutDto}
-     * @memberof BlogHomeAdminApiHomeControllerPatch
-     */
-    readonly patchHomeLayoutDto: PatchHomeLayoutDto
-}
-
-/**
- * Request parameters for homeControllerPatchBlock operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerPatchBlockRequest
- */
-export interface BlogHomeAdminApiHomeControllerPatchBlockRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerPatchBlock
-     */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerPatchBlock
-     */
-    readonly blockId: string
-
-    /**
-     * 
-     * @type {PatchHomeBlockDto}
-     * @memberof BlogHomeAdminApiHomeControllerPatchBlock
-     */
-    readonly patchHomeBlockDto: PatchHomeBlockDto
-}
-
-/**
- * Request parameters for homeControllerRemoveBlockPost operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerRemoveBlockPostRequest
- */
-export interface BlogHomeAdminApiHomeControllerRemoveBlockPostRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerRemoveBlockPost
-     */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerRemoveBlockPost
-     */
-    readonly blockId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerRemoveBlockPost
-     */
-    readonly postId: string
-}
-
-/**
- * Request parameters for homeControllerReorderBlockPosts operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerReorderBlockPostsRequest
- */
-export interface BlogHomeAdminApiHomeControllerReorderBlockPostsRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerReorderBlockPosts
-     */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerReorderBlockPosts
-     */
-    readonly blockId: string
-
-    /**
-     * 
-     * @type {ReorderHomeBlockPostsDto}
-     * @memberof BlogHomeAdminApiHomeControllerReorderBlockPosts
-     */
-    readonly reorderHomeBlockPostsDto: ReorderHomeBlockPostsDto
-}
-
-/**
- * Request parameters for homeControllerReorderBlocks operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerReorderBlocksRequest
- */
-export interface BlogHomeAdminApiHomeControllerReorderBlocksRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerReorderBlocks
-     */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {ReorderHomeBlocksDto}
-     * @memberof BlogHomeAdminApiHomeControllerReorderBlocks
-     */
-    readonly reorderHomeBlocksDto: ReorderHomeBlocksDto
-}
-
-/**
- * Request parameters for homeControllerSetBlockPosts operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerSetBlockPostsRequest
- */
-export interface BlogHomeAdminApiHomeControllerSetBlockPostsRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerSetBlockPosts
-     */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerSetBlockPosts
-     */
-    readonly blockId: string
-
-    /**
-     * 
-     * @type {SetHomeBlockPostsDto}
-     * @memberof BlogHomeAdminApiHomeControllerSetBlockPosts
-     */
-    readonly setHomeBlockPostsDto: SetHomeBlockPostsDto
-}
-
-/**
- * Request parameters for homeControllerUpsertBlockTranslation operation in BlogHomeAdminApi.
- * @export
- * @interface BlogHomeAdminApiHomeControllerUpsertBlockTranslationRequest
- */
-export interface BlogHomeAdminApiHomeControllerUpsertBlockTranslationRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerUpsertBlockTranslation
-     */
-    readonly layoutId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerUpsertBlockTranslation
-     */
-    readonly blockId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogHomeAdminApiHomeControllerUpsertBlockTranslation
-     */
-    readonly locale: string
-
-    /**
-     * 
-     * @type {UpsertHomeBlockTranslationDto}
-     * @memberof BlogHomeAdminApiHomeControllerUpsertBlockTranslation
-     */
-    readonly upsertHomeBlockTranslationDto: UpsertHomeBlockTranslationDto
+    readonly setHomePinsDto: SetHomePinsDto
 }
 
 /**
@@ -20065,167 +19344,44 @@ export interface BlogHomeAdminApiHomeControllerUpsertBlockTranslationRequest {
 export class BlogHomeAdminApi extends BaseAPI {
     /**
      * 
-     * @param {BlogHomeAdminApiHomeControllerActivateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BlogHomeAdminApi
      */
-    public homeControllerActivate(requestParameters: BlogHomeAdminApiHomeControllerActivateRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerActivate(requestParameters.layoutId, options).then((request) => request(this.axios, this.basePath));
+    public homeControllerGetConfig(options?: RawAxiosRequestConfig) {
+        return BlogHomeAdminApiFp(this.configuration).homeControllerGetConfig(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {BlogHomeAdminApiHomeControllerAddBlockPostRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BlogHomeAdminApi
      */
-    public homeControllerAddBlockPost(requestParameters: BlogHomeAdminApiHomeControllerAddBlockPostRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerAddBlockPost(requestParameters.layoutId, requestParameters.blockId, requestParameters.addHomeBlockPostDto, options).then((request) => request(this.axios, this.basePath));
+    public homeControllerGetPins(options?: RawAxiosRequestConfig) {
+        return BlogHomeAdminApiFp(this.configuration).homeControllerGetPins(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {BlogHomeAdminApiHomeControllerCreateRequest} requestParameters Request parameters.
+     * @param {BlogHomeAdminApiHomeControllerPatchConfigRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BlogHomeAdminApi
      */
-    public homeControllerCreate(requestParameters: BlogHomeAdminApiHomeControllerCreateRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerCreate(requestParameters.createHomeLayoutDto, options).then((request) => request(this.axios, this.basePath));
+    public homeControllerPatchConfig(requestParameters: BlogHomeAdminApiHomeControllerPatchConfigRequest, options?: RawAxiosRequestConfig) {
+        return BlogHomeAdminApiFp(this.configuration).homeControllerPatchConfig(requestParameters.patchHomeConfigDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {BlogHomeAdminApiHomeControllerCreateBlockRequest} requestParameters Request parameters.
+     * @param {BlogHomeAdminApiHomeControllerSetPinsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BlogHomeAdminApi
      */
-    public homeControllerCreateBlock(requestParameters: BlogHomeAdminApiHomeControllerCreateBlockRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerCreateBlock(requestParameters.layoutId, requestParameters.createHomeBlockDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerDeleteRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerDelete(requestParameters: BlogHomeAdminApiHomeControllerDeleteRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerDelete(requestParameters.layoutId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerDeleteBlockRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerDeleteBlock(requestParameters: BlogHomeAdminApiHomeControllerDeleteBlockRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerDeleteBlock(requestParameters.layoutId, requestParameters.blockId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerGetRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerGet(requestParameters: BlogHomeAdminApiHomeControllerGetRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerGet(requestParameters.layoutId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerListRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerList(requestParameters: BlogHomeAdminApiHomeControllerListRequest = {}, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerList(requestParameters.take, requestParameters.skip, requestParameters.search, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerPatchRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerPatch(requestParameters: BlogHomeAdminApiHomeControllerPatchRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerPatch(requestParameters.layoutId, requestParameters.patchHomeLayoutDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerPatchBlockRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerPatchBlock(requestParameters: BlogHomeAdminApiHomeControllerPatchBlockRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerPatchBlock(requestParameters.layoutId, requestParameters.blockId, requestParameters.patchHomeBlockDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerRemoveBlockPostRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerRemoveBlockPost(requestParameters: BlogHomeAdminApiHomeControllerRemoveBlockPostRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerRemoveBlockPost(requestParameters.layoutId, requestParameters.blockId, requestParameters.postId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerReorderBlockPostsRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerReorderBlockPosts(requestParameters: BlogHomeAdminApiHomeControllerReorderBlockPostsRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerReorderBlockPosts(requestParameters.layoutId, requestParameters.blockId, requestParameters.reorderHomeBlockPostsDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerReorderBlocksRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerReorderBlocks(requestParameters: BlogHomeAdminApiHomeControllerReorderBlocksRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerReorderBlocks(requestParameters.layoutId, requestParameters.reorderHomeBlocksDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerSetBlockPostsRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerSetBlockPosts(requestParameters: BlogHomeAdminApiHomeControllerSetBlockPostsRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerSetBlockPosts(requestParameters.layoutId, requestParameters.blockId, requestParameters.setHomeBlockPostsDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogHomeAdminApiHomeControllerUpsertBlockTranslationRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogHomeAdminApi
-     */
-    public homeControllerUpsertBlockTranslation(requestParameters: BlogHomeAdminApiHomeControllerUpsertBlockTranslationRequest, options?: RawAxiosRequestConfig) {
-        return BlogHomeAdminApiFp(this.configuration).homeControllerUpsertBlockTranslation(requestParameters.layoutId, requestParameters.blockId, requestParameters.locale, requestParameters.upsertHomeBlockTranslationDto, options).then((request) => request(this.axios, this.basePath));
+    public homeControllerSetPins(requestParameters: BlogHomeAdminApiHomeControllerSetPinsRequest, options?: RawAxiosRequestConfig) {
+        return BlogHomeAdminApiFp(this.configuration).homeControllerSetPins(requestParameters.setHomePinsDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -23564,11 +22720,12 @@ export const BlogPostsApiAxiosParamCreator = function (configuration?: Configura
          * @param {string} [locale] 
          * @param {string} [category] Category id or key.
          * @param {string} [region] 
+         * @param {string} [country] Country (language-neutral).
          * @param {string} [series] Series slug or id.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postControllerListPublic: async (take?: number, skip?: number, locale?: string, category?: string, region?: string, series?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        postControllerListPublic: async (take?: number, skip?: number, locale?: string, category?: string, region?: string, country?: string, series?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/blog/posts/public`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -23603,6 +22760,10 @@ export const BlogPostsApiAxiosParamCreator = function (configuration?: Configura
 
             if (region !== undefined) {
                 localVarQueryParameter['region'] = region;
+            }
+
+            if (country !== undefined) {
+                localVarQueryParameter['country'] = country;
             }
 
             if (series !== undefined) {
@@ -23929,12 +23090,13 @@ export const BlogPostsApiFp = function(configuration?: Configuration) {
          * @param {string} [locale] 
          * @param {string} [category] Category id or key.
          * @param {string} [region] 
+         * @param {string} [country] Country (language-neutral).
          * @param {string} [series] Series slug or id.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postControllerListPublic(take?: number, skip?: number, locale?: string, category?: string, region?: string, series?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicPostListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postControllerListPublic(take, skip, locale, category, region, series, options);
+        async postControllerListPublic(take?: number, skip?: number, locale?: string, category?: string, region?: string, country?: string, series?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicPostListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postControllerListPublic(take, skip, locale, category, region, country, series, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BlogPostsApi.postControllerListPublic']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -24075,7 +23237,7 @@ export const BlogPostsApiFactory = function (configuration?: Configuration, base
          * @throws {RequiredError}
          */
         postControllerListPublic(requestParameters: BlogPostsApiPostControllerListPublicRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PublicPostListResponse> {
-            return localVarFp.postControllerListPublic(requestParameters.take, requestParameters.skip, requestParameters.locale, requestParameters.category, requestParameters.region, requestParameters.series, options).then((request) => request(axios, basePath));
+            return localVarFp.postControllerListPublic(requestParameters.take, requestParameters.skip, requestParameters.locale, requestParameters.category, requestParameters.region, requestParameters.country, requestParameters.series, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -24286,6 +23448,13 @@ export interface BlogPostsApiPostControllerListPublicRequest {
     readonly region?: string
 
     /**
+     * Country (language-neutral).
+     * @type {string}
+     * @memberof BlogPostsApiPostControllerListPublic
+     */
+    readonly country?: string
+
+    /**
      * Series slug or id.
      * @type {string}
      * @memberof BlogPostsApiPostControllerListPublic
@@ -24479,7 +23648,7 @@ export class BlogPostsApi extends BaseAPI {
      * @memberof BlogPostsApi
      */
     public postControllerListPublic(requestParameters: BlogPostsApiPostControllerListPublicRequest = {}, options?: RawAxiosRequestConfig) {
-        return BlogPostsApiFp(this.configuration).postControllerListPublic(requestParameters.take, requestParameters.skip, requestParameters.locale, requestParameters.category, requestParameters.region, requestParameters.series, options).then((request) => request(this.axios, this.basePath));
+        return BlogPostsApiFp(this.configuration).postControllerListPublic(requestParameters.take, requestParameters.skip, requestParameters.locale, requestParameters.category, requestParameters.region, requestParameters.country, requestParameters.series, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -26737,948 +25906,6 @@ export class BlogSectionsApi extends BaseAPI {
      */
     public sectionControllerUpsertTranslation(requestParameters: BlogSectionsApiSectionControllerUpsertTranslationRequest, options?: RawAxiosRequestConfig) {
         return BlogSectionsApiFp(this.configuration).sectionControllerUpsertTranslation(requestParameters.id, requestParameters.locale, requestParameters.upsertSectionTranslationDto, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * BlogTemplatesApi - axios parameter creator
- * @export
- */
-export const BlogTemplatesApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @param {string} id 
-         * @param {CreateTemplateBlockDto} createTemplateBlockDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerAddBlock: async (id: string, createTemplateBlockDto: CreateTemplateBlockDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('templateControllerAddBlock', 'id', id)
-            // verify required parameter 'createTemplateBlockDto' is not null or undefined
-            assertParamExists('templateControllerAddBlock', 'createTemplateBlockDto', createTemplateBlockDto)
-            const localVarPath = `/blog/templates/{id}/blocks`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(createTemplateBlockDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} postId 
-         * @param {string} templateId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerApply: async (postId: string, templateId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'postId' is not null or undefined
-            assertParamExists('templateControllerApply', 'postId', postId)
-            // verify required parameter 'templateId' is not null or undefined
-            assertParamExists('templateControllerApply', 'templateId', templateId)
-            const localVarPath = `/blog/posts/{postId}/sections/apply/{templateId}`
-                .replace(`{${"postId"}}`, encodeURIComponent(String(postId)))
-                .replace(`{${"templateId"}}`, encodeURIComponent(String(templateId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {CreateTemplateDto} createTemplateDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerCreate: async (createTemplateDto: CreateTemplateDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'createTemplateDto' is not null or undefined
-            assertParamExists('templateControllerCreate', 'createTemplateDto', createTemplateDto)
-            const localVarPath = `/blog/templates`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(createTemplateDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerDelete: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('templateControllerDelete', 'id', id)
-            const localVarPath = `/blog/templates/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} templateId 
-         * @param {string} blockId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerDeleteBlock: async (templateId: string, blockId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'templateId' is not null or undefined
-            assertParamExists('templateControllerDeleteBlock', 'templateId', templateId)
-            // verify required parameter 'blockId' is not null or undefined
-            assertParamExists('templateControllerDeleteBlock', 'blockId', blockId)
-            const localVarPath = `/blog/templates/{templateId}/blocks/{blockId}`
-                .replace(`{${"templateId"}}`, encodeURIComponent(String(templateId)))
-                .replace(`{${"blockId"}}`, encodeURIComponent(String(blockId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerGet: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('templateControllerGet', 'id', id)
-            const localVarPath = `/blog/templates/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/blog/templates`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {PatchTemplateDto} patchTemplateDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerPatch: async (id: string, patchTemplateDto: PatchTemplateDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('templateControllerPatch', 'id', id)
-            // verify required parameter 'patchTemplateDto' is not null or undefined
-            assertParamExists('templateControllerPatch', 'patchTemplateDto', patchTemplateDto)
-            const localVarPath = `/blog/templates/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(patchTemplateDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} templateId 
-         * @param {string} blockId 
-         * @param {PatchTemplateBlockDto} patchTemplateBlockDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerPatchBlock: async (templateId: string, blockId: string, patchTemplateBlockDto: PatchTemplateBlockDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'templateId' is not null or undefined
-            assertParamExists('templateControllerPatchBlock', 'templateId', templateId)
-            // verify required parameter 'blockId' is not null or undefined
-            assertParamExists('templateControllerPatchBlock', 'blockId', blockId)
-            // verify required parameter 'patchTemplateBlockDto' is not null or undefined
-            assertParamExists('templateControllerPatchBlock', 'patchTemplateBlockDto', patchTemplateBlockDto)
-            const localVarPath = `/blog/templates/{templateId}/blocks/{blockId}`
-                .replace(`{${"templateId"}}`, encodeURIComponent(String(templateId)))
-                .replace(`{${"blockId"}}`, encodeURIComponent(String(blockId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(patchTemplateBlockDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} templateId 
-         * @param {ReorderDto} reorderDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerReorderBlocks: async (templateId: string, reorderDto: ReorderDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'templateId' is not null or undefined
-            assertParamExists('templateControllerReorderBlocks', 'templateId', templateId)
-            // verify required parameter 'reorderDto' is not null or undefined
-            assertParamExists('templateControllerReorderBlocks', 'reorderDto', reorderDto)
-            const localVarPath = `/blog/templates/{templateId}/blocks/reorder`
-                .replace(`{${"templateId"}}`, encodeURIComponent(String(templateId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(reorderDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * BlogTemplatesApi - functional programming interface
- * @export
- */
-export const BlogTemplatesApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = BlogTemplatesApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @param {string} id 
-         * @param {CreateTemplateBlockDto} createTemplateBlockDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerAddBlock(id: string, createTemplateBlockDto: CreateTemplateBlockDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerAddBlock(id, createTemplateBlockDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerAddBlock']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} postId 
-         * @param {string} templateId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerApply(postId: string, templateId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplyTemplateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerApply(postId, templateId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerApply']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {CreateTemplateDto} createTemplateDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerCreate(createTemplateDto: CreateTemplateDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerCreate(createTemplateDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerCreate']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerDelete(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerDelete(id, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerDelete']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} templateId 
-         * @param {string} blockId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerDeleteBlock(templateId: string, blockId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerDeleteBlock(templateId, blockId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerDeleteBlock']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerGet(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerGet(id, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerGet']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerList(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerList']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} id 
-         * @param {PatchTemplateDto} patchTemplateDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerPatch(id: string, patchTemplateDto: PatchTemplateDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerPatch(id, patchTemplateDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerPatch']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} templateId 
-         * @param {string} blockId 
-         * @param {PatchTemplateBlockDto} patchTemplateBlockDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerPatchBlock(templateId: string, blockId: string, patchTemplateBlockDto: PatchTemplateBlockDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerPatchBlock(templateId, blockId, patchTemplateBlockDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerPatchBlock']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} templateId 
-         * @param {ReorderDto} reorderDto 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async templateControllerReorderBlocks(templateId: string, reorderDto: ReorderDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TemplateResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.templateControllerReorderBlocks(templateId, reorderDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BlogTemplatesApi.templateControllerReorderBlocks']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * BlogTemplatesApi - factory interface
- * @export
- */
-export const BlogTemplatesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = BlogTemplatesApiFp(configuration)
-    return {
-        /**
-         * 
-         * @param {BlogTemplatesApiTemplateControllerAddBlockRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerAddBlock(requestParameters: BlogTemplatesApiTemplateControllerAddBlockRequest, options?: RawAxiosRequestConfig): AxiosPromise<TemplateResponse> {
-            return localVarFp.templateControllerAddBlock(requestParameters.id, requestParameters.createTemplateBlockDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogTemplatesApiTemplateControllerApplyRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerApply(requestParameters: BlogTemplatesApiTemplateControllerApplyRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplyTemplateResponse> {
-            return localVarFp.templateControllerApply(requestParameters.postId, requestParameters.templateId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogTemplatesApiTemplateControllerCreateRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerCreate(requestParameters: BlogTemplatesApiTemplateControllerCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<TemplateResponse> {
-            return localVarFp.templateControllerCreate(requestParameters.createTemplateDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogTemplatesApiTemplateControllerDeleteRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerDelete(requestParameters: BlogTemplatesApiTemplateControllerDeleteRequest, options?: RawAxiosRequestConfig): AxiosPromise<TemplateResponse> {
-            return localVarFp.templateControllerDelete(requestParameters.id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogTemplatesApiTemplateControllerDeleteBlockRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerDeleteBlock(requestParameters: BlogTemplatesApiTemplateControllerDeleteBlockRequest, options?: RawAxiosRequestConfig): AxiosPromise<TemplateResponse> {
-            return localVarFp.templateControllerDeleteBlock(requestParameters.templateId, requestParameters.blockId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogTemplatesApiTemplateControllerGetRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerGet(requestParameters: BlogTemplatesApiTemplateControllerGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<TemplateResponse> {
-            return localVarFp.templateControllerGet(requestParameters.id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerList(options?: RawAxiosRequestConfig): AxiosPromise<TemplateListResponse> {
-            return localVarFp.templateControllerList(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogTemplatesApiTemplateControllerPatchRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerPatch(requestParameters: BlogTemplatesApiTemplateControllerPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<TemplateResponse> {
-            return localVarFp.templateControllerPatch(requestParameters.id, requestParameters.patchTemplateDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogTemplatesApiTemplateControllerPatchBlockRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerPatchBlock(requestParameters: BlogTemplatesApiTemplateControllerPatchBlockRequest, options?: RawAxiosRequestConfig): AxiosPromise<TemplateResponse> {
-            return localVarFp.templateControllerPatchBlock(requestParameters.templateId, requestParameters.blockId, requestParameters.patchTemplateBlockDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {BlogTemplatesApiTemplateControllerReorderBlocksRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        templateControllerReorderBlocks(requestParameters: BlogTemplatesApiTemplateControllerReorderBlocksRequest, options?: RawAxiosRequestConfig): AxiosPromise<TemplateResponse> {
-            return localVarFp.templateControllerReorderBlocks(requestParameters.templateId, requestParameters.reorderDto, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * Request parameters for templateControllerAddBlock operation in BlogTemplatesApi.
- * @export
- * @interface BlogTemplatesApiTemplateControllerAddBlockRequest
- */
-export interface BlogTemplatesApiTemplateControllerAddBlockRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerAddBlock
-     */
-    readonly id: string
-
-    /**
-     * 
-     * @type {CreateTemplateBlockDto}
-     * @memberof BlogTemplatesApiTemplateControllerAddBlock
-     */
-    readonly createTemplateBlockDto: CreateTemplateBlockDto
-}
-
-/**
- * Request parameters for templateControllerApply operation in BlogTemplatesApi.
- * @export
- * @interface BlogTemplatesApiTemplateControllerApplyRequest
- */
-export interface BlogTemplatesApiTemplateControllerApplyRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerApply
-     */
-    readonly postId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerApply
-     */
-    readonly templateId: string
-}
-
-/**
- * Request parameters for templateControllerCreate operation in BlogTemplatesApi.
- * @export
- * @interface BlogTemplatesApiTemplateControllerCreateRequest
- */
-export interface BlogTemplatesApiTemplateControllerCreateRequest {
-    /**
-     * 
-     * @type {CreateTemplateDto}
-     * @memberof BlogTemplatesApiTemplateControllerCreate
-     */
-    readonly createTemplateDto: CreateTemplateDto
-}
-
-/**
- * Request parameters for templateControllerDelete operation in BlogTemplatesApi.
- * @export
- * @interface BlogTemplatesApiTemplateControllerDeleteRequest
- */
-export interface BlogTemplatesApiTemplateControllerDeleteRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerDelete
-     */
-    readonly id: string
-}
-
-/**
- * Request parameters for templateControllerDeleteBlock operation in BlogTemplatesApi.
- * @export
- * @interface BlogTemplatesApiTemplateControllerDeleteBlockRequest
- */
-export interface BlogTemplatesApiTemplateControllerDeleteBlockRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerDeleteBlock
-     */
-    readonly templateId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerDeleteBlock
-     */
-    readonly blockId: string
-}
-
-/**
- * Request parameters for templateControllerGet operation in BlogTemplatesApi.
- * @export
- * @interface BlogTemplatesApiTemplateControllerGetRequest
- */
-export interface BlogTemplatesApiTemplateControllerGetRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerGet
-     */
-    readonly id: string
-}
-
-/**
- * Request parameters for templateControllerPatch operation in BlogTemplatesApi.
- * @export
- * @interface BlogTemplatesApiTemplateControllerPatchRequest
- */
-export interface BlogTemplatesApiTemplateControllerPatchRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerPatch
-     */
-    readonly id: string
-
-    /**
-     * 
-     * @type {PatchTemplateDto}
-     * @memberof BlogTemplatesApiTemplateControllerPatch
-     */
-    readonly patchTemplateDto: PatchTemplateDto
-}
-
-/**
- * Request parameters for templateControllerPatchBlock operation in BlogTemplatesApi.
- * @export
- * @interface BlogTemplatesApiTemplateControllerPatchBlockRequest
- */
-export interface BlogTemplatesApiTemplateControllerPatchBlockRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerPatchBlock
-     */
-    readonly templateId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerPatchBlock
-     */
-    readonly blockId: string
-
-    /**
-     * 
-     * @type {PatchTemplateBlockDto}
-     * @memberof BlogTemplatesApiTemplateControllerPatchBlock
-     */
-    readonly patchTemplateBlockDto: PatchTemplateBlockDto
-}
-
-/**
- * Request parameters for templateControllerReorderBlocks operation in BlogTemplatesApi.
- * @export
- * @interface BlogTemplatesApiTemplateControllerReorderBlocksRequest
- */
-export interface BlogTemplatesApiTemplateControllerReorderBlocksRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BlogTemplatesApiTemplateControllerReorderBlocks
-     */
-    readonly templateId: string
-
-    /**
-     * 
-     * @type {ReorderDto}
-     * @memberof BlogTemplatesApiTemplateControllerReorderBlocks
-     */
-    readonly reorderDto: ReorderDto
-}
-
-/**
- * BlogTemplatesApi - object-oriented interface
- * @export
- * @class BlogTemplatesApi
- * @extends {BaseAPI}
- */
-export class BlogTemplatesApi extends BaseAPI {
-    /**
-     * 
-     * @param {BlogTemplatesApiTemplateControllerAddBlockRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerAddBlock(requestParameters: BlogTemplatesApiTemplateControllerAddBlockRequest, options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerAddBlock(requestParameters.id, requestParameters.createTemplateBlockDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogTemplatesApiTemplateControllerApplyRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerApply(requestParameters: BlogTemplatesApiTemplateControllerApplyRequest, options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerApply(requestParameters.postId, requestParameters.templateId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogTemplatesApiTemplateControllerCreateRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerCreate(requestParameters: BlogTemplatesApiTemplateControllerCreateRequest, options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerCreate(requestParameters.createTemplateDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogTemplatesApiTemplateControllerDeleteRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerDelete(requestParameters: BlogTemplatesApiTemplateControllerDeleteRequest, options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerDelete(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogTemplatesApiTemplateControllerDeleteBlockRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerDeleteBlock(requestParameters: BlogTemplatesApiTemplateControllerDeleteBlockRequest, options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerDeleteBlock(requestParameters.templateId, requestParameters.blockId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogTemplatesApiTemplateControllerGetRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerGet(requestParameters: BlogTemplatesApiTemplateControllerGetRequest, options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerGet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerList(options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerList(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogTemplatesApiTemplateControllerPatchRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerPatch(requestParameters: BlogTemplatesApiTemplateControllerPatchRequest, options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerPatch(requestParameters.id, requestParameters.patchTemplateDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogTemplatesApiTemplateControllerPatchBlockRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerPatchBlock(requestParameters: BlogTemplatesApiTemplateControllerPatchBlockRequest, options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerPatchBlock(requestParameters.templateId, requestParameters.blockId, requestParameters.patchTemplateBlockDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {BlogTemplatesApiTemplateControllerReorderBlocksRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BlogTemplatesApi
-     */
-    public templateControllerReorderBlocks(requestParameters: BlogTemplatesApiTemplateControllerReorderBlocksRequest, options?: RawAxiosRequestConfig) {
-        return BlogTemplatesApiFp(this.configuration).templateControllerReorderBlocks(requestParameters.templateId, requestParameters.reorderDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

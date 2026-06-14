@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **name** | **string** | Canonical name (proper noun). | [default to undefined]
 **latitude** | **number** |  | [default to undefined]
 **longitude** | **number** |  | [default to undefined]
-**country** | **string** |  | [optional] [default to undefined]
+**countryId** | **string** | BlogCountry id (FK). | [optional] [default to undefined]
 **region** | **string** |  | [optional] [default to undefined]
 **city** | **string** |  | [optional] [default to undefined]
 **address** | **string** |  | [optional] [default to undefined]
@@ -43,7 +43,7 @@ const instance: CreatePoiDto = {
     name,
     latitude,
     longitude,
-    country,
+    countryId,
     region,
     city,
     address,

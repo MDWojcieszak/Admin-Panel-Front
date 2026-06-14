@@ -5,10 +5,10 @@ import { useCan } from '~/hooks/usePermissions';
 import { BlogNavigationRoute, BlogRouteType } from '~/navigation/types';
 import { BlogCategories } from '~/routes/Blog/Categories';
 import { BlogCollections } from '~/routes/Blog/Collections';
+import { BlogCountries } from '~/routes/Blog/Countries';
 import { BlogHome } from '~/routes/Blog/Home';
 import { BlogPlaces } from '~/routes/Blog/Places';
 import { BlogPosts } from '~/routes/Blog/Posts';
-import { BlogTemplates } from '~/routes/Blog/Templates';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 export const blogNavigationRoutes: BlogRouteType[] = [
@@ -21,13 +21,18 @@ export const blogNavigationRoutes: BlogRouteType[] = [
   },
   { path: BlogNavigationRoute.PLACES, label: 'Places', component: <BlogPlaces />, permission: 'blog.place.manage' },
   {
+    path: BlogNavigationRoute.COUNTRIES,
+    label: 'Countries',
+    component: <BlogCountries />,
+    permission: 'blog.place.manage',
+  },
+  {
     path: BlogNavigationRoute.COLLECTIONS,
     label: 'Collections',
     component: <BlogCollections />,
     permission: 'blog.place.manage',
   },
   { path: BlogNavigationRoute.HOME, label: 'Home page', component: <BlogHome />, permission: 'blog.home.manage' },
-  { path: BlogNavigationRoute.TEMPLATES, label: 'Templates', component: <BlogTemplates />, permission: 'blog.write' },
 ];
 
 export const BlogNavigation = () => {

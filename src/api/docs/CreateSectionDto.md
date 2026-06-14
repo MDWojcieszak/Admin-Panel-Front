@@ -14,9 +14,6 @@ Name | Type | Description | Notes
 **galleryLayout** | [**GalleryLayout**](GalleryLayout.md) |  | [optional] [default to undefined]
 **embedUrl** | **string** |  | [optional] [default to undefined]
 **embedProvider** | [**EmbedProvider**](EmbedProvider.md) |  | [optional] [default to undefined]
-**mediaPosition** | [**BlogMediaPosition**](BlogMediaPosition.md) |  | [optional] [default to undefined]
-**mediaSplit** | [**BlogMediaSplit**](BlogMediaSplit.md) |  | [optional] [default to undefined]
-**mobileStackOrder** | [**BlogMobileStackOrder**](BlogMobileStackOrder.md) |  | [optional] [default to undefined]
 **locale** | **string** | Locale for the initial translation. Defaults to the default locale. | [optional] [default to undefined]
 **title** | **string** |  | [optional] [default to undefined]
 **body** | **string** | Markdown body for the initial locale. | [optional] [default to undefined]
@@ -37,9 +34,6 @@ const instance: CreateSectionDto = {
     galleryLayout,
     embedUrl,
     embedProvider,
-    mediaPosition,
-    mediaSplit,
-    mobileStackOrder,
     locale,
     title,
     body,

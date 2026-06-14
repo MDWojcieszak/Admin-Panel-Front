@@ -107,10 +107,61 @@
   color: rgb(var(--blog-fg, 255, 255, 255)) !important;
 }
 
+/* Callout variant pills — own every state so a native <button> can't keep a stuck focus/active grey
+   (same fix as the aspect-ratio pills). Active colour is per-variant via the --pill-color/--pill-bg vars. */
+.blog-callout-pill {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 0 !important;
+  background-color: transparent !important;
+  color: rgba(var(--blog-fg, 255, 255, 255), 0.5) !important;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+.blog-callout-pill:hover {
+  background-color: rgba(var(--blog-fg, 255, 255, 255), 0.08) !important;
+  color: rgb(var(--blog-fg, 255, 255, 255)) !important;
+}
+.blog-callout-pill:focus,
+.blog-callout-pill:focus-visible,
+.blog-callout-pill:active {
+  outline: none !important;
+}
+.blog-callout-pill.is-active {
+  background-color: var(--pill-bg) !important;
+  color: var(--pill-color) !important;
+}
+
 /* Hover comment button (right gutter). */
 .blog-gutter-comment:hover {
   background-color: #3c5665 !important;
   transform: scale(1.08);
+}
+
+/*
+ * Multi-column: the library sets `display:flex` inline on the list + `flex-grow:<width>` per column
+ * (inline styles already beat the div-flex reset below — no override needed). Columns MUST stay flush:
+ * the resize plugin only engages when the cursor's target is a `.bn-block-column` near its edge, so a
+ * gap between columns would land on the list instead and kill dragging. Space content with inner padding.
+ */
+.bn-container .bn-block-column-list {
+  width: 100%;
+}
+.bn-container .bn-block-column {
+  min-width: 0;
+  padding-inline: 14px;
+}
+.bn-container .bn-block-column:first-child {
+  padding-inline-start: 0;
+}
+.bn-container .bn-block-column:last-child {
+  padding-inline-end: 0;
 }
 
 /* Image settings gear button. */
@@ -145,6 +196,16 @@
 }
 .blog-media-tile:active {
   cursor: grabbing;
+}
+.blog-media-del {
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.blog-media-tile:hover .blog-media-del {
+  opacity: 1;
+}
+.blog-media-del:hover {
+  background-color: rgba(220, 53, 69, 0.95) !important;
 }
 
 /* Column text toolbar buttons. */

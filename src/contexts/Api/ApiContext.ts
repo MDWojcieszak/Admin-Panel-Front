@@ -7,6 +7,7 @@ import {
   BlogCollectionsApi,
   BlogDocumentApi,
   BlogEditorialCommentsApi,
+  BlogCountriesAdminApi,
   BlogHomeAdminApi,
   BlogInteractionsApi,
   BlogLocalesApi,
@@ -14,7 +15,6 @@ import {
   BlogPOIApi,
   BlogPostsApi,
   BlogSectionsApi,
-  BlogTemplatesApi,
   BlogVersioningApi,
   DashboardApi,
   DefaultApi,
@@ -43,10 +43,10 @@ type ApiContextType = {
   blogSectionsApi: BlogSectionsApi | false;
   blogLocalesApi: BlogLocalesApi | false;
   blogCategoriesApi: BlogCategoriesApi | false;
+  blogCountriesApi: BlogCountriesAdminApi | false;
   blogPoiApi: BlogPOIApi | false;
   blogCollectionsApi: BlogCollectionsApi | false;
   blogHomeApi: BlogHomeAdminApi | false;
-  blogTemplatesApi: BlogTemplatesApi | false;
   blogCommentsApi: BlogEditorialCommentsApi | false;
   blogInteractionsApi: BlogInteractionsApi | false;
   blogDocumentApi: BlogDocumentApi | false;

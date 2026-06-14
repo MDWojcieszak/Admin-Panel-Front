@@ -17,8 +17,6 @@
 
 * `Gallery` (value: `'GALLERY'`)
 
-* `MediaText` (value: `'MEDIA_TEXT'`)
-
 * `Map` (value: `'MAP'`)
 
 * `Place` (value: `'PLACE'`)
@@ -26,5 +24,9 @@
 * `Embed` (value: `'EMBED'`)
 
 * `Divider` (value: `'DIVIDER'`)
+
+* `Columns` (value: `'COLUMNS'`)
+
+* `Column` (value: `'COLUMN'`)
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

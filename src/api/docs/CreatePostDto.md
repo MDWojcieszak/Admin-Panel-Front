@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **subtitle** | **string** |  | [optional] [default to undefined]
 **excerpt** | **string** |  | [optional] [default to undefined]
 **accessTier** | [**BlogAccessTier**](BlogAccessTier.md) |  | [optional] [default to undefined]
-**country** | **string** |  | [optional] [default to undefined]
+**countryId** | **string** | BlogCountry id (FK). | [optional] [default to undefined]
 **region** | **string** |  | [optional] [default to undefined]
 **coverImageId** | **string** |  | [optional] [default to undefined]
 **ogImageId** | **string** |  | [optional] [default to undefined]
@@ -30,7 +30,7 @@ const instance: CreatePostDto = {
     subtitle,
     excerpt,
     accessTier,
-    country,
+    countryId,
     region,
     coverImageId,
     ogImageId,

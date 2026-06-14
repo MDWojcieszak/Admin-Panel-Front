@@ -4,24 +4,17 @@ import '~/routes/Blog/Editor/document/editor.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { filterSuggestionItems } from '@blocknote/core';
 import { BlockNoteView } from '@blocknote/mantine';
+import { en as enDictionary } from '@blocknote/core/locales';
 import { SuggestionMenuController, getDefaultReactSlashMenuItems, useCreateBlockNote } from '@blocknote/react';
-import {
-  MdHorizontalRule,
-  MdImage,
-  MdLink,
-  MdMap,
-  MdPhotoLibrary,
-  MdPlace,
-  MdViewColumn,
-  MdWarningAmber,
-} from 'react-icons/md';
+import { getMultiColumnSlashMenuItems, locales as multiColumnLocales, multiColumnDropCursor } from '@blocknote/xl-multi-column';
+import { MdHorizontalRule, MdImage, MdLink, MdMap, MdPhotoLibrary, MdPlace, MdWarningAmber } from 'react-icons/md';
 import { useApi } from '~/hooks/useApi';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { BlogEditorBridge, BlogEditorBridgeContext } from '~/routes/Blog/Editor/document/bridge';
 import { BlogMediaPanel } from '~/routes/Blog/Editor/document/BlogMediaPanel';
 import { CommentGutter } from '~/routes/Blog/Editor/components/CommentGutter';
 import { CommentsLayer } from '~/routes/Blog/Editor/components/CommentsLayer';
-import { BlogEditor, BlogPartialBlock, IMAGE_DND_TYPE, blogSchema, parseColumns } from '~/routes/Blog/Editor/document/schema';
+import { BlogEditor, BlogPartialBlock, IMAGE_DND_TYPE, blogSchema } from '~/routes/Blog/Editor/document/schema';
 import { blocksToDocument, sectionsToBlocks } from '~/routes/Blog/Editor/document/serialize';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -49,7 +42,6 @@ export type SaveState = 'idle' | 'saving' | 'saved';
 const slashItems = (editor: BlogEditor) => [
   { title: 'Image', group: 'Blog', icon: <MdImage size={18} />, onItemClick: () => insertBlock(editor, 'blogImage') },
   { title: 'Gallery', group: 'Blog', icon: <MdPhotoLibrary size={18} />, onItemClick: () => insertBlock(editor, 'blogGallery') },
-  { title: 'Columns', group: 'Blog', icon: <MdViewColumn size={18} />, onItemClick: () => insertBlock(editor, 'blogColumns') },
   { title: 'Callout', group: 'Blog', icon: <MdWarningAmber size={18} />, onItemClick: () => insertBlock(editor, 'blogCallout') },
   { title: 'Embed', group: 'Blog', icon: <MdLink size={18} />, onItemClick: () => insertBlock(editor, 'blogEmbed') },
   { title: 'Map', group: 'Blog', icon: <MdMap size={18} />, onItemClick: () => insertBlock(editor, 'blogMap') },
@@ -70,16 +62,27 @@ export const NotionEditor = ({
   const styles = useStyles();
   const { mode } = useTheme();
   const { blogDocumentApi } = useApi();
-  const editor = useCreateBlockNote({ schema: blogSchema });
+  const editor = useCreateBlockNote({
+    schema: blogSchema,
+    dropCursor: multiColumnDropCursor,
+    // eslint-disable-next-line camelcase -- `multi_column` is the dictionary key the library expects.
+    dictionary: { ...enDictionary, multi_column: multiColumnLocales.en },
+  });
   const { draft } = useBlogDraft(postId, locale);
   const [composeFor, setComposeFor] = useState<string | null>(null);
   const [sectionMap, setSectionMap] = useState<Record<string, string>>({});
+  // Read inside doSave without making the save callback depend on every map change.
+  const sectionMapRef = useRef(sectionMap);
+  sectionMapRef.current = sectionMap;
 
   const pickCbRef = useRef<((id: string) => void) | null>(null);
   const suppressRef = useRef(false);
   const savingRef = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout>>();
-  const loadedKey = useRef<string>();
+  // Track the draft OBJECT we loaded, not a `postId:locale` string: switching locale fires this effect
+  // with the previous locale's (stale) draft still in state, so a string key would mark the new locale
+  // as loaded and skip the real reload once it arrives. The object ref only matches the already-loaded draft.
+  const loadedDraftRef = useRef<typeof draft>();
   const wrapRef = useRef<HTMLDivElement>(null);
 
   const bridge = useMemo<BlogEditorBridge>(
@@ -114,7 +117,7 @@ export const NotionEditor = ({
     savingRef.current = true;
     setState('saving');
     try {
-      const blocks = await blocksToDocument(editor, editor.document);
+      const blocks = await blocksToDocument(editor, editor.document, sectionMapRef.current);
       const { data } = await blogDocumentApi.documentControllerSave({
         postId,
         locale,
@@ -122,11 +125,17 @@ export const NotionEditor = ({
       });
       if (data.created.length) {
         suppressRef.current = true;
+        const mapUpdates: Record<string, string> = {};
         for (const c of data.created) {
           const blk = editor.getBlock(c.clientKey);
-          if (blk && 'sectionId' in blk.props) editor.updateBlock(blk, { props: { sectionId: c.sectionId } });
+          if (!blk) continue;
+          // Custom blocks carry their sectionId in props (reused as the save ref); blocks without it
+          // (e.g. the columns block) are tracked via sectionMap so comments anchor to the new section.
+          if ('sectionId' in blk.props) editor.updateBlock(blk, { props: { sectionId: c.sectionId } });
+          else mapUpdates[c.clientKey] = c.sectionId;
         }
         suppressRef.current = false;
+        if (Object.keys(mapUpdates).length) setSectionMap((m) => ({ ...m, ...mapUpdates }));
       }
       onSaved?.(data.hasUnpublishedChanges);
       setState('saved');
@@ -144,28 +153,23 @@ export const NotionEditor = ({
     saveTimer.current = setTimeout(doSave, 900);
   }, [doSave]);
 
-  // Load sections → blocks once per (postId, locale).
+  // Reload sections → blocks whenever a NEW draft object arrives (initial load + every locale/post switch).
   useEffect(() => {
-    const key = `${postId}:${locale}`;
-    if (!draft || loadedKey.current === key) return;
-    loadedKey.current = key;
+    if (!draft || loadedDraftRef.current === draft) return;
+    loadedDraftRef.current = draft;
     let active = true;
     (async () => {
-      const { blocks, sectionIds } = await sectionsToBlocks(editor, draft.sections);
+      const { blocks, sectionMap: map } = await sectionsToBlocks(editor, draft.sections);
       if (!active) return;
       suppressRef.current = true;
       editor.replaceBlocks(editor.document, blocks);
       suppressRef.current = false;
-      const map: Record<string, string> = {};
-      editor.document.forEach((b, i) => {
-        if (sectionIds[i]) map[b.id] = sectionIds[i];
-      });
       setSectionMap(map);
     })();
     return () => {
       active = false;
     };
-  }, [draft, postId, locale, editor]);
+  }, [draft, editor]);
 
   // Drag an image from the media panel onto a block. ProseMirror swallows block-level React drops,
   // so handle it on the wrapper in the capture phase and resolve the target block via its data-id.
@@ -187,20 +191,9 @@ export const NotionEditor = ({
       const target = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
       const blockId = target?.closest('[data-id]')?.getAttribute('data-id') ?? undefined;
       const onImage = target?.closest('[data-content-type="blogImage"]');
-      const colPane = target?.closest('[data-col-index]') as HTMLElement | null;
       try {
         if (onImage && blockId) {
           editor.updateBlock(blockId, { props: { imageId } });
-        } else if (colPane && blockId) {
-          const idx = parseInt(colPane.getAttribute('data-col-index') ?? '', 10);
-          const blk = editor.getBlock(blockId);
-          if (blk?.type === 'blogColumns' && !Number.isNaN(idx)) {
-            const cols = parseColumns(blk.props.columns);
-            if (cols[idx]) {
-              cols[idx] = { ...cols[idx], type: 'image', imageId };
-              editor.updateBlock(blockId, { props: { columns: JSON.stringify(cols) } });
-            }
-          }
         } else if (blockId) {
           editor.insertBlocks([{ type: 'blogImage', props: { imageId } } as BlogPartialBlock], blockId, 'after');
         } else {
@@ -259,7 +252,7 @@ export const NotionEditor = ({
               const defaults = getDefaultReactSlashMenuItems(editor).filter(
                 (i) => !denied.some((d) => i.title.toLowerCase().includes(d)),
               );
-              return filterSuggestionItems([...defaults, ...slashItems(editor)], query);
+              return filterSuggestionItems([...defaults, ...slashItems(editor), ...getMultiColumnSlashMenuItems(editor)], query);
             }}
           />
         </BlockNoteView>
@@ -278,6 +271,7 @@ export const NotionEditor = ({
           sectionMap={sectionMap}
           composeFor={composeFor}
           onClearCompose={() => setComposeFor(null)}
+          onCompose={(sid) => setComposeFor(sid)}
         />
       </div>
     </BlogEditorBridgeContext.Provider>

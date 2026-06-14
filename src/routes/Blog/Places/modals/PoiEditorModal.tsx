@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PoiAdminResponse, PoiStatus } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
+import { Select } from '~/components/Select';
 import { PlaceAutocomplete, isPlacesEnabled } from '~/components/PlaceAutocomplete';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
+import { countryName, useBlogCountries } from '~/routes/Blog/hooks/useBlogCountries';
 import { PoiCategoriesField, PoiGalleryField, PoiHoursField } from '~/routes/Blog/Places/components/PoiEnrichment';
 import { mkUseStyles } from '~/utils/theme';
 
@@ -27,13 +29,34 @@ const Schema = z.object({
   latitude: z.string().min(1, 'Latitude is required').refine((v) => !Number.isNaN(Number(v)), 'Must be a number'),
   longitude: z.string().min(1, 'Longitude is required').refine((v) => !Number.isNaN(Number(v)), 'Must be a number'),
   address: z.string().optional(),
-  country: z.string().optional(),
+  countryId: z.string().optional(),
   region: z.string().optional(),
   city: z.string().optional(),
   websiteUrl: z.string().optional(),
   visitDurationMin: numeric,
+  status: z.string(),
+  rating: z.string().optional(),
 });
 type SchemaType = z.infer<typeof Schema>;
+
+const statusLabel = (s: string) =>
+  s
+    .toLowerCase()
+    .split('_')
+    .map((w, i) => (i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w))
+    .join(' ');
+
+const STATUS_OPTIONS = Object.values(PoiStatus).map((s) => ({ value: s, label: statusLabel(s) }));
+
+// creatorRating is a raw 1–5 in the API; show editorial labels instead of bare numbers.
+const RATING_OPTIONS = [
+  { value: '', label: 'No rating' },
+  { value: '5', label: '★★★★★ Must-see' },
+  { value: '4', label: '★★★★ Highly recommended' },
+  { value: '3', label: '★★★ Recommended' },
+  { value: '2', label: '★★ Worth a stop' },
+  { value: '1', label: '★ Skippable' },
+];
 
 export const PoiEditorModal = (p: PoiEditorModalProps) => {
   const styles = useStyles();
@@ -42,9 +65,12 @@ export const PoiEditorModal = (p: PoiEditorModalProps) => {
   const canManage = p.canManage ?? true;
   const locale = p.locale ?? 'en';
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState<PoiStatus>(p.poi?.status ?? PoiStatus.Active);
-  const [rating, setRating] = useState<string>(p.poi?.creatorRating != null ? String(p.poi.creatorRating) : '');
   const [googlePlaceId, setGooglePlaceId] = useState(p.poi?.googlePlaceId ?? '');
+  const { countries } = useBlogCountries();
+  const countryOptions = [
+    { value: '', label: 'No country' },
+    ...countries.map((c) => ({ value: c.id, label: countryName(c, locale) })),
+  ];
   const [description, setDescription] = useState(
     p.poi?.translations.find((t) => t.locale === locale)?.description ?? '',
   );
@@ -56,13 +82,23 @@ export const PoiEditorModal = (p: PoiEditorModalProps) => {
       latitude: p.poi?.latitude != null ? String(p.poi.latitude) : '',
       longitude: p.poi?.longitude != null ? String(p.poi.longitude) : '',
       address: p.poi?.address ?? '',
-      country: p.poi?.country ?? '',
+      countryId: '',
       region: p.poi?.region ?? '',
       city: p.poi?.city ?? '',
       websiteUrl: p.poi?.websiteUrl ?? '',
       visitDurationMin: p.poi?.visitDurationMin != null ? String(p.poi.visitDurationMin) : '',
+      status: p.poi?.status ?? PoiStatus.Active,
+      rating: p.poi?.creatorRating != null ? String(p.poi.creatorRating) : '',
     },
   });
+
+  // Responses carry the country as a slug; resolve it to the FK once the countries list loads.
+  useEffect(() => {
+    if (!p.poi?.country || !countries.length) return;
+    const match = countries.find((c) => c.slug === p.poi?.country);
+    if (match) formMethods.setValue('countryId', match.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countries, p.poi?.country]);
 
   const handleSave = async (data: SchemaType) => {
     if (!blogPoiApi || !canManage) return;
@@ -72,12 +108,12 @@ export const PoiEditorModal = (p: PoiEditorModalProps) => {
       latitude: Number(data.latitude),
       longitude: Number(data.longitude),
       address: data.address || null,
-      country: data.country || null,
       region: data.region || null,
       city: data.city || null,
+      countryId: data.countryId || null,
       googlePlaceId: googlePlaceId || null,
-      status,
-      creatorRating: rating ? Number(rating) : null,
+      status: data.status as PoiStatus,
+      creatorRating: data.rating ? Number(data.rating) : null,
       visitDurationMin: data.visitDurationMin ? Number(data.visitDurationMin) : null,
       websiteUrl: data.websiteUrl || null,
     };
@@ -116,10 +152,19 @@ export const PoiEditorModal = (p: PoiEditorModalProps) => {
                 if (place.latitude != null) formMethods.setValue('latitude', String(place.latitude));
                 if (place.longitude != null) formMethods.setValue('longitude', String(place.longitude));
                 formMethods.setValue('address', place.address ?? '');
-                formMethods.setValue('country', place.country ?? '');
                 formMethods.setValue('region', place.region ?? '');
                 formMethods.setValue('city', place.city ?? '');
                 setGooglePlaceId(place.googlePlaceId ?? '');
+                // Match Google's country to an existing BlogCountry (ISO code first, then name/slug) and select it.
+                const cc = place.countryCode?.toUpperCase();
+                const cn = place.country?.toLowerCase();
+                const match = countries.find(
+                  (c) =>
+                    (cc && c.code?.toUpperCase() === cc) ||
+                    (cn &&
+                      (c.slug.toLowerCase() === cn || c.translations.some((t) => t.name.toLowerCase() === cn))),
+                );
+                if (match) formMethods.setValue('countryId', match.id);
               }}
             />
           </div>
@@ -134,37 +179,19 @@ export const PoiEditorModal = (p: PoiEditorModalProps) => {
         </div>
         <Input name='address' label='Address' description='Optional' disableAutofill={false} />
         <div style={styles.row}>
-          <Input name='country' label='Country' description='' style={styles.flex} disableAutofill={false} />
+          <Select label='Country' name='countryId' control={formMethods.control} options={countryOptions} style={styles.flex} />
           <Input name='region' label='Region' description='' style={styles.flex} disableAutofill={false} />
-          <Input name='city' label='City' description='' style={styles.flex} disableAutofill={false} />
         </div>
+        <Input name='city' label='City' description='' disableAutofill={false} />
 
         <div style={styles.row}>
-          <div style={styles.field}>
-            <span style={styles.label}>Status</span>
-            <select style={styles.select} value={status} onChange={(e) => setStatus(e.target.value as PoiStatus)}>
-              {Object.values(PoiStatus).map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div style={styles.field}>
-            <span style={styles.label}>Rating (1–5)</span>
-            <select style={styles.select} value={rating} onChange={(e) => setRating(e.target.value)}>
-              <option value=''>—</option>
-              {[1, 2, 3, 4, 5].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </div>
-          <Input name='visitDurationMin' label='Visit (min)' description='' type='number' style={styles.flex} />
+          <Select label='Status' name='status' control={formMethods.control} options={STATUS_OPTIONS} style={styles.flex} />
+          <Select label='Rating' name='rating' control={formMethods.control} options={RATING_OPTIONS} style={styles.flex} />
         </div>
-
-        <Input name='websiteUrl' label='Website' description='Optional' disableAutofill={false} />
+        <div style={styles.row}>
+          <Input name='visitDurationMin' label='Visit (min)' description='' type='number' style={styles.flex} />
+          <Input name='websiteUrl' label='Website' description='Optional' style={styles.flex} disableAutofill={false} />
+        </div>
 
         <div style={styles.field}>
           <span style={styles.label}>Description ({locale.toUpperCase()})</span>
@@ -249,17 +276,6 @@ const useStyles = mkUseStyles((t) => ({
   label: {
     fontSize: 12,
     color: t.colors.blue04,
-  },
-  select: {
-    height: 38,
-    padding: `0 ${t.spacing.s}px`,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    color: t.colors.white,
-    border: 0,
-    outline: 'none',
-    colorScheme: 'dark',
-    fontSize: 14,
   },
   textarea: {
     boxSizing: 'border-box',

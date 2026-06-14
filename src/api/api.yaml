@@ -2782,6 +2782,19 @@ paths:
         - Blog · Locales
       security:
         - bearer: []
+  /blog/colors:
+    get:
+      operationId: ColorsController_list
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogColorsResponse'
+      tags:
+        - Blog · Colors
   /blog/posts/public:
     get:
       operationId: PostController_listPublic
@@ -2814,6 +2827,12 @@ paths:
         - name: region
           required: false
           in: query
+          schema:
+            type: string
+        - name: country
+          required: false
+          in: query
+          description: Country (language-neutral).
           schema:
             type: string
         - name: series
@@ -4646,406 +4665,72 @@ paths:
           description: XML sitemap of published public posts
       tags:
         - Blog · SEO
-  /blog/home/layouts:
+  /blog/home/config:
     get:
-      operationId: HomeController_list
-      parameters:
-        - name: take
-          required: false
-          in: query
-          schema:
-            minimum: 1
-            maximum: 20
-            type: number
-        - name: skip
-          required: false
-          in: query
-          schema:
-            minimum: 0
-            default: 0
-            type: number
-        - name: search
-          required: false
-          in: query
-          description: Name contains (case-insensitive).
-          schema:
-            type: string
+      operationId: HomeController_getConfig
+      parameters: []
       responses:
         '200':
-          description: List layouts
+          description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HomeLayoutListResponse'
+                $ref: '#/components/schemas/HomeConfigResponse'
       tags:
         - Blog · Home (admin)
       security:
         - bearer: []
-    post:
-      operationId: HomeController_create
+    patch:
+      operationId: HomeController_patchConfig
       parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateHomeLayoutDto'
+              $ref: '#/components/schemas/PatchHomeConfigDto'
       responses:
         '200':
-          description: Created layout
+          description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HomeLayoutResponse'
+                $ref: '#/components/schemas/HomeConfigResponse'
       tags:
         - Blog · Home (admin)
       security:
         - bearer: []
-  /blog/home/layouts/{layoutId}:
+  /blog/home/pins:
     get:
-      operationId: HomeController_get
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
+      operationId: HomeController_getPins
+      parameters: []
       responses:
         '200':
-          description: Layout detail
+          description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HomeLayoutResponse'
+                $ref: '#/components/schemas/HomePinsResponse'
       tags:
         - Blog · Home (admin)
       security:
         - bearer: []
-    patch:
-      operationId: HomeController_patch
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchHomeLayoutDto'
-      responses:
-        '200':
-          description: Patched layout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeLayoutResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-    delete:
-      operationId: HomeController_delete
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Deleted layout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeLayoutResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-  /blog/home/layouts/{layoutId}/activate:
-    post:
-      operationId: HomeController_activate
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Activated layout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeLayoutResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-  /blog/home/layouts/{layoutId}/blocks:
-    post:
-      operationId: HomeController_createBlock
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateHomeBlockDto'
-      responses:
-        '200':
-          description: Created block
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeBlockResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-  /blog/home/layouts/{layoutId}/blocks/reorder:
-    patch:
-      operationId: HomeController_reorderBlocks
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReorderHomeBlocksDto'
-      responses:
-        '200':
-          description: Reordered blocks
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeLayoutResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-  /blog/home/layouts/{layoutId}/blocks/{blockId}/posts/reorder:
-    patch:
-      operationId: HomeController_reorderBlockPosts
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: blockId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReorderHomeBlockPostsDto'
-      responses:
-        '200':
-          description: Reordered curated posts
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeBlockResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-  /blog/home/layouts/{layoutId}/blocks/{blockId}:
-    patch:
-      operationId: HomeController_patchBlock
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: blockId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchHomeBlockDto'
-      responses:
-        '200':
-          description: Patched block
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeBlockResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-    delete:
-      operationId: HomeController_deleteBlock
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: blockId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Deleted block
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeBlockResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-  /blog/home/layouts/{layoutId}/blocks/{blockId}/translations/{locale}:
     put:
-      operationId: HomeController_upsertBlockTranslation
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: blockId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: locale
-          required: true
-          in: path
-          schema:
-            type: string
+      operationId: HomeController_setPins
+      parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpsertHomeBlockTranslationDto'
+              $ref: '#/components/schemas/SetHomePinsDto'
       responses:
         '200':
-          description: Upserted block translation
+          description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HomeBlockResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-  /blog/home/layouts/{layoutId}/blocks/{blockId}/posts:
-    put:
-      operationId: HomeController_setBlockPosts
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: blockId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SetHomeBlockPostsDto'
-      responses:
-        '200':
-          description: Replaced curated posts
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeBlockResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-    post:
-      operationId: HomeController_addBlockPost
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: blockId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AddHomeBlockPostDto'
-      responses:
-        '200':
-          description: Added curated post
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeBlockResponse'
-      tags:
-        - Blog · Home (admin)
-      security:
-        - bearer: []
-  /blog/home/layouts/{layoutId}/blocks/{blockId}/posts/{postId}:
-    delete:
-      operationId: HomeController_removeBlockPost
-      parameters:
-        - name: layoutId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: blockId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: postId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Removed curated post
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HomeBlockResponse'
+                $ref: '#/components/schemas/HomePinsResponse'
       tags:
         - Blog · Home (admin)
       security:
@@ -5055,250 +4740,19 @@ paths:
       operationId: HomePublicController_getHome
       parameters:
         - name: locale
-          required: true
+          required: false
           in: query
           schema:
             type: string
       responses:
         '200':
-          description: Active homepage layout resolved for a locale
+          description: Opinionated homepage — pinned + latest post cards
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResolvedHomeResponse'
+                $ref: '#/components/schemas/PublicHomeResponse'
       tags:
         - Blog · Home
-  /blog/templates:
-    get:
-      operationId: TemplateController_list
-      parameters: []
-      responses:
-        '200':
-          description: List templates
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateListResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
-    post:
-      operationId: TemplateController_create
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateTemplateDto'
-      responses:
-        '200':
-          description: Created template
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
-  /blog/templates/{id}:
-    get:
-      operationId: TemplateController_get
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Template detail
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
-    patch:
-      operationId: TemplateController_patch
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchTemplateDto'
-      responses:
-        '200':
-          description: Patched template
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
-    delete:
-      operationId: TemplateController_delete
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Deleted template
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
-  /blog/templates/{id}/blocks:
-    post:
-      operationId: TemplateController_addBlock
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateTemplateBlockDto'
-      responses:
-        '200':
-          description: Added block
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
-  /blog/templates/{templateId}/blocks/reorder:
-    post:
-      operationId: TemplateController_reorderBlocks
-      parameters:
-        - name: templateId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReorderDto'
-      responses:
-        '200':
-          description: Reordered blocks
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
-  /blog/templates/{templateId}/blocks/{blockId}:
-    patch:
-      operationId: TemplateController_patchBlock
-      parameters:
-        - name: templateId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: blockId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchTemplateBlockDto'
-      responses:
-        '200':
-          description: Patched block
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
-    delete:
-      operationId: TemplateController_deleteBlock
-      parameters:
-        - name: templateId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: blockId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Deleted block
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TemplateResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
-  /blog/posts/{postId}/sections/apply/{templateId}:
-    post:
-      operationId: TemplateController_apply
-      parameters:
-        - name: postId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: templateId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Applied template to the post draft
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApplyTemplateResponse'
-      tags:
-        - Blog · Templates
-      security:
-        - bearer: []
   /blog/posts/{postId}/comments:
     post:
       operationId: CommentController_create
@@ -5844,6 +5298,177 @@ paths:
         - Blog · Document
       security:
         - bearer: []
+  /blog/countries/manage:
+    post:
+      operationId: CountryController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBlogCountryDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCountryAdminResponse'
+      tags:
+        - Blog · Countries (admin)
+      security:
+        - bearer: []
+    get:
+      operationId: CountryController_list
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCountryListResponse'
+      tags:
+        - Blog · Countries (admin)
+      security:
+        - bearer: []
+  /blog/countries/manage/{id}:
+    get:
+      operationId: CountryController_getById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCountryAdminResponse'
+      tags:
+        - Blog · Countries (admin)
+      security:
+        - bearer: []
+    patch:
+      operationId: CountryController_patch
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchBlogCountryDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCountryAdminResponse'
+      tags:
+        - Blog · Countries (admin)
+      security:
+        - bearer: []
+    delete:
+      operationId: CountryController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCountryAdminResponse'
+      tags:
+        - Blog · Countries (admin)
+      security:
+        - bearer: []
+  /blog/countries/manage/{id}/translations/{locale}:
+    put:
+      operationId: CountryController_upsertTranslation
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: locale
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertCountryTranslationDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCountryAdminResponse'
+      tags:
+        - Blog · Countries (admin)
+      security:
+        - bearer: []
+  /blog/countries:
+    get:
+      operationId: CountryPublicController_menu
+      parameters:
+        - name: locale
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCountryMenuResponse'
+      tags:
+        - Blog · Countries
+  /blog/countries/by-slug/{slug}:
+    get:
+      operationId: CountryPublicController_page
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: locale
+          required: false
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlogCountryPageResponse'
+      tags:
+        - Blog · Countries
   /ecosystem/grants/mine:
     get:
       operationId: GrantController_mine
@@ -9107,6 +8732,16 @@ components:
       required:
         - defaultLocale
         - locales
+    BlogColorsResponse:
+      type: object
+      properties:
+        colors:
+          description: Allowed inline color tokens (used for both text `fg` and background `bg`).
+          type: array
+          items:
+            type: string
+      required:
+        - colors
     BlogAccessTier:
       type: string
       enum:
@@ -9215,11 +8850,12 @@ components:
         - LIST
         - IMAGE
         - GALLERY
-        - MEDIA_TEXT
         - MAP
         - PLACE
         - EMBED
         - DIVIDER
+        - COLUMNS
+        - COLUMN
     CalloutVariant:
       type: string
       enum:
@@ -9242,24 +8878,6 @@ components:
         - SPOTIFY
         - X
         - OTHER
-    BlogMediaPosition:
-      type: string
-      enum:
-        - LEFT
-        - RIGHT
-    BlogMediaSplit:
-      type: string
-      enum:
-        - ONE_THIRD
-        - TWO_FIFTHS
-        - HALF
-        - THREE_FIFTHS
-        - TWO_THIRDS
-    BlogMobileStackOrder:
-      type: string
-      enum:
-        - MEDIA_FIRST
-        - TEXT_FIRST
     BlogImageSize:
       type: string
       enum:
@@ -9507,15 +9125,13 @@ components:
         embedProvider:
           nullable: true
           $ref: '#/components/schemas/EmbedProvider'
-        mediaPosition:
+        parentId:
+          type: string
           nullable: true
-          $ref: '#/components/schemas/BlogMediaPosition'
-        mediaSplit:
+          description: Parent section id (COLUMNS→COLUMN nesting); null at top level.
+        columnWidth:
+          type: number
           nullable: true
-          $ref: '#/components/schemas/BlogMediaSplit'
-        mobileStackOrder:
-          nullable: true
-          $ref: '#/components/schemas/BlogMobileStackOrder'
         title:
           type: string
           nullable: true
@@ -9786,15 +9402,13 @@ components:
         embedProvider:
           nullable: true
           $ref: '#/components/schemas/EmbedProvider'
-        mediaPosition:
+        parentId:
+          type: string
           nullable: true
-          $ref: '#/components/schemas/BlogMediaPosition'
-        mediaSplit:
+          description: Parent section id (COLUMNS→COLUMN nesting); null at top level.
+        columnWidth:
+          type: number
           nullable: true
-          $ref: '#/components/schemas/BlogMediaSplit'
-        mobileStackOrder:
-          nullable: true
-          $ref: '#/components/schemas/BlogMobileStackOrder'
         title:
           type: string
           nullable: true
@@ -9927,8 +9541,10 @@ components:
           type: string
         accessTier:
           $ref: '#/components/schemas/BlogAccessTier'
-        country:
+        countryId:
           type: string
+          nullable: true
+          description: BlogCountry id (FK).
         region:
           type: string
         coverImageId:
@@ -9955,9 +9571,10 @@ components:
         seriesOrder:
           type: integer
           nullable: true
-        country:
+        countryId:
           type: string
           nullable: true
+          description: BlogCountry id (FK).
         region:
           type: string
           nullable: true
@@ -10346,15 +9963,14 @@ components:
         embedProvider:
           nullable: true
           $ref: '#/components/schemas/EmbedProvider'
-        mediaPosition:
+        parentId:
+          type: string
           nullable: true
-          $ref: '#/components/schemas/BlogMediaPosition'
-        mediaSplit:
+          description: Parent section id (COLUMNS→COLUMN→block nesting); null at top level.
+        columnWidth:
+          type: number
           nullable: true
-          $ref: '#/components/schemas/BlogMediaSplit'
-        mobileStackOrder:
-          nullable: true
-          $ref: '#/components/schemas/BlogMobileStackOrder'
+          description: COLUMN width share, 0..1 (relative).
         translations:
           type: array
           items:
@@ -10425,12 +10041,6 @@ components:
           type: string
         embedProvider:
           $ref: '#/components/schemas/EmbedProvider'
-        mediaPosition:
-          $ref: '#/components/schemas/BlogMediaPosition'
-        mediaSplit:
-          $ref: '#/components/schemas/BlogMediaSplit'
-        mobileStackOrder:
-          $ref: '#/components/schemas/BlogMobileStackOrder'
         locale:
           type: string
           description: Locale for the initial translation. Defaults to the default locale.
@@ -10491,15 +10101,6 @@ components:
         embedProvider:
           nullable: true
           $ref: '#/components/schemas/EmbedProvider'
-        mediaPosition:
-          nullable: true
-          $ref: '#/components/schemas/BlogMediaPosition'
-        mediaSplit:
-          nullable: true
-          $ref: '#/components/schemas/BlogMediaSplit'
-        mobileStackOrder:
-          nullable: true
-          $ref: '#/components/schemas/BlogMobileStackOrder'
     UpsertSectionTranslationDto:
       type: object
       properties:
@@ -10957,71 +10558,97 @@ components:
           type: number
           minimum: -180
           maximum: 180
-        country:
+        countryId:
           type: string
+          nullable: true
+          description: BlogCountry id (FK).
         region:
           type: string
+          nullable: true
         city:
           type: string
+          nullable: true
         address:
           type: string
+          nullable: true
         timezone:
           type: string
+          nullable: true
           description: IANA timezone, e.g. Atlantic/Reykjavik.
         googlePlaceId:
           type: string
+          nullable: true
         osmId:
           type: string
+          nullable: true
         visitDurationMin:
           type: integer
           minimum: 0
+          nullable: true
         creatorRating:
           type: integer
           minimum: 1
           maximum: 5
+          nullable: true
           description: Public AI weight 1–5.
         creatorVerdict:
+          nullable: true
           $ref: '#/components/schemas/PoiVerdict'
         internalNote:
           type: string
+          nullable: true
           description: INTERNAL — never public.
         priceLevel:
+          nullable: true
           $ref: '#/components/schemas/PoiPriceLevel'
         bestSeasons:
           type: array
+          nullable: true
           items:
             $ref: '#/components/schemas/PoiSeason'
         websiteUrl:
           type: string
+          nullable: true
         bookingUrl:
           type: string
+          nullable: true
         mapsUrl:
           type: string
+          nullable: true
         difficulty:
+          nullable: true
           $ref: '#/components/schemas/PoiDifficulty'
         distanceKm:
           type: number
           minimum: 0
+          nullable: true
         elevationGainM:
           type: integer
           minimum: 0
+          nullable: true
         status:
+          nullable: true
           $ref: '#/components/schemas/PoiStatus'
         coverImageId:
           type: string
+          nullable: true
         categoryIds:
+          nullable: true
           description: ATTRACTION category ids.
           type: array
           items:
             type: string
         locale:
           type: string
+          nullable: true
           description: Locale for the initial translation. Defaults to the default locale.
         localizedName:
           type: string
+          nullable: true
           description: Localized name override for `locale`.
         description:
           type: string
+          nullable: true
       required:
         - name
         - latitude
@@ -11045,9 +10672,10 @@ components:
       properties:
         name:
           type: string
-        country:
+        countryId:
           type: string
           nullable: true
+          description: BlogCountry id (FK).
         region:
           type: string
           nullable: true
@@ -11527,554 +11155,80 @@ components:
         description:
           type: string
           nullable: true
-    HomeLayoutSummaryResponse:
+    HomeConfigResponse:
       type: object
       properties:
         id:
           type: string
-        name:
-          type: string
-        isActive:
-          type: boolean
-        blockCount:
+        postCount:
           type: integer
-        createdAt:
-          type: string
-          format: date-time
         updatedAt:
           type: string
           format: date-time
       required:
         - id
-        - name
-        - isActive
-        - blockCount
-        - createdAt
+        - postCount
         - updatedAt
-    HomeLayoutListResponse:
+    PatchHomeConfigDto:
       type: object
       properties:
-        total:
-          type: integer
-        layouts:
-          type: array
-          items:
-            $ref: '#/components/schemas/HomeLayoutSummaryResponse'
-      required:
-        - total
-        - layouts
-    CreateHomeLayoutDto:
-      type: object
-      properties:
-        name:
-          type: string
-      required:
-        - name
-    HomeBlockType:
-      type: string
-      enum:
-        - HERO
-        - FEATURED_POSTS
-        - CATEGORY_ROW
-        - POST_GRID
-        - MAP
-        - TEXT
-    HomeBlockTranslationResponse:
-      type: object
-      properties:
-        locale:
-          type: string
-        title:
-          type: string
-          nullable: true
-        body:
-          type: string
-          nullable: true
-      required:
-        - locale
-    HomeBlockPostResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        postId:
-          type: string
-        order:
-          type: integer
-        post:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/PublicPostCardResponse'
-      required:
-        - id
-        - postId
-        - order
-    HomeBlockResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        layoutId:
-          type: string
-        type:
-          $ref: '#/components/schemas/HomeBlockType'
-        order:
-          type: integer
-        categoryId:
-          type: string
-          nullable: true
-        imageId:
-          type: string
-          nullable: true
-        limit:
-          type: integer
-          nullable: true
-        translations:
-          type: array
-          items:
-            $ref: '#/components/schemas/HomeBlockTranslationResponse'
-        posts:
-          type: array
-          items:
-            $ref: '#/components/schemas/HomeBlockPostResponse'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - layoutId
-        - type
-        - order
-        - translations
-        - posts
-        - createdAt
-        - updatedAt
-    HomeLayoutResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        isActive:
-          type: boolean
-        blocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/HomeBlockResponse'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - name
-        - isActive
-        - blocks
-        - createdAt
-        - updatedAt
-    PatchHomeLayoutDto:
-      type: object
-      properties:
-        name:
-          type: string
-    CreateHomeBlockDto:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/HomeBlockType'
-        order:
-          type: integer
-        categoryId:
-          type: string
-          description: Required for CATEGORY_ROW; must be kind=POST.
-        imageId:
-          type: string
-        limit:
+        postCount:
           type: integer
           minimum: 1
-          maximum: 50
-      required:
-        - type
-        - order
-    ReorderHomeBlockItemDto:
-      type: object
-      properties:
-        blockId:
-          type: string
-        order:
-          type: integer
-      required:
-        - blockId
-        - order
-    ReorderHomeBlocksDto:
-      type: object
-      properties:
-        blocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReorderHomeBlockItemDto'
-      required:
-        - blocks
-    HomeBlockPostInputDto:
+          maximum: 100
+          description: How many posts the homepage shows.
+    HomePinResponse:
       type: object
       properties:
         postId:
           type: string
-        order:
+        slug:
+          type: string
+        position:
           type: integer
       required:
         - postId
-        - order
-    ReorderHomeBlockPostsDto:
+        - slug
+        - position
+    HomePinsResponse:
       type: object
       properties:
-        posts:
+        pins:
           type: array
           items:
-            $ref: '#/components/schemas/HomeBlockPostInputDto'
+            $ref: '#/components/schemas/HomePinResponse'
       required:
-        - posts
-    PatchHomeBlockDto:
+        - pins
+    HomePinInputDto:
       type: object
       properties:
-        type:
-          $ref: '#/components/schemas/HomeBlockType'
-        order:
-          type: integer
-        categoryId:
+        postId:
           type: string
-          nullable: true
-        imageId:
-          type: string
-          nullable: true
-        limit:
+        position:
           type: integer
           minimum: 1
-          maximum: 50
-          nullable: true
-    UpsertHomeBlockTranslationDto:
-      type: object
-      properties:
-        title:
-          type: string
-          nullable: true
-        body:
-          type: string
-          nullable: true
-    SetHomeBlockPostsDto:
-      type: object
-      properties:
-        posts:
-          type: array
-          items:
-            $ref: '#/components/schemas/HomeBlockPostInputDto'
-      required:
-        - posts
-    AddHomeBlockPostDto:
-      type: object
-      properties:
-        postId:
-          type: string
-        order:
-          type: integer
+          description: Slot position (1-based).
       required:
         - postId
-    ResolvedHomeBlockResponse:
+        - position
+    SetHomePinsDto:
       type: object
       properties:
-        id:
-          type: string
-        type:
-          $ref: '#/components/schemas/HomeBlockType'
-        order:
-          type: integer
-        imageId:
-          type: string
-          nullable: true
-        title:
-          type: string
-          nullable: true
-        body:
-          type: string
-          nullable: true
-        untranslated:
-          type: boolean
+        pins:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomePinInputDto'
+      required:
+        - pins
+    PublicHomeResponse:
+      type: object
+      properties:
         posts:
-          nullable: true
           type: array
           items:
             $ref: '#/components/schemas/PublicPostCardResponse'
-        category:
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/ResolvedCategoryResponse'
-        pois:
-          nullable: true
-          type: array
-          items:
-            $ref: '#/components/schemas/PoiPublicResponse'
       required:
-        - id
-        - type
-        - order
-        - untranslated
-    ResolvedHomeResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        blocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResolvedHomeBlockResponse'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - name
-        - blocks
-        - createdAt
-        - updatedAt
-    TemplateBlockResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        templateId:
-          type: string
-        type:
-          $ref: '#/components/schemas/BlogSectionType'
-        order:
-          type: integer
-        headingLevel:
-          type: integer
-          nullable: true
-        calloutVariant:
-          nullable: true
-          $ref: '#/components/schemas/CalloutVariant'
-        galleryLayout:
-          nullable: true
-          $ref: '#/components/schemas/GalleryLayout'
-        mediaPosition:
-          nullable: true
-          $ref: '#/components/schemas/BlogMediaPosition'
-        mediaSplit:
-          nullable: true
-          $ref: '#/components/schemas/BlogMediaSplit'
-        mobileStackOrder:
-          nullable: true
-          $ref: '#/components/schemas/BlogMobileStackOrder'
-        imageSize:
-          nullable: true
-          $ref: '#/components/schemas/BlogImageSize'
-        aspectRatio:
-          nullable: true
-          $ref: '#/components/schemas/BlogAspectRatio'
-        overlayPosition:
-          nullable: true
-          $ref: '#/components/schemas/BlogOverlayPosition'
-        placeholderTitle:
-          type: string
-          nullable: true
-        placeholderBody:
-          type: string
-          nullable: true
-      required:
-        - id
-        - templateId
-        - type
-        - order
-    TemplateResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        key:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-          nullable: true
-        icon:
-          type: string
-          nullable: true
-        group:
-          type: string
-          nullable: true
-        isSystem:
-          type: boolean
-        order:
-          type: integer
-          nullable: true
-        blocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/TemplateBlockResponse'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - key
-        - name
-        - isSystem
-        - blocks
-        - createdAt
-        - updatedAt
-    TemplateListResponse:
-      type: object
-      properties:
-        total:
-          type: integer
-        templates:
-          type: array
-          items:
-            $ref: '#/components/schemas/TemplateResponse'
-      required:
-        - total
-        - templates
-    CreateTemplateBlockDto:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/BlogSectionType'
-        order:
-          type: integer
-        headingLevel:
-          type: integer
-          minimum: 1
-          maximum: 6
-        calloutVariant:
-          $ref: '#/components/schemas/CalloutVariant'
-        galleryLayout:
-          $ref: '#/components/schemas/GalleryLayout'
-        mediaPosition:
-          $ref: '#/components/schemas/BlogMediaPosition'
-        mediaSplit:
-          $ref: '#/components/schemas/BlogMediaSplit'
-        mobileStackOrder:
-          $ref: '#/components/schemas/BlogMobileStackOrder'
-        imageSize:
-          $ref: '#/components/schemas/BlogImageSize'
-        aspectRatio:
-          $ref: '#/components/schemas/BlogAspectRatio'
-        overlayPosition:
-          $ref: '#/components/schemas/BlogOverlayPosition'
-        placeholderTitle:
-          type: string
-        placeholderBody:
-          type: string
-      required:
-        - type
-    CreateTemplateDto:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Stable key (normalized server-side); unique.
-        name:
-          type: string
-        description:
-          type: string
-          nullable: true
-        icon:
-          type: string
-          nullable: true
-        group:
-          type: string
-          nullable: true
-        order:
-          type: integer
-          nullable: true
-        blocks:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreateTemplateBlockDto'
-      required:
-        - key
-        - name
-    PatchTemplateDto:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-          nullable: true
-        icon:
-          type: string
-          nullable: true
-        group:
-          type: string
-          nullable: true
-        order:
-          type: integer
-          nullable: true
-    PatchTemplateBlockDto:
-      type: object
-      properties:
-        order:
-          type: integer
-        headingLevel:
-          type: integer
-          minimum: 1
-          maximum: 6
-          nullable: true
-        calloutVariant:
-          nullable: true
-          $ref: '#/components/schemas/CalloutVariant'
-        galleryLayout:
-          nullable: true
-          $ref: '#/components/schemas/GalleryLayout'
-        mediaPosition:
-          nullable: true
-          $ref: '#/components/schemas/BlogMediaPosition'
-        mediaSplit:
-          nullable: true
-          $ref: '#/components/schemas/BlogMediaSplit'
-        mobileStackOrder:
-          nullable: true
-          $ref: '#/components/schemas/BlogMobileStackOrder'
-        imageSize:
-          nullable: true
-          $ref: '#/components/schemas/BlogImageSize'
-        aspectRatio:
-          nullable: true
-          $ref: '#/components/schemas/BlogAspectRatio'
-        overlayPosition:
-          nullable: true
-          $ref: '#/components/schemas/BlogOverlayPosition'
-        placeholderTitle:
-          type: string
-          nullable: true
-        placeholderBody:
-          type: string
-          nullable: true
-    ApplyTemplateResponse:
-      type: object
-      properties:
-        created:
-          type: array
-          items:
-            $ref: '#/components/schemas/SectionResponse'
-      required:
-        - created
+        - posts
     CreateCommentDto:
       type: object
       properties:
@@ -12473,20 +11627,20 @@ components:
         - divider
         - image
         - gallery
-        - mediaText
         - embed
         - map
         - place
         - list
         - heading
         - quote
+        - columns
     DocumentListItemInputDto:
       type: object
       properties:
         content:
           type: string
           nullable: true
-    DocumentBlockDto:
+    DocumentLeafBlockDto:
       type: object
       properties:
         id:
@@ -12500,23 +11654,21 @@ components:
         markdown:
           type: string
           nullable: true
-          description: Markdown body (prose/callout/mediaText/quote).
+          description: Markdown body (prose/callout/quote).
         text:
           type: string
           nullable: true
-          description: Heading text (heading block).
+          description: Heading text.
         caption:
           type: string
           nullable: true
-          description: Caption for a single-image block (image/mediaText).
+          description: Caption for a single-image block (image).
         alt:
           type: string
           nullable: true
-          description: Alt text for a single-image block (per-locale).
         overlayText:
           type: string
           nullable: true
-          description: Overlay text rendered on the image (per-locale).
         variant:
           $ref: '#/components/schemas/CalloutVariant'
         imageId:
@@ -12535,24 +11687,16 @@ components:
           type: number
           minimum: 0
           maximum: 1
-          description: Focal point X, 0..1 (left→right). image/mediaText only.
         focalY:
           type: number
           minimum: 0
           maximum: 1
-          description: Focal point Y, 0..1 (top→bottom).
         overlayPosition:
           $ref: '#/components/schemas/BlogOverlayPosition'
         overlayTheme:
           $ref: '#/components/schemas/BlogOverlayTheme'
         overlayBackdrop:
           $ref: '#/components/schemas/BlogOverlayBackdrop'
-        mediaPosition:
-          $ref: '#/components/schemas/BlogMediaPosition'
-        mediaSplit:
-          $ref: '#/components/schemas/BlogMediaSplit'
-        mobileStackOrder:
-          $ref: '#/components/schemas/BlogMobileStackOrder'
         provider:
           $ref: '#/components/schemas/EmbedProvider'
         url:
@@ -12576,6 +11720,110 @@ components:
             $ref: '#/components/schemas/DocumentListItemInputDto'
         minAccessTier:
           $ref: '#/components/schemas/BlogAccessTier'
+      required:
+        - type
+    DocumentColumnDto:
+      type: object
+      properties:
+        id:
+          type: string
+        clientKey:
+          type: string
+        width:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Column width share, 0..1 (relative; FE normalizes).
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentLeafBlockDto'
+      required:
+        - blocks
+    DocumentBlockDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Existing sectionId (update).
+        clientKey:
+          type: string
+          description: Client key for a new block.
+        type:
+          $ref: '#/components/schemas/DocumentBlockType'
+        markdown:
+          type: string
+          nullable: true
+          description: Markdown body (prose/callout/quote).
+        text:
+          type: string
+          nullable: true
+          description: Heading text.
+        caption:
+          type: string
+          nullable: true
+          description: Caption for a single-image block (image).
+        alt:
+          type: string
+          nullable: true
+        overlayText:
+          type: string
+          nullable: true
+        variant:
+          $ref: '#/components/schemas/CalloutVariant'
+        imageId:
+          type: string
+        imageIds:
+          type: array
+          items:
+            type: string
+        galleryLayout:
+          $ref: '#/components/schemas/GalleryLayout'
+        imageSize:
+          $ref: '#/components/schemas/BlogImageSize'
+        aspectRatio:
+          $ref: '#/components/schemas/BlogAspectRatio'
+        focalX:
+          type: number
+          minimum: 0
+          maximum: 1
+        focalY:
+          type: number
+          minimum: 0
+          maximum: 1
+        overlayPosition:
+          $ref: '#/components/schemas/BlogOverlayPosition'
+        overlayTheme:
+          $ref: '#/components/schemas/BlogOverlayTheme'
+        overlayBackdrop:
+          $ref: '#/components/schemas/BlogOverlayBackdrop'
+        provider:
+          $ref: '#/components/schemas/EmbedProvider'
+        url:
+          type: string
+        poiId:
+          type: string
+        poiIds:
+          type: array
+          items:
+            type: string
+        level:
+          type: integer
+          minimum: 1
+          maximum: 3
+        author:
+          type: string
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentListItemInputDto'
+        minAccessTier:
+          $ref: '#/components/schemas/BlogAccessTier'
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentColumnDto'
       required:
         - type
     SaveDocumentDto:
@@ -12618,6 +11866,170 @@ components:
         - created
         - hasUnpublishedChanges
         - versionId
+    CreateBlogCountryDto:
+      type: object
+      properties:
+        slug:
+          type: string
+          description: Canonical key (normalized lowercase).
+        code:
+          type: string
+          nullable: true
+          description: ISO-3166-1 alpha-2.
+        coverImageId:
+          type: string
+          nullable: true
+        order:
+          type: integer
+          nullable: true
+        locale:
+          type: string
+          description: Locale for the initial name/intro; defaults to default locale.
+        name:
+          type: string
+          description: Localized country name.
+        intro:
+          type: string
+          nullable: true
+      required:
+        - slug
+    BlogCountryTranslationResponse:
+      type: object
+      properties:
+        locale:
+          type: string
+        name:
+          type: string
+        intro:
+          type: string
+          nullable: true
+      required:
+        - locale
+        - name
+    BlogCountryAdminResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        code:
+          type: string
+          nullable: true
+        coverImageId:
+          type: string
+          nullable: true
+        order:
+          type: integer
+          nullable: true
+        postCount:
+          type: integer
+        poiCount:
+          type: integer
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlogCountryTranslationResponse'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - slug
+        - postCount
+        - poiCount
+        - translations
+        - createdAt
+        - updatedAt
+    BlogCountryListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlogCountryAdminResponse'
+      required:
+        - total
+        - countries
+    PatchBlogCountryDto:
+      type: object
+      properties:
+        slug:
+          type: string
+        code:
+          type: string
+          nullable: true
+        coverImageId:
+          type: string
+          nullable: true
+        order:
+          type: integer
+          nullable: true
+    UpsertCountryTranslationDto:
+      type: object
+      properties:
+        name:
+          type: string
+        intro:
+          type: string
+          nullable: true
+      required:
+        - name
+    BlogCountryMenuItemResponse:
+      type: object
+      properties:
+        slug:
+          type: string
+        name:
+          type: string
+        coverImageId:
+          type: string
+          nullable: true
+        postCount:
+          type: integer
+        poiCount:
+          type: integer
+      required:
+        - slug
+        - name
+        - postCount
+        - poiCount
+    BlogCountryMenuResponse:
+      type: object
+      properties:
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlogCountryMenuItemResponse'
+      required:
+        - countries
+    BlogCountryPageResponse:
+      type: object
+      properties:
+        slug:
+          type: string
+        name:
+          type: string
+        intro:
+          type: string
+          nullable: true
+        coverImageId:
+          type: string
+          nullable: true
+        postCount:
+          type: integer
+        poiCount:
+          type: integer
+      required:
+        - slug
+        - name
+        - postCount
+        - poiCount
     AccessGrantSource:
       type: string
       enum:

@@ -40,19 +40,33 @@ export const CommentGutter = ({ containerRef, sectionMap, onAdd }: CommentGutter
           setTarget(null);
           return;
         }
-        const colX = wrap.left + Math.min(wrap.width / 2, 320);
-        const el = document.elementFromPoint(colX, e.clientY) as HTMLElement | null;
-        const blockEl = el?.closest?.('.bn-block-content')?.closest('[data-id]') as HTMLElement | null;
-        const sectionId = blockEl ? sectionMap[blockEl.getAttribute('data-id') ?? ''] : undefined;
-        if (!sectionId || !blockEl) return; // keep the current target (e.g. cursor in a gap)
-        const r = blockEl.getBoundingClientRect();
-        setTarget({ sectionId, top: r.top + 1, left: r.right + 6 });
+        // Find the commentable block whose vertical span contains the cursor by scanning the mapped
+        // blocks directly — robust to content centring/width (an elementFromPoint X-probe missed those).
+        // Mapped blocks are top-level (columns content resolves to the columns block, which is mapped).
+        let hit: { sectionId: string; r: DOMRect } | null = null;
+        for (const id of Object.keys(sectionMap)) {
+          const sectionId = sectionMap[id];
+          if (!sectionId) continue;
+          const el = root.querySelector(`[data-id="${CSS.escape(id)}"]`);
+          if (!el) continue;
+          const r = el.getBoundingClientRect();
+          if (e.clientY >= r.top && e.clientY <= r.bottom) {
+            hit = { sectionId, r };
+            break;
+          }
+        }
+        if (!hit) return; // keep the current target (e.g. cursor in a gap between blocks)
+        setTarget({ sectionId: hit.sectionId, top: hit.r.top + 1, left: hit.r.right + 6 });
       });
     };
     window.addEventListener('mousemove', onMove);
     return () => {
       window.removeEventListener('mousemove', onMove);
       cancelAnimationFrame(rafRef.current);
+      // Reset the throttle latch: the cancelled frame's callback never runs to clear it, so without this
+      // the re-mounted handler (e.g. after a locale-switch reload changes sectionMap) sees a stale
+      // non-zero ref and early-returns forever — the hover icon silently dies after a few switches.
+      rafRef.current = 0;
     };
   }, [containerRef, sectionMap]);
 

@@ -13,9 +13,6 @@ Name | Type | Description | Notes
 **galleryLayout** | [**GalleryLayout**](GalleryLayout.md) |  | [optional] [default to undefined]
 **embedUrl** | **string** |  | [optional] [default to undefined]
 **embedProvider** | [**EmbedProvider**](EmbedProvider.md) |  | [optional] [default to undefined]
-**mediaPosition** | [**BlogMediaPosition**](BlogMediaPosition.md) |  | [optional] [default to undefined]
-**mediaSplit** | [**BlogMediaSplit**](BlogMediaSplit.md) |  | [optional] [default to undefined]
-**mobileStackOrder** | [**BlogMobileStackOrder**](BlogMobileStackOrder.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -31,9 +28,6 @@ const instance: PatchSectionDto = {
     galleryLayout,
     embedUrl,
     embedProvider,
-    mediaPosition,
-    mediaSplit,
-    mobileStackOrder,
 };
 ```
 

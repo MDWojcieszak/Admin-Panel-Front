@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **accessTier** | [**BlogAccessTier**](BlogAccessTier.md) |  | [optional] [default to undefined]
 **seriesId** | **string** |  | [optional] [default to undefined]
 **seriesOrder** | **number** |  | [optional] [default to undefined]
-**country** | **string** |  | [optional] [default to undefined]
+**countryId** | **string** | BlogCountry id (FK). | [optional] [default to undefined]
 **region** | **string** |  | [optional] [default to undefined]
 **coverImageId** | **string** |  | [optional] [default to undefined]
 **ogImageId** | **string** |  | [optional] [default to undefined]
@@ -24,7 +24,7 @@ const instance: PatchPostDto = {
     accessTier,
     seriesId,
     seriesOrder,
-    country,
+    countryId,
     region,
     coverImageId,
     ogImageId,

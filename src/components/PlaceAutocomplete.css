@@ -1,0 +1,27 @@
+/*
+ * Google Places (New) PlaceAutocompleteElement is a web component with its own (light) styling. We can
+ * only reach it through the host element + its exposed ::part(input); make the input blend into the dark
+ * themed frame the React wrapper provides (transparent input over the wrapper's background/border).
+ */
+.blog-place-ac {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.blog-place-ac::part(input) {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 0 14px;
+  background: transparent;
+  color: #ffffff;
+  border: 0;
+  outline: none;
+  font-size: 15px;
+}
+
+.blog-place-ac::part(input)::placeholder {
+  color: #92a4b1;
+}

@@ -18,6 +18,7 @@ export enum BlogNavigationRoute {
   POSTS = '',
   CATEGORIES = 'categories',
   PLACES = 'places',
+  COUNTRIES = 'countries',
   COLLECTIONS = 'collections',
   HOME = 'home',
   TEMPLATES = 'templates',

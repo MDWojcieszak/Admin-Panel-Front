@@ -5,6 +5,7 @@ import {
   AuthApi,
   BlogCategoriesApi,
   BlogCollectionsApi,
+  BlogCountriesAdminApi,
   BlogDocumentApi,
   BlogEditorialCommentsApi,
   BlogHomeAdminApi,
@@ -14,7 +15,6 @@ import {
   BlogPOIApi,
   BlogPostsApi,
   BlogSectionsApi,
-  BlogTemplatesApi,
   BlogVersioningApi,
   DashboardApi,
   DefaultApi,
@@ -59,10 +59,10 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const blogSectionsApi = useMemo(() => config && new BlogSectionsApi(config), [config]);
   const blogLocalesApi = useMemo(() => config && new BlogLocalesApi(config), [config]);
   const blogCategoriesApi = useMemo(() => config && new BlogCategoriesApi(config), [config]);
+  const blogCountriesApi = useMemo(() => config && new BlogCountriesAdminApi(config), [config]);
   const blogPoiApi = useMemo(() => config && new BlogPOIApi(config), [config]);
   const blogCollectionsApi = useMemo(() => config && new BlogCollectionsApi(config), [config]);
   const blogHomeApi = useMemo(() => config && new BlogHomeAdminApi(config), [config]);
-  const blogTemplatesApi = useMemo(() => config && new BlogTemplatesApi(config), [config]);
   const blogCommentsApi = useMemo(() => config && new BlogEditorialCommentsApi(config), [config]);
   const blogInteractionsApi = useMemo(() => config && new BlogInteractionsApi(config), [config]);
   const blogDocumentApi = useMemo(() => config && new BlogDocumentApi(config), [config]);
@@ -87,10 +87,10 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         blogSectionsApi,
         blogLocalesApi,
         blogCategoriesApi,
+        blogCountriesApi,
         blogPoiApi,
         blogCollectionsApi,
         blogHomeApi,
-        blogTemplatesApi,
         blogCommentsApi,
         blogInteractionsApi,
         blogDocumentApi,

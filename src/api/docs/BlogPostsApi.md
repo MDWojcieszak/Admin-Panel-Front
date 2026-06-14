@@ -353,6 +353,7 @@ let skip: number; // (optional) (default to 0)
 let locale: string; // (optional) (default to undefined)
 let category: string; //Category id or key. (optional) (default to undefined)
 let region: string; // (optional) (default to undefined)
+let country: string; //Country (language-neutral). (optional) (default to undefined)
 let series: string; //Series slug or id. (optional) (default to undefined)
 
 const { status, data } = await apiInstance.postControllerListPublic(
@@ -361,6 +362,7 @@ const { status, data } = await apiInstance.postControllerListPublic(
     locale,
     category,
     region,
+    country,
     series
 );
 ```
@@ -374,6 +376,7 @@ const { status, data } = await apiInstance.postControllerListPublic(
 | **locale** | [**string**] |  | (optional) defaults to undefined|
 | **category** | [**string**] | Category id or key. | (optional) defaults to undefined|
 | **region** | [**string**] |  | (optional) defaults to undefined|
+| **country** | [**string**] | Country (language-neutral). | (optional) defaults to undefined|
 | **series** | [**string**] | Series slug or id. | (optional) defaults to undefined|
 
 

@@ -19,6 +19,8 @@ type CommentsLayerProps = {
   /** A section the user asked to comment on (from the hover gutter), or null. */
   composeFor: string | null;
   onClearCompose: () => void;
+  /** Open the composer for a section straight from its card (add another comment). */
+  onCompose: (sectionId: string) => void;
 };
 
 const authorName = (c: EditorialCommentResponse) =>
@@ -26,7 +28,7 @@ const authorName = (c: EditorialCommentResponse) =>
 
 const estimateHeight = (count: number, composing: boolean) => 54 + count * 64 + (composing ? 96 : 0);
 
-export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, onClearCompose }: CommentsLayerProps) => {
+export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, onClearCompose, onCompose }: CommentsLayerProps) => {
   const styles = useStyles();
   const { blogCommentsApi } = useApi();
   const auth = useAuth();
@@ -200,10 +202,15 @@ export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, on
                 onClearCompose();
               }}
               onCancel={onClearCompose}
-              placeholder='Comment on this section…'
+              placeholder='Add a comment…'
               autoFocus
             />
-          ) : null}
+          ) : (
+            // Re-open the composer for another comment without having to find the block again.
+            <button style={styles.addMore} onClick={() => onCompose(sectionId)}>
+              + Add comment
+            </button>
+          )}
         </div>
       ))}
 
@@ -323,6 +330,17 @@ const useStyles = mkUseStyles((t) => ({
     fontSize: 11,
     padding: 0,
     display: 'flex',
+  },
+  addMore: {
+    alignSelf: 'flex-start',
+    marginTop: 2,
+    padding: `2px ${t.spacing.xs}px`,
+    border: 0,
+    background: 'transparent',
+    color: t.colors.blue04,
+    cursor: 'pointer',
+    fontSize: 12,
+    fontWeight: 600,
   },
   composer: { gap: t.spacing.xs, marginTop: t.spacing.xs },
   composerInput: {

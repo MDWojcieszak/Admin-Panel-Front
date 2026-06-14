@@ -1329,6 +1329,21 @@
     react-icons "^5.5.0"
     use-sync-external-store "1.6.0"
 
+"@blocknote/xl-multi-column@0.51.4":
+  version "0.51.4"
+  resolved "https://registry.yarnpkg.com/@blocknote/xl-multi-column/-/xl-multi-column-0.51.4.tgz#0cce6f2147dff322474ba9eda98d618b2ee7f6d7"
+  integrity sha512-4B60OvNNnb2duAXo741AiPJxzOQTwRzAr+5fxM10wBlv23VuSmVTrD0wtGK3Ve85I64CAFB8uEUJrMXXKNynQA==
+  dependencies:
+    "@blocknote/core" "0.51.4"
+    "@blocknote/react" "0.51.4"
+    "@tiptap/core" "^3.13.0"
+    prosemirror-model "^1.25.4"
+    prosemirror-state "^1.4.4"
+    prosemirror-tables "^1.8.3"
+    prosemirror-transform "^1.11.0"
+    prosemirror-view "^1.41.4"
+    react-icons "^5.5.0"
+
 "@csstools/normalize.css@*":
   version "12.1.1"
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-12.1.1.tgz#f0ad221b7280f3fc814689786fd9ee092776ef8f"
