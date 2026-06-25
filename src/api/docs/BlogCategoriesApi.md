@@ -8,6 +8,7 @@ All URIs are relative to *http://localhost*
 |[**categoryControllerDelete**](#categorycontrollerdelete) | **DELETE** /blog/categories/{id} | |
 |[**categoryControllerGetById**](#categorycontrollergetbyid) | **GET** /blog/categories/{id} | |
 |[**categoryControllerList**](#categorycontrollerlist) | **GET** /blog/categories | |
+|[**categoryControllerListPublic**](#categorycontrollerlistpublic) | **GET** /blog/categories/public | |
 |[**categoryControllerPatch**](#categorycontrollerpatch) | **PATCH** /blog/categories/{id} | |
 |[**categoryControllerUpsertTranslation**](#categorycontrollerupserttranslation) | **PUT** /blog/categories/{id}/translations/{locale} | |
 
@@ -215,6 +216,59 @@ const { status, data } = await apiInstance.categoryControllerList(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | List categories |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **categoryControllerListPublic**
+> ResolvedCategoryListResponse categoryControllerListPublic()
+
+
+### Example
+
+```typescript
+import {
+    BlogCategoriesApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new BlogCategoriesApi(configuration);
+
+let kind: CategoryKind; //Filter by kind: POST (post chips) or ATTRACTION (POI). (optional) (default to undefined)
+let locale: string; // (optional) (default to undefined)
+
+const { status, data } = await apiInstance.categoryControllerListPublic(
+    kind,
+    locale
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **kind** | **CategoryKind** | Filter by kind: POST (post chips) or ATTRACTION (POI). | (optional) defaults to undefined|
+| **locale** | [**string**] |  | (optional) defaults to undefined|
+
+
+### Return type
+
+**ResolvedCategoryListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Public category catalog (locale-resolved id → key + label) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

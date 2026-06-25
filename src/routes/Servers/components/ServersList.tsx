@@ -1,9 +1,11 @@
 import { ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { useMemo } from 'react';
-import { ServerResponseDto } from '~/api/api';
+import { ServerResponseDto, ServerStatus as ServerStatusEnum } from '~/api/api';
 import { Table } from '~/components/Table';
 import { ActionButtons } from '~/components/Table/ActionButtons';
+import { ServerStatus } from '~/routes/Servers/components/ServerStatus';
+import { WakeProgress } from '~/routes/Servers/components/WakeProgress';
 import { useServers } from '~/routes/Servers/hooks/useServers';
 import { useTheme } from '~/utils/theme';
 import { MdOutlineSettingsEthernet } from 'react-icons/md';
@@ -47,6 +49,21 @@ export const ServersList = () => {
         header: 'IP Address',
         cell: (info) => info.getValue(),
         accessorKey: 'ipAddress',
+      },
+      {
+        header: 'Status',
+        id: 'status',
+        cell: (info) => {
+          const properties = info.row.original.properties;
+          return (
+            <div style={{ gap: 4 }}>
+              <ServerStatus status={properties?.status ?? undefined} isOnline={properties?.isOnline ?? undefined} />
+              {properties?.status === ServerStatusEnum.WakeInProgress ? (
+                <WakeProgress since={properties.statusChangedAt} compact />
+              ) : null}
+            </div>
+          );
+        },
       },
       {
         header: 'Actions',

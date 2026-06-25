@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **uptime** | **number** |  | [optional] [default to undefined]
 **status** | [**ServerStatus**](ServerStatus.md) |  | [optional] [default to undefined]
+**statusChangedAt** | **string** | When &#x60;status&#x60; last changed — for wake progress/elapsed. | [optional] [default to undefined]
 **lastSeenAt** | **string** |  | [optional] [default to undefined]
 **isOnline** | **boolean** |  | [optional] [default to undefined]
 **startedBy** | [**UserDto**](UserDto.md) |  | [optional] [default to undefined]
@@ -22,6 +23,7 @@ import { ServerPropertiesDto } from './api';
 const instance: ServerPropertiesDto = {
     uptime,
     status,
+    statusChangedAt,
     lastSeenAt,
     isOnline,
     startedBy,

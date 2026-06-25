@@ -20,9 +20,11 @@ import {
   DefaultApi,
   FileApi,
   ImageApi,
+  NotificationsApi,
   PhotoEntryApi,
   ServerApi,
   SessionApi,
+  SystemApi,
   UserApi,
 } from '~/api/api';
 
@@ -33,6 +35,8 @@ type ApiContextType = {
   sessionApi: SessionApi | false;
   fileApi: FileApi | false;
   serverApi: ServerApi | false;
+  notificationsApi: NotificationsApi | false;
+  systemApi: SystemApi | false;
   photoEntryApi: PhotoEntryApi | false;
   astroObjectApi: AstroObjectApi | false;
   aclApi: ACLApi | false;

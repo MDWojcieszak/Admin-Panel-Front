@@ -33,6 +33,7 @@ export const PERMISSIONS = [
   'acl.manage',
   'acl.assign',
   'dashboard.read',
+  'system.read',
   'blog.read',
   'blog.read.draft',
   'blog.write',

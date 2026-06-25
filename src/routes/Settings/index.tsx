@@ -1,16 +1,33 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
-import { MdLogout } from 'react-icons/md';
-import { PatchUserSettingsDto, SessionResponseDto, UserSettingsResponseDto } from '~/api/api';
+import { MdLogout, MdOutlineMail } from 'react-icons/md';
+import {
+  PatchUserSettingsDto,
+  SessionResponseDto,
+  TestNotificationType,
+  UserSettingsResponseDto,
+} from '~/api/api';
 import { Button } from '~/components/Button';
 import { CenteredCard } from '~/components/CenteredCard';
 import { Loader } from '~/components/Loader';
 import { useApi } from '~/hooks/useApi';
 import { useAuth } from '~/hooks/useAuth';
+import { useToast } from '~/hooks/useToast';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type SettingKey = keyof PatchUserSettingsDto;
+
+/** The dead push channels — shown but not yet wired on the backend. */
+const COMING_SOON: SettingKey[] = ['serverPushNotifications', 'processPushNotifications'];
+
+const TEST_EMAILS: { type: TestNotificationType; label: string }[] = [
+  { type: TestNotificationType.ServerOnline, label: 'Server online' },
+  { type: TestNotificationType.ServerOffline, label: 'Server offline' },
+  { type: TestNotificationType.ServerWakeFailed, label: 'Wake failed' },
+  { type: TestNotificationType.ServerIdle, label: 'Server idle' },
+  { type: TestNotificationType.ProcessFailed, label: 'Process failed' },
+];
 
 const Toggle = ({ value, onChange }: { value: boolean; onChange: (next: boolean) => void }) => {
   const styles = useStyles();
@@ -33,11 +50,13 @@ const Toggle = ({ value, onChange }: { value: boolean; onChange: (next: boolean)
 export const Settings = () => {
   const styles = useStyles();
   const theme = useTheme();
-  const { userApi, sessionApi } = useApi();
+  const { userApi, sessionApi, notificationsApi } = useApi();
   const auth = useAuth();
+  const toast = useToast();
 
   const [settings, setSettings] = useState<UserSettingsResponseDto>();
   const [loading, setLoading] = useState(true);
+  const [sendingTest, setSendingTest] = useState<TestNotificationType>();
 
   const [sessions, setSessions] = useState<SessionResponseDto[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string>();
@@ -88,6 +107,25 @@ export const Settings = () => {
     } catch (e) {
       console.error('Error updating settings:', e);
       setSettings(prev);
+    }
+  };
+
+  // Fires a real email of the given type to the logged-in user only — the backend
+  // ignores flags/permissions for this, so it's a direct "does email work?" probe.
+  const sendTest = async (type: TestNotificationType) => {
+    if (!notificationsApi || sendingTest) return;
+    setSendingTest(type);
+    try {
+      const { data } = await notificationsApi.notificationControllerSendTest({
+        sendTestNotificationDto: { type },
+      });
+      toast(`Test email sent to ${data.email}`, 'success');
+    } catch (e) {
+      const raw = (e as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message;
+      const message = Array.isArray(raw) ? raw.join(', ') : raw;
+      toast(message || 'Could not send the test email. Check the mail server.', 'error');
+    } finally {
+      setSendingTest(undefined);
     }
   };
 
@@ -158,18 +196,46 @@ export const Settings = () => {
           groups.map((group) => (
             <div key={group.title} style={styles.section}>
               <span style={styles.sectionTitle}>{group.title}</span>
-              {group.rows.map((row) => (
-                <div key={row.key} style={styles.row}>
-                  <div style={styles.rowText}>
-                    <span style={styles.rowLabel}>{row.label}</span>
-                    <span style={styles.rowDescription}>{row.description}</span>
+              {group.rows.map((row) => {
+                const comingSoon = COMING_SOON.includes(row.key);
+                return (
+                  <div key={row.key} style={{ ...styles.row, opacity: comingSoon ? 0.55 : 1 }}>
+                    <div style={styles.rowText}>
+                      <span style={styles.rowLabel}>{row.label}</span>
+                      <span style={styles.rowDescription}>{row.description}</span>
+                    </div>
+                    {comingSoon ? (
+                      <span style={styles.soonTag}>Soon</span>
+                    ) : (
+                      <Toggle value={!!settings[row.key]} onChange={(v) => update(row.key, v)} />
+                    )}
                   </div>
-                  <Toggle value={!!settings[row.key]} onChange={(v) => update(row.key, v)} />
-                </div>
-              ))}
+                );
+              })}
             </div>
           ))
         )}
+      </div>
+
+      <div style={styles.block}>
+        <span style={styles.blockTitle}>Send a test email</span>
+        <span style={styles.rowDescription}>
+          Sends a sample email of each type to your own address — ignores the toggles above, so it always
+          arrives. Use it to confirm the mail server works.
+        </span>
+        <div style={styles.testButtons}>
+          {TEST_EMAILS.map((t) => (
+            <Button
+              key={t.type}
+              label={t.label}
+              icon={<MdOutlineMail size={16} />}
+              variant='secondary'
+              onClick={() => sendTest(t.type)}
+              loading={sendingTest === t.type}
+              disabled={!!sendingTest || !notificationsApi}
+            />
+          ))}
+        </div>
       </div>
 
       <div style={styles.block}>
@@ -262,6 +328,22 @@ const useStyles = mkUseStyles((t) => ({
   rowDescription: {
     fontSize: 13,
     color: t.colors.dark05,
+  },
+  soonTag: {
+    fontSize: 11,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    color: t.colors.blue04,
+    backgroundColor: t.colors.blue04 + t.colorOpacity(0.14),
+    padding: `${t.spacing.xs}px ${t.spacing.s}px`,
+    borderRadius: t.borderRadius.default,
+    whiteSpace: 'nowrap',
+  },
+  testButtons: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: t.spacing.s,
   },
   toggle: {
     width: 44,

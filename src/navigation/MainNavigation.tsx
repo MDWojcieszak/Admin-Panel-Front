@@ -15,6 +15,7 @@ import { Dashboard } from '~/routes/Dashboard';
 import { Gallery } from '~/routes/Images';
 import { PhotoManagement } from '~/routes/PhotoManagement';
 import { Settings } from '~/routes/Settings';
+import { SystemStatus } from '~/routes/SystemStatus';
 
 // Blog area (rich markdown + maps libs) — split into its own chunk.
 const BlogNavigation = lazy(() => import('~/navigation/BlogNavigation').then((m) => ({ default: m.BlogNavigation })));
@@ -57,8 +58,14 @@ export const mainNavigationRoutes: MainRouteType[] = [
   },
 ];
 
-// Personal pages reachable from the sidebar footer (not part of the top nav list).
+// Pages reachable from the sidebar footer (not part of the top nav list).
 const footerRoutes: MainRouteType[] = [
+  {
+    path: MainNavigationRoute.SYSTEM_STATUS,
+    label: 'System Status',
+    component: <SystemStatus />,
+    permission: 'system.read',
+  },
   { path: MainNavigationRoute.SETTINGS, label: 'User Settings', component: <Settings />, bare: true },
   { path: MainNavigationRoute.ACCOUNT, label: 'Account', component: <Account />, bare: true },
   { path: MainNavigationRoute.ABOUT, label: 'About', component: <About />, bare: true },

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { ServerDetailsResponseDto, ServerStatus } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import useWebSocket from '~/hooks/useWebSocket';
+import { DEFAULT_WAKE_TIMEOUT_MS } from '~/routes/Servers/hooks/useWakeProgress';
+import { ServerStatusPayload } from '~/routes/Servers/types';
 
 type UseServerDetailsProps = {
   id?: string;
@@ -11,6 +13,8 @@ export const useServerDetails = ({ id }: UseServerDetailsProps) => {
   const { serverApi } = useApi();
   const [serverDetails, setServerDetails] = useState<ServerDetailsResponseDto>();
   const [powerLoading, setPowerLoading] = useState(false);
+  // Wake deadline from the latest server.status event; REST doesn't carry it.
+  const [wakeTimeoutMs, setWakeTimeoutMs] = useState(DEFAULT_WAKE_TIMEOUT_MS);
 
   const loadDetails = () => {
     if (!serverApi || !id) return false;
@@ -23,9 +27,12 @@ export const useServerDetails = ({ id }: UseServerDetailsProps) => {
   const runPower = async (action: 'start' | 'stop' | 'reboot') => {
     if (!serverApi || !id) return;
     setPowerLoading(true);
-    // Optimistic lifecycle status; the real ONLINE/OFFLINE arrives via WS events.
+    // Optimistic lifecycle status; the authoritative status + `since` arrive via
+    // server.status. Stamp statusChangedAt now so the wake bar starts from 0 rather
+    // than the stale REST value.
     patchProperties({
       status: action === 'start' ? ServerStatus.WakeInProgress : ServerStatus.ShutdownInProgress,
+      statusChangedAt: new Date().toISOString(),
     });
     try {
       if (action === 'start') await serverApi.serverControllerStart({ serverId: id });
@@ -39,6 +46,17 @@ export const useServerDetails = ({ id }: UseServerDetailsProps) => {
     }
   };
 
+  // Primary source of truth — one event per transition, rendered straight from payload.
+  useWebSocket<ServerStatusPayload>('server.status', (payload) => {
+    if (payload?.serverId !== id) return;
+    setWakeTimeoutMs(payload.wakeTimeoutMs || DEFAULT_WAKE_TIMEOUT_MS);
+    patchProperties({
+      status: payload.status,
+      isOnline: payload.isOnline,
+      statusChangedAt: payload.since,
+    });
+  });
+  // Backward-compat: older backend emits id-only online/offline. server.status supersedes.
   useWebSocket<string>('server.offline', (serverId) => {
     if (serverId === id) patchProperties({ isOnline: false, status: ServerStatus.Offline });
   });
@@ -56,6 +74,7 @@ export const useServerDetails = ({ id }: UseServerDetailsProps) => {
   return {
     serverDetails,
     powerLoading,
+    wakeTimeoutMs,
     refresh: loadDetails,
     start: () => runPower('start'),
     stop: () => runPower('stop'),

@@ -11,6 +11,7 @@ All URIs are relative to *http://localhost*
 |[**interactionControllerUnlike**](#interactioncontrollerunlike) | **DELETE** /blog/posts/{postId}/like | |
 |[**interactionControllerUpsertFeedback**](#interactioncontrollerupsertfeedback) | **PUT** /blog/posts/{postId}/feedback | |
 |[**interactionControllerView**](#interactioncontrollerview) | **POST** /blog/posts/{postId}/view | |
+|[**interactionControllerViewPublic**](#interactioncontrollerviewpublic) | **POST** /blog/posts/public/{postId}/view | |
 
 # **interactionControllerDeleteFeedback**
 > FeedbackResponse interactionControllerDeleteFeedback()
@@ -366,6 +367,56 @@ const { status, data } = await apiInstance.interactionControllerView(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Recorded a view |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **interactionControllerViewPublic**
+> ViewResultResponse interactionControllerViewPublic()
+
+
+### Example
+
+```typescript
+import {
+    BlogInteractionsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new BlogInteractionsApi(configuration);
+
+let postId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.interactionControllerViewPublic(
+    postId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **postId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**ViewResultResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Register a public post view |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

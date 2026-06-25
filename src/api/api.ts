@@ -8843,6 +8843,44 @@ export interface ProcessResponseDto {
 /**
  * 
  * @export
+ * @interface PublicAuthorListResponse
+ */
+export interface PublicAuthorListResponse {
+    /**
+     * 
+     * @type {Array<PublicAuthorResponse>}
+     * @memberof PublicAuthorListResponse
+     */
+    'authors': Array<PublicAuthorResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface PublicAuthorResponse
+ */
+export interface PublicAuthorResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicAuthorResponse
+     */
+    'userId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicAuthorResponse
+     */
+    'displayName'?: string | null;
+    /**
+     * Avatar image id → GET /image/cover?id=
+     * @type {string}
+     * @memberof PublicAuthorResponse
+     */
+    'avatarImageId'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface PublicCollectionItemResponse
  */
 export interface PublicCollectionItemResponse {
@@ -9549,6 +9587,25 @@ export interface ResetPasswordDto {
      * @memberof ResetPasswordDto
      */
     'deleteSessions': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface ResolvedCategoryListResponse
+ */
+export interface ResolvedCategoryListResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ResolvedCategoryListResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<ResolvedCategoryResponse>}
+     * @memberof ResolvedCategoryListResponse
+     */
+    'categories': Array<ResolvedCategoryResponse>;
 }
 /**
  * 
@@ -10769,6 +10826,21 @@ export interface SectionTranslationResponse {
 /**
  * 
  * @export
+ * @interface SendTestNotificationDto
+ */
+export interface SendTestNotificationDto {
+    /**
+     * 
+     * @type {TestNotificationType}
+     * @memberof SendTestNotificationDto
+     */
+    'type': TestNotificationType;
+}
+
+
+/**
+ * 
+ * @export
  * @interface ServerCategoriesDto
  */
 export interface ServerCategoriesDto {
@@ -10927,6 +10999,12 @@ export interface ServerPropertiesDto {
      */
     'status'?: ServerStatus;
     /**
+     * When `status` last changed — for wake progress/elapsed.
+     * @type {string}
+     * @memberof ServerPropertiesDto
+     */
+    'statusChangedAt'?: string | null;
+    /**
      * 
      * @type {string}
      * @memberof ServerPropertiesDto
@@ -11013,6 +11091,12 @@ export interface ServerResponseDto {
      * @memberof ServerResponseDto
      */
     'updatedAt': string;
+    /**
+     * 
+     * @type {ServerStatusSummaryDto}
+     * @memberof ServerResponseDto
+     */
+    'properties'?: ServerStatusSummaryDto | null;
 }
 /**
  * 
@@ -11095,6 +11179,39 @@ export const ServerStatus = {
 } as const;
 
 export type ServerStatus = typeof ServerStatus[keyof typeof ServerStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface ServerStatusSummaryDto
+ */
+export interface ServerStatusSummaryDto {
+    /**
+     * 
+     * @type {ServerStatus}
+     * @memberof ServerStatusSummaryDto
+     */
+    'status'?: ServerStatus;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ServerStatusSummaryDto
+     */
+    'isOnline'?: boolean | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerStatusSummaryDto
+     */
+    'lastSeenAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ServerStatusSummaryDto
+     */
+    'statusChangedAt'?: string | null;
+}
 
 
 /**
@@ -11512,6 +11629,62 @@ export interface SignInDto {
 /**
  * 
  * @export
+ * @interface SubsystemCheckResponse
+ */
+export interface SubsystemCheckResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SubsystemCheckResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SubsystemCheckResponse
+     */
+    'status': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof SubsystemCheckResponse
+     */
+    'latencyMs'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SubsystemCheckResponse
+     */
+    'detail'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface SystemStatusResponse
+ */
+export interface SystemStatusResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SystemStatusResponse
+     */
+    'status': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SystemStatusResponse
+     */
+    'checkedAt': string;
+    /**
+     * 
+     * @type {Array<SubsystemCheckResponse>}
+     * @memberof SystemStatusResponse
+     */
+    'checks': Array<SubsystemCheckResponse>;
+}
+/**
+ * 
+ * @export
  * @interface TagCreateDto
  */
 export interface TagCreateDto {
@@ -11710,6 +11883,42 @@ export interface TaskCommentUserResponseDto {
      */
     'lastName'?: string;
 }
+/**
+ * 
+ * @export
+ * @interface TestNotificationResultDto
+ */
+export interface TestNotificationResultDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TestNotificationResultDto
+     */
+    'delivered': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof TestNotificationResultDto
+     */
+    'email': string;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const TestNotificationType = {
+    ServerOnline: 'SERVER_ONLINE',
+    ServerOffline: 'SERVER_OFFLINE',
+    ServerWakeFailed: 'SERVER_WAKE_FAILED',
+    ServerIdle: 'SERVER_IDLE',
+    ProcessFailed: 'PROCESS_FAILED'
+} as const;
+
+export type TestNotificationType = typeof TestNotificationType[keyof typeof TestNotificationType];
+
+
 /**
  * 
  * @export
@@ -15850,6 +16059,127 @@ export class AuthApi extends BaseAPI {
 
 
 /**
+ * BlogAuthorsApi - axios parameter creator
+ * @export
+ */
+export const BlogAuthorsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} ids Comma-separated user ids (max 100 resolved).
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authorPublicControllerListPublic: async (ids: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('authorPublicControllerListPublic', 'ids', ids)
+            const localVarPath = `/blog/authors/public`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids !== undefined) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BlogAuthorsApi - functional programming interface
+ * @export
+ */
+export const BlogAuthorsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BlogAuthorsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} ids Comma-separated user ids (max 100 resolved).
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authorPublicControllerListPublic(ids: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicAuthorListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authorPublicControllerListPublic(ids, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogAuthorsApi.authorPublicControllerListPublic']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * BlogAuthorsApi - factory interface
+ * @export
+ */
+export const BlogAuthorsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BlogAuthorsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {BlogAuthorsApiAuthorPublicControllerListPublicRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authorPublicControllerListPublic(requestParameters: BlogAuthorsApiAuthorPublicControllerListPublicRequest, options?: RawAxiosRequestConfig): AxiosPromise<PublicAuthorListResponse> {
+            return localVarFp.authorPublicControllerListPublic(requestParameters.ids, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for authorPublicControllerListPublic operation in BlogAuthorsApi.
+ * @export
+ * @interface BlogAuthorsApiAuthorPublicControllerListPublicRequest
+ */
+export interface BlogAuthorsApiAuthorPublicControllerListPublicRequest {
+    /**
+     * Comma-separated user ids (max 100 resolved).
+     * @type {string}
+     * @memberof BlogAuthorsApiAuthorPublicControllerListPublic
+     */
+    readonly ids: string
+}
+
+/**
+ * BlogAuthorsApi - object-oriented interface
+ * @export
+ * @class BlogAuthorsApi
+ * @extends {BaseAPI}
+ */
+export class BlogAuthorsApi extends BaseAPI {
+    /**
+     * 
+     * @param {BlogAuthorsApiAuthorPublicControllerListPublicRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogAuthorsApi
+     */
+    public authorPublicControllerListPublic(requestParameters: BlogAuthorsApiAuthorPublicControllerListPublicRequest, options?: RawAxiosRequestConfig) {
+        return BlogAuthorsApiFp(this.configuration).authorPublicControllerListPublic(requestParameters.ids, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * BlogCategoriesApi - axios parameter creator
  * @export
  */
@@ -15999,6 +16329,49 @@ export const BlogCategoriesApiAxiosParamCreator = function (configuration?: Conf
 
             if (view !== undefined) {
                 localVarQueryParameter['view'] = view;
+            }
+
+            if (locale !== undefined) {
+                localVarQueryParameter['locale'] = locale;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CategoryKind} [kind] Filter by kind: POST (post chips) or ATTRACTION (POI).
+         * @param {string} [locale] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        categoryControllerListPublic: async (kind?: CategoryKind, locale?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/categories/public`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (kind !== undefined) {
+                localVarQueryParameter['kind'] = kind;
             }
 
             if (locale !== undefined) {
@@ -16168,6 +16541,19 @@ export const BlogCategoriesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {CategoryKind} [kind] Filter by kind: POST (post chips) or ATTRACTION (POI).
+         * @param {string} [locale] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async categoryControllerListPublic(kind?: CategoryKind, locale?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResolvedCategoryListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.categoryControllerListPublic(kind, locale, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogCategoriesApi.categoryControllerListPublic']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {PatchBlogCategoryDto} patchBlogCategoryDto 
          * @param {*} [options] Override http request option.
@@ -16238,6 +16624,15 @@ export const BlogCategoriesApiFactory = function (configuration?: Configuration,
          */
         categoryControllerList(requestParameters: BlogCategoriesApiCategoryControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<CategoryListResponse> {
             return localVarFp.categoryControllerList(requestParameters.kind, requestParameters.view, requestParameters.locale, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogCategoriesApiCategoryControllerListPublicRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        categoryControllerListPublic(requestParameters: BlogCategoriesApiCategoryControllerListPublicRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<ResolvedCategoryListResponse> {
+            return localVarFp.categoryControllerListPublic(requestParameters.kind, requestParameters.locale, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -16326,6 +16721,27 @@ export interface BlogCategoriesApiCategoryControllerListRequest {
      * Locale used when view&#x3D;RESOLVED.
      * @type {string}
      * @memberof BlogCategoriesApiCategoryControllerList
+     */
+    readonly locale?: string
+}
+
+/**
+ * Request parameters for categoryControllerListPublic operation in BlogCategoriesApi.
+ * @export
+ * @interface BlogCategoriesApiCategoryControllerListPublicRequest
+ */
+export interface BlogCategoriesApiCategoryControllerListPublicRequest {
+    /**
+     * Filter by kind: POST (post chips) or ATTRACTION (POI).
+     * @type {CategoryKind}
+     * @memberof BlogCategoriesApiCategoryControllerListPublic
+     */
+    readonly kind?: CategoryKind
+
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogCategoriesApiCategoryControllerListPublic
      */
     readonly locale?: string
 }
@@ -16428,6 +16844,17 @@ export class BlogCategoriesApi extends BaseAPI {
      */
     public categoryControllerList(requestParameters: BlogCategoriesApiCategoryControllerListRequest = {}, options?: RawAxiosRequestConfig) {
         return BlogCategoriesApiFp(this.configuration).categoryControllerList(requestParameters.kind, requestParameters.view, requestParameters.locale, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BlogCategoriesApiCategoryControllerListPublicRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogCategoriesApi
+     */
+    public categoryControllerListPublic(requestParameters: BlogCategoriesApiCategoryControllerListPublicRequest = {}, options?: RawAxiosRequestConfig) {
+        return BlogCategoriesApiFp(this.configuration).categoryControllerListPublic(requestParameters.kind, requestParameters.locale, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -20011,6 +20438,43 @@ export const BlogInteractionsApiAxiosParamCreator = function (configuration?: Co
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {string} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        interactionControllerViewPublic: async (postId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postId' is not null or undefined
+            assertParamExists('interactionControllerViewPublic', 'postId', postId)
+            const localVarPath = `/blog/posts/public/{postId}/view`
+                .replace(`{${"postId"}}`, encodeURIComponent(String(postId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -20107,6 +20571,18 @@ export const BlogInteractionsApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['BlogInteractionsApi.interactionControllerView']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {string} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async interactionControllerViewPublic(postId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ViewResultResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.interactionControllerViewPublic(postId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogInteractionsApi.interactionControllerViewPublic']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -20179,6 +20655,15 @@ export const BlogInteractionsApiFactory = function (configuration?: Configuratio
          */
         interactionControllerView(requestParameters: BlogInteractionsApiInteractionControllerViewRequest, options?: RawAxiosRequestConfig): AxiosPromise<ViewResultResponse> {
             return localVarFp.interactionControllerView(requestParameters.postId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BlogInteractionsApiInteractionControllerViewPublicRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        interactionControllerViewPublic(requestParameters: BlogInteractionsApiInteractionControllerViewPublicRequest, options?: RawAxiosRequestConfig): AxiosPromise<ViewResultResponse> {
+            return localVarFp.interactionControllerViewPublic(requestParameters.postId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -20296,6 +20781,20 @@ export interface BlogInteractionsApiInteractionControllerViewRequest {
 }
 
 /**
+ * Request parameters for interactionControllerViewPublic operation in BlogInteractionsApi.
+ * @export
+ * @interface BlogInteractionsApiInteractionControllerViewPublicRequest
+ */
+export interface BlogInteractionsApiInteractionControllerViewPublicRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BlogInteractionsApiInteractionControllerViewPublic
+     */
+    readonly postId: string
+}
+
+/**
  * BlogInteractionsApi - object-oriented interface
  * @export
  * @class BlogInteractionsApi
@@ -20378,6 +20877,17 @@ export class BlogInteractionsApi extends BaseAPI {
     public interactionControllerView(requestParameters: BlogInteractionsApiInteractionControllerViewRequest, options?: RawAxiosRequestConfig) {
         return BlogInteractionsApiFp(this.configuration).interactionControllerView(requestParameters.postId, options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * 
+     * @param {BlogInteractionsApiInteractionControllerViewPublicRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogInteractionsApi
+     */
+    public interactionControllerViewPublic(requestParameters: BlogInteractionsApiInteractionControllerViewPublicRequest, options?: RawAxiosRequestConfig) {
+        return BlogInteractionsApiFp(this.configuration).interactionControllerViewPublic(requestParameters.postId, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
 
@@ -20395,6 +20905,39 @@ export const BlogLocalesApiAxiosParamCreator = function (configuration?: Configu
          */
         localeControllerList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/blog/locales`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        localeControllerListPublic: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/blog/locales/public`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -20442,6 +20985,17 @@ export const BlogLocalesApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['BlogLocalesApi.localeControllerList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async localeControllerListPublic(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BlogLocaleListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.localeControllerListPublic(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BlogLocalesApi.localeControllerListPublic']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -20459,6 +21013,14 @@ export const BlogLocalesApiFactory = function (configuration?: Configuration, ba
          */
         localeControllerList(options?: RawAxiosRequestConfig): AxiosPromise<BlogLocaleListResponse> {
             return localVarFp.localeControllerList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        localeControllerListPublic(options?: RawAxiosRequestConfig): AxiosPromise<BlogLocaleListResponse> {
+            return localVarFp.localeControllerListPublic(options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -20478,6 +21040,16 @@ export class BlogLocalesApi extends BaseAPI {
      */
     public localeControllerList(options?: RawAxiosRequestConfig) {
         return BlogLocalesApiFp(this.configuration).localeControllerList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BlogLocalesApi
+     */
+    public localeControllerListPublic(options?: RawAxiosRequestConfig) {
+        return BlogLocalesApiFp(this.configuration).localeControllerListPublic(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -30331,6 +30903,130 @@ export class ImmichApi extends BaseAPI {
 
 
 /**
+ * NotificationsApi - axios parameter creator
+ * @export
+ */
+export const NotificationsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {SendTestNotificationDto} sendTestNotificationDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        notificationControllerSendTest: async (sendTestNotificationDto: SendTestNotificationDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'sendTestNotificationDto' is not null or undefined
+            assertParamExists('notificationControllerSendTest', 'sendTestNotificationDto', sendTestNotificationDto)
+            const localVarPath = `/notifications/test`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(sendTestNotificationDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * NotificationsApi - functional programming interface
+ * @export
+ */
+export const NotificationsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = NotificationsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {SendTestNotificationDto} sendTestNotificationDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async notificationControllerSendTest(sendTestNotificationDto: SendTestNotificationDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TestNotificationResultDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.notificationControllerSendTest(sendTestNotificationDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['NotificationsApi.notificationControllerSendTest']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * NotificationsApi - factory interface
+ * @export
+ */
+export const NotificationsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = NotificationsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {NotificationsApiNotificationControllerSendTestRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        notificationControllerSendTest(requestParameters: NotificationsApiNotificationControllerSendTestRequest, options?: RawAxiosRequestConfig): AxiosPromise<TestNotificationResultDto> {
+            return localVarFp.notificationControllerSendTest(requestParameters.sendTestNotificationDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for notificationControllerSendTest operation in NotificationsApi.
+ * @export
+ * @interface NotificationsApiNotificationControllerSendTestRequest
+ */
+export interface NotificationsApiNotificationControllerSendTestRequest {
+    /**
+     * 
+     * @type {SendTestNotificationDto}
+     * @memberof NotificationsApiNotificationControllerSendTest
+     */
+    readonly sendTestNotificationDto: SendTestNotificationDto
+}
+
+/**
+ * NotificationsApi - object-oriented interface
+ * @export
+ * @class NotificationsApi
+ * @extends {BaseAPI}
+ */
+export class NotificationsApi extends BaseAPI {
+    /**
+     * 
+     * @param {NotificationsApiNotificationControllerSendTestRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public notificationControllerSendTest(requestParameters: NotificationsApiNotificationControllerSendTestRequest, options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).notificationControllerSendTest(requestParameters.sendTestNotificationDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * OCRDevApi - axios parameter creator
  * @export
  */
@@ -35476,6 +36172,223 @@ export class SessionApi extends BaseAPI {
      */
     public sessionControllerRevokeOwn(requestParameters: SessionApiSessionControllerRevokeOwnRequest, options?: RawAxiosRequestConfig) {
         return SessionApiFp(this.configuration).sessionControllerRevokeOwn(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * SystemApi - axios parameter creator
+ * @export
+ */
+export const SystemApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        systemControllerLiveness: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/health`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        systemControllerReadiness: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/health/ready`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        systemControllerStatus: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/system/status`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * SystemApi - functional programming interface
+ * @export
+ */
+export const SystemApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = SystemApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async systemControllerLiveness(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.systemControllerLiveness(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SystemApi.systemControllerLiveness']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async systemControllerReadiness(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.systemControllerReadiness(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SystemApi.systemControllerReadiness']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async systemControllerStatus(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SystemStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.systemControllerStatus(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SystemApi.systemControllerStatus']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * SystemApi - factory interface
+ * @export
+ */
+export const SystemApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = SystemApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        systemControllerLiveness(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.systemControllerLiveness(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        systemControllerReadiness(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.systemControllerReadiness(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        systemControllerStatus(options?: RawAxiosRequestConfig): AxiosPromise<SystemStatusResponse> {
+            return localVarFp.systemControllerStatus(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * SystemApi - object-oriented interface
+ * @export
+ * @class SystemApi
+ * @extends {BaseAPI}
+ */
+export class SystemApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SystemApi
+     */
+    public systemControllerLiveness(options?: RawAxiosRequestConfig) {
+        return SystemApiFp(this.configuration).systemControllerLiveness(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SystemApi
+     */
+    public systemControllerReadiness(options?: RawAxiosRequestConfig) {
+        return SystemApiFp(this.configuration).systemControllerReadiness(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SystemApi
+     */
+    public systemControllerStatus(options?: RawAxiosRequestConfig) {
+        return SystemApiFp(this.configuration).systemControllerStatus(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

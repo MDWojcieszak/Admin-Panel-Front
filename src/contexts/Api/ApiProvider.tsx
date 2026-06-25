@@ -20,9 +20,11 @@ import {
   DefaultApi,
   FileApi,
   ImageApi,
+  NotificationsApi,
   PhotoEntryApi,
   ServerApi,
   SessionApi,
+  SystemApi,
   UserApi,
 } from '~/api/api';
 import { Configuration } from 'src/api/configuration';
@@ -49,6 +51,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const sessionApi = useMemo(() => config && new SessionApi(config), [config]);
   const fileApi = useMemo(() => config && new FileApi(config), [config]);
   const serverApi = useMemo(() => config && new ServerApi(config), [config]);
+  const notificationsApi = useMemo(() => config && new NotificationsApi(config), [config]);
+  const systemApi = useMemo(() => config && new SystemApi(config), [config]);
   const photoEntryApi = useMemo(() => config && new PhotoEntryApi(config), [config]);
   const astroObjectApi = useMemo(() => config && new AstroObjectApi(config), [config]);
   const aclApi = useMemo(() => config && new ACLApi(config), [config]);
@@ -77,6 +81,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         sessionApi,
         fileApi,
         serverApi,
+        notificationsApi,
+        systemApi,
         photoEntryApi,
         astroObjectApi,
         aclApi,

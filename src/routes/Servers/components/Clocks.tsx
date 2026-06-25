@@ -5,13 +5,18 @@ import { BsCpu } from 'react-icons/bs';
 import { FaMemory } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 type ClocksProps = {
-  cpuInfo: CpuDto;
-  memoryInfo: MemoryDto;
+  cpuInfo?: CpuDto;
+  memoryInfo?: MemoryDto;
   isOnline?: boolean;
 };
 const gigabytes = (bytes: number) => bytes / Math.pow(1024, 3);
 
-export const Clocks = ({ cpuInfo, memoryInfo, isOnline }: ClocksProps) => {
+// Offline servers report null/absent metrics; format defensively so the overview
+// never crashes on a `null.toFixed(...)` before the isOnline guard can hide it.
+const fixed = (value: number | null | undefined, digits: number) =>
+  typeof value === 'number' && Number.isFinite(value) ? value.toFixed(digits) : '—';
+
+export const Clocks = ({ cpuInfo = {} as CpuDto, memoryInfo = {} as MemoryDto, isOnline }: ClocksProps) => {
   const styles = useStyles();
   const theme = useTheme();
 
@@ -48,14 +53,14 @@ export const Clocks = ({ cpuInfo, memoryInfo, isOnline }: ClocksProps) => {
             <div style={{ ...styles.dot, backgroundColor: theme.colors.blue04 }} />
             System
           </div>
-          <div style={styles.value}>{renderData(cpuInfo.currentLoadSystem.toFixed(1)) + ' %'}</div>
+          <div style={styles.value}>{renderData(fixed(cpuInfo.currentLoadSystem, 1)) + ' %'}</div>
         </motion.div>
         <motion.div style={styles.row} animate={{ opacity: isOnline ? 1 : 0.2 }}>
           <div style={styles.legendLabel}>
             <div style={{ ...styles.dot, backgroundColor: cpuColor }} />
             User
           </div>
-          <div style={styles.value}>{renderData(cpuInfo.currentLoadUser.toFixed(1)) + ' %'}</div>
+          <div style={styles.value}>{renderData(fixed(cpuInfo.currentLoadUser, 1)) + ' %'}</div>
         </motion.div>
       </div>
 
@@ -76,14 +81,20 @@ export const Clocks = ({ cpuInfo, memoryInfo, isOnline }: ClocksProps) => {
             <div style={{ ...styles.dot, backgroundColor: memColor }} />
             Used
           </div>
-          <div style={styles.value}>{renderData(gigabytes(memoryInfo.total - memoryInfo.free).toFixed(1)) + ' GB'}</div>
+          <div style={styles.value}>
+            {renderData(
+              fixed(memoryInfo.total != null && memoryInfo.free != null ? gigabytes(memoryInfo.total - memoryInfo.free) : null, 1),
+            ) + ' GB'}
+          </div>
         </motion.div>
         <motion.div style={styles.row} animate={{ opacity: isOnline ? 1 : 0.2 }}>
           <div style={styles.legendLabel}>
             <div style={{ ...styles.dot, backgroundColor: theme.colors.gray01 }} />
             Total
           </div>
-          <div style={styles.value}>{renderData(gigabytes(memoryInfo.total).toFixed(1)) + ' GB'}</div>
+          <div style={styles.value}>
+            {renderData(fixed(memoryInfo.total != null ? gigabytes(memoryInfo.total) : null, 1)) + ' GB'}
+          </div>
         </motion.div>
       </div>
       <div style={styles.subContainer}>

@@ -18,7 +18,9 @@ export const ManageServer = () => {
   const styles = useStyles();
   const { serverId } = useParams();
   const can = useCan();
-  const { serverDetails, powerLoading, refresh, start, stop, reboot } = useServerDetails({ id: serverId });
+  const { serverDetails, powerLoading, wakeTimeoutMs, refresh, start, stop, reboot } = useServerDetails({
+    id: serverId,
+  });
 
   const categories = serverDetails?.categories ?? [];
   const canReadCommand = can('command.read') || can('server.category.manage');
@@ -54,6 +56,7 @@ export const ManageServer = () => {
       <ServerHeader
         server={serverDetails}
         powerLoading={powerLoading}
+        wakeTimeoutMs={wakeTimeoutMs}
         onStart={start}
         onStop={stop}
         onReboot={reboot}

@@ -6,12 +6,14 @@ import { GlassCard } from '~/components/GlassCard';
 import { useCan } from '~/hooks/usePermissions';
 import { useModal } from '~/hooks/useModal';
 import { ServerStatus } from '~/routes/Servers/components/ServerStatus';
+import { WakeProgress } from '~/routes/Servers/components/WakeProgress';
 import { formatUptime } from '~/routes/Servers/utils';
 import { mkUseStyles } from '~/utils/theme';
 
 type ServerHeaderProps = {
   server?: ServerDetailsResponseDto;
   powerLoading?: boolean;
+  wakeTimeoutMs?: number;
   onStart?: F0;
   onStop?: F0;
   onReboot?: F0;
@@ -22,7 +24,7 @@ const IN_PROGRESS_STATES: ServerStatusEnum[] = [
   ServerStatusEnum.ShutdownInProgress,
 ];
 
-export const ServerHeader = ({ server, powerLoading, onStart, onStop, onReboot }: ServerHeaderProps) => {
+export const ServerHeader = ({ server, powerLoading, wakeTimeoutMs, onStart, onStop, onReboot }: ServerHeaderProps) => {
   const styles = useStyles();
   const can = useCan();
   const canPower = can('server.power');
@@ -41,6 +43,8 @@ export const ServerHeader = ({ server, powerLoading, onStart, onStop, onReboot }
   const isOnline = server?.properties.isOnline;
   const status = server?.properties.status;
   const inProgress = !!status && IN_PROGRESS_STATES.includes(status);
+  const waking = status === ServerStatusEnum.WakeInProgress;
+  const wakeFailed = status === ServerStatusEnum.Error;
   const name = server?.name ?? 'this server';
   const uptime = isOnline ? formatUptime(server?.properties.uptime) : undefined;
 
@@ -72,6 +76,10 @@ export const ServerHeader = ({ server, powerLoading, onStart, onStop, onReboot }
 
         <div style={styles.statusBlock}>
           <ServerStatus isOnline={isOnline} status={status} />
+          {waking ? (
+            <WakeProgress since={server?.properties.statusChangedAt} wakeTimeoutMs={wakeTimeoutMs} />
+          ) : null}
+          {wakeFailed ? <span style={styles.wakeFailed}>Wake failed — the server didn’t come up.</span> : null}
           {uptime ? <span style={styles.uptime}>up {uptime}</span> : null}
         </div>
       </div>
@@ -137,6 +145,10 @@ const useStyles = mkUseStyles((t) => ({
   uptime: {
     fontSize: 13,
     color: t.colors.dark05,
+  },
+  wakeFailed: {
+    fontSize: 13,
+    color: t.colors.red,
   },
   actions: {
     flexDirection: 'row',

@@ -1,8 +1,9 @@
 import { PaginationState } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
-import { ServerListResponseDto } from '~/api/api';
+import { ServerListResponseDto, ServerStatus } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import useWebSocket from '~/hooks/useWebSocket';
+import { ServerStatusPayload } from '~/routes/Servers/types';
 
 export const useServers = () => {
   const [servers, setServers] = useState<ServerListResponseDto['servers']>();
@@ -18,7 +19,6 @@ export const useServers = () => {
       serverApi
         .serverControllerGetAll({ take: pagination.pageSize, skip: pagination.pageIndex * pagination.pageSize })
         .then((s) => {
-          console.log(s);
           setServers(s.data.servers);
           setCount(s.data.total);
         });
@@ -27,9 +27,26 @@ export const useServers = () => {
     }
   };
 
+  // Patch the affected row in place — the lightweight `properties` (status/isOnline/
+  // statusChangedAt) carries everything the badge + wake bar need, so no refetch.
+  const patchServer = (serverId: string, patch: Partial<NonNullable<ServerListResponseDto['servers'][number]['properties']>>) =>
+    setServers((prev) =>
+      prev?.map((s) => (s.id === serverId ? { ...s, properties: { ...s.properties, ...patch } } : s)),
+    );
+
+  useWebSocket<ServerStatusPayload>('server.status', (payload) => {
+    if (!payload?.serverId) return;
+    patchServer(payload.serverId, {
+      status: payload.status,
+      isOnline: payload.isOnline,
+      statusChangedAt: payload.since,
+    });
+  });
+  // Backward-compat with the id-only online/offline events; server.status supersedes them.
+  useWebSocket<string>('server.online', (serverId) => patchServer(serverId, { isOnline: true, status: ServerStatus.Online }));
+  useWebSocket<string>('server.offline', (serverId) => patchServer(serverId, { isOnline: false, status: ServerStatus.Offline }));
+  // Structural changes (added/removed/renamed servers) still need a full refetch.
   useWebSocket('server.update', handleGet);
-  useWebSocket('server.online', handleGet);
-  useWebSocket('server.offline', handleGet);
 
   useEffect(() => {
     handleGet();

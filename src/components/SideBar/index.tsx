@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MdSettings } from 'react-icons/md';
+import { MdMonitorHeart, MdSettings } from 'react-icons/md';
 import { GlassCard } from '~/components/GlassCard';
 import { Item, SideBarItem } from '~/components/SideBar/Item';
 import { useAuth } from '~/hooks/useAuth';
@@ -37,6 +37,8 @@ export const SideBar = ({ items }: SideBarProps) => {
   const visibleItems = items.filter((item) => hasAccess(can, item.permission));
   const settingsActive = current === MainNavigationRoute.SETTINGS;
   const accountActive = current === MainNavigationRoute.ACCOUNT;
+  const systemStatusActive = current === MainNavigationRoute.SYSTEM_STATUS;
+  const canSystemStatus = can('system.read');
 
   return (
     <GlassCard style={styles.container}>
@@ -52,6 +54,16 @@ export const SideBar = ({ items }: SideBarProps) => {
       </div>
 
       <div style={styles.footer}>
+        {canSystemStatus ? (
+          <div
+            style={{ ...styles.settingsRow, color: systemStatusActive ? theme.colors.blue : theme.colors.dark05 }}
+            onClick={() => navigate('/' + MainNavigationRoute.SYSTEM_STATUS)}
+          >
+            <MdMonitorHeart size={20} />
+            <span>System Status</span>
+          </div>
+        ) : null}
+
         <div
           style={{ ...styles.settingsRow, color: settingsActive ? theme.colors.blue : theme.colors.dark05 }}
           onClick={() => navigate('/' + MainNavigationRoute.SETTINGS)}

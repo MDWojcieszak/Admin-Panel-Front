@@ -8,6 +8,7 @@ export enum MainNavigationRoute {
   GALLERY = 'gallery',
   SETTINGS = 'settings',
   SERVERS = 'servers',
+  SYSTEM_STATUS = 'system-status',
   ACCESS_CONTROL = 'access-control',
   ACCOUNT = 'account',
   ABOUT = 'about',

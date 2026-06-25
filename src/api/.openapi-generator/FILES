@@ -31,6 +31,7 @@ docs/BlogAccessTier.md
 docs/BlogAlbumItemInputDto.md
 docs/BlogAspectRatio.md
 docs/BlogAuthorRole.md
+docs/BlogAuthorsApi.md
 docs/BlogCategoriesApi.md
 docs/BlogCollectionsApi.md
 docs/BlogColorsApi.md
@@ -185,6 +186,7 @@ docs/MediaStatus.md
 docs/MemoryDto.md
 docs/MonthlyPointDto.md
 docs/MyPermissionsResponseDto.md
+docs/NotificationsApi.md
 docs/OCRDevApi.md
 docs/OcrLang.md
 docs/OcrOEM.md
@@ -289,6 +291,8 @@ docs/ProcessLogLevel.md
 docs/ProcessLogListResponseDto.md
 docs/ProcessPointDto.md
 docs/ProcessResponseDto.md
+docs/PublicAuthorListResponse.md
+docs/PublicAuthorResponse.md
 docs/PublicCollectionItemResponse.md
 docs/PublicCollectionListResponse.md
 docs/PublicCollectionResponse.md
@@ -311,6 +315,7 @@ docs/ReorderDto.md
 docs/ReorderPostsDto.md
 docs/RequestResetPasswordDto.md
 docs/ResetPasswordDto.md
+docs/ResolvedCategoryListResponse.md
 docs/ResolvedCategoryResponse.md
 docs/ResolvedSectionCollectionResponse.md
 docs/ResolvedSectionImageResponse.md
@@ -336,6 +341,7 @@ docs/SectionPoiResponse.md
 docs/SectionPoiTargetResponse.md
 docs/SectionResponse.md
 docs/SectionTranslationResponse.md
+docs/SendTestNotificationDto.md
 docs/ServerApi.md
 docs/ServerCategoriesDto.md
 docs/ServerCategory.md
@@ -347,6 +353,7 @@ docs/ServerResponseDto.md
 docs/ServerSettingsListResponseDto.md
 docs/ServerSettingsResponseDto.md
 docs/ServerStatus.md
+docs/ServerStatusSummaryDto.md
 docs/ServerTransferListResponse.md
 docs/ServerTransferMode.md
 docs/ServerTransferResponse.md
@@ -363,6 +370,9 @@ docs/SetPostCategoriesDto.md
 docs/SetUserGroupsDto.md
 docs/SettingType.md
 docs/SignInDto.md
+docs/SubsystemCheckResponse.md
+docs/SystemApi.md
+docs/SystemStatusResponse.md
 docs/TagApi.md
 docs/TagCreateDto.md
 docs/TagDetailResponseDto.md
@@ -374,6 +384,8 @@ docs/TaskCommentListResponseDto.md
 docs/TaskCommentResponseDto.md
 docs/TaskCommentUpdateDto.md
 docs/TaskCommentUserResponseDto.md
+docs/TestNotificationResultDto.md
+docs/TestNotificationType.md
 docs/TokenApi.md
 docs/TokenListResponseDto.md
 docs/TokenMetadataResponseDto.md
