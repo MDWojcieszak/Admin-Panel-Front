@@ -30,6 +30,7 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
 
   const {
     field,
@@ -70,10 +71,15 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
     if (!isExtended) return;
     updateCoords();
     const close = () => setIsExtended(false);
-    window.addEventListener('scroll', close, true);
+    const onScroll = (e: Event) => {
+      // Scrolling inside the dropdown's own list shouldn't close it — only page/ancestor scrolls do.
+      if (listRef.current && e.target instanceof Node && listRef.current.contains(e.target)) return;
+      setIsExtended(false);
+    };
+    window.addEventListener('scroll', onScroll, true);
     window.addEventListener('resize', close);
     return () => {
-      window.removeEventListener('scroll', close, true);
+      window.removeEventListener('scroll', onScroll, true);
       window.removeEventListener('resize', close);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,6 +128,7 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
         <AnimatePresence mode='wait'>
           {isExtended && coords && (
             <motion.ul
+              ref={listRef}
               onMouseEnter={() => setIsOnList(true)}
               onMouseLeave={() => setIsOnList(false)}
               initial={{ opacity: 0, translateY: -8 }}

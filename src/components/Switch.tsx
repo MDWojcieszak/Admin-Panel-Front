@@ -35,6 +35,7 @@ export const Switch = ({ checked, onChange, label, disabled }: SwitchProps) => {
 
 const useStyles = mkUseStyles((t) => ({
   row: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
