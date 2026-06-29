@@ -11,12 +11,26 @@ export const getRefreshToken = () => {
   return Cookies.get(import.meta.env.VITE_REFRESH_TOKEN_KEY as string);
 };
 
+/** Expiry date from a JWT's `exp` claim, so the cookie persists exactly as long as the token is valid. */
+const getTokenExpiry = (token: string): Date | undefined => {
+  try {
+    const data = jwtDecode(token);
+    if (!data || typeof data === 'string' || !data.exp) return undefined;
+    return new Date(data.exp * 1000);
+  } catch {
+    return undefined;
+  }
+};
+
 export const setAccessToken = (token: string) => {
-  return Cookies.set(import.meta.env.VITE_TOKEN_KEY as string, token);
+  const expires = getTokenExpiry(token);
+  // Persist (not a session cookie) so the session survives a browser restart.
+  return Cookies.set(import.meta.env.VITE_TOKEN_KEY as string, token, expires ? { expires } : undefined);
 };
 
 export const setRefreshToken = (token: string) => {
-  return Cookies.set(import.meta.env.VITE_REFRESH_TOKEN_KEY as string, token);
+  const expires = getTokenExpiry(token);
+  return Cookies.set(import.meta.env.VITE_REFRESH_TOKEN_KEY as string, token, expires ? { expires } : undefined);
 };
 
 export const removeAccessToken = () => {

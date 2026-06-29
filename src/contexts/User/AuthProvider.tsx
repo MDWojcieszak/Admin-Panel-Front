@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
   const [userData, setUserData] = useState<UserData>();
   const [accessToken, setAccessToken] = useState<string>();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const refreshingRef = useRef(false);
 
   const buildUserData = (token: string): UserData | undefined => {
     const data = getTokenData(token);
@@ -85,17 +86,25 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
     return true;
   };
 
-  const refreshTokens = async () => {
+  const refreshTokens = async (attempt = 0) => {
+    if (refreshingRef.current) return;
+    refreshingRef.current = true;
     try {
       const tokens = await AuthService.refresh();
       if (!tokens.access_token || !tokens.refresh_token) throw new Error('Invalid tokens received');
-      setTokens({
-        access_token: tokens.access_token,
-        refresh_token: tokens.refresh_token,
-      });
+      setTokens(tokens as Required<typeof tokens>);
     } catch (error) {
-      console.log(error);
-      setUserState(UserState.REQUIRES_LOGIN);
+      console.log('Token refresh failed:', error);
+      // A transient failure (network blip / backend hiccup) shouldn't drop a still-valid
+      // session — retry a few times before forcing re-login. Only give up when the refresh
+      // token itself is gone/expired.
+      if (attempt < 3 && isTokenValid(getRefreshToken())) {
+        timeoutRef.current = setTimeout(() => refreshTokens(attempt + 1), 3000 * (attempt + 1));
+      } else {
+        setUserState(UserState.REQUIRES_LOGIN);
+      }
+    } finally {
+      refreshingRef.current = false;
     }
   };
 
@@ -108,9 +117,22 @@ export const AuthProvider = ({ children }: UserProviderProps) => {
 
   useEffect(() => {
     initializeAppCredentials();
-    return () => {
-      timeoutRef.current && clearInterval(timeoutRef.current);
+
+    // After sleep/long background the scheduled timer may fire late; when the tab regains
+    // focus, renew immediately if the access token lapsed but the refresh token is still good.
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      if (!isTokenValid(getAccessToken()) && isTokenValid(getRefreshToken())) {
+        refreshTokens();
+      }
     };
+    document.addEventListener('visibilitychange', onVisible);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      timeoutRef.current && clearTimeout(timeoutRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
