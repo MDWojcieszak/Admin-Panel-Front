@@ -1,4 +1,4 @@
-# CreateImmichAlbumDto
+# PreviewImmichAlbumDto
 
 
 ## Properties
@@ -8,18 +8,16 @@ Name | Type | Description | Notes
 **photoEntryId** | **string** |  | [default to undefined]
 **source** | [**ImmichAlbumSource**](ImmichAlbumSource.md) |  | [optional] [default to undefined]
 **astroObjectId** | **string** |  | [optional] [default to undefined]
-**albumName** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
 ```typescript
-import { CreateImmichAlbumDto } from './api';
+import { PreviewImmichAlbumDto } from './api';
 
-const instance: CreateImmichAlbumDto = {
+const instance: PreviewImmichAlbumDto = {
     photoEntryId,
     source,
     astroObjectId,
-    albumName,
 };
 ```
 

@@ -523,6 +523,33 @@ export interface AstroObjectResponse {
 /**
  * 
  * @export
+ * @interface AttachEntryDto
+ */
+export interface AttachEntryDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof AttachEntryDto
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {ImmichAlbumSource}
+     * @memberof AttachEntryDto
+     */
+    'source'?: ImmichAlbumSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof AttachEntryDto
+     */
+    'astroObjectId'?: string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface AuthControllerCheckRegister200Response
  */
 export interface AuthControllerCheckRegister200Response {
@@ -2311,6 +2338,19 @@ export interface CreateCommentDto {
 /**
  * 
  * @export
+ * @interface CreateEmptyAlbumDto
+ */
+export interface CreateEmptyAlbumDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateEmptyAlbumDto
+     */
+    'albumName': string;
+}
+/**
+ * 
+ * @export
  * @interface CreateGrantDto
  */
 export interface CreateGrantDto {
@@ -2359,7 +2399,27 @@ export interface CreateImmichAlbumDto {
      * @memberof CreateImmichAlbumDto
      */
     'photoEntryId': string;
+    /**
+     * 
+     * @type {ImmichAlbumSource}
+     * @memberof CreateImmichAlbumDto
+     */
+    'source'?: ImmichAlbumSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateImmichAlbumDto
+     */
+    'astroObjectId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateImmichAlbumDto
+     */
+    'albumName'?: string;
 }
+
+
 /**
  * 
  * @export
@@ -4522,9 +4582,274 @@ export interface ImageListResponseDto {
 /**
  * 
  * @export
+ * @interface ImmichAlbumBrowseResponse
+ */
+export interface ImmichAlbumBrowseResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumBrowseResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<ImmichBrowseAlbumResponse>}
+     * @memberof ImmichAlbumBrowseResponse
+     */
+    'albums': Array<ImmichBrowseAlbumResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface ImmichAlbumDeletedResponse
+ */
+export interface ImmichAlbumDeletedResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumDeletedResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumDeletedResponse
+     */
+    'removedAssets': number;
+}
+/**
+ * 
+ * @export
+ * @interface ImmichAlbumEntryLinkResponse
+ */
+export interface ImmichAlbumEntryLinkResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumEntryLinkResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumEntryLinkResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {ImmichAlbumSource}
+     * @memberof ImmichAlbumEntryLinkResponse
+     */
+    'source': ImmichAlbumSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumEntryLinkResponse
+     */
+    'astroObjectId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumEntryLinkResponse
+     */
+    'lastAssetCount'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumEntryLinkResponse
+     */
+    'lastSyncedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumEntryLinkResponse
+     */
+    'createdAt': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ImmichAlbumItemResponse
+ */
+export interface ImmichAlbumItemResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'albumId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'albumName': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'albumUrl': string;
+    /**
+     * 
+     * @type {ImmichAlbumSource}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'source': ImmichAlbumSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'astroObjectId'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'lastAssetCount'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'lastSyncedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumItemResponse
+     */
+    'updatedAt': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ImmichAlbumListResponse
+ */
+export interface ImmichAlbumListResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumListResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<ImmichAlbumItemResponse>}
+     * @memberof ImmichAlbumListResponse
+     */
+    'albums': Array<ImmichAlbumItemResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface ImmichAlbumPreviewResponse
+ */
+export interface ImmichAlbumPreviewResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumPreviewResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {ImmichAlbumSource}
+     * @memberof ImmichAlbumPreviewResponse
+     */
+    'source': ImmichAlbumSource;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ImmichAlbumPreviewResponse
+     */
+    'folderPaths': Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumPreviewResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<ImmichAssetPreviewResponse>}
+     * @memberof ImmichAlbumPreviewResponse
+     */
+    'assets': Array<ImmichAssetPreviewResponse>;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ImmichAlbumRemovedResponse
+ */
+export interface ImmichAlbumRemovedResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumRemovedResponse
+     */
+    'albumId': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichAlbumRemovedResponse
+     */
+    'removedLinks': number;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ImmichAlbumSource = {
+    Export: 'EXPORT',
+    Edit: 'EDIT',
+    Selects: 'SELECTS',
+    Source: 'SOURCE',
+    Delivery: 'DELIVERY',
+    Entire: 'ENTIRE'
+} as const;
+
+export type ImmichAlbumSource = typeof ImmichAlbumSource[keyof typeof ImmichAlbumSource];
+
+
+/**
+ * 
+ * @export
  * @interface ImmichAlbumSyncResponse
  */
 export interface ImmichAlbumSyncResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'id': string;
     /**
      * 
      * @type {string}
@@ -4537,6 +4862,18 @@ export interface ImmichAlbumSyncResponse {
      * @memberof ImmichAlbumSyncResponse
      */
     'albumName': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'albumUrl': string;
+    /**
+     * 
+     * @type {ImmichAlbumSource}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'source': ImmichAlbumSource;
     /**
      * 
      * @type {boolean}
@@ -4561,6 +4898,186 @@ export interface ImmichAlbumSyncResponse {
      * @memberof ImmichAlbumSyncResponse
      */
     'totalAlbumAssets': number;
+    /**
+     * 
+     * @type {Array<ImmichAssetPreviewResponse>}
+     * @memberof ImmichAlbumSyncResponse
+     */
+    'assets': Array<ImmichAssetPreviewResponse>;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ImmichAssetPreviewResponse
+ */
+export interface ImmichAssetPreviewResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAssetPreviewResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAssetPreviewResponse
+     */
+    'originalFileName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAssetPreviewResponse
+     */
+    'type'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAssetPreviewResponse
+     */
+    'localDateTime'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAssetPreviewResponse
+     */
+    'thumbhash'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichAssetPreviewResponse
+     */
+    'thumbnailUrl': string;
+}
+/**
+ * 
+ * @export
+ * @interface ImmichBrowseAlbumResponse
+ */
+export interface ImmichBrowseAlbumResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichBrowseAlbumResponse
+     */
+    'albumId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichBrowseAlbumResponse
+     */
+    'albumName': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichBrowseAlbumResponse
+     */
+    'assetCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichBrowseAlbumResponse
+     */
+    'albumUrl': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichBrowseAlbumResponse
+     */
+    'thumbnailUrl'?: string | null;
+    /**
+     * 
+     * @type {Array<ImmichAlbumEntryLinkResponse>}
+     * @memberof ImmichBrowseAlbumResponse
+     */
+    'entries': Array<ImmichAlbumEntryLinkResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface ImmichLibraryListResponse
+ */
+export interface ImmichLibraryListResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichLibraryListResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<ImmichLibraryResponse>}
+     * @memberof ImmichLibraryListResponse
+     */
+    'libraries': Array<ImmichLibraryResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface ImmichLibraryResponse
+ */
+export interface ImmichLibraryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichLibraryResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichLibraryResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ImmichLibraryResponse
+     */
+    'importPaths': Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ImmichLibraryResponse
+     */
+    'exclusionPatterns': Array<string>;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichLibraryResponse
+     */
+    'assetCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichLibraryResponse
+     */
+    'refreshedAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichLibraryResponse
+     */
+    'photos': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichLibraryResponse
+     */
+    'videos': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichLibraryResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ImmichLibraryResponse
+     */
+    'usage': number;
 }
 /**
  * 
@@ -4568,6 +5085,12 @@ export interface ImmichAlbumSyncResponse {
  * @interface ImmichStatusResponse
  */
 export interface ImmichStatusResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ImmichStatusResponse
+     */
+    'configured': boolean;
     /**
      * 
      * @type {boolean}
@@ -4586,6 +5109,12 @@ export interface ImmichStatusResponse {
      * @memberof ImmichStatusResponse
      */
     'baseUrl'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichStatusResponse
+     */
+    'libraryPath'?: string;
 }
 /**
  * 
@@ -8656,6 +9185,33 @@ export interface PowerServerResponseDto {
 /**
  * 
  * @export
+ * @interface PreviewImmichAlbumDto
+ */
+export interface PreviewImmichAlbumDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof PreviewImmichAlbumDto
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {ImmichAlbumSource}
+     * @memberof PreviewImmichAlbumDto
+     */
+    'source'?: ImmichAlbumSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof PreviewImmichAlbumDto
+     */
+    'astroObjectId'?: string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface ProcessListResponseDto
  */
 export interface ProcessListResponseDto {
@@ -9467,19 +10023,6 @@ export interface RedeemResultResponse {
 /**
  * 
  * @export
- * @interface RefreshImmichAlbumDto
- */
-export interface RefreshImmichAlbumDto {
-    /**
-     * 
-     * @type {string}
-     * @memberof RefreshImmichAlbumDto
-     */
-    'photoEntryId': string;
-}
-/**
- * 
- * @export
  * @interface RegisterDeviceDto
  */
 export interface RegisterDeviceDto {
@@ -10195,6 +10738,37 @@ export interface SaveDocumentResponse {
 /**
  * 
  * @export
+ * @interface SaveImmichConfigDto
+ */
+export interface SaveImmichConfigDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof SaveImmichConfigDto
+     */
+    'baseUrl': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SaveImmichConfigDto
+     */
+    'apiKey': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SaveImmichConfigDto
+     */
+    'libraryPath'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SaveImmichConfigDto
+     */
+    'name'?: string;
+}
+/**
+ * 
+ * @export
  * @interface SaveServiceTokenDto
  */
 export interface SaveServiceTokenDto {
@@ -10249,6 +10823,12 @@ export interface SaveServiceTokenResponseDto {
      * @memberof SaveServiceTokenResponseDto
      */
     'type': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SaveServiceTokenResponseDto
+     */
+    'baseUrl'?: string | null;
     /**
      * 
      * @type {string}
@@ -11922,6 +12502,20 @@ export type TestNotificationType = typeof TestNotificationType[keyof typeof Test
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const ThumbnailSize = {
+    Thumbnail: 'thumbnail',
+    Preview: 'preview'
+} as const;
+
+export type ThumbnailSize = typeof ThumbnailSize[keyof typeof ThumbnailSize];
+
+
+/**
+ * 
+ * @export
  * @interface TokenListResponseDto
  */
 export interface TokenListResponseDto {
@@ -11974,6 +12568,12 @@ export interface TokenMetadataResponseDto {
      * @memberof TokenMetadataResponseDto
      */
     'type': ApiKeyType;
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenMetadataResponseDto
+     */
+    'baseUrl'?: string | null;
     /**
      * 
      * @type {string}
@@ -30639,6 +31239,82 @@ export const ImmichApiAxiosParamCreator = function (configuration?: Configuratio
     return {
         /**
          * 
+         * @param {string} albumId 
+         * @param {AttachEntryDto} attachEntryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerAttachEntry: async (albumId: string, attachEntryDto: AttachEntryDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'albumId' is not null or undefined
+            assertParamExists('immichControllerAttachEntry', 'albumId', albumId)
+            // verify required parameter 'attachEntryDto' is not null or undefined
+            assertParamExists('immichControllerAttachEntry', 'attachEntryDto', attachEntryDto)
+            const localVarPath = `/immich/album/{albumId}/attach`
+                .replace(`{${"albumId"}}`, encodeURIComponent(String(albumId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(attachEntryDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerBrowseAlbums: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/immich/albums`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {CreateImmichAlbumDto} createImmichAlbumDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -30670,6 +31346,166 @@ export const ImmichApiAxiosParamCreator = function (configuration?: Configuratio
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(createImmichAlbumDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CreateEmptyAlbumDto} createEmptyAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerCreateEmptyAlbum: async (createEmptyAlbumDto: CreateEmptyAlbumDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createEmptyAlbumDto' is not null or undefined
+            assertParamExists('immichControllerCreateEmptyAlbum', 'createEmptyAlbumDto', createEmptyAlbumDto)
+            const localVarPath = `/immich/album/empty`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createEmptyAlbumDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} albumId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerDeleteAlbum: async (albumId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'albumId' is not null or undefined
+            assertParamExists('immichControllerDeleteAlbum', 'albumId', albumId)
+            const localVarPath = `/immich/album/{albumId}`
+                .replace(`{${"albumId"}}`, encodeURIComponent(String(albumId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {boolean} [removeAssets] Also remove this entry’s assets from the Immich album (default true)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerDetachEntry: async (id: string, removeAssets?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('immichControllerDetachEntry', 'id', id)
+            const localVarPath = `/immich/album/link/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (removeAssets !== undefined) {
+                localVarQueryParameter['removeAssets'] = removeAssets;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {ThumbnailSize} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerGetAssetThumbnail: async (id: string, size?: ThumbnailSize, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('immichControllerGetAssetThumbnail', 'id', id)
+            const localVarPath = `/immich/asset/{id}/thumbnail`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -30711,14 +31547,85 @@ export const ImmichApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
-         * @param {RefreshImmichAlbumDto} refreshImmichAlbumDto 
+         * @param {string} [photoEntryId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        immichControllerRefreshAlbum: async (refreshImmichAlbumDto: RefreshImmichAlbumDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'refreshImmichAlbumDto' is not null or undefined
-            assertParamExists('immichControllerRefreshAlbum', 'refreshImmichAlbumDto', refreshImmichAlbumDto)
-            const localVarPath = `/immich/album/refresh`;
+        immichControllerListAlbums: async (photoEntryId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/immich/album`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (photoEntryId !== undefined) {
+                localVarQueryParameter['photoEntryId'] = photoEntryId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerListLibraries: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/immich/libraries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {PreviewImmichAlbumDto} previewImmichAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerPreviewAlbum: async (previewImmichAlbumDto: PreviewImmichAlbumDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'previewImmichAlbumDto' is not null or undefined
+            assertParamExists('immichControllerPreviewAlbum', 'previewImmichAlbumDto', previewImmichAlbumDto)
+            const localVarPath = `/immich/album/preview`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -30741,7 +31648,153 @@ export const ImmichApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(refreshImmichAlbumDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(previewImmichAlbumDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerRefreshAlbum: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('immichControllerRefreshAlbum', 'id', id)
+            const localVarPath = `/immich/album/link/{id}/refresh`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerRemoveConfig: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/immich/config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {SaveImmichConfigDto} saveImmichConfigDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerSaveConfig: async (saveImmichConfigDto: SaveImmichConfigDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'saveImmichConfigDto' is not null or undefined
+            assertParamExists('immichControllerSaveConfig', 'saveImmichConfigDto', saveImmichConfigDto)
+            const localVarPath = `/immich/config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(saveImmichConfigDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerScanLibrary: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('immichControllerScanLibrary', 'id', id)
+            const localVarPath = `/immich/library/{id}/scan`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -30760,6 +31813,30 @@ export const ImmichApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {string} albumId 
+         * @param {AttachEntryDto} attachEntryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerAttachEntry(albumId: string, attachEntryDto: AttachEntryDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumSyncResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerAttachEntry(albumId, attachEntryDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerAttachEntry']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerBrowseAlbums(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumBrowseResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerBrowseAlbums(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerBrowseAlbums']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {CreateImmichAlbumDto} createImmichAlbumDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -30768,6 +31845,56 @@ export const ImmichApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerCreateAlbum(createImmichAlbumDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerCreateAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CreateEmptyAlbumDto} createEmptyAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerCreateEmptyAlbum(createEmptyAlbumDto: CreateEmptyAlbumDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichBrowseAlbumResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerCreateEmptyAlbum(createEmptyAlbumDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerCreateEmptyAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} albumId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerDeleteAlbum(albumId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumRemovedResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerDeleteAlbum(albumId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerDeleteAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {boolean} [removeAssets] Also remove this entry’s assets from the Immich album (default true)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerDetachEntry(id: string, removeAssets?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumDeletedResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerDetachEntry(id, removeAssets, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerDetachEntry']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {ThumbnailSize} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerGetAssetThumbnail(id: string, size?: ThumbnailSize, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerGetAssetThumbnail(id, size, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerGetAssetThumbnail']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -30783,14 +31910,84 @@ export const ImmichApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {RefreshImmichAlbumDto} refreshImmichAlbumDto 
+         * @param {string} [photoEntryId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async immichControllerRefreshAlbum(refreshImmichAlbumDto: RefreshImmichAlbumDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumSyncResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerRefreshAlbum(refreshImmichAlbumDto, options);
+        async immichControllerListAlbums(photoEntryId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerListAlbums(photoEntryId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerListAlbums']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerListLibraries(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichLibraryListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerListLibraries(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerListLibraries']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {PreviewImmichAlbumDto} previewImmichAlbumDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerPreviewAlbum(previewImmichAlbumDto: PreviewImmichAlbumDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumPreviewResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerPreviewAlbum(previewImmichAlbumDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerPreviewAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerRefreshAlbum(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichAlbumSyncResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerRefreshAlbum(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerRefreshAlbum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerRemoveConfig(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerRemoveConfig(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerRemoveConfig']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {SaveImmichConfigDto} saveImmichConfigDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerSaveConfig(saveImmichConfigDto: SaveImmichConfigDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImmichStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerSaveConfig(saveImmichConfigDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerSaveConfig']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async immichControllerScanLibrary(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.immichControllerScanLibrary(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImmichApi.immichControllerScanLibrary']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -30805,12 +32002,65 @@ export const ImmichApiFactory = function (configuration?: Configuration, basePat
     return {
         /**
          * 
+         * @param {ImmichApiImmichControllerAttachEntryRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerAttachEntry(requestParameters: ImmichApiImmichControllerAttachEntryRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumSyncResponse> {
+            return localVarFp.immichControllerAttachEntry(requestParameters.albumId, requestParameters.attachEntryDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerBrowseAlbums(options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumBrowseResponse> {
+            return localVarFp.immichControllerBrowseAlbums(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {ImmichApiImmichControllerCreateAlbumRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         immichControllerCreateAlbum(requestParameters: ImmichApiImmichControllerCreateAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumSyncResponse> {
             return localVarFp.immichControllerCreateAlbum(requestParameters.createImmichAlbumDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ImmichApiImmichControllerCreateEmptyAlbumRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerCreateEmptyAlbum(requestParameters: ImmichApiImmichControllerCreateEmptyAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichBrowseAlbumResponse> {
+            return localVarFp.immichControllerCreateEmptyAlbum(requestParameters.createEmptyAlbumDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ImmichApiImmichControllerDeleteAlbumRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerDeleteAlbum(requestParameters: ImmichApiImmichControllerDeleteAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumRemovedResponse> {
+            return localVarFp.immichControllerDeleteAlbum(requestParameters.albumId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ImmichApiImmichControllerDetachEntryRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerDetachEntry(requestParameters: ImmichApiImmichControllerDetachEntryRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumDeletedResponse> {
+            return localVarFp.immichControllerDetachEntry(requestParameters.id, requestParameters.removeAssets, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ImmichApiImmichControllerGetAssetThumbnailRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerGetAssetThumbnail(requestParameters: ImmichApiImmichControllerGetAssetThumbnailRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.immichControllerGetAssetThumbnail(requestParameters.id, requestParameters.size, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -30822,15 +32072,88 @@ export const ImmichApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @param {ImmichApiImmichControllerListAlbumsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerListAlbums(requestParameters: ImmichApiImmichControllerListAlbumsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumListResponse> {
+            return localVarFp.immichControllerListAlbums(requestParameters.photoEntryId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerListLibraries(options?: RawAxiosRequestConfig): AxiosPromise<ImmichLibraryListResponse> {
+            return localVarFp.immichControllerListLibraries(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ImmichApiImmichControllerPreviewAlbumRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerPreviewAlbum(requestParameters: ImmichApiImmichControllerPreviewAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumPreviewResponse> {
+            return localVarFp.immichControllerPreviewAlbum(requestParameters.previewImmichAlbumDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {ImmichApiImmichControllerRefreshAlbumRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         immichControllerRefreshAlbum(requestParameters: ImmichApiImmichControllerRefreshAlbumRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichAlbumSyncResponse> {
-            return localVarFp.immichControllerRefreshAlbum(requestParameters.refreshImmichAlbumDto, options).then((request) => request(axios, basePath));
+            return localVarFp.immichControllerRefreshAlbum(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerRemoveConfig(options?: RawAxiosRequestConfig): AxiosPromise<ImmichStatusResponse> {
+            return localVarFp.immichControllerRemoveConfig(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ImmichApiImmichControllerSaveConfigRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerSaveConfig(requestParameters: ImmichApiImmichControllerSaveConfigRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImmichStatusResponse> {
+            return localVarFp.immichControllerSaveConfig(requestParameters.saveImmichConfigDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ImmichApiImmichControllerScanLibraryRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        immichControllerScanLibrary(requestParameters: ImmichApiImmichControllerScanLibraryRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.immichControllerScanLibrary(requestParameters.id, options).then((request) => request(axios, basePath));
         },
     };
 };
+
+/**
+ * Request parameters for immichControllerAttachEntry operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerAttachEntryRequest
+ */
+export interface ImmichApiImmichControllerAttachEntryRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichApiImmichControllerAttachEntry
+     */
+    readonly albumId: string
+
+    /**
+     * 
+     * @type {AttachEntryDto}
+     * @memberof ImmichApiImmichControllerAttachEntry
+     */
+    readonly attachEntryDto: AttachEntryDto
+}
 
 /**
  * Request parameters for immichControllerCreateAlbum operation in ImmichApi.
@@ -30847,6 +32170,104 @@ export interface ImmichApiImmichControllerCreateAlbumRequest {
 }
 
 /**
+ * Request parameters for immichControllerCreateEmptyAlbum operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerCreateEmptyAlbumRequest
+ */
+export interface ImmichApiImmichControllerCreateEmptyAlbumRequest {
+    /**
+     * 
+     * @type {CreateEmptyAlbumDto}
+     * @memberof ImmichApiImmichControllerCreateEmptyAlbum
+     */
+    readonly createEmptyAlbumDto: CreateEmptyAlbumDto
+}
+
+/**
+ * Request parameters for immichControllerDeleteAlbum operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerDeleteAlbumRequest
+ */
+export interface ImmichApiImmichControllerDeleteAlbumRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichApiImmichControllerDeleteAlbum
+     */
+    readonly albumId: string
+}
+
+/**
+ * Request parameters for immichControllerDetachEntry operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerDetachEntryRequest
+ */
+export interface ImmichApiImmichControllerDetachEntryRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichApiImmichControllerDetachEntry
+     */
+    readonly id: string
+
+    /**
+     * Also remove this entry’s assets from the Immich album (default true)
+     * @type {boolean}
+     * @memberof ImmichApiImmichControllerDetachEntry
+     */
+    readonly removeAssets?: boolean
+}
+
+/**
+ * Request parameters for immichControllerGetAssetThumbnail operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerGetAssetThumbnailRequest
+ */
+export interface ImmichApiImmichControllerGetAssetThumbnailRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichApiImmichControllerGetAssetThumbnail
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {ThumbnailSize}
+     * @memberof ImmichApiImmichControllerGetAssetThumbnail
+     */
+    readonly size?: ThumbnailSize
+}
+
+/**
+ * Request parameters for immichControllerListAlbums operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerListAlbumsRequest
+ */
+export interface ImmichApiImmichControllerListAlbumsRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichApiImmichControllerListAlbums
+     */
+    readonly photoEntryId?: string
+}
+
+/**
+ * Request parameters for immichControllerPreviewAlbum operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerPreviewAlbumRequest
+ */
+export interface ImmichApiImmichControllerPreviewAlbumRequest {
+    /**
+     * 
+     * @type {PreviewImmichAlbumDto}
+     * @memberof ImmichApiImmichControllerPreviewAlbum
+     */
+    readonly previewImmichAlbumDto: PreviewImmichAlbumDto
+}
+
+/**
  * Request parameters for immichControllerRefreshAlbum operation in ImmichApi.
  * @export
  * @interface ImmichApiImmichControllerRefreshAlbumRequest
@@ -30854,10 +32275,38 @@ export interface ImmichApiImmichControllerCreateAlbumRequest {
 export interface ImmichApiImmichControllerRefreshAlbumRequest {
     /**
      * 
-     * @type {RefreshImmichAlbumDto}
+     * @type {string}
      * @memberof ImmichApiImmichControllerRefreshAlbum
      */
-    readonly refreshImmichAlbumDto: RefreshImmichAlbumDto
+    readonly id: string
+}
+
+/**
+ * Request parameters for immichControllerSaveConfig operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerSaveConfigRequest
+ */
+export interface ImmichApiImmichControllerSaveConfigRequest {
+    /**
+     * 
+     * @type {SaveImmichConfigDto}
+     * @memberof ImmichApiImmichControllerSaveConfig
+     */
+    readonly saveImmichConfigDto: SaveImmichConfigDto
+}
+
+/**
+ * Request parameters for immichControllerScanLibrary operation in ImmichApi.
+ * @export
+ * @interface ImmichApiImmichControllerScanLibraryRequest
+ */
+export interface ImmichApiImmichControllerScanLibraryRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImmichApiImmichControllerScanLibrary
+     */
+    readonly id: string
 }
 
 /**
@@ -30869,6 +32318,27 @@ export interface ImmichApiImmichControllerRefreshAlbumRequest {
 export class ImmichApi extends BaseAPI {
     /**
      * 
+     * @param {ImmichApiImmichControllerAttachEntryRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerAttachEntry(requestParameters: ImmichApiImmichControllerAttachEntryRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerAttachEntry(requestParameters.albumId, requestParameters.attachEntryDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerBrowseAlbums(options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerBrowseAlbums(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {ImmichApiImmichControllerCreateAlbumRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -30876,6 +32346,50 @@ export class ImmichApi extends BaseAPI {
      */
     public immichControllerCreateAlbum(requestParameters: ImmichApiImmichControllerCreateAlbumRequest, options?: RawAxiosRequestConfig) {
         return ImmichApiFp(this.configuration).immichControllerCreateAlbum(requestParameters.createImmichAlbumDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ImmichApiImmichControllerCreateEmptyAlbumRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerCreateEmptyAlbum(requestParameters: ImmichApiImmichControllerCreateEmptyAlbumRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerCreateEmptyAlbum(requestParameters.createEmptyAlbumDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ImmichApiImmichControllerDeleteAlbumRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerDeleteAlbum(requestParameters: ImmichApiImmichControllerDeleteAlbumRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerDeleteAlbum(requestParameters.albumId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ImmichApiImmichControllerDetachEntryRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerDetachEntry(requestParameters: ImmichApiImmichControllerDetachEntryRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerDetachEntry(requestParameters.id, requestParameters.removeAssets, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ImmichApiImmichControllerGetAssetThumbnailRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerGetAssetThumbnail(requestParameters: ImmichApiImmichControllerGetAssetThumbnailRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerGetAssetThumbnail(requestParameters.id, requestParameters.size, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -30890,13 +32404,77 @@ export class ImmichApi extends BaseAPI {
 
     /**
      * 
+     * @param {ImmichApiImmichControllerListAlbumsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerListAlbums(requestParameters: ImmichApiImmichControllerListAlbumsRequest = {}, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerListAlbums(requestParameters.photoEntryId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerListLibraries(options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerListLibraries(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ImmichApiImmichControllerPreviewAlbumRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerPreviewAlbum(requestParameters: ImmichApiImmichControllerPreviewAlbumRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerPreviewAlbum(requestParameters.previewImmichAlbumDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {ImmichApiImmichControllerRefreshAlbumRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ImmichApi
      */
     public immichControllerRefreshAlbum(requestParameters: ImmichApiImmichControllerRefreshAlbumRequest, options?: RawAxiosRequestConfig) {
-        return ImmichApiFp(this.configuration).immichControllerRefreshAlbum(requestParameters.refreshImmichAlbumDto, options).then((request) => request(this.axios, this.basePath));
+        return ImmichApiFp(this.configuration).immichControllerRefreshAlbum(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerRemoveConfig(options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerRemoveConfig(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ImmichApiImmichControllerSaveConfigRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerSaveConfig(requestParameters: ImmichApiImmichControllerSaveConfigRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerSaveConfig(requestParameters.saveImmichConfigDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ImmichApiImmichControllerScanLibraryRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImmichApi
+     */
+    public immichControllerScanLibrary(requestParameters: ImmichApiImmichControllerScanLibraryRequest, options?: RawAxiosRequestConfig) {
+        return ImmichApiFp(this.configuration).immichControllerScanLibrary(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

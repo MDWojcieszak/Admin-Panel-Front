@@ -4,16 +4,17 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Loader } from '~/components/Loader';
 import { SideBar } from '~/components/SideBar';
 import { AnimatedRoute } from '~/navigation/AnimatedRoute';
+import { PhotoManagementNavigation } from '~/navigation/PhotoManagementNavigation';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { ServerNavigation } from '~/navigation/ServerNavigation';
-import { MainNavigationRoute, MainRouteType } from '~/navigation/types';
+import { BlogNavigationRoute, MainNavigationRoute, MainRouteType, PhotoNavigationRoute } from '~/navigation/types';
 import { Accounts } from '~/routes/Accounts';
 import { AccessControl } from '~/routes/AccessControl';
 import { Account } from '~/routes/Account';
 import { About } from '~/routes/About';
 import { Dashboard } from '~/routes/Dashboard';
 import { Gallery } from '~/routes/Images';
-import { PhotoManagement } from '~/routes/PhotoManagement';
+import { Integrations } from '~/routes/Integrations';
 import { Settings } from '~/routes/Settings';
 import { SystemStatus } from '~/routes/SystemStatus';
 
@@ -34,8 +35,13 @@ export const mainNavigationRoutes: MainRouteType[] = [
   {
     path: MainNavigationRoute.PHOTO_MANAGEMENT,
     label: 'Photo Library',
-    component: <PhotoManagement />,
+    component: <PhotoManagementNavigation />,
+    nested: true,
     permission: 'photoEntry.read',
+    subItems: [
+      { path: PhotoNavigationRoute.LIBRARY, label: 'Library' },
+      { path: PhotoNavigationRoute.ALBUMS, label: 'Immich Albums' },
+    ],
   },
   { path: MainNavigationRoute.GALLERY, label: 'Personal Gallery', component: <Gallery /> },
   {
@@ -48,6 +54,14 @@ export const mainNavigationRoutes: MainRouteType[] = [
     ),
     nested: true,
     permission: 'blog.read',
+    subItems: [
+      { path: BlogNavigationRoute.POSTS, label: 'Posts', permission: 'blog.read' },
+      { path: BlogNavigationRoute.CATEGORIES, label: 'Categories', permission: 'blog.category.manage' },
+      { path: BlogNavigationRoute.PLACES, label: 'Places', permission: 'blog.place.manage' },
+      { path: BlogNavigationRoute.COUNTRIES, label: 'Countries', permission: 'blog.place.manage' },
+      { path: BlogNavigationRoute.COLLECTIONS, label: 'Collections', permission: 'blog.place.manage' },
+      { path: BlogNavigationRoute.HOME, label: 'Home page', permission: 'blog.home.manage' },
+    ],
   },
   { path: MainNavigationRoute.ACCOUNTS, label: 'Users', component: <Accounts />, permission: 'user.read' },
   {
@@ -66,7 +80,13 @@ const footerRoutes: MainRouteType[] = [
     component: <SystemStatus />,
     permission: 'system.read',
   },
-  { path: MainNavigationRoute.SETTINGS, label: 'User Settings', component: <Settings />, bare: true },
+  {
+    path: MainNavigationRoute.INTEGRATIONS,
+    label: 'Integrations',
+    component: <Integrations />,
+    permission: 'token.read',
+  },
+  { path: MainNavigationRoute.SETTINGS, label: 'User Settings', component: <Settings /> },
   { path: MainNavigationRoute.ACCOUNT, label: 'Account', component: <Account />, bare: true },
   { path: MainNavigationRoute.ABOUT, label: 'About', component: <About />, bare: true },
 ];

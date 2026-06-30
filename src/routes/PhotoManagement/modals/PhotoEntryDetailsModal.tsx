@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,6 +7,7 @@ import { FiAlertTriangle, FiCheck, FiCheckCircle, FiFolder, FiMoon } from 'react
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
 import { Scrollbar } from '~/components/Scrollbar';
+import { ImmichAlbumsSection } from '~/routes/PhotoManagement/components/ImmichAlbumsSection';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { mkUseStyles } from '~/utils/theme';
@@ -36,6 +37,8 @@ type PhotoEntryDetailsModalProps = Partial<InternalModalProps> & {
   astroObjects?: AstroObjectListItem[];
   onSaved?: () => void | Promise<void>;
   onFoldersCreated?: () => void | Promise<void>;
+  /** Jump to the Immich Albums tab for this entry (navigation lives in the routed parent). */
+  onAddToAlbum?: (entryId: string) => void;
 };
 
 const photoEntryDetailsSchema = z.object({
@@ -175,8 +178,8 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
       });
 
       await p.onSaved?.();
-    } catch (error: any) {
-      console.log(error?.message);
+    } catch (error) {
+      console.log((error as Error)?.message);
     } finally {
       setLoading(false);
     }
@@ -194,8 +197,8 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
       });
 
       await p.onFoldersCreated?.();
-    } catch (error: any) {
-      console.log(error?.message);
+    } catch (error) {
+      console.log((error as Error)?.message);
     } finally {
       setFoldersLoading(false);
     }
@@ -212,8 +215,8 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
       });
 
       await p.onFoldersCreated?.();
-    } catch (error: any) {
-      console.log(error?.message);
+    } catch (error) {
+      console.log((error as Error)?.message);
     } finally {
       setFoldersLoading(false);
     }
@@ -232,8 +235,8 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
     try {
       await photoEntryApi.photoEntryControllerDelete({ id: p.entry.id });
       await p.handleClose?.();
-    } catch (error: any) {
-      console.log(error?.message);
+    } catch (error) {
+      console.log((error as Error)?.message);
     } finally {
       setDeleteLoading(false);
       setConfirmDelete(false);
@@ -434,6 +437,10 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
           ) : null}
         </div>
 
+        {isLocked ? (
+          <ImmichAlbumsSection photoEntryId={p.entry.id} onAddToAlbum={() => p.onAddToAlbum?.(p.entry.id)} />
+        ) : null}
+
         <div style={styles.actionsRow}>
           {!isLocked ? (
             <div style={styles.leftActions}>
@@ -476,7 +483,7 @@ const ReadOnlyField = ({
 }: {
   label: string;
   value?: string | null;
-  style?: Record<string, any>;
+  style?: CSSProperties;
 }) => {
   const styles = useStyles();
 

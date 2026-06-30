@@ -9,7 +9,6 @@ import {
   UserSettingsResponseDto,
 } from '~/api/api';
 import { Button } from '~/components/Button';
-import { CenteredCard } from '~/components/CenteredCard';
 import { Loader } from '~/components/Loader';
 import { useApi } from '~/hooks/useApi';
 import { useAuth } from '~/hooks/useAuth';
@@ -185,8 +184,9 @@ export const Settings = () => {
   ];
 
   return (
-    <CenteredCard maxWidth={640}>
-      <h2 style={styles.heading}>User Settings</h2>
+    <div style={styles.scroll}>
+      <div style={styles.content}>
+        <h2 style={styles.heading}>User Settings</h2>
 
       <div style={styles.block}>
         <span style={styles.blockTitle}>Notifications</span>
@@ -276,12 +276,26 @@ export const Settings = () => {
             {sessions.length === 0 ? <span style={styles.muted}>No active sessions.</span> : null}
           </div>
         )}
+        </div>
       </div>
-    </CenteredCard>
+    </div>
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
+  scroll: {
+    height: '100%',
+    minHeight: 0,
+    overflowY: 'auto',
+  },
+  content: {
+    width: '100%',
+    maxWidth: 680,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    gap: t.spacing.l,
+    paddingBottom: t.spacing.m,
+  },
   heading: {
     fontSize: 22,
     fontWeight: 700,

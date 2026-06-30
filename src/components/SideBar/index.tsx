@@ -1,18 +1,18 @@
-import { useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MdMonitorHeart, MdSettings } from 'react-icons/md';
+import { MdHub, MdMonitorHeart, MdSettings } from 'react-icons/md';
 import { GlassCard } from '~/components/GlassCard';
-import { Item, SideBarItem } from '~/components/SideBar/Item';
+import { Item } from '~/components/SideBar/Item';
 import { useAuth } from '~/hooks/useAuth';
 import { useCan, usePermissions } from '~/hooks/usePermissions';
 import { hasAccess } from '~/acl/permissions';
-import { MainNavigationRoute } from '~/navigation/types';
+import { MainNavigationRoute, MainRouteType } from '~/navigation/types';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 const WIDTH = 250;
 
 type SideBarProps = {
-  items: Omit<SideBarItem, 'isActive'>[];
+  items: MainRouteType[];
 };
 
 export const SideBar = ({ items }: SideBarProps) => {
@@ -26,19 +26,15 @@ export const SideBar = ({ items }: SideBarProps) => {
   const email = auth.userData?.email;
 
   const current = location.pathname.split('/')[1];
-
-  const renderItem = useCallback(
-    (item: Omit<SideBarItem, 'isActive'>) => {
-      return <Item {...item} key={item.path} isActive={current === item.path} />;
-    },
-    [current],
-  );
+  const currentSub = location.pathname.split('/')[2] ?? '';
 
   const visibleItems = items.filter((item) => hasAccess(can, item.permission));
   const settingsActive = current === MainNavigationRoute.SETTINGS;
   const accountActive = current === MainNavigationRoute.ACCOUNT;
   const systemStatusActive = current === MainNavigationRoute.SYSTEM_STATUS;
+  const integrationsActive = current === MainNavigationRoute.INTEGRATIONS;
   const canSystemStatus = can('system.read');
+  const canIntegrations = can('token.read');
 
   return (
     <GlassCard style={styles.container}>
@@ -50,7 +46,48 @@ export const SideBar = ({ items }: SideBarProps) => {
           style={styles.logo}
           onClick={() => navigate('/' + MainNavigationRoute.ABOUT)}
         />
-        <div style={styles.itemContainer}>{visibleItems.map(renderItem)}</div>
+        <div style={styles.itemContainer}>
+          {visibleItems.map((item) => {
+            const active = current === item.path;
+            const subs = (item.subItems ?? []).filter((s) => hasAccess(can, s.permission));
+            return (
+              <div key={item.path} style={styles.itemGroup}>
+                <Item label={item.label} path={item.path} permission={item.permission} isActive={active} />
+                <AnimatePresence initial={false}>
+                  {active && subs.length > 1 ? (
+                    <motion.div
+                      key='subitems'
+                      style={styles.subItemsWrap}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                      <div style={styles.subItems}>
+                        {subs.map((sub, i) => {
+                          const subActive = currentSub === sub.path;
+                          return (
+                            <motion.div
+                              key={sub.path || 'index'}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.06 + i * 0.06, duration: 0.2, ease: 'easeOut' }}
+                              whileHover={{ x: 3 }}
+                              style={{ ...styles.subItem, color: subActive ? theme.colors.blue : theme.colors.dark05 }}
+                              onClick={() => navigate('/' + item.path + (sub.path ? '/' + sub.path : ''))}
+                            >
+                              {sub.label}
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div style={styles.footer}>
@@ -61,6 +98,16 @@ export const SideBar = ({ items }: SideBarProps) => {
           >
             <MdMonitorHeart size={20} />
             <span>System Status</span>
+          </div>
+        ) : null}
+
+        {canIntegrations ? (
+          <div
+            style={{ ...styles.settingsRow, color: integrationsActive ? theme.colors.blue : theme.colors.dark05 }}
+            onClick={() => navigate('/' + MainNavigationRoute.INTEGRATIONS)}
+          >
+            <MdHub size={20} />
+            <span>Integrations</span>
           </div>
         ) : null}
 
@@ -113,6 +160,24 @@ const useStyles = mkUseStyles((t) => ({
     marginBottom: t.spacing.s,
   },
   itemContainer: {},
+  itemGroup: {},
+  subItemsWrap: {
+    overflow: 'hidden',
+  },
+  subItems: {
+    paddingLeft: t.spacing.l,
+    paddingTop: t.spacing.xxs,
+    paddingBottom: t.spacing.s,
+    gap: t.spacing.xs,
+  },
+  subItem: {
+    cursor: 'pointer',
+    userSelect: 'none',
+    fontSize: 13,
+    fontWeight: 600,
+    paddingTop: t.spacing.xs,
+    paddingBottom: t.spacing.xs,
+  },
   footer: {
     gap: t.spacing.s,
     padding: t.spacing.m,

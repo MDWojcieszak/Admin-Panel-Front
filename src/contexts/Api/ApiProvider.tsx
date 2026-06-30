@@ -20,11 +20,13 @@ import {
   DefaultApi,
   FileApi,
   ImageApi,
+  ImmichApi,
   NotificationsApi,
   PhotoEntryApi,
   ServerApi,
   SessionApi,
   SystemApi,
+  TokenApi,
   UserApi,
 } from '~/api/api';
 import { Configuration } from 'src/api/configuration';
@@ -54,6 +56,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const notificationsApi = useMemo(() => config && new NotificationsApi(config), [config]);
   const systemApi = useMemo(() => config && new SystemApi(config), [config]);
   const photoEntryApi = useMemo(() => config && new PhotoEntryApi(config), [config]);
+  const immichApi = useMemo(() => config && new ImmichApi(config), [config]);
+  const tokenApi = useMemo(() => config && new TokenApi(config), [config]);
   const astroObjectApi = useMemo(() => config && new AstroObjectApi(config), [config]);
   const aclApi = useMemo(() => config && new ACLApi(config), [config]);
   const defaultApi = useMemo(() => config && new DefaultApi(config), [config]);
@@ -84,6 +88,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         notificationsApi,
         systemApi,
         photoEntryApi,
+        immichApi,
+        tokenApi,
         astroObjectApi,
         aclApi,
         defaultApi,

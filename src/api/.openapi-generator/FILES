@@ -24,6 +24,7 @@ docs/AstroObjectApi.md
 docs/AstroObjectDetailsResponse.md
 docs/AstroObjectListResponse.md
 docs/AstroObjectResponse.md
+docs/AttachEntryDto.md
 docs/AuthApi.md
 docs/AuthControllerCheckRegister200Response.md
 docs/AuthorDto.md
@@ -108,6 +109,7 @@ docs/CreateCodeDto.md
 docs/CreateCollectionDto.md
 docs/CreateCommandProgressMarkerDto.md
 docs/CreateCommentDto.md
+docs/CreateEmptyAlbumDto.md
 docs/CreateGrantDto.md
 docs/CreateImmichAlbumDto.md
 docs/CreatePermissionGroupDto.md
@@ -173,8 +175,20 @@ docs/ImageApi.md
 docs/ImageDataDto.md
 docs/ImageDataResponseDto.md
 docs/ImageListResponseDto.md
+docs/ImmichAlbumBrowseResponse.md
+docs/ImmichAlbumDeletedResponse.md
+docs/ImmichAlbumEntryLinkResponse.md
+docs/ImmichAlbumItemResponse.md
+docs/ImmichAlbumListResponse.md
+docs/ImmichAlbumPreviewResponse.md
+docs/ImmichAlbumRemovedResponse.md
+docs/ImmichAlbumSource.md
 docs/ImmichAlbumSyncResponse.md
 docs/ImmichApi.md
+docs/ImmichAssetPreviewResponse.md
+docs/ImmichBrowseAlbumResponse.md
+docs/ImmichLibraryListResponse.md
+docs/ImmichLibraryResponse.md
 docs/ImmichStatusResponse.md
 docs/InsightsResponse.md
 docs/InteractionStateResponse.md
@@ -285,6 +299,7 @@ docs/PostListResponse.md
 docs/PostOrderInputDto.md
 docs/PostResponse.md
 docs/PowerServerResponseDto.md
+docs/PreviewImmichAlbumDto.md
 docs/ProcessListResponseDto.md
 docs/ProcessLog.md
 docs/ProcessLogLevel.md
@@ -307,7 +322,6 @@ docs/RecentFeedbackResponse.md
 docs/RedeemCodeDto.md
 docs/RedeemCodeResponse.md
 docs/RedeemResultResponse.md
-docs/RefreshImmichAlbumDto.md
 docs/RegisterDeviceDto.md
 docs/RegisterDto.md
 docs/ReorderCollectionItemsDto.md
@@ -326,6 +340,7 @@ docs/Role.md
 docs/RollbackDto.md
 docs/SaveDocumentDto.md
 docs/SaveDocumentResponse.md
+docs/SaveImmichConfigDto.md
 docs/SaveServiceTokenDto.md
 docs/SaveServiceTokenResponseDto.md
 docs/ScheduleDto.md
@@ -386,6 +401,7 @@ docs/TaskCommentUpdateDto.md
 docs/TaskCommentUserResponseDto.md
 docs/TestNotificationResultDto.md
 docs/TestNotificationType.md
+docs/ThumbnailSize.md
 docs/TokenApi.md
 docs/TokenListResponseDto.md
 docs/TokenMetadataResponseDto.md

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AstroObjectListResponse,
   PhotoEntryDetailsResponse,
@@ -21,6 +22,7 @@ import { colors } from '~/utils/theme/colors';
 
 export const PhotoManagement = () => {
   const styles = useStyles();
+  const navigate = useNavigate();
   const { photoEntryApi, astroObjectApi } = useApi();
 
   const [filters, setFilters] = useState<{
@@ -106,6 +108,10 @@ export const PhotoManagement = () => {
       onFoldersCreated: async () => {
         await refreshAll();
         photoEntryDetailsModal.hide();
+      },
+      onAddToAlbum: (entryId: string) => {
+        photoEntryDetailsModal.hide();
+        navigate(`/photo-management/albums?entry=${entryId}`);
       },
     },
   );

@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **service** | **string** |  | [default to undefined]
 **name** | **string** |  | [default to undefined]
 **type** | **string** |  | [default to undefined]
+**baseUrl** | **string** |  | [optional] [default to undefined]
 **expiresAt** | **string** |  | [optional] [default to undefined]
 **createdAt** | **string** |  | [optional] [default to undefined]
 **updatedAt** | **string** |  | [optional] [default to undefined]
@@ -24,6 +25,7 @@ const instance: SaveServiceTokenResponseDto = {
     service,
     name,
     type,
+    baseUrl,
     expiresAt,
     createdAt,
     updatedAt,

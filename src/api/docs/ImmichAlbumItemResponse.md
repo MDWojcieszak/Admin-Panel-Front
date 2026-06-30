@@ -1,4 +1,4 @@
-# ImmichAlbumSyncResponse
+# ImmichAlbumItemResponse
 
 
 ## Properties
@@ -6,32 +6,34 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** |  | [default to undefined]
+**photoEntryId** | **string** |  | [default to undefined]
 **albumId** | **string** |  | [default to undefined]
 **albumName** | **string** |  | [default to undefined]
 **albumUrl** | **string** |  | [default to undefined]
 **source** | [**ImmichAlbumSource**](ImmichAlbumSource.md) |  | [default to undefined]
-**created** | **boolean** |  | [default to undefined]
-**assetsFound** | **number** |  | [default to undefined]
-**assetsAdded** | **number** |  | [default to undefined]
-**totalAlbumAssets** | **number** |  | [default to undefined]
-**assets** | [**Array&lt;ImmichAssetPreviewResponse&gt;**](ImmichAssetPreviewResponse.md) |  | [default to undefined]
+**astroObjectId** | **string** |  | [optional] [default to undefined]
+**lastAssetCount** | **number** |  | [optional] [default to undefined]
+**lastSyncedAt** | **string** |  | [optional] [default to undefined]
+**createdAt** | **string** |  | [default to undefined]
+**updatedAt** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { ImmichAlbumSyncResponse } from './api';
+import { ImmichAlbumItemResponse } from './api';
 
-const instance: ImmichAlbumSyncResponse = {
+const instance: ImmichAlbumItemResponse = {
     id,
+    photoEntryId,
     albumId,
     albumName,
     albumUrl,
     source,
-    created,
-    assetsFound,
-    assetsAdded,
-    totalAlbumAssets,
-    assets,
+    astroObjectId,
+    lastAssetCount,
+    lastSyncedAt,
+    createdAt,
+    updatedAt,
 };
 ```
 
