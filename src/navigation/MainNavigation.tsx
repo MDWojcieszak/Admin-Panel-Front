@@ -7,12 +7,19 @@ import { AnimatedRoute } from '~/navigation/AnimatedRoute';
 import { PhotoManagementNavigation } from '~/navigation/PhotoManagementNavigation';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { ServerNavigation } from '~/navigation/ServerNavigation';
-import { BlogNavigationRoute, MainNavigationRoute, MainRouteType, PhotoNavigationRoute } from '~/navigation/types';
+import {
+  BlogNavigationRoute,
+  GalleryNavigationRoute,
+  MainNavigationRoute,
+  MainRouteType,
+  PhotoNavigationRoute,
+} from '~/navigation/types';
 import { Accounts } from '~/routes/Accounts';
 import { AccessControl } from '~/routes/AccessControl';
 import { Account } from '~/routes/Account';
 import { About } from '~/routes/About';
 import { Dashboard } from '~/routes/Dashboard';
+import { GalleriesNavigation } from '~/navigation/GalleriesNavigation';
 import { Gallery } from '~/routes/Images';
 import { Integrations } from '~/routes/Integrations';
 import { Settings } from '~/routes/Settings';
@@ -41,6 +48,20 @@ export const mainNavigationRoutes: MainRouteType[] = [
     subItems: [
       { path: PhotoNavigationRoute.LIBRARY, label: 'Library' },
       { path: PhotoNavigationRoute.ALBUMS, label: 'Immich Albums' },
+    ],
+  },
+  {
+    path: MainNavigationRoute.GALLERIES,
+    label: 'Galleries',
+    component: <GalleriesNavigation />,
+    nested: true,
+    permission: 'gallery.manage',
+    subItems: [
+      { path: GalleryNavigationRoute.GALLERIES, label: 'Galleries' },
+      { path: GalleryNavigationRoute.IMAGES, label: 'Images' },
+      { path: GalleryNavigationRoute.HERO, label: 'Hero' },
+      { path: GalleryNavigationRoute.GEAR, label: 'Gear' },
+      { path: GalleryNavigationRoute.PROCESSING, label: 'Processing' },
     ],
   },
   { path: MainNavigationRoute.GALLERY, label: 'Personal Gallery', component: <Gallery /> },

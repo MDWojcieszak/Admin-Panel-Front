@@ -5,6 +5,7 @@ export enum MainNavigationRoute {
   DASHBOARD = 'dashboard',
   ACCOUNTS = 'accounts',
   PHOTO_MANAGEMENT = 'photo-management',
+  GALLERIES = 'galleries',
   GALLERY = 'gallery',
   SETTINGS = 'settings',
   INTEGRATIONS = 'integrations',
@@ -19,6 +20,14 @@ export enum MainNavigationRoute {
 export enum PhotoNavigationRoute {
   LIBRARY = '',
   ALBUMS = 'albums',
+}
+
+export enum GalleryNavigationRoute {
+  GALLERIES = '',
+  IMAGES = 'images',
+  HERO = 'hero',
+  GEAR = 'gear',
+  PROCESSING = 'processing',
 }
 
 export enum BlogNavigationRoute {

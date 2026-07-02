@@ -19,6 +19,8 @@ import {
   DashboardApi,
   DefaultApi,
   FileApi,
+  GalleriesApi,
+  GearApi,
   ImageApi,
   ImmichApi,
   NotificationsApi,
@@ -42,6 +44,8 @@ type ApiContextType = {
   photoEntryApi: PhotoEntryApi | false;
   immichApi: ImmichApi | false;
   tokenApi: TokenApi | false;
+  galleriesApi: GalleriesApi | false;
+  gearApi: GearApi | false;
   astroObjectApi: AstroObjectApi | false;
   aclApi: ACLApi | false;
   defaultApi: DefaultApi | false;

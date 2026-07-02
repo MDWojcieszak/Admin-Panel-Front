@@ -19,6 +19,8 @@ import {
   DashboardApi,
   DefaultApi,
   FileApi,
+  GalleriesApi,
+  GearApi,
   ImageApi,
   ImmichApi,
   NotificationsApi,
@@ -58,6 +60,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const photoEntryApi = useMemo(() => config && new PhotoEntryApi(config), [config]);
   const immichApi = useMemo(() => config && new ImmichApi(config), [config]);
   const tokenApi = useMemo(() => config && new TokenApi(config), [config]);
+  const galleriesApi = useMemo(() => config && new GalleriesApi(config), [config]);
+  const gearApi = useMemo(() => config && new GearApi(config), [config]);
   const astroObjectApi = useMemo(() => config && new AstroObjectApi(config), [config]);
   const aclApi = useMemo(() => config && new ACLApi(config), [config]);
   const defaultApi = useMemo(() => config && new DefaultApi(config), [config]);
@@ -90,6 +94,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         photoEntryApi,
         immichApi,
         tokenApi,
+        galleriesApi,
+        gearApi,
         astroObjectApi,
         aclApi,
         defaultApi,

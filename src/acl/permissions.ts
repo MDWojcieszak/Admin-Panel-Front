@@ -24,6 +24,7 @@ export const PERMISSIONS = [
   'session.read',
   'session.manage',
   'image.delete',
+  'gallery.manage',
   'photoEntry.read',
   'photoEntry.manage',
   'astroObject.read',

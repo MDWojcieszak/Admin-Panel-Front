@@ -4,6 +4,7 @@ export enum ApiTag {
   AUTH = 'auth',
   USER = 'user',
   IMAGE = 'image',
+  GALLERIES = 'galleries',
   SESSION = 'session',
   FILE = 'file',
   SERVER = 'server',

@@ -1,7 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MdArticle, MdGroup, MdImage, MdPhotoCamera, MdSettings, MdShield, MdSpaceDashboard } from 'react-icons/md';
+import {
+  MdArticle,
+  MdCollections,
+  MdGroup,
+  MdImage,
+  MdPhotoCamera,
+  MdSettings,
+  MdShield,
+  MdSpaceDashboard,
+} from 'react-icons/md';
 
 import { Permission } from '~/acl/permissions';
 import { MainNavigationRoute } from '~/navigation/types';
@@ -35,6 +44,8 @@ export const Item = (p: SideBarItem) => {
         return <FaServer {...iconProps} />;
       case MainNavigationRoute.PHOTO_MANAGEMENT:
         return <MdPhotoCamera {...iconProps} />;
+      case MainNavigationRoute.GALLERIES:
+        return <MdCollections {...iconProps} />;
       case MainNavigationRoute.GALLERY:
         return <MdImage {...iconProps} />;
       case MainNavigationRoute.BLOG:
