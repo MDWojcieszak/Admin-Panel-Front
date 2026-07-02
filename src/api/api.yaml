@@ -418,6 +418,68 @@ paths:
         - User
       security:
         - bearer: []
+  /image/processing/summary:
+    get:
+      operationId: ImageController_processingSummary
+      parameters: []
+      responses:
+        '200':
+          description: Derived-data migration status across all images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageProcessingSummaryResponse'
+      tags:
+        - Image
+      security:
+        - bearer: []
+  /image/reprocess:
+    post:
+      operationId: ImageController_reprocess
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReprocessDto'
+      responses:
+        '200':
+          description: Start (re)processing outdated images from originals
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReprocessStartedResponse'
+      tags:
+        - Image
+      security:
+        - bearer: []
+  /image/{id}/original:
+    post:
+      operationId: ImageController_replaceOriginal
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileDto'
+      responses:
+        '200':
+          description: Replace the original (e.g. higher quality) and rebuild derived
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponseDto'
+      tags:
+        - Image
+      security:
+        - bearer: []
   /image/list:
     get:
       operationId: ImageController_getList
@@ -746,6 +808,33 @@ paths:
                 $ref: '#/components/schemas/UploadResponseDto'
         '500':
           description: Error converting or saving file
+      tags:
+        - File
+      security:
+        - bearer: []
+  /file/upload/images:
+    post:
+      operationId: FileController_uploadImages
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '201':
+          description: Images uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultiUploadResponseDto'
       tags:
         - File
       security:
@@ -1304,19 +1393,6 @@ paths:
         - System
       security:
         - bearer: []
-  /gallery/all:
-    get:
-      operationId: GalleryController_getAll
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GalleryResponseDto'
-      tags:
-        - Gallery
   /gallery/cover:
     get:
       operationId: GalleryController_getCoverImage
@@ -1345,6 +1421,501 @@ paths:
           description: ''
       tags:
         - Gallery
+  /galleries:
+    post:
+      operationId: GalleriesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGalleryDto'
+      responses:
+        '200':
+          description: Create a gallery (DRAFT)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+    get:
+      operationId: GalleriesController_list
+      parameters: []
+      responses:
+        '200':
+          description: List all galleries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryListResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+  /galleries/library:
+    get:
+      operationId: GalleriesController_library
+      parameters:
+        - name: take
+          required: false
+          in: query
+          schema:
+            type: number
+        - name: skip
+          required: false
+          in: query
+          schema:
+            type: number
+        - name: unassignedOnly
+          required: false
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: 'Image picker: all gallery images (used or not) with usage count'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryLibraryResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+  /galleries/order:
+    put:
+      operationId: GalleriesController_reorder
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderGalleriesDto'
+      responses:
+        '200':
+          description: Reorder galleries in the portfolio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryListResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+  /galleries/hero:
+    get:
+      operationId: GalleriesController_getHero
+      parameters: []
+      responses:
+        '200':
+          description: Current homepage hero selection (curated order)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortfolioHeroResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+    put:
+      operationId: GalleriesController_setHero
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetHeroDto'
+      responses:
+        '200':
+          description: Replace the homepage hero selection (drag & drop)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortfolioHeroResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+  /galleries/import-existing:
+    post:
+      operationId: GalleriesController_importExisting
+      parameters: []
+      responses:
+        '200':
+          description: Collect ungrouped gallery images into a DRAFT import gallery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryDetailResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+  /galleries/{id}:
+    get:
+      operationId: GalleriesController_getById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gallery with ordered items (admin preview)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryDetailResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+    patch:
+      operationId: GalleriesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGalleryDto'
+      responses:
+        '200':
+          description: Update gallery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+    delete:
+      operationId: GalleriesController_delete
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete gallery (images are kept)
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+  /galleries/{id}/status:
+    patch:
+      operationId: GalleriesController_patchStatus
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchGalleryStatusDto'
+      responses:
+        '200':
+          description: Change gallery status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+  /galleries/{id}/items:
+    put:
+      operationId: GalleriesController_setItems
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetGalleryItemsDto'
+      responses:
+        '200':
+          description: Replace the ordered image set (drag & drop + roles)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryDetailResponse'
+      tags:
+        - Galleries
+      security:
+        - bearer: []
+  /portfolio/galleries:
+    get:
+      operationId: PortfolioController_listGalleries
+      parameters: []
+      responses:
+        '200':
+          description: Published galleries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortfolioGalleryListResponse'
+      tags:
+        - Portfolio
+  /portfolio/hero:
+    get:
+      operationId: PortfolioController_hero
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Hero-role images for the homepage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortfolioHeroResponse'
+      tags:
+        - Portfolio
+  /portfolio/gear:
+    get:
+      operationId: PortfolioController_gear
+      parameters: []
+      responses:
+        '200':
+          description: Photographer gear grouped by camera system (visible only)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GearOverviewResponse'
+      tags:
+        - Portfolio
+  /portfolio/galleries/{slug}:
+    get:
+      operationId: PortfolioController_bySlug
+      parameters:
+        - name: slug
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: orientation
+          required: false
+          in: query
+          schema:
+            $ref: '#/components/schemas/ImageOrientation'
+      responses:
+        '200':
+          description: A published gallery with its ordered, visible images
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortfolioGalleryDetailResponse'
+      tags:
+        - Portfolio
+  /gear:
+    get:
+      operationId: GearController_list
+      parameters: []
+      responses:
+        '200':
+          description: All gear (systems + items), including hidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GearOverviewResponse'
+      tags:
+        - Gear
+      security:
+        - bearer: []
+    post:
+      operationId: GearController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGearDto'
+      responses:
+        '200':
+          description: Create a gear item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GearItemResponse'
+      tags:
+        - Gear
+      security:
+        - bearer: []
+  /gear/systems:
+    post:
+      operationId: GearController_createSystem
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGearSystemDto'
+      responses:
+        '200':
+          description: Create a camera system
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GearSystemResponse'
+      tags:
+        - Gear
+      security:
+        - bearer: []
+  /gear/systems/order:
+    put:
+      operationId: GearController_reorderSystems
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderGearDto'
+      responses:
+        '200':
+          description: Reorder systems
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GearOverviewResponse'
+      tags:
+        - Gear
+      security:
+        - bearer: []
+  /gear/systems/{id}:
+    patch:
+      operationId: GearController_updateSystem
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGearSystemDto'
+      responses:
+        '200':
+          description: Update a camera system
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GearSystemResponse'
+      tags:
+        - Gear
+      security:
+        - bearer: []
+    delete:
+      operationId: GearController_removeSystem
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete a system (its items are kept)
+      tags:
+        - Gear
+      security:
+        - bearer: []
+  /gear/order:
+    put:
+      operationId: GearController_reorder
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReorderGearDto'
+      responses:
+        '200':
+          description: Reorder gear items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GearOverviewResponse'
+      tags:
+        - Gear
+      security:
+        - bearer: []
+  /gear/{id}:
+    patch:
+      operationId: GearController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGearDto'
+      responses:
+        '200':
+          description: Update a gear item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GearItemResponse'
+      tags:
+        - Gear
+      security:
+        - bearer: []
+    delete:
+      operationId: GearController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete a gear item
+      tags:
+        - Gear
+      security:
+        - bearer: []
   /token/generate:
     post:
       operationId: TokenController_generateToken
@@ -6573,6 +7144,66 @@ components:
           format: email
         role:
           $ref: '#/components/schemas/Role'
+    ImageProcessingSummaryResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        done:
+          type: integer
+        pending:
+          type: integer
+        processing:
+          type: integer
+        failed:
+          type: integer
+      required:
+        - total
+        - done
+        - pending
+        - processing
+        - failed
+    ReprocessTargetMode:
+      type: string
+      enum:
+        - missing
+        - all
+    ReprocessDto:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/ReprocessTargetMode'
+    ReprocessStartedResponse:
+      type: object
+      properties:
+        started:
+          type: boolean
+        total:
+          type: integer
+      required:
+        - started
+        - total
+    FileDto:
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+    UploadResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Uploaded image ID
+        coverUrl:
+          type: string
+          description: URL to the cover image
+        lowResUrl:
+          type: string
+          description: URL to the low-res image
+      required:
+        - id
     AuthorDto:
       type: object
       properties:
@@ -6676,27 +7307,23 @@ components:
       required:
         - sessions
         - total
-    FileDto:
+    MultiUploadResponseDto:
       type: object
       properties:
-        id:
-          type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/UploadResponseDto'
+        uploaded:
+          type: integer
+          description: Successfully uploaded count
+        failed:
+          type: integer
+          description: Failed count
       required:
-        - id
-    UploadResponseDto:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Uploaded image ID
-        coverUrl:
-          type: string
-          description: URL to the cover image
-        lowResUrl:
-          type: string
-          description: URL to the low-res image
-      required:
-        - id
+        - images
+        - uploaded
+        - failed
     CommandStatus:
       type: string
       enum:
@@ -7287,53 +7914,623 @@ components:
         - status
         - checkedAt
         - checks
-    GalleryImageDataDto:
+    CreateGalleryDto:
       type: object
       properties:
         title:
           type: string
-        dateTaken:
-          type: string
-          format: date-time
-        localization:
-          type: string
+          minLength: 1
+          maxLength: 200
+          example: Komunie
         description:
           type: string
-      required:
-        - dateTaken
-    DimensionsDto:
-      type: object
-      properties:
-        width:
+          maxLength: 2000
+        slug:
           type: string
-        height:
-          type: string
+          maxLength: 200
+          example: komunie
       required:
-        - width
-        - height
-    GalleryImageDto:
+        - title
+    GalleryStatus:
+      type: string
+      enum:
+        - DRAFT
+        - PUBLISHED
+        - HIDDEN
+        - ARCHIVED
+    GalleryResponse:
       type: object
       properties:
         id:
           type: string
-        data:
-          $ref: '#/components/schemas/GalleryImageDataDto'
-        dimensions:
-          $ref: '#/components/schemas/DimensionsDto'
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/GalleryStatus'
+        sortOrder:
+          type: integer
+        coverImageId:
+          type: string
+          nullable: true
+        coverUrl:
+          type: string
+          nullable: true
+        imageCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
       required:
         - id
-    GalleryResponseDto:
+        - title
+        - slug
+        - status
+        - sortOrder
+        - imageCount
+        - createdAt
+        - updatedAt
+    GalleryListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        galleries:
+          type: array
+          items:
+            $ref: '#/components/schemas/GalleryResponse'
+      required:
+        - total
+        - galleries
+    ImageOrientation:
+      type: string
+      enum:
+        - LANDSCAPE
+        - PORTRAIT
+        - SQUARE
+    ImageProcessingStatus:
+      type: string
+      enum:
+        - PENDING
+        - PROCESSING
+        - DONE
+        - FAILED
+    ImageExifResponse:
+      type: object
+      properties:
+        cameraMake:
+          type: string
+          nullable: true
+        cameraModel:
+          type: string
+          nullable: true
+        lens:
+          type: string
+          nullable: true
+        focalLength:
+          type: number
+          nullable: true
+        fNumber:
+          type: number
+          nullable: true
+        iso:
+          type: integer
+          nullable: true
+        exposureTime:
+          type: string
+          nullable: true
+        takenAt:
+          type: string
+          format: date-time
+          nullable: true
+    GalleryLibraryItemResponse:
+      type: object
+      properties:
+        imageId:
+          type: string
+        coverUrl:
+          type: string
+        lowResUrl:
+          type: string
+        width:
+          type: integer
+          nullable: true
+        height:
+          type: integer
+          nullable: true
+        orientation:
+          nullable: true
+          $ref: '#/components/schemas/ImageOrientation'
+        processingStatus:
+          $ref: '#/components/schemas/ImageProcessingStatus'
+        usageCount:
+          type: integer
+        localization:
+          type: string
+          nullable: true
+        exif:
+          $ref: '#/components/schemas/ImageExifResponse'
+      required:
+        - imageId
+        - coverUrl
+        - lowResUrl
+        - processingStatus
+        - usageCount
+        - exif
+    GalleryLibraryResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        take:
+          type: integer
+        skip:
+          type: integer
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/GalleryLibraryItemResponse'
+      required:
+        - total
+        - take
+        - skip
+        - images
+    ReorderGalleriesDto:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+      required:
+        - ids
+    GalleryImageRole:
+      type: string
+      enum:
+        - HERO
+        - LARGE
+        - NORMAL
+        - HIDDEN
+    PortfolioImageResponse:
+      type: object
+      properties:
+        imageId:
+          type: string
+        order:
+          type: integer
+        role:
+          $ref: '#/components/schemas/GalleryImageRole'
+        coverUrl:
+          type: string
+        lowResUrl:
+          type: string
+        width:
+          type: integer
+          nullable: true
+        height:
+          type: integer
+          nullable: true
+        orientation:
+          nullable: true
+          $ref: '#/components/schemas/ImageOrientation'
+        localization:
+          type: string
+          nullable: true
+        exif:
+          $ref: '#/components/schemas/ImageExifResponse'
+      required:
+        - imageId
+        - order
+        - role
+        - coverUrl
+        - lowResUrl
+        - exif
+    PortfolioHeroResponse:
       type: object
       properties:
         images:
           type: array
           items:
-            $ref: '#/components/schemas/GalleryImageDto'
-        count:
-          type: number
+            $ref: '#/components/schemas/PortfolioImageResponse'
       required:
         - images
-        - count
+    SetHeroDto:
+      type: object
+      properties:
+        imageIds:
+          type: array
+          items:
+            type: string
+      required:
+        - imageIds
+    GalleryImageItemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        imageId:
+          type: string
+        order:
+          type: integer
+        role:
+          $ref: '#/components/schemas/GalleryImageRole'
+        coverUrl:
+          type: string
+        lowResUrl:
+          type: string
+        width:
+          type: integer
+          nullable: true
+        height:
+          type: integer
+          nullable: true
+        orientation:
+          nullable: true
+          $ref: '#/components/schemas/ImageOrientation'
+        localization:
+          type: string
+          nullable: true
+        exif:
+          $ref: '#/components/schemas/ImageExifResponse'
+      required:
+        - id
+        - imageId
+        - order
+        - role
+        - coverUrl
+        - lowResUrl
+        - exif
+    GalleryDetailResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/GalleryStatus'
+        sortOrder:
+          type: integer
+        coverImageId:
+          type: string
+          nullable: true
+        coverUrl:
+          type: string
+          nullable: true
+        imageCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GalleryImageItemResponse'
+      required:
+        - id
+        - title
+        - slug
+        - status
+        - sortOrder
+        - imageCount
+        - createdAt
+        - updatedAt
+        - items
+    UpdateGalleryDto:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 2000
+          nullable: true
+        slug:
+          type: string
+          maxLength: 200
+        coverImageId:
+          type: string
+          nullable: true
+    PatchGalleryStatusDto:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/GalleryStatus'
+      required:
+        - status
+    GalleryItemInputDto:
+      type: object
+      properties:
+        imageId:
+          type: string
+        order:
+          type: integer
+        role:
+          $ref: '#/components/schemas/GalleryImageRole'
+      required:
+        - imageId
+        - order
+    SetGalleryItemsDto:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GalleryItemInputDto'
+      required:
+        - items
+    PortfolioGalleryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+          nullable: true
+        coverUrl:
+          type: string
+          nullable: true
+        imageCount:
+          type: integer
+      required:
+        - id
+        - title
+        - slug
+        - imageCount
+    PortfolioGalleryListResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        galleries:
+          type: array
+          items:
+            $ref: '#/components/schemas/PortfolioGalleryResponse'
+      required:
+        - total
+        - galleries
+    GearCategory:
+      type: string
+      enum:
+        - CAMERA
+        - LENS
+        - TRIPOD
+        - BAG
+        - LIGHTING
+        - ACCESSORY
+        - OTHER
+    GearItemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        category:
+          $ref: '#/components/schemas/GearCategory'
+        brand:
+          type: string
+        model:
+          type: string
+        systemId:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        coverUrl:
+          type: string
+          nullable: true
+        lowResUrl:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        visible:
+          type: boolean
+      required:
+        - id
+        - category
+        - brand
+        - model
+        - order
+        - visible
+    GearSystemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        label:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        coverUrl:
+          type: string
+          nullable: true
+        lowResUrl:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        visible:
+          type: boolean
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GearItemResponse'
+      required:
+        - id
+        - name
+        - order
+        - visible
+        - items
+    GearOverviewResponse:
+      type: object
+      properties:
+        systems:
+          type: array
+          items:
+            $ref: '#/components/schemas/GearSystemResponse'
+        ungrouped:
+          type: array
+          items:
+            $ref: '#/components/schemas/GearItemResponse'
+      required:
+        - systems
+        - ungrouped
+    PortfolioGalleryDetailResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+          nullable: true
+        coverUrl:
+          type: string
+          nullable: true
+        imageCount:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PortfolioImageResponse'
+      required:
+        - id
+        - title
+        - slug
+        - imageCount
+        - items
+    CreateGearSystemDto:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        imageId:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        visible:
+          type: boolean
+      required:
+        - name
+    ReorderGearDto:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+      required:
+        - ids
+    UpdateGearSystemDto:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        imageId:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        visible:
+          type: boolean
+    CreateGearDto:
+      type: object
+      properties:
+        category:
+          $ref: '#/components/schemas/GearCategory'
+        brand:
+          type: string
+        model:
+          type: string
+        systemId:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        imageId:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        visible:
+          type: boolean
+      required:
+        - category
+        - brand
+        - model
+    UpdateGearDto:
+      type: object
+      properties:
+        category:
+          $ref: '#/components/schemas/GearCategory'
+        brand:
+          type: string
+        model:
+          type: string
+        systemId:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        imageId:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        visible:
+          type: boolean
     ApiKeyType:
       type: string
       enum:

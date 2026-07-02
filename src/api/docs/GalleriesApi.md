@@ -1,41 +1,42 @@
-# ImageApi
+# GalleriesApi
 
 All URIs are relative to *http://localhost*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**imageControllerCreate**](#imagecontrollercreate) | **POST** /image/create | |
-|[**imageControllerDelete**](#imagecontrollerdelete) | **DELETE** /image | |
-|[**imageControllerGet**](#imagecontrollerget) | **GET** /image | |
-|[**imageControllerGetCoverImage**](#imagecontrollergetcoverimage) | **GET** /image/cover | |
-|[**imageControllerGetList**](#imagecontrollergetlist) | **GET** /image/list | |
-|[**imageControllerGetLowResImage**](#imagecontrollergetlowresimage) | **GET** /image/low-res | |
-|[**imageControllerGetOriginalImage**](#imagecontrollergetoriginalimage) | **GET** /image/original | |
-|[**imageControllerProcessingSummary**](#imagecontrollerprocessingsummary) | **GET** /image/processing/summary | |
-|[**imageControllerReplaceOriginal**](#imagecontrollerreplaceoriginal) | **POST** /image/{id}/original | |
-|[**imageControllerReprocess**](#imagecontrollerreprocess) | **POST** /image/reprocess | |
-|[**imageControllerUpdate**](#imagecontrollerupdate) | **PUT** /image | |
+|[**galleriesControllerCreate**](#galleriescontrollercreate) | **POST** /galleries | |
+|[**galleriesControllerDelete**](#galleriescontrollerdelete) | **DELETE** /galleries/{id} | |
+|[**galleriesControllerGetById**](#galleriescontrollergetbyid) | **GET** /galleries/{id} | |
+|[**galleriesControllerGetHero**](#galleriescontrollergethero) | **GET** /galleries/hero | |
+|[**galleriesControllerImportExisting**](#galleriescontrollerimportexisting) | **POST** /galleries/import-existing | |
+|[**galleriesControllerLibrary**](#galleriescontrollerlibrary) | **GET** /galleries/library | |
+|[**galleriesControllerList**](#galleriescontrollerlist) | **GET** /galleries | |
+|[**galleriesControllerPatchStatus**](#galleriescontrollerpatchstatus) | **PATCH** /galleries/{id}/status | |
+|[**galleriesControllerReorder**](#galleriescontrollerreorder) | **PUT** /galleries/order | |
+|[**galleriesControllerSetHero**](#galleriescontrollersethero) | **PUT** /galleries/hero | |
+|[**galleriesControllerSetItems**](#galleriescontrollersetitems) | **PUT** /galleries/{id}/items | |
+|[**galleriesControllerUpdate**](#galleriescontrollerupdate) | **PATCH** /galleries/{id} | |
 
-# **imageControllerCreate**
-> ImageDataResponseDto imageControllerCreate(imageDataDto)
+# **galleriesControllerCreate**
+> GalleryResponse galleriesControllerCreate(createGalleryDto)
 
 
 ### Example
 
 ```typescript
 import {
-    ImageApi,
+    GalleriesApi,
     Configuration,
-    ImageDataDto
+    CreateGalleryDto
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
+const apiInstance = new GalleriesApi(configuration);
 
-let imageDataDto: ImageDataDto; //
+let createGalleryDto: CreateGalleryDto; //
 
-const { status, data } = await apiInstance.imageControllerCreate(
-    imageDataDto
+const { status, data } = await apiInstance.galleriesControllerCreate(
+    createGalleryDto
 );
 ```
 
@@ -43,12 +44,12 @@ const { status, data } = await apiInstance.imageControllerCreate(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **imageDataDto** | **ImageDataDto**|  | |
+| **createGalleryDto** | **CreateGalleryDto**|  | |
 
 
 ### Return type
 
-**ImageDataResponseDto**
+**GalleryResponse**
 
 ### Authorization
 
@@ -63,28 +64,28 @@ const { status, data } = await apiInstance.imageControllerCreate(
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | Create image metadata |  -  |
+|**200** | Create a gallery (DRAFT) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **imageControllerDelete**
-> imageControllerDelete()
+# **galleriesControllerDelete**
+> galleriesControllerDelete()
 
 
 ### Example
 
 ```typescript
 import {
-    ImageApi,
+    GalleriesApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
+const apiInstance = new GalleriesApi(configuration);
 
 let id: string; // (default to undefined)
 
-const { status, data } = await apiInstance.imageControllerDelete(
+const { status, data } = await apiInstance.galleriesControllerDelete(
     id
 );
 ```
@@ -113,28 +114,28 @@ void (empty response body)
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | Delete image |  -  |
+|**200** | Delete gallery (images are kept) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **imageControllerGet**
-> ImageDataResponseDto imageControllerGet()
+# **galleriesControllerGetById**
+> GalleryDetailResponse galleriesControllerGetById()
 
 
 ### Example
 
 ```typescript
 import {
-    ImageApi,
+    GalleriesApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
+const apiInstance = new GalleriesApi(configuration);
 
 let id: string; // (default to undefined)
 
-const { status, data } = await apiInstance.imageControllerGet(
+const { status, data } = await apiInstance.galleriesControllerGetById(
     id
 );
 ```
@@ -148,210 +149,7 @@ const { status, data } = await apiInstance.imageControllerGet(
 
 ### Return type
 
-**ImageDataResponseDto**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | Get single image metadata |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **imageControllerGetCoverImage**
-> File imageControllerGetCoverImage()
-
-
-### Example
-
-```typescript
-import {
-    ImageApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
-
-let id: string; // (default to undefined)
-
-const { status, data } = await apiInstance.imageControllerGetCoverImage(
-    id
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **id** | [**string**] |  | defaults to undefined|
-
-
-### Return type
-
-**File**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: image/*
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | Get image cover file stream |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **imageControllerGetList**
-> ImageListResponseDto imageControllerGetList()
-
-
-### Example
-
-```typescript
-import {
-    ImageApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
-
-let take: number; // (optional) (default to undefined)
-let skip: number; // (optional) (default to 0)
-
-const { status, data } = await apiInstance.imageControllerGetList(
-    take,
-    skip
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **take** | [**number**] |  | (optional) defaults to undefined|
-| **skip** | [**number**] |  | (optional) defaults to 0|
-
-
-### Return type
-
-**ImageListResponseDto**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | List of image data with pagination |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **imageControllerGetLowResImage**
-> File imageControllerGetLowResImage()
-
-
-### Example
-
-```typescript
-import {
-    ImageApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
-
-let id: string; // (default to undefined)
-
-const { status, data } = await apiInstance.imageControllerGetLowResImage(
-    id
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **id** | [**string**] |  | defaults to undefined|
-
-
-### Return type
-
-**File**
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: image/*
-
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-|**200** | Get low resolution image stream |  -  |
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **imageControllerGetOriginalImage**
-> File imageControllerGetOriginalImage()
-
-
-### Example
-
-```typescript
-import {
-    ImageApi,
-    Configuration
-} from './api';
-
-const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
-
-let id: string; // (default to undefined)
-
-const { status, data } = await apiInstance.imageControllerGetOriginalImage(
-    id
-);
-```
-
-### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **id** | [**string**] |  | defaults to undefined|
-
-
-### Return type
-
-**File**
+**GalleryDetailResponse**
 
 ### Authorization
 
@@ -360,32 +158,32 @@ const { status, data } = await apiInstance.imageControllerGetOriginalImage(
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: image/*
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | Get original image file stream |  -  |
+|**200** | Gallery with ordered items (admin preview) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **imageControllerProcessingSummary**
-> ImageProcessingSummaryResponse imageControllerProcessingSummary()
+# **galleriesControllerGetHero**
+> PortfolioHeroResponse galleriesControllerGetHero()
 
 
 ### Example
 
 ```typescript
 import {
-    ImageApi,
+    GalleriesApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
+const apiInstance = new GalleriesApi(configuration);
 
-const { status, data } = await apiInstance.imageControllerProcessingSummary();
+const { status, data } = await apiInstance.galleriesControllerGetHero();
 ```
 
 ### Parameters
@@ -394,7 +192,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-**ImageProcessingSummaryResponse**
+**PortfolioHeroResponse**
 
 ### Authorization
 
@@ -409,45 +207,35 @@ This endpoint does not have any parameters.
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | Derived-data migration status across all images |  -  |
+|**200** | Current homepage hero selection (curated order) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **imageControllerReplaceOriginal**
-> UploadResponseDto imageControllerReplaceOriginal()
+# **galleriesControllerImportExisting**
+> GalleryDetailResponse galleriesControllerImportExisting()
 
 
 ### Example
 
 ```typescript
 import {
-    ImageApi,
+    GalleriesApi,
     Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
+const apiInstance = new GalleriesApi(configuration);
 
-let id: string; // (default to undefined)
-let id2: string; // (default to undefined)
-
-const { status, data } = await apiInstance.imageControllerReplaceOriginal(
-    id,
-    id2
-);
+const { status, data } = await apiInstance.galleriesControllerImportExisting();
 ```
 
 ### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **id** | [**string**] |  | defaults to undefined|
-| **id2** | [**string**] |  | defaults to undefined|
+This endpoint does not have any parameters.
 
 
 ### Return type
 
-**UploadResponseDto**
+**GalleryDetailResponse**
 
 ### Authorization
 
@@ -455,37 +243,40 @@ const { status, data } = await apiInstance.imageControllerReplaceOriginal(
 
 ### HTTP request headers
 
- - **Content-Type**: multipart/form-data
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | Replace the original (e.g. higher quality) and rebuild derived |  -  |
+|**200** | Collect ungrouped gallery images into a DRAFT import gallery |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **imageControllerReprocess**
-> ReprocessStartedResponse imageControllerReprocess(reprocessDto)
+# **galleriesControllerLibrary**
+> GalleryLibraryResponse galleriesControllerLibrary()
 
 
 ### Example
 
 ```typescript
 import {
-    ImageApi,
-    Configuration,
-    ReprocessDto
+    GalleriesApi,
+    Configuration
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
+const apiInstance = new GalleriesApi(configuration);
 
-let reprocessDto: ReprocessDto; //
+let take: number; // (optional) (default to undefined)
+let skip: number; // (optional) (default to undefined)
+let unassignedOnly: boolean; // (optional) (default to undefined)
 
-const { status, data } = await apiInstance.imageControllerReprocess(
-    reprocessDto
+const { status, data } = await apiInstance.galleriesControllerLibrary(
+    take,
+    skip,
+    unassignedOnly
 );
 ```
 
@@ -493,12 +284,111 @@ const { status, data } = await apiInstance.imageControllerReprocess(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **reprocessDto** | **ReprocessDto**|  | |
+| **take** | [**number**] |  | (optional) defaults to undefined|
+| **skip** | [**number**] |  | (optional) defaults to undefined|
+| **unassignedOnly** | [**boolean**] |  | (optional) defaults to undefined|
 
 
 ### Return type
 
-**ReprocessStartedResponse**
+**GalleryLibraryResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Image picker: all gallery images (used or not) with usage count |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **galleriesControllerList**
+> GalleryListResponse galleriesControllerList()
+
+
+### Example
+
+```typescript
+import {
+    GalleriesApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new GalleriesApi(configuration);
+
+const { status, data } = await apiInstance.galleriesControllerList();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**GalleryListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | List all galleries |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **galleriesControllerPatchStatus**
+> GalleryResponse galleriesControllerPatchStatus(patchGalleryStatusDto)
+
+
+### Example
+
+```typescript
+import {
+    GalleriesApi,
+    Configuration,
+    PatchGalleryStatusDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new GalleriesApi(configuration);
+
+let id: string; // (default to undefined)
+let patchGalleryStatusDto: PatchGalleryStatusDto; //
+
+const { status, data } = await apiInstance.galleriesControllerPatchStatus(
+    id,
+    patchGalleryStatusDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **patchGalleryStatusDto** | **PatchGalleryStatusDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**GalleryResponse**
 
 ### Authorization
 
@@ -513,29 +403,30 @@ const { status, data } = await apiInstance.imageControllerReprocess(
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | Start (re)processing outdated images from originals |  -  |
+|**200** | Change gallery status |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **imageControllerUpdate**
-> ImageDataResponseDto imageControllerUpdate()
+# **galleriesControllerReorder**
+> GalleryListResponse galleriesControllerReorder(reorderGalleriesDto)
 
 
 ### Example
 
 ```typescript
 import {
-    ImageApi,
-    Configuration
+    GalleriesApi,
+    Configuration,
+    ReorderGalleriesDto
 } from './api';
 
 const configuration = new Configuration();
-const apiInstance = new ImageApi(configuration);
+const apiInstance = new GalleriesApi(configuration);
 
-let id: string; // (default to undefined)
+let reorderGalleriesDto: ReorderGalleriesDto; //
 
-const { status, data } = await apiInstance.imageControllerUpdate(
-    id
+const { status, data } = await apiInstance.galleriesControllerReorder(
+    reorderGalleriesDto
 );
 ```
 
@@ -543,12 +434,12 @@ const { status, data } = await apiInstance.imageControllerUpdate(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **id** | [**string**] |  | defaults to undefined|
+| **reorderGalleriesDto** | **ReorderGalleriesDto**|  | |
 
 
 ### Return type
 
-**ImageDataResponseDto**
+**GalleryListResponse**
 
 ### Authorization
 
@@ -556,14 +447,173 @@ const { status, data } = await apiInstance.imageControllerUpdate(
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | Update image metadata |  -  |
+|**200** | Reorder galleries in the portfolio |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **galleriesControllerSetHero**
+> PortfolioHeroResponse galleriesControllerSetHero(setHeroDto)
+
+
+### Example
+
+```typescript
+import {
+    GalleriesApi,
+    Configuration,
+    SetHeroDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new GalleriesApi(configuration);
+
+let setHeroDto: SetHeroDto; //
+
+const { status, data } = await apiInstance.galleriesControllerSetHero(
+    setHeroDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **setHeroDto** | **SetHeroDto**|  | |
+
+
+### Return type
+
+**PortfolioHeroResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Replace the homepage hero selection (drag &amp; drop) |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **galleriesControllerSetItems**
+> GalleryDetailResponse galleriesControllerSetItems(setGalleryItemsDto)
+
+
+### Example
+
+```typescript
+import {
+    GalleriesApi,
+    Configuration,
+    SetGalleryItemsDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new GalleriesApi(configuration);
+
+let id: string; // (default to undefined)
+let setGalleryItemsDto: SetGalleryItemsDto; //
+
+const { status, data } = await apiInstance.galleriesControllerSetItems(
+    id,
+    setGalleryItemsDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **setGalleryItemsDto** | **SetGalleryItemsDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**GalleryDetailResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Replace the ordered image set (drag &amp; drop + roles) |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **galleriesControllerUpdate**
+> GalleryResponse galleriesControllerUpdate(updateGalleryDto)
+
+
+### Example
+
+```typescript
+import {
+    GalleriesApi,
+    Configuration,
+    UpdateGalleryDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new GalleriesApi(configuration);
+
+let id: string; // (default to undefined)
+let updateGalleryDto: UpdateGalleryDto; //
+
+const { status, data } = await apiInstance.galleriesControllerUpdate(
+    id,
+    updateGalleryDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **updateGalleryDto** | **UpdateGalleryDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**GalleryResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Update gallery |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
