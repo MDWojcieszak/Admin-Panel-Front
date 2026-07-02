@@ -1,6 +1,6 @@
 import { DragEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiImage, FiPlus } from 'react-icons/fi';
+import { FiEyeOff, FiImage, FiPlus } from 'react-icons/fi';
 import { MdCollections } from 'react-icons/md';
 import { GalleryListResponse, GalleryResponse } from '~/api/api';
 import { Button } from '~/components/Button';
@@ -160,6 +160,11 @@ const GalleryCard = ({
           </div>
         )}
         <div style={{ ...styles.statusChip, color: statusColor }}>{STATUS_LABEL[gallery.status]}</div>
+        {!gallery.showOnHome ? (
+          <div style={styles.offHomeChip} title='Hidden from the home page'>
+            <FiEyeOff size={11} /> Off home
+          </div>
+        ) : null}
       </div>
       <div style={styles.cardInfo}>
         <span style={styles.cardTitle} title={gallery.title}>
@@ -284,6 +289,20 @@ const useStyles = mkUseStyles((t) => ({
     textTransform: 'uppercase',
     letterSpacing: 0.4,
     color: t.colors.white,
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.72),
+    padding: '3px 8px',
+    borderRadius: 999,
+  },
+  offHomeChip: {
+    position: 'absolute',
+    top: t.spacing.s,
+    right: t.spacing.s,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    fontSize: 11,
+    fontWeight: 700,
+    color: t.colors.yellow,
     backgroundColor: t.colors.gray05 + t.colorOpacity(0.72),
     padding: '3px 8px',
     borderRadius: 999,
