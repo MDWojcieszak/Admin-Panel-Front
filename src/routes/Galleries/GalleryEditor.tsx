@@ -17,6 +17,7 @@ import { EmptyState } from '~/components/EmptyState';
 import { Input } from '~/components/Input';
 import { Loader } from '~/components/Loader';
 import { Select } from '~/components/Select';
+import { Switch } from '~/components/Switch';
 import { TextArea } from '~/components/TextArea';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
@@ -39,8 +40,17 @@ const detailsSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   slug: z.string().optional(),
   description: z.string().optional(),
+  homePreviewCount: z.string().optional(),
 });
 type DetailsValues = z.infer<typeof detailsSchema>;
+
+/** Positive integer or null (blank = fall back to the global preview count). */
+const parseHomePreviewCount = (value?: string): number | null => {
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+  const n = Math.floor(Number(trimmed));
+  return Number.isFinite(n) && n >= 1 ? n : 1;
+};
 
 export const GalleryEditor = () => {
   const styles = useStyles();
@@ -58,6 +68,7 @@ export const GalleryEditor = () => {
   };
 
   const [saving, setSaving] = useState(false);
+  const [showOnHome, setShowOnHome] = useState(true);
   const dragIndex = useRef<number | null>(null);
 
   const galleryQuery = useAsync<GalleryDetailResponse>(
@@ -69,7 +80,7 @@ export const GalleryEditor = () => {
     [galleriesApi, id],
   );
 
-  const detailsForm = useForm<DetailsValues>({ resolver: zodResolver(detailsSchema), defaultValues: { title: '', slug: '', description: '' } });
+  const detailsForm = useForm<DetailsValues>({ resolver: zodResolver(detailsSchema), defaultValues: { title: '', slug: '', description: '', homePreviewCount: '' } });
   // Backs the themed Select for status + per-image role (name `role_<imageId>`).
   const controlsForm = useForm<Record<string, string>>({ defaultValues: { status: 'DRAFT' } });
 
@@ -78,7 +89,13 @@ export const GalleryEditor = () => {
   useEffect(() => {
     if (!gallery) return;
     setLocalItems(gallery.items);
-    detailsForm.reset({ title: gallery.title, slug: gallery.slug, description: gallery.description ?? '' });
+    setShowOnHome(gallery.showOnHome ?? true);
+    detailsForm.reset({
+      title: gallery.title,
+      slug: gallery.slug,
+      description: gallery.description ?? '',
+      homePreviewCount: gallery.homePreviewCount != null ? String(gallery.homePreviewCount) : '',
+    });
     controlsForm.reset({
       status: gallery.status,
       ...Object.fromEntries(gallery.items.map((it) => [roleField(it.imageId), it.role])),
@@ -164,7 +181,13 @@ export const GalleryEditor = () => {
     try {
       const { data: g } = await galleriesApi.galleriesControllerUpdate({
         id,
-        updateGalleryDto: { title: data.title.trim(), slug: data.slug?.trim() || undefined, description: data.description?.trim() || undefined },
+        updateGalleryDto: {
+          title: data.title.trim(),
+          slug: data.slug?.trim() || undefined,
+          description: data.description?.trim() || undefined,
+          showOnHome,
+          homePreviewCount: parseHomePreviewCount(data.homePreviewCount),
+        },
       });
       galleryQuery.setData({ ...(gallery as GalleryDetailResponse), ...g, items: gallery?.items ?? [] });
       toast('Details saved', 'success');
@@ -269,6 +292,18 @@ export const GalleryEditor = () => {
             <Input name='slug' label='Slug' description='URL slug' type='text' control={detailsForm.control} />
           </div>
           <TextArea name='description' label='Description' description='Optional description' control={detailsForm.control} rows={4} />
+          <div style={styles.homeRow}>
+            <Switch checked={showOnHome} onChange={setShowOnHome} label='Show this gallery on the home page' />
+            <div style={styles.homeCountWrap}>
+              <Input
+                name='homePreviewCount'
+                label='Home preview count'
+                description='Override global (blank = default)'
+                type='number'
+                control={detailsForm.control}
+              />
+            </div>
+          </div>
           <div style={styles.detailsActions}>
             <Button label='Save details' variant='secondary' onClick={detailsForm.handleSubmit(saveDetails)} />
           </div>
@@ -456,6 +491,17 @@ const useStyles = mkUseStyles((t) => ({
   detailsActions: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  homeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: t.spacing.m,
+    flexWrap: 'wrap',
+  },
+  homeCountWrap: {
+    width: 240,
+    minWidth: 200,
   },
   imagesTitle: {
     gap: 2,

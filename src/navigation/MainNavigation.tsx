@@ -59,7 +59,7 @@ export const mainNavigationRoutes: MainRouteType[] = [
     subItems: [
       { path: GalleryNavigationRoute.GALLERIES, label: 'Galleries' },
       { path: GalleryNavigationRoute.IMAGES, label: 'Images' },
-      { path: GalleryNavigationRoute.HERO, label: 'Hero' },
+      { path: GalleryNavigationRoute.HERO, label: 'Home' },
       { path: GalleryNavigationRoute.GEAR, label: 'Gear' },
       { path: GalleryNavigationRoute.PROCESSING, label: 'Processing' },
     ],
