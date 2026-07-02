@@ -8,6 +8,7 @@ All URIs are relative to *http://localhost*
 |[**galleriesControllerDelete**](#galleriescontrollerdelete) | **DELETE** /galleries/{id} | |
 |[**galleriesControllerGetById**](#galleriescontrollergetbyid) | **GET** /galleries/{id} | |
 |[**galleriesControllerGetHero**](#galleriescontrollergethero) | **GET** /galleries/hero | |
+|[**galleriesControllerGetSettings**](#galleriescontrollergetsettings) | **GET** /galleries/settings | |
 |[**galleriesControllerImportExisting**](#galleriescontrollerimportexisting) | **POST** /galleries/import-existing | |
 |[**galleriesControllerLibrary**](#galleriescontrollerlibrary) | **GET** /galleries/library | |
 |[**galleriesControllerList**](#galleriescontrollerlist) | **GET** /galleries | |
@@ -16,6 +17,7 @@ All URIs are relative to *http://localhost*
 |[**galleriesControllerSetHero**](#galleriescontrollersethero) | **PUT** /galleries/hero | |
 |[**galleriesControllerSetItems**](#galleriescontrollersetitems) | **PUT** /galleries/{id}/items | |
 |[**galleriesControllerUpdate**](#galleriescontrollerupdate) | **PATCH** /galleries/{id} | |
+|[**galleriesControllerUpdateSettings**](#galleriescontrollerupdatesettings) | **PUT** /galleries/settings | |
 
 # **galleriesControllerCreate**
 > GalleryResponse galleriesControllerCreate(createGalleryDto)
@@ -208,6 +210,49 @@ This endpoint does not have any parameters.
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Current homepage hero selection (curated order) |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **galleriesControllerGetSettings**
+> PortfolioSettingsResponse galleriesControllerGetSettings()
+
+
+### Example
+
+```typescript
+import {
+    GalleriesApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new GalleriesApi(configuration);
+
+const { status, data } = await apiInstance.galleriesControllerGetSettings();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**PortfolioSettingsResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Portfolio home settings (display limits) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -614,6 +659,57 @@ const { status, data } = await apiInstance.galleriesControllerUpdate(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Update gallery |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **galleriesControllerUpdateSettings**
+> PortfolioSettingsResponse galleriesControllerUpdateSettings(updatePortfolioSettingsDto)
+
+
+### Example
+
+```typescript
+import {
+    GalleriesApi,
+    Configuration,
+    UpdatePortfolioSettingsDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new GalleriesApi(configuration);
+
+let updatePortfolioSettingsDto: UpdatePortfolioSettingsDto; //
+
+const { status, data } = await apiInstance.galleriesControllerUpdateSettings(
+    updatePortfolioSettingsDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **updatePortfolioSettingsDto** | **UpdatePortfolioSettingsDto**|  | |
+
+
+### Return type
+
+**PortfolioSettingsResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Update portfolio home settings |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

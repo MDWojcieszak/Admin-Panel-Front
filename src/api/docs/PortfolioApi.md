@@ -7,7 +7,9 @@ All URIs are relative to *http://localhost*
 |[**portfolioControllerBySlug**](#portfoliocontrollerbyslug) | **GET** /portfolio/galleries/{slug} | |
 |[**portfolioControllerGear**](#portfoliocontrollergear) | **GET** /portfolio/gear | |
 |[**portfolioControllerHero**](#portfoliocontrollerhero) | **GET** /portfolio/hero | |
+|[**portfolioControllerHome**](#portfoliocontrollerhome) | **GET** /portfolio/home | |
 |[**portfolioControllerListGalleries**](#portfoliocontrollerlistgalleries) | **GET** /portfolio/galleries | |
+|[**portfolioControllerSettings**](#portfoliocontrollersettings) | **GET** /portfolio/settings | |
 
 # **portfolioControllerBySlug**
 > PortfolioGalleryDetailResponse portfolioControllerBySlug()
@@ -26,10 +28,14 @@ const apiInstance = new PortfolioApi(configuration);
 
 let slug: string; // (default to undefined)
 let orientation: ImageOrientation; // (optional) (default to undefined)
+let take: number; // (optional) (default to undefined)
+let skip: number; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.portfolioControllerBySlug(
     slug,
-    orientation
+    orientation,
+    take,
+    skip
 );
 ```
 
@@ -39,6 +45,8 @@ const { status, data } = await apiInstance.portfolioControllerBySlug(
 |------------- | ------------- | ------------- | -------------|
 | **slug** | [**string**] |  | defaults to undefined|
 | **orientation** | **ImageOrientation** |  | (optional) defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
+| **skip** | [**number**] |  | (optional) defaults to undefined|
 
 
 ### Return type
@@ -155,6 +163,49 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **portfolioControllerHome**
+> PortfolioHomeResponse portfolioControllerHome()
+
+
+### Example
+
+```typescript
+import {
+    PortfolioApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PortfolioApi(configuration);
+
+const { status, data } = await apiInstance.portfolioControllerHome();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**PortfolioHomeResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Composed home page: hero + featured galleries with previews |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **portfolioControllerListGalleries**
 > PortfolioGalleryListResponse portfolioControllerListGalleries()
 
@@ -195,6 +246,49 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Published galleries |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **portfolioControllerSettings**
+> PortfolioSettingsResponse portfolioControllerSettings()
+
+
+### Example
+
+```typescript
+import {
+    PortfolioApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PortfolioApi(configuration);
+
+const { status, data } = await apiInstance.portfolioControllerSettings();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**PortfolioSettingsResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Public portfolio home settings (display limits) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

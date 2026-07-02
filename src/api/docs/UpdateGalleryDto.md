@@ -9,6 +9,8 @@ Name | Type | Description | Notes
 **description** | **string** |  | [optional] [default to undefined]
 **slug** | **string** |  | [optional] [default to undefined]
 **coverImageId** | **string** |  | [optional] [default to undefined]
+**showOnHome** | **boolean** |  | [optional] [default to undefined]
+**homePreviewCount** | **number** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -20,6 +22,8 @@ const instance: UpdateGalleryDto = {
     description,
     slug,
     coverImageId,
+    showOnHome,
+    homePreviewCount,
 };
 ```
 

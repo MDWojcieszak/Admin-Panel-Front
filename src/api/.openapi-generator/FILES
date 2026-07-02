@@ -316,7 +316,10 @@ docs/PortfolioGalleryDetailResponse.md
 docs/PortfolioGalleryListResponse.md
 docs/PortfolioGalleryResponse.md
 docs/PortfolioHeroResponse.md
+docs/PortfolioHomeResponse.md
+docs/PortfolioHomeSectionResponse.md
 docs/PortfolioImageResponse.md
+docs/PortfolioSettingsResponse.md
 docs/PostAuthorInputDto.md
 docs/PostAuthorResponse.md
 docs/PostCategoriesResponse.md
@@ -446,6 +449,7 @@ docs/UpdateGalleryDto.md
 docs/UpdateGearDto.md
 docs/UpdateGearSystemDto.md
 docs/UpdatePermissionGroupDto.md
+docs/UpdatePortfolioSettingsDto.md
 docs/UploadResponseDto.md
 docs/UpsertCategoryTranslationDto.md
 docs/UpsertCollectionTranslationDto.md

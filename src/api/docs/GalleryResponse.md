@@ -14,6 +14,8 @@ Name | Type | Description | Notes
 **coverImageId** | **string** |  | [optional] [default to undefined]
 **coverUrl** | **string** |  | [optional] [default to undefined]
 **imageCount** | **number** |  | [default to undefined]
+**showOnHome** | **boolean** |  | [default to undefined]
+**homePreviewCount** | **number** |  | [optional] [default to undefined]
 **createdAt** | **string** |  | [default to undefined]
 **updatedAt** | **string** |  | [default to undefined]
 **publishedAt** | **string** |  | [optional] [default to undefined]
@@ -33,6 +35,8 @@ const instance: GalleryResponse = {
     coverImageId,
     coverUrl,
     imageCount,
+    showOnHome,
+    homePreviewCount,
     createdAt,
     updatedAt,
     publishedAt,

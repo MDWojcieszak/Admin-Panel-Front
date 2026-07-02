@@ -8,6 +8,8 @@ Name | Type | Description | Notes
 **title** | **string** |  | [default to undefined]
 **description** | **string** |  | [optional] [default to undefined]
 **slug** | **string** |  | [optional] [default to undefined]
+**showOnHome** | **boolean** |  | [optional] [default to undefined]
+**homePreviewCount** | **number** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -18,6 +20,8 @@ const instance: CreateGalleryDto = {
     title,
     description,
     slug,
+    showOnHome,
+    homePreviewCount,
 };
 ```
 

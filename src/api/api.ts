@@ -2372,6 +2372,18 @@ export interface CreateGalleryDto {
      * @memberof CreateGalleryDto
      */
     'slug'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CreateGalleryDto
+     */
+    'showOnHome'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateGalleryDto
+     */
+    'homePreviewCount'?: number | null;
 }
 /**
  * 
@@ -4223,6 +4235,18 @@ export interface GalleryDetailResponse {
     'imageCount': number;
     /**
      * 
+     * @type {boolean}
+     * @memberof GalleryDetailResponse
+     */
+    'showOnHome': boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryDetailResponse
+     */
+    'homePreviewCount'?: number | null;
+    /**
+     * 
      * @type {string}
      * @memberof GalleryDetailResponse
      */
@@ -4617,6 +4641,18 @@ export interface GalleryResponse {
      * @memberof GalleryResponse
      */
     'imageCount': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GalleryResponse
+     */
+    'showOnHome': boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryResponse
+     */
+    'homePreviewCount'?: number | null;
     /**
      * 
      * @type {string}
@@ -9654,6 +9690,74 @@ export interface PortfolioHeroResponse {
 /**
  * 
  * @export
+ * @interface PortfolioHomeResponse
+ */
+export interface PortfolioHomeResponse {
+    /**
+     * 
+     * @type {Array<PortfolioImageResponse>}
+     * @memberof PortfolioHomeResponse
+     */
+    'hero': Array<PortfolioImageResponse>;
+    /**
+     * 
+     * @type {Array<PortfolioHomeSectionResponse>}
+     * @memberof PortfolioHomeResponse
+     */
+    'sections': Array<PortfolioHomeSectionResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface PortfolioHomeSectionResponse
+ */
+export interface PortfolioHomeSectionResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioHomeSectionResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioHomeSectionResponse
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioHomeSectionResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioHomeSectionResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioHomeSectionResponse
+     */
+    'coverUrl'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PortfolioHomeSectionResponse
+     */
+    'imageCount': number;
+    /**
+     * 
+     * @type {Array<PortfolioImageResponse>}
+     * @memberof PortfolioHomeSectionResponse
+     */
+    'previewItems': Array<PortfolioImageResponse>;
+}
+/**
+ * 
+ * @export
  * @interface PortfolioImageResponse
  */
 export interface PortfolioImageResponse {
@@ -9720,6 +9824,37 @@ export interface PortfolioImageResponse {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface PortfolioSettingsResponse
+ */
+export interface PortfolioSettingsResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof PortfolioSettingsResponse
+     */
+    'heroLimit': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PortfolioSettingsResponse
+     */
+    'galleryPreviewCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PortfolioSettingsResponse
+     */
+    'homeGalleryLimit'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PortfolioSettingsResponse
+     */
+    'galleryPageSize': number;
+}
 /**
  * 
  * @export
@@ -13828,6 +13963,18 @@ export interface UpdateGalleryDto {
      * @memberof UpdateGalleryDto
      */
     'coverImageId'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpdateGalleryDto
+     */
+    'showOnHome'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateGalleryDto
+     */
+    'homePreviewCount'?: number | null;
 }
 /**
  * 
@@ -13953,6 +14100,37 @@ export interface UpdatePermissionGroupDto {
      * @memberof UpdatePermissionGroupDto
      */
     'permissions'?: Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface UpdatePortfolioSettingsDto
+ */
+export interface UpdatePortfolioSettingsDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdatePortfolioSettingsDto
+     */
+    'heroLimit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdatePortfolioSettingsDto
+     */
+    'galleryPreviewCount'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdatePortfolioSettingsDto
+     */
+    'homeGalleryLimit'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdatePortfolioSettingsDto
+     */
+    'galleryPageSize'?: number;
 }
 /**
  * 
@@ -31703,6 +31881,39 @@ export const GalleriesApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        galleriesControllerGetSettings: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/galleries/settings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         galleriesControllerImportExisting: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/galleries/import-existing`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -32019,6 +32230,45 @@ export const GalleriesApiAxiosParamCreator = function (configuration?: Configura
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {UpdatePortfolioSettingsDto} updatePortfolioSettingsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        galleriesControllerUpdateSettings: async (updatePortfolioSettingsDto: UpdatePortfolioSettingsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updatePortfolioSettingsDto' is not null or undefined
+            assertParamExists('galleriesControllerUpdateSettings', 'updatePortfolioSettingsDto', updatePortfolioSettingsDto)
+            const localVarPath = `/galleries/settings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updatePortfolioSettingsDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -32074,6 +32324,17 @@ export const GalleriesApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.galleriesControllerGetHero(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GalleriesApi.galleriesControllerGetHero']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async galleriesControllerGetSettings(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PortfolioSettingsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.galleriesControllerGetSettings(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GalleriesApi.galleriesControllerGetSettings']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -32175,6 +32436,18 @@ export const GalleriesApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['GalleriesApi.galleriesControllerUpdate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {UpdatePortfolioSettingsDto} updatePortfolioSettingsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async galleriesControllerUpdateSettings(updatePortfolioSettingsDto: UpdatePortfolioSettingsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PortfolioSettingsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.galleriesControllerUpdateSettings(updatePortfolioSettingsDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GalleriesApi.galleriesControllerUpdateSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -32219,6 +32492,14 @@ export const GalleriesApiFactory = function (configuration?: Configuration, base
          */
         galleriesControllerGetHero(options?: RawAxiosRequestConfig): AxiosPromise<PortfolioHeroResponse> {
             return localVarFp.galleriesControllerGetHero(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        galleriesControllerGetSettings(options?: RawAxiosRequestConfig): AxiosPromise<PortfolioSettingsResponse> {
+            return localVarFp.galleriesControllerGetSettings(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -32289,6 +32570,15 @@ export const GalleriesApiFactory = function (configuration?: Configuration, base
          */
         galleriesControllerUpdate(requestParameters: GalleriesApiGalleriesControllerUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<GalleryResponse> {
             return localVarFp.galleriesControllerUpdate(requestParameters.id, requestParameters.updateGalleryDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {GalleriesApiGalleriesControllerUpdateSettingsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        galleriesControllerUpdateSettings(requestParameters: GalleriesApiGalleriesControllerUpdateSettingsRequest, options?: RawAxiosRequestConfig): AxiosPromise<PortfolioSettingsResponse> {
+            return localVarFp.galleriesControllerUpdateSettings(requestParameters.updatePortfolioSettingsDto, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -32455,6 +32745,20 @@ export interface GalleriesApiGalleriesControllerUpdateRequest {
 }
 
 /**
+ * Request parameters for galleriesControllerUpdateSettings operation in GalleriesApi.
+ * @export
+ * @interface GalleriesApiGalleriesControllerUpdateSettingsRequest
+ */
+export interface GalleriesApiGalleriesControllerUpdateSettingsRequest {
+    /**
+     * 
+     * @type {UpdatePortfolioSettingsDto}
+     * @memberof GalleriesApiGalleriesControllerUpdateSettings
+     */
+    readonly updatePortfolioSettingsDto: UpdatePortfolioSettingsDto
+}
+
+/**
  * GalleriesApi - object-oriented interface
  * @export
  * @class GalleriesApi
@@ -32502,6 +32806,16 @@ export class GalleriesApi extends BaseAPI {
      */
     public galleriesControllerGetHero(options?: RawAxiosRequestConfig) {
         return GalleriesApiFp(this.configuration).galleriesControllerGetHero(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GalleriesApi
+     */
+    public galleriesControllerGetSettings(options?: RawAxiosRequestConfig) {
+        return GalleriesApiFp(this.configuration).galleriesControllerGetSettings(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -32588,6 +32902,17 @@ export class GalleriesApi extends BaseAPI {
      */
     public galleriesControllerUpdate(requestParameters: GalleriesApiGalleriesControllerUpdateRequest, options?: RawAxiosRequestConfig) {
         return GalleriesApiFp(this.configuration).galleriesControllerUpdate(requestParameters.id, requestParameters.updateGalleryDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {GalleriesApiGalleriesControllerUpdateSettingsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GalleriesApi
+     */
+    public galleriesControllerUpdateSettings(requestParameters: GalleriesApiGalleriesControllerUpdateSettingsRequest, options?: RawAxiosRequestConfig) {
+        return GalleriesApiFp(this.configuration).galleriesControllerUpdateSettings(requestParameters.updatePortfolioSettingsDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -38433,10 +38758,12 @@ export const PortfolioApiAxiosParamCreator = function (configuration?: Configura
          * 
          * @param {string} slug 
          * @param {ImageOrientation} [orientation] 
+         * @param {number} [take] 
+         * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        portfolioControllerBySlug: async (slug: string, orientation?: ImageOrientation, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        portfolioControllerBySlug: async (slug: string, orientation?: ImageOrientation, take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'slug' is not null or undefined
             assertParamExists('portfolioControllerBySlug', 'slug', slug)
             const localVarPath = `/portfolio/galleries/{slug}`
@@ -38454,6 +38781,14 @@ export const PortfolioApiAxiosParamCreator = function (configuration?: Configura
 
             if (orientation !== undefined) {
                 localVarQueryParameter['orientation'] = orientation;
+            }
+
+            if (take !== undefined) {
+                localVarQueryParameter['take'] = take;
+            }
+
+            if (skip !== undefined) {
+                localVarQueryParameter['skip'] = skip;
             }
 
 
@@ -38535,8 +38870,66 @@ export const PortfolioApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        portfolioControllerHome: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/portfolio/home`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         portfolioControllerListGalleries: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/portfolio/galleries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        portfolioControllerSettings: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/portfolio/settings`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -38573,11 +38966,13 @@ export const PortfolioApiFp = function(configuration?: Configuration) {
          * 
          * @param {string} slug 
          * @param {ImageOrientation} [orientation] 
+         * @param {number} [take] 
+         * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async portfolioControllerBySlug(slug: string, orientation?: ImageOrientation, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PortfolioGalleryDetailResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.portfolioControllerBySlug(slug, orientation, options);
+        async portfolioControllerBySlug(slug: string, orientation?: ImageOrientation, take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PortfolioGalleryDetailResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.portfolioControllerBySlug(slug, orientation, take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PortfolioApi.portfolioControllerBySlug']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -38610,10 +39005,32 @@ export const PortfolioApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async portfolioControllerHome(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PortfolioHomeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.portfolioControllerHome(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PortfolioApi.portfolioControllerHome']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async portfolioControllerListGalleries(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PortfolioGalleryListResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.portfolioControllerListGalleries(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PortfolioApi.portfolioControllerListGalleries']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async portfolioControllerSettings(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PortfolioSettingsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.portfolioControllerSettings(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PortfolioApi.portfolioControllerSettings']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -38633,7 +39050,7 @@ export const PortfolioApiFactory = function (configuration?: Configuration, base
          * @throws {RequiredError}
          */
         portfolioControllerBySlug(requestParameters: PortfolioApiPortfolioControllerBySlugRequest, options?: RawAxiosRequestConfig): AxiosPromise<PortfolioGalleryDetailResponse> {
-            return localVarFp.portfolioControllerBySlug(requestParameters.slug, requestParameters.orientation, options).then((request) => request(axios, basePath));
+            return localVarFp.portfolioControllerBySlug(requestParameters.slug, requestParameters.orientation, requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -38657,8 +39074,24 @@ export const PortfolioApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        portfolioControllerHome(options?: RawAxiosRequestConfig): AxiosPromise<PortfolioHomeResponse> {
+            return localVarFp.portfolioControllerHome(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         portfolioControllerListGalleries(options?: RawAxiosRequestConfig): AxiosPromise<PortfolioGalleryListResponse> {
             return localVarFp.portfolioControllerListGalleries(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        portfolioControllerSettings(options?: RawAxiosRequestConfig): AxiosPromise<PortfolioSettingsResponse> {
+            return localVarFp.portfolioControllerSettings(options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -38682,6 +39115,20 @@ export interface PortfolioApiPortfolioControllerBySlugRequest {
      * @memberof PortfolioApiPortfolioControllerBySlug
      */
     readonly orientation?: ImageOrientation
+
+    /**
+     * 
+     * @type {number}
+     * @memberof PortfolioApiPortfolioControllerBySlug
+     */
+    readonly take?: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof PortfolioApiPortfolioControllerBySlug
+     */
+    readonly skip?: number
 }
 
 /**
@@ -38713,7 +39160,7 @@ export class PortfolioApi extends BaseAPI {
      * @memberof PortfolioApi
      */
     public portfolioControllerBySlug(requestParameters: PortfolioApiPortfolioControllerBySlugRequest, options?: RawAxiosRequestConfig) {
-        return PortfolioApiFp(this.configuration).portfolioControllerBySlug(requestParameters.slug, requestParameters.orientation, options).then((request) => request(this.axios, this.basePath));
+        return PortfolioApiFp(this.configuration).portfolioControllerBySlug(requestParameters.slug, requestParameters.orientation, requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -38743,8 +39190,28 @@ export class PortfolioApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PortfolioApi
      */
+    public portfolioControllerHome(options?: RawAxiosRequestConfig) {
+        return PortfolioApiFp(this.configuration).portfolioControllerHome(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PortfolioApi
+     */
     public portfolioControllerListGalleries(options?: RawAxiosRequestConfig) {
         return PortfolioApiFp(this.configuration).portfolioControllerListGalleries(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PortfolioApi
+     */
+    public portfolioControllerSettings(options?: RawAxiosRequestConfig) {
+        return PortfolioApiFp(this.configuration).portfolioControllerSettings(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
