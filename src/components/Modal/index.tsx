@@ -34,10 +34,12 @@ export const Modal = (p: ModalProps) => {
             exit={{ opacity: 0 }}
           >
             <GlassCard style={styles.glassCard}>
-              <div style={styles.titleContainer}>
-                <div>{p.title}</div>
-                <HiX size={24} onClick={p.handleClose} style={styles.icon} />
-              </div>
+              {p.showHeader === false ? null : (
+                <div style={styles.titleContainer}>
+                  <div>{p.title}</div>
+                  <HiX size={24} onClick={p.handleClose} style={styles.icon} />
+                </div>
+              )}
               <motion.div
                 className='flex flex-col gap-6'
                 animate={{ height: height }}

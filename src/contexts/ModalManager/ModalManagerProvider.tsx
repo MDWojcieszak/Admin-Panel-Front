@@ -105,6 +105,7 @@ export const ModalManagerProvider = ({ children }: PropsWithChildren) => {
           key={el.id}
           resolveHide={() => resolveHide(el.id)}
           resolveShow={() => resolveShow(el.id)}
+          showHeader={el.config.showHeader}
           title={el.config.title}
         >
           <el.component
