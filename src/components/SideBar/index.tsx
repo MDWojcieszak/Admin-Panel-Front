@@ -34,7 +34,6 @@ export const SideBar = ({ items }: SideBarProps) => {
   const systemStatusActive = current === MainNavigationRoute.SYSTEM_STATUS;
   const integrationsActive = current === MainNavigationRoute.INTEGRATIONS;
   const canSystemStatus = can('system.read');
-  const canIntegrations = can('token.read');
 
   return (
     <GlassCard style={styles.container}>
@@ -101,15 +100,14 @@ export const SideBar = ({ items }: SideBarProps) => {
           </div>
         ) : null}
 
-        {canIntegrations ? (
-          <div
-            style={{ ...styles.settingsRow, color: integrationsActive ? theme.colors.blue : theme.colors.dark05 }}
-            onClick={() => navigate('/' + MainNavigationRoute.INTEGRATIONS)}
-          >
-            <MdHub size={20} />
-            <span>Integrations</span>
-          </div>
-        ) : null}
+        {/* Always shown — connecting an app to your own account is self-service. */}
+        <div
+          style={{ ...styles.settingsRow, color: integrationsActive ? theme.colors.blue : theme.colors.dark05 }}
+          onClick={() => navigate('/' + MainNavigationRoute.INTEGRATIONS)}
+        >
+          <MdHub size={20} />
+          <span>Integrations</span>
+        </div>
 
         <div
           style={{ ...styles.settingsRow, color: settingsActive ? theme.colors.blue : theme.colors.dark05 }}

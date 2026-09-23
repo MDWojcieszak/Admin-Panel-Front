@@ -17,6 +17,7 @@ import { useAsync } from '~/hooks/useAsync';
 import { useCan } from '~/hooks/usePermissions';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
+import { ConnectedApps } from '~/routes/Integrations/components/ConnectedApps';
 import { ImmichCard } from '~/routes/Integrations/components/ImmichCard';
 import { ImmichLibraries } from '~/routes/Integrations/components/ImmichLibraries';
 import { GenerateTokenModal } from '~/routes/Integrations/modals/GenerateTokenModal';
@@ -39,18 +40,21 @@ export const Integrations = () => {
   const toast = useToast();
   const can = useCan();
   const canManage = can('token.manage');
+  // The page itself is self-service (everyone manages their own connected
+  // apps); only the service-wide sections below need `token.read`.
+  const canReadServices = can('token.read');
 
   const tokensQuery = useAsync<TokenListResponseDto>(async () => {
-    if (!tokenApi) return undefined;
+    if (!tokenApi || !canReadServices) return undefined;
     const { data } = await tokenApi.tokenControllerListTokens({ take: 20, skip: 0 });
     return data;
-  }, [tokenApi]);
+  }, [tokenApi, canReadServices]);
 
   const immichStatusQuery = useAsync<ImmichStatusResponse>(async () => {
-    if (!immichApi) return undefined;
+    if (!immichApi || !canReadServices) return undefined;
     const { data } = await immichApi.immichControllerGetStatus();
     return data;
-  }, [immichApi]);
+  }, [immichApi, canReadServices]);
 
   const confirmModal = useModal('integrations-confirm', ConfirmModal, { title: 'Confirm' });
 
@@ -160,6 +164,10 @@ export const Integrations = () => {
       <div style={styles.content}>
         <h2 style={styles.heading}>Integrations</h2>
 
+      <ConnectedApps />
+
+      {!canReadServices ? null : (
+        <>
       <ImmichCard
         status={immichStatusQuery.data}
         loading={immichStatusQuery.loading}
@@ -212,6 +220,8 @@ export const Integrations = () => {
           <div style={styles.tokenList}>{personalTokens.map((token) => renderTokenRow(token))}</div>
         )}
         </div>
+        </>
+      )}
       </div>
     </div>
   );

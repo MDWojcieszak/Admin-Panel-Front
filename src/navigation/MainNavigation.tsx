@@ -101,12 +101,9 @@ const footerRoutes: MainRouteType[] = [
     component: <SystemStatus />,
     permission: 'system.read',
   },
-  {
-    path: MainNavigationRoute.INTEGRATIONS,
-    label: 'Integrations',
-    component: <Integrations />,
-    permission: 'token.read',
-  },
+  // Ungated: everyone manages their own connected apps here. The service-wide
+  // sections inside the page still check `token.read` for themselves.
+  { path: MainNavigationRoute.INTEGRATIONS, label: 'Integrations', component: <Integrations /> },
   { path: MainNavigationRoute.SETTINGS, label: 'User Settings', component: <Settings /> },
   { path: MainNavigationRoute.ACCOUNT, label: 'Account', component: <Account />, bare: true },
   { path: MainNavigationRoute.ABOUT, label: 'About', component: <About />, bare: true },
