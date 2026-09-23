@@ -41,9 +41,11 @@ export const PERMISSIONS = [
   'blog.publish',
   'blog.version.prune',
   'blog.category.manage',
+  'blog.media.manage',
   'blog.place.manage',
   'blog.home.manage',
   'blog.analytics',
+  'blog.grant.manage',
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
