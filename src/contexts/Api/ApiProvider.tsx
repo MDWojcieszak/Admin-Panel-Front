@@ -23,6 +23,7 @@ import {
   GearApi,
   ImageApi,
   ImmichApi,
+  IntegrationsApi,
   NotificationsApi,
   PhotoEntryApi,
   ServerApi,
@@ -59,6 +60,7 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const systemApi = useMemo(() => config && new SystemApi(config), [config]);
   const photoEntryApi = useMemo(() => config && new PhotoEntryApi(config), [config]);
   const immichApi = useMemo(() => config && new ImmichApi(config), [config]);
+  const integrationsApi = useMemo(() => config && new IntegrationsApi(config), [config]);
   const tokenApi = useMemo(() => config && new TokenApi(config), [config]);
   const galleriesApi = useMemo(() => config && new GalleriesApi(config), [config]);
   const gearApi = useMemo(() => config && new GearApi(config), [config]);
@@ -93,6 +95,7 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         systemApi,
         photoEntryApi,
         immichApi,
+        integrationsApi,
         tokenApi,
         galleriesApi,
         gearApi,

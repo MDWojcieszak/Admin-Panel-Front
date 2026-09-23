@@ -5,6 +5,7 @@ import { Loader } from '~/components/Loader';
 import { MainNavigation } from '~/navigation/MainNavigation';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { CommonNavigationRoute, CommonRouteType } from '~/navigation/types';
+import { Activate } from '~/routes/Activate';
 import { ResetPassword } from '~/routes/Auth/ResetPassword';
 import { SignIn } from '~/routes/Auth/SignIn';
 import { UserRegister } from '~/routes/Auth/UserRegister';
@@ -22,6 +23,10 @@ const commonRoutes: CommonRouteType[] = [
   { path: CommonNavigationRoute.RESET_PASSWORD, label: 'Reset Password', component: <ResetPassword /> },
 
   { path: CommonNavigationRoute.USER_REGISTRATION, label: 'User Registration', component: <UserRegister /> },
+
+  // Device-flow landing page. Public so an unauthenticated user reaches it and
+  // gets bounced through login with the code intact, rather than losing it.
+  { path: CommonNavigationRoute.ACTIVATE, label: 'Activate', component: <Activate /> },
 
   { path: CommonNavigationRoute.MAIN_NAVIGATION, label: 'Dashboard', component: <MainNavigation /> },
   { path: CommonNavigationRoute.NOT_FOUND, label: 'Not Found', component: <NotFound /> },

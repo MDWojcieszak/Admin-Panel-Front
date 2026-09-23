@@ -46,6 +46,7 @@ export enum CommonNavigationRoute {
   SIGN_IN = 'sign-in',
   RESET_PASSWORD = 'reset-password',
   USER_REGISTRATION = 'register',
+  ACTIVATE = 'activate',
   MAIN_NAVIGATION = '*',
   NOT_FOUND = 'not-found',
 }

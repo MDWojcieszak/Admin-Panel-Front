@@ -23,6 +23,7 @@ import {
   GearApi,
   ImageApi,
   ImmichApi,
+  IntegrationsApi,
   NotificationsApi,
   PhotoEntryApi,
   ServerApi,
@@ -43,6 +44,7 @@ type ApiContextType = {
   systemApi: SystemApi | false;
   photoEntryApi: PhotoEntryApi | false;
   immichApi: ImmichApi | false;
+  integrationsApi: IntegrationsApi | false;
   tokenApi: TokenApi | false;
   galleriesApi: GalleriesApi | false;
   gearApi: GearApi | false;
