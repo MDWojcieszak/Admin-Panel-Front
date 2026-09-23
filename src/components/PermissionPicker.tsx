@@ -1,5 +1,5 @@
 import { Scrollbar } from '~/components/Scrollbar';
-import { PermissionGroupByResource } from '~/routes/AccessControl/hooks/usePermissionCatalog';
+import { PermissionGroupByResource } from '~/hooks/usePermissionCatalog';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type PermissionPickerProps = {
@@ -7,9 +7,20 @@ type PermissionPickerProps = {
   value: string[];
   onChange: (next: string[]) => void;
   disabled?: boolean;
+  /** Column count of the resource grid — drop to 1 inside a narrow modal. */
+  columns?: number;
+  /** Height of the scroll area; defaults to the group-editor size. */
+  height?: number | string;
 };
 
-export const PermissionPicker = ({ grouped, value, onChange, disabled }: PermissionPickerProps) => {
+export const PermissionPicker = ({
+  grouped,
+  value,
+  onChange,
+  disabled,
+  columns = 2,
+  height,
+}: PermissionPickerProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const selected = new Set(value);
@@ -30,8 +41,8 @@ export const PermissionPicker = ({ grouped, value, onChange, disabled }: Permiss
   };
 
   return (
-    <Scrollbar style={styles.scroll}>
-      <div style={styles.container}>
+    <Scrollbar style={height ? { ...styles.scroll, height } : styles.scroll}>
+      <div style={{ ...styles.container, gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
         {grouped.map((group) => {
           const keys = group.permissions.map((p) => p.key);
           const allSelected = keys.every((k) => selected.has(k));

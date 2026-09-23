@@ -5,12 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PermissionGroupResponseDto } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
+import { PermissionPicker } from '~/components/PermissionPicker';
 import { TextArea } from '~/components/TextArea';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
+import { usePermissionCatalog } from '~/hooks/usePermissionCatalog';
 import { usePermissions } from '~/hooks/usePermissions';
-import { PermissionPicker } from '~/routes/AccessControl/components/PermissionPicker';
-import { usePermissionCatalog } from '~/routes/AccessControl/hooks/usePermissionCatalog';
 import { mkUseStyles } from '~/utils/theme';
 
 type GroupEditorModalProps = {
