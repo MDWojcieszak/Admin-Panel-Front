@@ -10,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { validatePassword } from '~/utils/validation/passwordValidation';
 import { AuthService } from '~/apiOld/Auth';
 import { useAuth } from '~/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CommonNavigationRoute, MainNavigationRoute } from '~/navigation/types';
 import { UserState } from '~/contexts/User/AuthContext';
 import { motion } from 'framer-motion';
@@ -28,6 +28,15 @@ enum Result {
   SIGN_IN_FAILED,
 }
 
+/**
+ * Only same-origin relative paths are honoured — accepting an absolute URL here
+ * would turn the login page into an open redirect.
+ */
+const safeReturnUrl = (value: string | null): string | undefined => {
+  if (!value || !value.startsWith('/') || value.startsWith('//')) return undefined;
+  return value;
+};
+
 export const SignIn = () => {
   const styles = useStyles();
   const [loading, setLoading] = useState(false);
@@ -35,6 +44,8 @@ export const SignIn = () => {
 
   const navigate = useNavigate();
   const auth = useAuth();
+  const [searchParams] = useSearchParams();
+  const returnUrl = safeReturnUrl(searchParams.get('returnUrl'));
   const handleSignIn = useCallback(async (data: SignInSchemaType) => {
     setLoading(true);
     try {
@@ -59,8 +70,8 @@ export const SignIn = () => {
 
   useEffect(() => {
     if (auth.userState !== UserState.LOGGED_IN) return;
-    navigate('/' + MainNavigationRoute.DASHBOARD);
-  }, [auth.userState]);
+    navigate(returnUrl ?? '/' + MainNavigationRoute.DASHBOARD, { replace: true });
+  }, [auth.userState, returnUrl]);
 
   const formMethods = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
