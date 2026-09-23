@@ -2560,6 +2560,45 @@ export interface CreateImmichAlbumDto {
 /**
  * 
  * @export
+ * @interface CreateIntegrationTokenDto
+ */
+export interface CreateIntegrationTokenDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateIntegrationTokenDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {IntegrationPlatform}
+     * @memberof CreateIntegrationTokenDto
+     */
+    'platform'?: IntegrationPlatform;
+    /**
+     * Permission keys from the ACL catalog
+     * @type {Array<string>}
+     * @memberof CreateIntegrationTokenDto
+     */
+    'scopes': Array<string>;
+    /**
+     * Defaults to true (one year). Set false for a non-expiring token.
+     * @type {boolean}
+     * @memberof CreateIntegrationTokenDto
+     */
+    'expires'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateIntegrationTokenDto
+     */
+    'expiresAt'?: string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface CreatePermissionGroupDto
  */
 export interface CreatePermissionGroupDto {
@@ -3376,6 +3415,169 @@ export interface DashboardUsersDto {
 /**
  * 
  * @export
+ * @interface DeviceApprovalRequestResponse
+ */
+export interface DeviceApprovalRequestResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceApprovalRequestResponse
+     */
+    'userCode': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceApprovalRequestResponse
+     */
+    'clientName': string;
+    /**
+     * 
+     * @type {IntegrationPlatform}
+     * @memberof DeviceApprovalRequestResponse
+     */
+    'platform': IntegrationPlatform;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof DeviceApprovalRequestResponse
+     */
+    'scopes': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceApprovalRequestResponse
+     */
+    'expiresAt': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface DeviceApprovalResultResponse
+ */
+export interface DeviceApprovalResultResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceApprovalResultResponse
+     */
+    'userCode': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceApprovalResultResponse
+     */
+    'clientName': string;
+    /**
+     * 
+     * @type {IntegrationPlatform}
+     * @memberof DeviceApprovalResultResponse
+     */
+    'platform': IntegrationPlatform;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof DeviceApprovalResultResponse
+     */
+    'scopes': Array<string>;
+    /**
+     * 
+     * @type {DeviceAuthorizationStatus}
+     * @memberof DeviceApprovalResultResponse
+     */
+    'status': DeviceAuthorizationStatus;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface DeviceAuthorizationResponse
+ */
+export interface DeviceAuthorizationResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceAuthorizationResponse
+     */
+    'deviceCode': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceAuthorizationResponse
+     */
+    'userCode': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceAuthorizationResponse
+     */
+    'verificationUri': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceAuthorizationResponse
+     */
+    'verificationUriComplete': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof DeviceAuthorizationResponse
+     */
+    'expiresIn': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DeviceAuthorizationResponse
+     */
+    'interval': number;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const DeviceAuthorizationStatus = {
+    Pending: 'PENDING',
+    Approved: 'APPROVED',
+    Denied: 'DENIED'
+} as const;
+
+export type DeviceAuthorizationStatus = typeof DeviceAuthorizationStatus[keyof typeof DeviceAuthorizationStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface DeviceAuthorizeDto
+ */
+export interface DeviceAuthorizeDto {
+    /**
+     * Shown to the user on the approval screen
+     * @type {string}
+     * @memberof DeviceAuthorizeDto
+     */
+    'clientName': string;
+    /**
+     * 
+     * @type {IntegrationPlatform}
+     * @memberof DeviceAuthorizeDto
+     */
+    'platform': IntegrationPlatform;
+    /**
+     * Permission keys from the ACL catalog
+     * @type {Array<string>}
+     * @memberof DeviceAuthorizeDto
+     */
+    'scopes': Array<string>;
+}
+
+
+/**
+ * 
+ * @export
  * @interface DeviceListResponse
  */
 export interface DeviceListResponse {
@@ -3464,6 +3666,44 @@ export interface DeviceResponse {
 /**
  * 
  * @export
+ * @interface DeviceTokenDto
+ */
+export interface DeviceTokenDto {
+    /**
+     * The deviceCode returned by /auth/device/authorize
+     * @type {string}
+     * @memberof DeviceTokenDto
+     */
+    'deviceCode': string;
+}
+/**
+ * 
+ * @export
+ * @interface DeviceTokenResponse
+ */
+export interface DeviceTokenResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceTokenResponse
+     */
+    'token': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof DeviceTokenResponse
+     */
+    'scopes': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeviceTokenResponse
+     */
+    'expiresAt'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface DeviceWithLicenseResponse
  */
 export interface DeviceWithLicenseResponse {
@@ -3479,6 +3719,25 @@ export interface DeviceWithLicenseResponse {
      * @memberof DeviceWithLicenseResponse
      */
     'license': LicenseResponse;
+}
+/**
+ * 
+ * @export
+ * @interface DimensionsDto
+ */
+export interface DimensionsDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof DimensionsDto
+     */
+    'width': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DimensionsDto
+     */
+    'height': string;
 }
 /**
  * 
@@ -4275,6 +4534,62 @@ export interface GalleryDetailResponse {
 /**
  * 
  * @export
+ * @interface GalleryImageDataDto
+ */
+export interface GalleryImageDataDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryImageDataDto
+     */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryImageDataDto
+     */
+    'dateTaken': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryImageDataDto
+     */
+    'localization'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryImageDataDto
+     */
+    'description'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface GalleryImageDto
+ */
+export interface GalleryImageDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof GalleryImageDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {GalleryImageDataDto}
+     * @memberof GalleryImageDto
+     */
+    'data'?: GalleryImageDataDto;
+    /**
+     * 
+     * @type {DimensionsDto}
+     * @memberof GalleryImageDto
+     */
+    'dimensions'?: DimensionsDto;
+}
+/**
+ * 
+ * @export
  * @interface GalleryImageItemResponse
  */
 export interface GalleryImageItemResponse {
@@ -4674,6 +4989,25 @@ export interface GalleryResponse {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface GalleryResponseDto
+ */
+export interface GalleryResponseDto {
+    /**
+     * 
+     * @type {Array<GalleryImageDto>}
+     * @memberof GalleryResponseDto
+     */
+    'images': Array<GalleryImageDto>;
+    /**
+     * 
+     * @type {number}
+     * @memberof GalleryResponseDto
+     */
+    'count': number;
+}
 /**
  * 
  * @export
@@ -5944,6 +6278,137 @@ export interface InsightsResponse {
      */
     'recentFeedback': Array<RecentFeedbackResponse>;
 }
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const IntegrationPlatform = {
+    Windows: 'WINDOWS',
+    Macos: 'MACOS',
+    Linux: 'LINUX',
+    Ios: 'IOS',
+    Android: 'ANDROID',
+    Other: 'OTHER'
+} as const;
+
+export type IntegrationPlatform = typeof IntegrationPlatform[keyof typeof IntegrationPlatform];
+
+
+/**
+ * 
+ * @export
+ * @interface IntegrationTokenCreatedResponse
+ */
+export interface IntegrationTokenCreatedResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenCreatedResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenCreatedResponse
+     */
+    'token': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof IntegrationTokenCreatedResponse
+     */
+    'scopes': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenCreatedResponse
+     */
+    'expiresAt'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface IntegrationTokenListResponse
+ */
+export interface IntegrationTokenListResponse {
+    /**
+     * 
+     * @type {Array<IntegrationTokenResponse>}
+     * @memberof IntegrationTokenListResponse
+     */
+    'tokens': Array<IntegrationTokenResponse>;
+    /**
+     * 
+     * @type {number}
+     * @memberof IntegrationTokenListResponse
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface IntegrationTokenResponse
+ */
+export interface IntegrationTokenResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {IntegrationPlatform}
+     * @memberof IntegrationTokenResponse
+     */
+    'platform': IntegrationPlatform;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenResponse
+     */
+    'lastFour': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof IntegrationTokenResponse
+     */
+    'scopes': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenResponse
+     */
+    'expiresAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenResponse
+     */
+    'lastUsedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationTokenResponse
+     */
+    'revokedAt'?: string | null;
+}
+
+
 /**
  * 
  * @export
@@ -8272,6 +8737,105 @@ export interface PhotoEntryDetailsResponse {
      * @memberof PhotoEntryDetailsResponse
      */
     'astroObjectsCount': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface PhotoEntryFolderResponse
+ */
+export interface PhotoEntryFolderResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryFolderResponse
+     */
+    'path': string;
+    /**
+     * 
+     * @type {PhotoEntryFolderRole}
+     * @memberof PhotoEntryFolderResponse
+     */
+    'role': PhotoEntryFolderRole;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const PhotoEntryFolderRole = {
+    Source: 'SOURCE',
+    SourceRaw: 'SOURCE_RAW',
+    SourceJpeg: 'SOURCE_JPEG',
+    SourceVideo: 'SOURCE_VIDEO',
+    SourceSequences: 'SOURCE_SEQUENCES',
+    SourceLights: 'SOURCE_LIGHTS',
+    SourceDarks: 'SOURCE_DARKS',
+    SourceFlats: 'SOURCE_FLATS',
+    SourceBiases: 'SOURCE_BIASES',
+    SourceRejected: 'SOURCE_REJECTED',
+    Selects: 'SELECTS',
+    Workspace: 'WORKSPACE',
+    Edit: 'EDIT',
+    Export: 'EXPORT',
+    Delivery: 'DELIVERY'
+} as const;
+
+export type PhotoEntryFolderRole = typeof PhotoEntryFolderRole[keyof typeof PhotoEntryFolderRole];
+
+
+/**
+ * 
+ * @export
+ * @interface PhotoEntryFolderStructureResponse
+ */
+export interface PhotoEntryFolderStructureResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryFolderStructureResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryFolderStructureResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {PhotoEntryType}
+     * @memberof PhotoEntryFolderStructureResponse
+     */
+    'type': PhotoEntryType;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryFolderStructureResponse
+     */
+    'folderName': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryFolderStructureResponse
+     */
+    'rootPath': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryFolderStructureResponse
+     */
+    'foldersCreated': boolean;
+    /**
+     * 
+     * @type {Array<PhotoEntryFolderResponse>}
+     * @memberof PhotoEntryFolderStructureResponse
+     */
+    'folders': Array<PhotoEntryFolderResponse>;
 }
 
 
@@ -30123,6 +30687,215 @@ export class DefaultApi extends BaseAPI {
 
 
 /**
+ * DeviceAuthorizationApi - axios parameter creator
+ * @export
+ */
+export const DeviceAuthorizationApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Returns a device/user code pair. Open `verificationUriComplete` in the user\'s browser, then poll `/auth/device/token` with `deviceCode` every `interval` seconds until it returns a token.
+         * @summary Start a device authorization
+         * @param {DeviceAuthorizeDto} deviceAuthorizeDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deviceAuthControllerAuthorize: async (deviceAuthorizeDto: DeviceAuthorizeDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'deviceAuthorizeDto' is not null or undefined
+            assertParamExists('deviceAuthControllerAuthorize', 'deviceAuthorizeDto', deviceAuthorizeDto)
+            const localVarPath = `/auth/device/authorize`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(deviceAuthorizeDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Until approval this returns HTTP 400 with an RFC 8628 error code: `authorization_pending`, `slow_down`, `access_denied` or `expired_token`. On success the token is returned exactly once — a replayed device code gets `invalid_grant`.
+         * @summary Collect the token once the user approves
+         * @param {DeviceTokenDto} deviceTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deviceAuthControllerToken: async (deviceTokenDto: DeviceTokenDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'deviceTokenDto' is not null or undefined
+            assertParamExists('deviceAuthControllerToken', 'deviceTokenDto', deviceTokenDto)
+            const localVarPath = `/auth/device/token`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(deviceTokenDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DeviceAuthorizationApi - functional programming interface
+ * @export
+ */
+export const DeviceAuthorizationApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DeviceAuthorizationApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Returns a device/user code pair. Open `verificationUriComplete` in the user\'s browser, then poll `/auth/device/token` with `deviceCode` every `interval` seconds until it returns a token.
+         * @summary Start a device authorization
+         * @param {DeviceAuthorizeDto} deviceAuthorizeDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deviceAuthControllerAuthorize(deviceAuthorizeDto: DeviceAuthorizeDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeviceAuthorizationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deviceAuthControllerAuthorize(deviceAuthorizeDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeviceAuthorizationApi.deviceAuthControllerAuthorize']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Until approval this returns HTTP 400 with an RFC 8628 error code: `authorization_pending`, `slow_down`, `access_denied` or `expired_token`. On success the token is returned exactly once — a replayed device code gets `invalid_grant`.
+         * @summary Collect the token once the user approves
+         * @param {DeviceTokenDto} deviceTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deviceAuthControllerToken(deviceTokenDto: DeviceTokenDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeviceTokenResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deviceAuthControllerToken(deviceTokenDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeviceAuthorizationApi.deviceAuthControllerToken']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DeviceAuthorizationApi - factory interface
+ * @export
+ */
+export const DeviceAuthorizationApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DeviceAuthorizationApiFp(configuration)
+    return {
+        /**
+         * Returns a device/user code pair. Open `verificationUriComplete` in the user\'s browser, then poll `/auth/device/token` with `deviceCode` every `interval` seconds until it returns a token.
+         * @summary Start a device authorization
+         * @param {DeviceAuthorizationApiDeviceAuthControllerAuthorizeRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deviceAuthControllerAuthorize(requestParameters: DeviceAuthorizationApiDeviceAuthControllerAuthorizeRequest, options?: RawAxiosRequestConfig): AxiosPromise<DeviceAuthorizationResponse> {
+            return localVarFp.deviceAuthControllerAuthorize(requestParameters.deviceAuthorizeDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Until approval this returns HTTP 400 with an RFC 8628 error code: `authorization_pending`, `slow_down`, `access_denied` or `expired_token`. On success the token is returned exactly once — a replayed device code gets `invalid_grant`.
+         * @summary Collect the token once the user approves
+         * @param {DeviceAuthorizationApiDeviceAuthControllerTokenRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deviceAuthControllerToken(requestParameters: DeviceAuthorizationApiDeviceAuthControllerTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<DeviceTokenResponse> {
+            return localVarFp.deviceAuthControllerToken(requestParameters.deviceTokenDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for deviceAuthControllerAuthorize operation in DeviceAuthorizationApi.
+ * @export
+ * @interface DeviceAuthorizationApiDeviceAuthControllerAuthorizeRequest
+ */
+export interface DeviceAuthorizationApiDeviceAuthControllerAuthorizeRequest {
+    /**
+     * 
+     * @type {DeviceAuthorizeDto}
+     * @memberof DeviceAuthorizationApiDeviceAuthControllerAuthorize
+     */
+    readonly deviceAuthorizeDto: DeviceAuthorizeDto
+}
+
+/**
+ * Request parameters for deviceAuthControllerToken operation in DeviceAuthorizationApi.
+ * @export
+ * @interface DeviceAuthorizationApiDeviceAuthControllerTokenRequest
+ */
+export interface DeviceAuthorizationApiDeviceAuthControllerTokenRequest {
+    /**
+     * 
+     * @type {DeviceTokenDto}
+     * @memberof DeviceAuthorizationApiDeviceAuthControllerToken
+     */
+    readonly deviceTokenDto: DeviceTokenDto
+}
+
+/**
+ * DeviceAuthorizationApi - object-oriented interface
+ * @export
+ * @class DeviceAuthorizationApi
+ * @extends {BaseAPI}
+ */
+export class DeviceAuthorizationApi extends BaseAPI {
+    /**
+     * Returns a device/user code pair. Open `verificationUriComplete` in the user\'s browser, then poll `/auth/device/token` with `deviceCode` every `interval` seconds until it returns a token.
+     * @summary Start a device authorization
+     * @param {DeviceAuthorizationApiDeviceAuthControllerAuthorizeRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeviceAuthorizationApi
+     */
+    public deviceAuthControllerAuthorize(requestParameters: DeviceAuthorizationApiDeviceAuthControllerAuthorizeRequest, options?: RawAxiosRequestConfig) {
+        return DeviceAuthorizationApiFp(this.configuration).deviceAuthControllerAuthorize(requestParameters.deviceAuthorizeDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Until approval this returns HTTP 400 with an RFC 8628 error code: `authorization_pending`, `slow_down`, `access_denied` or `expired_token`. On success the token is returned exactly once — a replayed device code gets `invalid_grant`.
+     * @summary Collect the token once the user approves
+     * @param {DeviceAuthorizationApiDeviceAuthControllerTokenRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeviceAuthorizationApi
+     */
+    public deviceAuthControllerToken(requestParameters: DeviceAuthorizationApiDeviceAuthControllerTokenRequest, options?: RawAxiosRequestConfig) {
+        return DeviceAuthorizationApiFp(this.configuration).deviceAuthControllerToken(requestParameters.deviceTokenDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * EcosystemAccessGrantsApi - axios parameter creator
  * @export
  */
@@ -32919,15 +33692,48 @@ export class GalleriesApi extends BaseAPI {
 
 
 /**
- * GalleryApi - axios parameter creator
+ * GalleryDeprecatedApi - axios parameter creator
  * @export
  */
-export const GalleryApiAxiosParamCreator = function (configuration?: Configuration) {
+export const GalleryDeprecatedApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
+         * Superseded by `GET /portfolio/galleries`. Returns only images belonging to a PUBLISHED gallery and not marked HIDDEN there — unlike the original implementation, which dumped every gallery image regardless of state.
+         * @summary Flat listing of published gallery images (legacy)
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        galleryControllerGetAll: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/gallery/all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Superseded by `GET /image/cover`. Identical output.
+         * @summary Cover image stream (legacy)
          * @param {string} id 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         galleryControllerGetCoverImage: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -32961,9 +33767,11 @@ export const GalleryApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
-         * 
+         * Superseded by `GET /image/low-res`. Identical output.
+         * @summary Low-resolution image stream (legacy)
          * @param {string} id 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         galleryControllerGetLowResImage: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
@@ -33000,122 +33808,169 @@ export const GalleryApiAxiosParamCreator = function (configuration?: Configurati
 };
 
 /**
- * GalleryApi - functional programming interface
+ * GalleryDeprecatedApi - functional programming interface
  * @export
  */
-export const GalleryApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = GalleryApiAxiosParamCreator(configuration)
+export const GalleryDeprecatedApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = GalleryDeprecatedApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
+         * Superseded by `GET /portfolio/galleries`. Returns only images belonging to a PUBLISHED gallery and not marked HIDDEN there — unlike the original implementation, which dumped every gallery image regardless of state.
+         * @summary Flat listing of published gallery images (legacy)
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        async galleryControllerGetAll(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GalleryResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.galleryControllerGetAll(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GalleryDeprecatedApi.galleryControllerGetAll']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Superseded by `GET /image/cover`. Identical output.
+         * @summary Cover image stream (legacy)
          * @param {string} id 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async galleryControllerGetCoverImage(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.galleryControllerGetCoverImage(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GalleryApi.galleryControllerGetCoverImage']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['GalleryDeprecatedApi.galleryControllerGetCoverImage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Superseded by `GET /image/low-res`. Identical output.
+         * @summary Low-resolution image stream (legacy)
          * @param {string} id 
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
         async galleryControllerGetLowResImage(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.galleryControllerGetLowResImage(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GalleryApi.galleryControllerGetLowResImage']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['GalleryDeprecatedApi.galleryControllerGetLowResImage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * GalleryApi - factory interface
+ * GalleryDeprecatedApi - factory interface
  * @export
  */
-export const GalleryApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = GalleryApiFp(configuration)
+export const GalleryDeprecatedApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = GalleryDeprecatedApiFp(configuration)
     return {
         /**
-         * 
-         * @param {GalleryApiGalleryControllerGetCoverImageRequest} requestParameters Request parameters.
+         * Superseded by `GET /portfolio/galleries`. Returns only images belonging to a PUBLISHED gallery and not marked HIDDEN there — unlike the original implementation, which dumped every gallery image regardless of state.
+         * @summary Flat listing of published gallery images (legacy)
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
-        galleryControllerGetCoverImage(requestParameters: GalleryApiGalleryControllerGetCoverImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        galleryControllerGetAll(options?: RawAxiosRequestConfig): AxiosPromise<GalleryResponseDto> {
+            return localVarFp.galleryControllerGetAll(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Superseded by `GET /image/cover`. Identical output.
+         * @summary Cover image stream (legacy)
+         * @param {GalleryDeprecatedApiGalleryControllerGetCoverImageRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @deprecated
+         * @throws {RequiredError}
+         */
+        galleryControllerGetCoverImage(requestParameters: GalleryDeprecatedApiGalleryControllerGetCoverImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.galleryControllerGetCoverImage(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @param {GalleryApiGalleryControllerGetLowResImageRequest} requestParameters Request parameters.
+         * Superseded by `GET /image/low-res`. Identical output.
+         * @summary Low-resolution image stream (legacy)
+         * @param {GalleryDeprecatedApiGalleryControllerGetLowResImageRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
+         * @deprecated
          * @throws {RequiredError}
          */
-        galleryControllerGetLowResImage(requestParameters: GalleryApiGalleryControllerGetLowResImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        galleryControllerGetLowResImage(requestParameters: GalleryDeprecatedApiGalleryControllerGetLowResImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.galleryControllerGetLowResImage(requestParameters.id, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * Request parameters for galleryControllerGetCoverImage operation in GalleryApi.
+ * Request parameters for galleryControllerGetCoverImage operation in GalleryDeprecatedApi.
  * @export
- * @interface GalleryApiGalleryControllerGetCoverImageRequest
+ * @interface GalleryDeprecatedApiGalleryControllerGetCoverImageRequest
  */
-export interface GalleryApiGalleryControllerGetCoverImageRequest {
+export interface GalleryDeprecatedApiGalleryControllerGetCoverImageRequest {
     /**
      * 
      * @type {string}
-     * @memberof GalleryApiGalleryControllerGetCoverImage
+     * @memberof GalleryDeprecatedApiGalleryControllerGetCoverImage
      */
     readonly id: string
 }
 
 /**
- * Request parameters for galleryControllerGetLowResImage operation in GalleryApi.
+ * Request parameters for galleryControllerGetLowResImage operation in GalleryDeprecatedApi.
  * @export
- * @interface GalleryApiGalleryControllerGetLowResImageRequest
+ * @interface GalleryDeprecatedApiGalleryControllerGetLowResImageRequest
  */
-export interface GalleryApiGalleryControllerGetLowResImageRequest {
+export interface GalleryDeprecatedApiGalleryControllerGetLowResImageRequest {
     /**
      * 
      * @type {string}
-     * @memberof GalleryApiGalleryControllerGetLowResImage
+     * @memberof GalleryDeprecatedApiGalleryControllerGetLowResImage
      */
     readonly id: string
 }
 
 /**
- * GalleryApi - object-oriented interface
+ * GalleryDeprecatedApi - object-oriented interface
  * @export
- * @class GalleryApi
+ * @class GalleryDeprecatedApi
  * @extends {BaseAPI}
  */
-export class GalleryApi extends BaseAPI {
+export class GalleryDeprecatedApi extends BaseAPI {
     /**
-     * 
-     * @param {GalleryApiGalleryControllerGetCoverImageRequest} requestParameters Request parameters.
+     * Superseded by `GET /portfolio/galleries`. Returns only images belonging to a PUBLISHED gallery and not marked HIDDEN there — unlike the original implementation, which dumped every gallery image regardless of state.
+     * @summary Flat listing of published gallery images (legacy)
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
-     * @memberof GalleryApi
+     * @memberof GalleryDeprecatedApi
      */
-    public galleryControllerGetCoverImage(requestParameters: GalleryApiGalleryControllerGetCoverImageRequest, options?: RawAxiosRequestConfig) {
-        return GalleryApiFp(this.configuration).galleryControllerGetCoverImage(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    public galleryControllerGetAll(options?: RawAxiosRequestConfig) {
+        return GalleryDeprecatedApiFp(this.configuration).galleryControllerGetAll(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 
-     * @param {GalleryApiGalleryControllerGetLowResImageRequest} requestParameters Request parameters.
+     * Superseded by `GET /image/cover`. Identical output.
+     * @summary Cover image stream (legacy)
+     * @param {GalleryDeprecatedApiGalleryControllerGetCoverImageRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
-     * @memberof GalleryApi
+     * @memberof GalleryDeprecatedApi
      */
-    public galleryControllerGetLowResImage(requestParameters: GalleryApiGalleryControllerGetLowResImageRequest, options?: RawAxiosRequestConfig) {
-        return GalleryApiFp(this.configuration).galleryControllerGetLowResImage(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    public galleryControllerGetCoverImage(requestParameters: GalleryDeprecatedApiGalleryControllerGetCoverImageRequest, options?: RawAxiosRequestConfig) {
+        return GalleryDeprecatedApiFp(this.configuration).galleryControllerGetCoverImage(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Superseded by `GET /image/low-res`. Identical output.
+     * @summary Low-resolution image stream (legacy)
+     * @param {GalleryDeprecatedApiGalleryControllerGetLowResImageRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     * @memberof GalleryDeprecatedApi
+     */
+    public galleryControllerGetLowResImage(requestParameters: GalleryDeprecatedApiGalleryControllerGetLowResImageRequest, options?: RawAxiosRequestConfig) {
+        return GalleryDeprecatedApiFp(this.configuration).galleryControllerGetLowResImage(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -36142,6 +36997,548 @@ export class ImmichApi extends BaseAPI {
 
 
 /**
+ * IntegrationsApi - axios parameter creator
+ * @export
+ */
+export const IntegrationsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Grant the pending device its token
+         * @param {string} userCode 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerApproveDevice: async (userCode: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userCode' is not null or undefined
+            assertParamExists('integrationControllerApproveDevice', 'userCode', userCode)
+            const localVarPath = `/integrations/device/{userCode}/approve`
+                .replace(`{${"userCode"}}`, encodeURIComponent(String(userCode)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * The fallback to the device flow, for scripts and CLI tools. The value is returned once and never again — surface a copy button here.
+         * @summary Create a token manually (copy-paste path)
+         * @param {CreateIntegrationTokenDto} createIntegrationTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerCreateToken: async (createIntegrationTokenDto: CreateIntegrationTokenDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createIntegrationTokenDto' is not null or undefined
+            assertParamExists('integrationControllerCreateToken', 'createIntegrationTokenDto', createIntegrationTokenDto)
+            const localVarPath = `/integrations/tokens`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createIntegrationTokenDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Refuse the pending device
+         * @param {string} userCode 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerDenyDevice: async (userCode: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userCode' is not null or undefined
+            assertParamExists('integrationControllerDenyDevice', 'userCode', userCode)
+            const localVarPath = `/integrations/device/{userCode}/deny`
+                .replace(`{${"userCode"}}`, encodeURIComponent(String(userCode)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Renders the approval screen. Show `clientName`, `platform` and every entry of `scopes` — this is the only point where the user sees what they are about to grant.
+         * @summary What a pending device is asking for
+         * @param {string} userCode 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerGetPendingDevice: async (userCode: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userCode' is not null or undefined
+            assertParamExists('integrationControllerGetPendingDevice', 'userCode', userCode)
+            const localVarPath = `/integrations/device/{userCode}`
+                .replace(`{${"userCode"}}`, encodeURIComponent(String(userCode)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Metadata only — token values are never retrievable after creation.
+         * @summary Integrations connected to this account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerListTokens: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/integrations/tokens`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Takes effect on the next request the app makes. Idempotent — revoking an already-revoked token is not an error.
+         * @summary Revoke an integration
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerRevokeToken: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('integrationControllerRevokeToken', 'id', id)
+            const localVarPath = `/integrations/tokens/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * IntegrationsApi - functional programming interface
+ * @export
+ */
+export const IntegrationsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = IntegrationsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Grant the pending device its token
+         * @param {string} userCode 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async integrationControllerApproveDevice(userCode: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeviceApprovalResultResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.integrationControllerApproveDevice(userCode, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['IntegrationsApi.integrationControllerApproveDevice']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * The fallback to the device flow, for scripts and CLI tools. The value is returned once and never again — surface a copy button here.
+         * @summary Create a token manually (copy-paste path)
+         * @param {CreateIntegrationTokenDto} createIntegrationTokenDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async integrationControllerCreateToken(createIntegrationTokenDto: CreateIntegrationTokenDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<IntegrationTokenCreatedResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.integrationControllerCreateToken(createIntegrationTokenDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['IntegrationsApi.integrationControllerCreateToken']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Refuse the pending device
+         * @param {string} userCode 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async integrationControllerDenyDevice(userCode: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeviceApprovalResultResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.integrationControllerDenyDevice(userCode, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['IntegrationsApi.integrationControllerDenyDevice']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Renders the approval screen. Show `clientName`, `platform` and every entry of `scopes` — this is the only point where the user sees what they are about to grant.
+         * @summary What a pending device is asking for
+         * @param {string} userCode 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async integrationControllerGetPendingDevice(userCode: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeviceApprovalRequestResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.integrationControllerGetPendingDevice(userCode, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['IntegrationsApi.integrationControllerGetPendingDevice']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Metadata only — token values are never retrievable after creation.
+         * @summary Integrations connected to this account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async integrationControllerListTokens(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<IntegrationTokenListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.integrationControllerListTokens(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['IntegrationsApi.integrationControllerListTokens']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Takes effect on the next request the app makes. Idempotent — revoking an already-revoked token is not an error.
+         * @summary Revoke an integration
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async integrationControllerRevokeToken(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<IntegrationTokenResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.integrationControllerRevokeToken(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['IntegrationsApi.integrationControllerRevokeToken']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * IntegrationsApi - factory interface
+ * @export
+ */
+export const IntegrationsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = IntegrationsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Grant the pending device its token
+         * @param {IntegrationsApiIntegrationControllerApproveDeviceRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerApproveDevice(requestParameters: IntegrationsApiIntegrationControllerApproveDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<DeviceApprovalResultResponse> {
+            return localVarFp.integrationControllerApproveDevice(requestParameters.userCode, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * The fallback to the device flow, for scripts and CLI tools. The value is returned once and never again — surface a copy button here.
+         * @summary Create a token manually (copy-paste path)
+         * @param {IntegrationsApiIntegrationControllerCreateTokenRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerCreateToken(requestParameters: IntegrationsApiIntegrationControllerCreateTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<IntegrationTokenCreatedResponse> {
+            return localVarFp.integrationControllerCreateToken(requestParameters.createIntegrationTokenDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Refuse the pending device
+         * @param {IntegrationsApiIntegrationControllerDenyDeviceRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerDenyDevice(requestParameters: IntegrationsApiIntegrationControllerDenyDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<DeviceApprovalResultResponse> {
+            return localVarFp.integrationControllerDenyDevice(requestParameters.userCode, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Renders the approval screen. Show `clientName`, `platform` and every entry of `scopes` — this is the only point where the user sees what they are about to grant.
+         * @summary What a pending device is asking for
+         * @param {IntegrationsApiIntegrationControllerGetPendingDeviceRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerGetPendingDevice(requestParameters: IntegrationsApiIntegrationControllerGetPendingDeviceRequest, options?: RawAxiosRequestConfig): AxiosPromise<DeviceApprovalRequestResponse> {
+            return localVarFp.integrationControllerGetPendingDevice(requestParameters.userCode, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Metadata only — token values are never retrievable after creation.
+         * @summary Integrations connected to this account
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerListTokens(options?: RawAxiosRequestConfig): AxiosPromise<IntegrationTokenListResponse> {
+            return localVarFp.integrationControllerListTokens(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Takes effect on the next request the app makes. Idempotent — revoking an already-revoked token is not an error.
+         * @summary Revoke an integration
+         * @param {IntegrationsApiIntegrationControllerRevokeTokenRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        integrationControllerRevokeToken(requestParameters: IntegrationsApiIntegrationControllerRevokeTokenRequest, options?: RawAxiosRequestConfig): AxiosPromise<IntegrationTokenResponse> {
+            return localVarFp.integrationControllerRevokeToken(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for integrationControllerApproveDevice operation in IntegrationsApi.
+ * @export
+ * @interface IntegrationsApiIntegrationControllerApproveDeviceRequest
+ */
+export interface IntegrationsApiIntegrationControllerApproveDeviceRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationsApiIntegrationControllerApproveDevice
+     */
+    readonly userCode: string
+}
+
+/**
+ * Request parameters for integrationControllerCreateToken operation in IntegrationsApi.
+ * @export
+ * @interface IntegrationsApiIntegrationControllerCreateTokenRequest
+ */
+export interface IntegrationsApiIntegrationControllerCreateTokenRequest {
+    /**
+     * 
+     * @type {CreateIntegrationTokenDto}
+     * @memberof IntegrationsApiIntegrationControllerCreateToken
+     */
+    readonly createIntegrationTokenDto: CreateIntegrationTokenDto
+}
+
+/**
+ * Request parameters for integrationControllerDenyDevice operation in IntegrationsApi.
+ * @export
+ * @interface IntegrationsApiIntegrationControllerDenyDeviceRequest
+ */
+export interface IntegrationsApiIntegrationControllerDenyDeviceRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationsApiIntegrationControllerDenyDevice
+     */
+    readonly userCode: string
+}
+
+/**
+ * Request parameters for integrationControllerGetPendingDevice operation in IntegrationsApi.
+ * @export
+ * @interface IntegrationsApiIntegrationControllerGetPendingDeviceRequest
+ */
+export interface IntegrationsApiIntegrationControllerGetPendingDeviceRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationsApiIntegrationControllerGetPendingDevice
+     */
+    readonly userCode: string
+}
+
+/**
+ * Request parameters for integrationControllerRevokeToken operation in IntegrationsApi.
+ * @export
+ * @interface IntegrationsApiIntegrationControllerRevokeTokenRequest
+ */
+export interface IntegrationsApiIntegrationControllerRevokeTokenRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof IntegrationsApiIntegrationControllerRevokeToken
+     */
+    readonly id: string
+}
+
+/**
+ * IntegrationsApi - object-oriented interface
+ * @export
+ * @class IntegrationsApi
+ * @extends {BaseAPI}
+ */
+export class IntegrationsApi extends BaseAPI {
+    /**
+     * 
+     * @summary Grant the pending device its token
+     * @param {IntegrationsApiIntegrationControllerApproveDeviceRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof IntegrationsApi
+     */
+    public integrationControllerApproveDevice(requestParameters: IntegrationsApiIntegrationControllerApproveDeviceRequest, options?: RawAxiosRequestConfig) {
+        return IntegrationsApiFp(this.configuration).integrationControllerApproveDevice(requestParameters.userCode, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * The fallback to the device flow, for scripts and CLI tools. The value is returned once and never again — surface a copy button here.
+     * @summary Create a token manually (copy-paste path)
+     * @param {IntegrationsApiIntegrationControllerCreateTokenRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof IntegrationsApi
+     */
+    public integrationControllerCreateToken(requestParameters: IntegrationsApiIntegrationControllerCreateTokenRequest, options?: RawAxiosRequestConfig) {
+        return IntegrationsApiFp(this.configuration).integrationControllerCreateToken(requestParameters.createIntegrationTokenDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Refuse the pending device
+     * @param {IntegrationsApiIntegrationControllerDenyDeviceRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof IntegrationsApi
+     */
+    public integrationControllerDenyDevice(requestParameters: IntegrationsApiIntegrationControllerDenyDeviceRequest, options?: RawAxiosRequestConfig) {
+        return IntegrationsApiFp(this.configuration).integrationControllerDenyDevice(requestParameters.userCode, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Renders the approval screen. Show `clientName`, `platform` and every entry of `scopes` — this is the only point where the user sees what they are about to grant.
+     * @summary What a pending device is asking for
+     * @param {IntegrationsApiIntegrationControllerGetPendingDeviceRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof IntegrationsApi
+     */
+    public integrationControllerGetPendingDevice(requestParameters: IntegrationsApiIntegrationControllerGetPendingDeviceRequest, options?: RawAxiosRequestConfig) {
+        return IntegrationsApiFp(this.configuration).integrationControllerGetPendingDevice(requestParameters.userCode, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Metadata only — token values are never retrievable after creation.
+     * @summary Integrations connected to this account
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof IntegrationsApi
+     */
+    public integrationControllerListTokens(options?: RawAxiosRequestConfig) {
+        return IntegrationsApiFp(this.configuration).integrationControllerListTokens(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Takes effect on the next request the app makes. Idempotent — revoking an already-revoked token is not an error.
+     * @summary Revoke an integration
+     * @param {IntegrationsApiIntegrationControllerRevokeTokenRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof IntegrationsApi
+     */
+    public integrationControllerRevokeToken(requestParameters: IntegrationsApiIntegrationControllerRevokeTokenRequest, options?: RawAxiosRequestConfig) {
+        return IntegrationsApiFp(this.configuration).integrationControllerRevokeToken(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * NotificationsApi - axios parameter creator
  * @export
  */
@@ -37264,6 +38661,44 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
             };
         },
         /**
+         * For external tools that create or mirror the entry folders themselves. Returns the entry root folder plus the sub-folders to create under it, each tagged with a stable `role` — match on the role, not on the path. GENERAL and WORK entries only: ASTRO entries are filed per astro object and have no single root.
+         * @summary Folder layout of a single entry
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerGetFolderStructure: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryControllerGetFolderStructure', 'id', id)
+            const localVarPath = `/photo-entry/{id}/folder-structure`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {PhotoEntryType} [type] 
          * @param {PhotoEntryStatus} [status] 
@@ -37508,6 +38943,19 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * For external tools that create or mirror the entry folders themselves. Returns the entry root folder plus the sub-folders to create under it, each tagged with a stable `role` — match on the role, not on the path. GENERAL and WORK entries only: ASTRO entries are filed per astro object and have no single root.
+         * @summary Folder layout of a single entry
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryControllerGetFolderStructure(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryFolderStructureResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryControllerGetFolderStructure(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryControllerGetFolderStructure']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 
          * @param {PhotoEntryType} [type] 
          * @param {PhotoEntryStatus} [status] 
@@ -37609,6 +39057,16 @@ export const PhotoEntryApiFactory = function (configuration?: Configuration, bas
             return localVarFp.photoEntryControllerGetById(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
+         * For external tools that create or mirror the entry folders themselves. Returns the entry root folder plus the sub-folders to create under it, each tagged with a stable `role` — match on the role, not on the path. GENERAL and WORK entries only: ASTRO entries are filed per astro object and have no single root.
+         * @summary Folder layout of a single entry
+         * @param {PhotoEntryApiPhotoEntryControllerGetFolderStructureRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerGetFolderStructure(requestParameters: PhotoEntryApiPhotoEntryControllerGetFolderStructureRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryFolderStructureResponse> {
+            return localVarFp.photoEntryControllerGetFolderStructure(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @param {PhotoEntryApiPhotoEntryControllerListRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
@@ -37699,6 +39157,20 @@ export interface PhotoEntryApiPhotoEntryControllerGetByIdRequest {
      * 
      * @type {string}
      * @memberof PhotoEntryApiPhotoEntryControllerGetById
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for photoEntryControllerGetFolderStructure operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryControllerGetFolderStructureRequest
+ */
+export interface PhotoEntryApiPhotoEntryControllerGetFolderStructureRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryControllerGetFolderStructure
      */
     readonly id: string
 }
@@ -37857,6 +39329,18 @@ export class PhotoEntryApi extends BaseAPI {
      */
     public photoEntryControllerGetById(requestParameters: PhotoEntryApiPhotoEntryControllerGetByIdRequest, options?: RawAxiosRequestConfig) {
         return PhotoEntryApiFp(this.configuration).photoEntryControllerGetById(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * For external tools that create or mirror the entry folders themselves. Returns the entry root folder plus the sub-folders to create under it, each tagged with a stable `role` — match on the role, not on the path. GENERAL and WORK entries only: ASTRO entries are filed per astro object and have no single root.
+     * @summary Folder layout of a single entry
+     * @param {PhotoEntryApiPhotoEntryControllerGetFolderStructureRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryControllerGetFolderStructure(requestParameters: PhotoEntryApiPhotoEntryControllerGetFolderStructureRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryControllerGetFolderStructure(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

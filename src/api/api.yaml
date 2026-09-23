@@ -1393,9 +1393,31 @@ paths:
         - System
       security:
         - bearer: []
+  /gallery/all:
+    get:
+      operationId: GalleryController_getAll
+      summary: Flat listing of published gallery images (legacy)
+      deprecated: true
+      description: >-
+        Superseded by `GET /portfolio/galleries`. Returns only images belonging
+        to a PUBLISHED gallery and not marked HIDDEN there — unlike the original
+        implementation, which dumped every gallery image regardless of state.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GalleryResponseDto'
+      tags:
+        - Gallery (deprecated)
   /gallery/cover:
     get:
       operationId: GalleryController_getCoverImage
+      summary: Cover image stream (legacy)
+      deprecated: true
+      description: Superseded by `GET /image/cover`. Identical output.
       parameters:
         - name: id
           required: true
@@ -1406,10 +1428,13 @@ paths:
         '200':
           description: ''
       tags:
-        - Gallery
+        - Gallery (deprecated)
   /gallery/low-res:
     get:
       operationId: GalleryController_getLowResImage
+      summary: Low-resolution image stream (legacy)
+      deprecated: true
+      description: Superseded by `GET /image/low-res`. Identical output.
       parameters:
         - name: id
           required: true
@@ -1420,7 +1445,7 @@ paths:
         '200':
           description: ''
       tags:
-        - Gallery
+        - Gallery (deprecated)
   /galleries:
     post:
       operationId: GalleriesController_create
@@ -3120,6 +3145,33 @@ paths:
         - Photo Entry
       security:
         - bearer: []
+  /photo-entry/{id}/folder-structure:
+    get:
+      operationId: PhotoEntryController_getFolderStructure
+      summary: Folder layout of a single entry
+      description: >-
+        For external tools that create or mirror the entry folders themselves.
+        Returns the entry root folder plus the sub-folders to create under it,
+        each tagged with a stable `role` — match on the role, not on the path.
+        GENERAL and WORK entries only: ASTRO entries are filed per astro object
+        and have no single root.
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Entry root folder and its sub-folder structure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoEntryFolderStructureResponse'
+      tags:
+        - Photo Entry
+      security:
+        - bearer: []
   /photo-entry/{id}/status:
     patch:
       operationId: PhotoEntryController_patchStatus
@@ -3650,6 +3702,187 @@ paths:
                 $ref: '#/components/schemas/PermissionGroupListResponseDto'
       tags:
         - ACL
+      security:
+        - bearer: []
+  /auth/device/authorize:
+    post:
+      operationId: DeviceAuthController_authorize
+      summary: Start a device authorization
+      description: >-
+        Returns a device/user code pair. Open `verificationUriComplete` in the
+        user's browser, then poll `/auth/device/token` with `deviceCode` every
+        `interval` seconds until it returns a token.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceAuthorizeDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAuthorizationResponse'
+      tags:
+        - Device Authorization
+  /auth/device/token:
+    post:
+      operationId: DeviceAuthController_token
+      summary: Collect the token once the user approves
+      description: >-
+        Until approval this returns HTTP 400 with an RFC 8628 error code:
+        `authorization_pending`, `slow_down`, `access_denied` or
+        `expired_token`. On success the token is returned exactly once — a
+        replayed device code gets `invalid_grant`.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceTokenDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceTokenResponse'
+      tags:
+        - Device Authorization
+  /integrations/device/{userCode}:
+    get:
+      operationId: IntegrationController_getPendingDevice
+      summary: What a pending device is asking for
+      description: >-
+        Renders the approval screen. Show `clientName`, `platform` and every
+        entry of `scopes` — this is the only point where the user sees what they
+        are about to grant.
+      parameters:
+        - name: userCode
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceApprovalRequestResponse'
+      tags:
+        - Integrations
+      security:
+        - bearer: []
+  /integrations/device/{userCode}/approve:
+    post:
+      operationId: IntegrationController_approveDevice
+      summary: Grant the pending device its token
+      parameters:
+        - name: userCode
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceApprovalResultResponse'
+      tags:
+        - Integrations
+      security:
+        - bearer: []
+  /integrations/device/{userCode}/deny:
+    post:
+      operationId: IntegrationController_denyDevice
+      summary: Refuse the pending device
+      parameters:
+        - name: userCode
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceApprovalResultResponse'
+      tags:
+        - Integrations
+      security:
+        - bearer: []
+  /integrations/tokens:
+    get:
+      operationId: IntegrationController_listTokens
+      summary: Integrations connected to this account
+      description: Metadata only — token values are never retrievable after creation.
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationTokenListResponse'
+      tags:
+        - Integrations
+      security:
+        - bearer: []
+    post:
+      operationId: IntegrationController_createToken
+      summary: Create a token manually (copy-paste path)
+      description: >-
+        The fallback to the device flow, for scripts and CLI tools. The value is
+        returned once and never again — surface a copy button here.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIntegrationTokenDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationTokenCreatedResponse'
+      tags:
+        - Integrations
+      security:
+        - bearer: []
+  /integrations/tokens/{id}:
+    delete:
+      operationId: IntegrationController_revokeToken
+      summary: Revoke an integration
+      description: >-
+        Takes effect on the next request the app makes. Idempotent — revoking an
+        already-revoked token is not an error.
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationTokenResponse'
+      tags:
+        - Integrations
       security:
         - bearer: []
   /dashboard:
@@ -7985,6 +8218,53 @@ components:
         - status
         - checkedAt
         - checks
+    GalleryImageDataDto:
+      type: object
+      properties:
+        title:
+          type: string
+        dateTaken:
+          type: string
+          format: date-time
+        localization:
+          type: string
+        description:
+          type: string
+      required:
+        - dateTaken
+    DimensionsDto:
+      type: object
+      properties:
+        width:
+          type: string
+        height:
+          type: string
+      required:
+        - width
+        - height
+    GalleryImageDto:
+      type: object
+      properties:
+        id:
+          type: string
+        data:
+          $ref: '#/components/schemas/GalleryImageDataDto'
+        dimensions:
+          $ref: '#/components/schemas/DimensionsDto'
+      required:
+        - id
+    GalleryResponseDto:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/GalleryImageDto'
+        count:
+          type: number
+      required:
+        - images
+        - count
     CreateGalleryDto:
       type: object
       properties:
@@ -10075,6 +10355,61 @@ components:
         - updatedAt
         - astroObjects
         - astroObjectsCount
+    PhotoEntryFolderRole:
+      type: string
+      enum:
+        - SOURCE
+        - SOURCE_RAW
+        - SOURCE_JPEG
+        - SOURCE_VIDEO
+        - SOURCE_SEQUENCES
+        - SOURCE_LIGHTS
+        - SOURCE_DARKS
+        - SOURCE_FLATS
+        - SOURCE_BIASES
+        - SOURCE_REJECTED
+        - SELECTS
+        - WORKSPACE
+        - EDIT
+        - EXPORT
+        - DELIVERY
+    PhotoEntryFolderResponse:
+      type: object
+      properties:
+        path:
+          type: string
+        role:
+          $ref: '#/components/schemas/PhotoEntryFolderRole'
+      required:
+        - path
+        - role
+    PhotoEntryFolderStructureResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/PhotoEntryType'
+        folderName:
+          type: string
+        rootPath:
+          type: string
+        foldersCreated:
+          type: boolean
+        folders:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoEntryFolderResponse'
+      required:
+        - id
+        - name
+        - type
+        - folderName
+        - rootPath
+        - foldersCreated
+        - folders
     CreatePhotoEntryDto:
       type: object
       properties:
@@ -10604,6 +10939,234 @@ components:
             type: string
       required:
         - groupIds
+    IntegrationPlatform:
+      type: string
+      enum:
+        - WINDOWS
+        - MACOS
+        - LINUX
+        - IOS
+        - ANDROID
+        - OTHER
+    DeviceAuthorizeDto:
+      type: object
+      properties:
+        clientName:
+          type: string
+          maxLength: 64
+          description: Shown to the user on the approval screen
+          example: Photo Desktop
+        platform:
+          $ref: '#/components/schemas/IntegrationPlatform'
+        scopes:
+          description: Permission keys from the ACL catalog
+          example:
+            - photoEntry.read
+            - photoEntry.manage
+          type: array
+          items:
+            type: string
+      required:
+        - clientName
+        - platform
+        - scopes
+    DeviceAuthorizationResponse:
+      type: object
+      properties:
+        deviceCode:
+          type: string
+        userCode:
+          type: string
+          example: WXYZ-1234
+        verificationUri:
+          type: string
+          example: https://panel.example.com/activate
+        verificationUriComplete:
+          type: string
+          example: https://panel.example.com/activate?code=WXYZ-1234
+        expiresIn:
+          type: integer
+        interval:
+          type: integer
+      required:
+        - deviceCode
+        - userCode
+        - verificationUri
+        - verificationUriComplete
+        - expiresIn
+        - interval
+    DeviceTokenDto:
+      type: object
+      properties:
+        deviceCode:
+          type: string
+          maxLength: 128
+          description: The deviceCode returned by /auth/device/authorize
+      required:
+        - deviceCode
+    DeviceTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: whcp_7f3a9c2e1b4d6a80_9b1d…
+        scopes:
+          type: array
+          items:
+            type: string
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - token
+        - scopes
+    DeviceApprovalRequestResponse:
+      type: object
+      properties:
+        userCode:
+          type: string
+          example: WXYZ-1234
+        clientName:
+          type: string
+          example: Photo Desktop
+        platform:
+          $ref: '#/components/schemas/IntegrationPlatform'
+        scopes:
+          type: array
+          items:
+            type: string
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - userCode
+        - clientName
+        - platform
+        - scopes
+        - expiresAt
+    DeviceAuthorizationStatus:
+      type: string
+      enum:
+        - PENDING
+        - APPROVED
+        - DENIED
+    DeviceApprovalResultResponse:
+      type: object
+      properties:
+        userCode:
+          type: string
+        clientName:
+          type: string
+        platform:
+          $ref: '#/components/schemas/IntegrationPlatform'
+        scopes:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/DeviceAuthorizationStatus'
+      required:
+        - userCode
+        - clientName
+        - platform
+        - scopes
+        - status
+    IntegrationTokenResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        platform:
+          $ref: '#/components/schemas/IntegrationPlatform'
+        lastFour:
+          type: string
+          example: a3f9
+        scopes:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        lastUsedAt:
+          type: string
+          format: date-time
+          nullable: true
+        revokedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - id
+        - name
+        - platform
+        - lastFour
+        - scopes
+        - createdAt
+    IntegrationTokenListResponse:
+      type: object
+      properties:
+        tokens:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationTokenResponse'
+        total:
+          type: integer
+      required:
+        - tokens
+        - total
+    CreateIntegrationTokenDto:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 64
+          example: Ingest script
+        platform:
+          $ref: '#/components/schemas/IntegrationPlatform'
+        scopes:
+          description: Permission keys from the ACL catalog
+          example:
+            - photoEntry.read
+          type: array
+          items:
+            type: string
+        expires:
+          type: boolean
+          description: Defaults to true (one year). Set false for a non-expiring token.
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - scopes
+    IntegrationTokenCreatedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        token:
+          type: string
+          example: whcp_7f3a9c2e1b4d6a80_9b1d…
+        scopes:
+          type: array
+          items:
+            type: string
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - id
+        - token
+        - scopes
     DashboardServersDto:
       type: object
       properties:

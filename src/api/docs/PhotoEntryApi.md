@@ -8,6 +8,7 @@ All URIs are relative to *http://localhost*
 |[**photoEntryControllerCreateFolders**](#photoentrycontrollercreatefolders) | **POST** /photo-entry/{id}/create-folders | |
 |[**photoEntryControllerDelete**](#photoentrycontrollerdelete) | **DELETE** /photo-entry/{id} | |
 |[**photoEntryControllerGetById**](#photoentrycontrollergetbyid) | **GET** /photo-entry/{id} | |
+|[**photoEntryControllerGetFolderStructure**](#photoentrycontrollergetfolderstructure) | **GET** /photo-entry/{id}/folder-structure | Folder layout of a single entry|
 |[**photoEntryControllerList**](#photoentrycontrollerlist) | **GET** /photo-entry | |
 |[**photoEntryControllerMarkMediaUploaded**](#photoentrycontrollermarkmediauploaded) | **POST** /photo-entry/{id}/mark-media-uploaded | |
 |[**photoEntryControllerPatch**](#photoentrycontrollerpatch) | **PATCH** /photo-entry/{id} | |
@@ -211,6 +212,57 @@ const { status, data } = await apiInstance.photoEntryControllerGetById(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Photo entry details |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryControllerGetFolderStructure**
+> PhotoEntryFolderStructureResponse photoEntryControllerGetFolderStructure()
+
+For external tools that create or mirror the entry folders themselves. Returns the entry root folder plus the sub-folders to create under it, each tagged with a stable `role` — match on the role, not on the path. GENERAL and WORK entries only: ASTRO entries are filed per astro object and have no single root.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryControllerGetFolderStructure(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryFolderStructureResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Entry root folder and its sub-folder structure |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
