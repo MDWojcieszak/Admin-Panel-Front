@@ -187,7 +187,9 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
           ...styles.input,
           width: variant === 'secondary' ? '100%' : undefined,
           paddingTop: variant === 'secondary' ? theme.spacing.m : theme.spacing.l + 4,
-          paddingLeft: SelectedIcon ? theme.spacing.m + ICON_SIZE + theme.spacing.s : undefined,
+          // Always a concrete value: `undefined` here would clear the left side of
+          // the `padding` shorthand set above, flattening the text against the edge.
+          paddingLeft: SelectedIcon ? theme.spacing.m + ICON_SIZE + theme.spacing.s : theme.spacing.m,
         }}
         readOnly
         onClick={handlePress}
