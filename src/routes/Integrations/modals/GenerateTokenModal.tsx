@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FiAlertTriangle, FiCheck, FiCopy } from 'react-icons/fi';
 import { ApiKeyType } from '~/api/api';
 import { Button } from '~/components/Button';
+import { DateInput } from '~/components/DateInput';
 import { Input } from '~/components/Input';
 import { Select } from '~/components/Select';
 import { Switch } from '~/components/Switch';
@@ -126,7 +127,7 @@ export const GenerateTokenModal = (p: GenerateTokenModalProps) => {
         </div>
 
         {expires ? (
-          <Input name='expiresAt' label='Expires at' description='Token expiry date' type='date' />
+          <DateInput name='expiresAt' label='Expires at' description='Token expiry date' />
         ) : null}
 
         <div style={styles.actions}>

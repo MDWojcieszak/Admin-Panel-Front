@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FiAlertTriangle, FiCheck, FiCopy } from 'react-icons/fi';
 import { IntegrationPlatform } from '~/api/api';
 import { Button } from '~/components/Button';
+import { DateInput } from '~/components/DateInput';
 import { Input } from '~/components/Input';
 import { PermissionPicker } from '~/components/PermissionPicker';
 import { Select } from '~/components/Select';
@@ -168,7 +169,7 @@ export const CreateIntegrationTokenModal = (p: CreateIntegrationTokenModalProps)
           </span>
         </div>
 
-        {expires ? <Input name='expiresAt' label='Expires at' description='Optional' type='date' /> : null}
+        {expires ? <DateInput name='expiresAt' label='Expires at' description='Optional' /> : null}
 
         <div style={styles.actions}>
           <Button label='Cancel' variant='secondary' onClick={p.onDone} />

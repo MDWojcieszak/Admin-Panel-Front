@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FiCheck, FiMoon } from 'react-icons/fi';
 
 import { Button } from '~/components/Button';
+import { DateInput } from '~/components/DateInput';
 import { Input } from '~/components/Input';
 import { Select } from '~/components/Select';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
@@ -23,15 +24,14 @@ type CreatePhotoEntryModalProps = Partial<InternalModalProps> & {
   astroObjects?: AstroObjectListItem[];
 };
 
-const PhotoEntrySchema = z
-  .object({
-    name: z.string({ required_error: 'Name is required' }).min(1, 'Name is required'),
-    type: z.nativeEnum(PhotoEntryType),
-    status: z.enum([PhotoEntryStatus.Planned, PhotoEntryStatus.Shot]),
-    startDate: z.string().optional(),
-    endDate: z.string().optional(),
-    selectedAstroObjectIds: z.array(z.string()).optional(),
-  });
+const PhotoEntrySchema = z.object({
+  name: z.string({ required_error: 'Name is required' }).min(1, 'Name is required'),
+  type: z.nativeEnum(PhotoEntryType),
+  status: z.enum([PhotoEntryStatus.Planned, PhotoEntryStatus.Shot]),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  selectedAstroObjectIds: z.array(z.string()).optional(),
+});
 
 type PhotoEntryFormValues = z.infer<typeof PhotoEntrySchema>;
 
@@ -53,6 +53,7 @@ export const CreatePhotoEntryModal = (p: CreatePhotoEntryModalProps) => {
   });
 
   const type = useWatch({ control: formMethods.control, name: 'type' });
+  const startDate = useWatch({ control: formMethods.control, name: 'startDate' });
   const selectedAstroObjectIds = useWatch({
     control: formMethods.control,
     name: 'selectedAstroObjectIds',
@@ -129,8 +130,15 @@ export const CreatePhotoEntryModal = (p: CreatePhotoEntryModalProps) => {
       </div>
 
       <div style={styles.row}>
-        <Input name='startDate' style={styles.flex} label='Start Date' description='Enter start date' type='date' />
-        <Input name='endDate' style={styles.flex} label='End Date' description='Enter end date' type='date' />
+        <DateInput name='startDate' style={styles.flex} label='Start Date' description='Enter start date' />
+        {/* A session cannot end before it starts, so earlier days are inert. */}
+        <DateInput
+          name='endDate'
+          style={styles.flex}
+          label='End Date'
+          description='Enter end date'
+          min={startDate || undefined}
+        />
       </div>
 
       {type === PhotoEntryType.Astro && (

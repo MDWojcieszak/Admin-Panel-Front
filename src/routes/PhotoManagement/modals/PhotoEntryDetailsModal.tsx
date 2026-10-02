@@ -7,6 +7,7 @@ import { FiAlertTriangle, FiCheck, FiCheckCircle, FiEdit2, FiFolder, FiLock } fr
 
 import { Badge, BadgeTone } from '~/components/Badge';
 import { Button } from '~/components/Button';
+import { DateInput } from '~/components/DateInput';
 import { Input } from '~/components/Input';
 import { Scrollbar } from '~/components/Scrollbar';
 import { EntryCommentsPanel } from '~/routes/PhotoManagement/components/EntryCommentsPanel';
@@ -154,6 +155,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry]);
 
+  const startDate = useWatch({ control: formMethods.control, name: 'startDate' });
   const selectedAstroObjectIds = useWatch({
     control: formMethods.control,
     name: 'selectedAstroObjectIds',
@@ -317,14 +319,14 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                 <Input name='name' label='Name' description='Photo entry name' type='text' />
 
                 <div style={styles.row}>
-                  <Input
-                    name='startDate'
+                  <DateInput name='startDate' style={styles.flex} label='Start Date' description='Entry start date' />
+                  <DateInput
+                    name='endDate'
                     style={styles.flex}
-                    label='Start Date'
-                    description='Entry start date'
-                    type='date'
+                    label='End Date'
+                    description='Entry end date'
+                    min={startDate || undefined}
                   />
-                  <Input name='endDate' style={styles.flex} label='End Date' description='Entry end date' type='date' />
                 </div>
 
                 {isAstro ? (

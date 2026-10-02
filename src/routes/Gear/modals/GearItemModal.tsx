@@ -13,6 +13,7 @@ import {
 } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
+import { DateInput } from '~/components/DateInput';
 import { Input } from '~/components/Input';
 import { Select } from '~/components/Select';
 import { Switch } from '~/components/Switch';
@@ -130,10 +131,7 @@ export const GearItemModal = (p: GearItemModalProps) => {
    * Whether the category holds material is the backend's call, surfaced here so
    * the user can see the consequence of their pick instead of guessing.
    */
-  const categoryMeta = useMemo(
-    () => categories.find((item) => item.category === category),
-    [categories, category],
-  );
+  const categoryMeta = useMemo(() => categories.find((item) => item.category === category), [categories, category]);
 
   const submit = async (data: FormValues) => {
     if (!gearApi) return;
@@ -178,7 +176,13 @@ export const GearItemModal = (p: GearItemModalProps) => {
   return (
     <div style={styles.container}>
       <div style={styles.row}>
-        <Select name='category' label='Category' options={CATEGORY_OPTIONS} control={form.control} style={styles.flex} />
+        <Select
+          name='category'
+          label='Category'
+          options={CATEGORY_OPTIONS}
+          control={form.control}
+          style={styles.flex}
+        />
         <Select
           name='ownership'
           label='Ownership'
@@ -209,26 +213,38 @@ export const GearItemModal = (p: GearItemModalProps) => {
       </div>
 
       <div style={styles.row}>
-        <Input name='brand' label='Brand' description='e.g. Fujifilm' type='text' control={form.control} style={styles.flex} />
-        <Input name='model' label='Model' description='e.g. X-T5' type='text' control={form.control} style={styles.flex} />
+        <Input
+          name='brand'
+          label='Brand'
+          description='e.g. Fujifilm'
+          type='text'
+          control={form.control}
+          style={styles.flex}
+        />
+        <Input
+          name='model'
+          label='Model'
+          description='e.g. X-T5'
+          type='text'
+          control={form.control}
+          style={styles.flex}
+        />
       </div>
 
       <TextArea name='description' label='Description' description='Optional notes' control={form.control} rows={3} />
 
       <div style={styles.row}>
-        <Input
+        <DateInput
           name='acquiredAt'
           label='Acquired'
           description='Left empty, it is stamped on becoming owned'
-          type='date'
           control={form.control}
           style={styles.flex}
         />
-        <Input
+        <DateInput
           name='retiredAt'
           label='Retired'
           description='Left empty, it is stamped on retiring'
-          type='date'
           control={form.control}
           style={styles.flex}
         />
