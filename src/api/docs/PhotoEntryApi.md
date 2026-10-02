@@ -4,15 +4,350 @@ All URIs are relative to *http://localhost*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
+|[**photoEntryCommentControllerCreate**](#photoentrycommentcontrollercreate) | **POST** /photo-entry/{id}/comments | Add a comment|
+|[**photoEntryCommentControllerList**](#photoentrycommentcontrollerlist) | **GET** /photo-entry/{id}/comments | Comments of an entry, grouped by stage|
+|[**photoEntryCommentControllerPatch**](#photoentrycommentcontrollerpatch) | **PATCH** /photo-entry/comments/{commentId} | Edit body or kind|
+|[**photoEntryCommentControllerRemove**](#photoentrycommentcontrollerremove) | **DELETE** /photo-entry/comments/{commentId} | |
+|[**photoEntryCommentControllerReopen**](#photoentrycommentcontrollerreopen) | **POST** /photo-entry/comments/{commentId}/reopen | Undo a resolve|
+|[**photoEntryCommentControllerResolve**](#photoentrycommentcontrollerresolve) | **POST** /photo-entry/comments/{commentId}/resolve | Tick a TODO off (TODO comments only)|
 |[**photoEntryControllerCreate**](#photoentrycontrollercreate) | **POST** /photo-entry | |
 |[**photoEntryControllerCreateFolders**](#photoentrycontrollercreatefolders) | **POST** /photo-entry/{id}/create-folders | |
 |[**photoEntryControllerDelete**](#photoentrycontrollerdelete) | **DELETE** /photo-entry/{id} | |
 |[**photoEntryControllerGetById**](#photoentrycontrollergetbyid) | **GET** /photo-entry/{id} | |
 |[**photoEntryControllerGetFolderStructure**](#photoentrycontrollergetfolderstructure) | **GET** /photo-entry/{id}/folder-structure | Folder layout of a single entry|
 |[**photoEntryControllerList**](#photoentrycontrollerlist) | **GET** /photo-entry | |
-|[**photoEntryControllerMarkMediaUploaded**](#photoentrycontrollermarkmediauploaded) | **POST** /photo-entry/{id}/mark-media-uploaded | |
+|[**photoEntryControllerMarkMediaUploaded**](#photoentrycontrollermarkmediauploaded) | **POST** /photo-entry/{id}/mark-media-uploaded | Mark all media as secured|
 |[**photoEntryControllerPatch**](#photoentrycontrollerpatch) | **PATCH** /photo-entry/{id} | |
+|[**photoEntryControllerPatchPostStage**](#photoentrycontrollerpatchpoststage) | **PATCH** /photo-entry/{id}/post-stage | |
+|[**photoEntryControllerPatchProgress**](#photoentrycontrollerpatchprogress) | **PATCH** /photo-entry/{id}/progress | |
 |[**photoEntryControllerPatchStatus**](#photoentrycontrollerpatchstatus) | **PATCH** /photo-entry/{id}/status | |
+|[**photoEntryControllerRefreshCounts**](#photoentrycontrollerrefreshcounts) | **POST** /photo-entry/{id}/refresh-counts | Count photos from the entry folders|
+|[**photoEntryGearControllerAdd**](#photoentrygearcontrolleradd) | **POST** /photo-entry/{id}/gear/{gearItemId} | |
+|[**photoEntryGearControllerAddFromKit**](#photoentrygearcontrolleraddfromkit) | **POST** /photo-entry/{id}/gear/from-kit/{kitId} | Expand a kit into the list|
+|[**photoEntryGearControllerConfirm**](#photoentrygearcontrollerconfirm) | **POST** /photo-entry/{id}/gear/confirm | Declare the gear as complete|
+|[**photoEntryGearControllerList**](#photoentrygearcontrollerlist) | **GET** /photo-entry/{id}/gear | Gear list of an entry|
+|[**photoEntryGearControllerPatch**](#photoentrygearcontrollerpatch) | **PATCH** /photo-entry/{id}/gear/{gearItemId} | Tick one row|
+|[**photoEntryGearControllerPendingMedia**](#photoentrygearcontrollerpendingmedia) | **GET** /photo-entry/pending-media | Media still waiting to be secured|
+|[**photoEntryGearControllerRemove**](#photoentrygearcontrollerremove) | **DELETE** /photo-entry/{id}/gear/{gearItemId} | |
+|[**photoEntryGearControllerReplace**](#photoentrygearcontrollerreplace) | **PUT** /photo-entry/{id}/gear | Replace the gear list|
+|[**photoEntryGearControllerShoppingList**](#photoentrygearcontrollershoppinglist) | **GET** /photo-entry/{id}/shopping-list | |
+
+# **photoEntryCommentControllerCreate**
+> PhotoEntryCommentResponse photoEntryCommentControllerCreate(createPhotoEntryCommentDto)
+
+The stage is stamped from the entry as it is now and cannot be changed later.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration,
+    CreatePhotoEntryCommentDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let createPhotoEntryCommentDto: CreatePhotoEntryCommentDto; //
+
+const { status, data } = await apiInstance.photoEntryCommentControllerCreate(
+    id,
+    createPhotoEntryCommentDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **createPhotoEntryCommentDto** | **CreatePhotoEntryCommentDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryCommentResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryCommentControllerList**
+> PhotoEntryCommentListResponse photoEntryCommentControllerList()
+
+Groups follow the entry history: planning, after the shoot, selecting, editing, finished. `unresolved=true` keeps only open TODOs.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let unresolved: boolean; // (optional) (default to undefined)
+let kind: PhotoEntryCommentKind; // (optional) (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryCommentControllerList(
+    id,
+    unresolved,
+    kind
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+| **unresolved** | [**boolean**] |  | (optional) defaults to undefined|
+| **kind** | **PhotoEntryCommentKind** |  | (optional) defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryCommentListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryCommentControllerPatch**
+> PhotoEntryCommentResponse photoEntryCommentControllerPatch(patchPhotoEntryCommentDto)
+
+Turning a TODO into another kind drops its resolution.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration,
+    PatchPhotoEntryCommentDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let commentId: string; // (default to undefined)
+let patchPhotoEntryCommentDto: PatchPhotoEntryCommentDto; //
+
+const { status, data } = await apiInstance.photoEntryCommentControllerPatch(
+    commentId,
+    patchPhotoEntryCommentDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **patchPhotoEntryCommentDto** | **PatchPhotoEntryCommentDto**|  | |
+| **commentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryCommentResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryCommentControllerRemove**
+> photoEntryCommentControllerRemove()
+
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let commentId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryCommentControllerRemove(
+    commentId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **commentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Deleted comment |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryCommentControllerReopen**
+> PhotoEntryCommentResponse photoEntryCommentControllerReopen()
+
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let commentId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryCommentControllerReopen(
+    commentId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **commentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryCommentResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryCommentControllerResolve**
+> PhotoEntryCommentResponse photoEntryCommentControllerResolve()
+
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let commentId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryCommentControllerResolve(
+    commentId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **commentId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryCommentResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **photoEntryControllerCreate**
 > PhotoEntryResponse photoEntryControllerCreate(createPhotoEntryDto)
@@ -100,7 +435,7 @@ const { status, data } = await apiInstance.photoEntryControllerCreateFolders(
 
 ### Authorization
 
-[bearer](../README.md#bearer)
+No authorization required
 
 ### HTTP request headers
 
@@ -283,6 +618,7 @@ const apiInstance = new PhotoEntryApi(configuration);
 
 let type: PhotoEntryType; // (optional) (default to undefined)
 let status: PhotoEntryStatus; // (optional) (default to undefined)
+let postStage: PhotoEntryPostStage; // (optional) (default to undefined)
 let astroObjectId: string; // (optional) (default to undefined)
 let search: string; // (optional) (default to undefined)
 let take: number; // (optional) (default to undefined)
@@ -291,6 +627,7 @@ let skip: number; // (optional) (default to undefined)
 const { status, data } = await apiInstance.photoEntryControllerList(
     type,
     status,
+    postStage,
     astroObjectId,
     search,
     take,
@@ -304,6 +641,7 @@ const { status, data } = await apiInstance.photoEntryControllerList(
 |------------- | ------------- | ------------- | -------------|
 | **type** | **PhotoEntryType** |  | (optional) defaults to undefined|
 | **status** | **PhotoEntryStatus** |  | (optional) defaults to undefined|
+| **postStage** | **PhotoEntryPostStage** |  | (optional) defaults to undefined|
 | **astroObjectId** | [**string**] |  | (optional) defaults to undefined|
 | **search** | [**string**] |  | (optional) defaults to undefined|
 | **take** | [**number**] |  | (optional) defaults to undefined|
@@ -334,6 +672,7 @@ const { status, data } = await apiInstance.photoEntryControllerList(
 # **photoEntryControllerMarkMediaUploaded**
 > PhotoEntryResponse photoEntryControllerMarkMediaUploaded()
 
+Shortcut for \"everything is offloaded\": secures every used gear row that produces media and declares the gear, then derives uploadStatus.
 
 ### Example
 
@@ -377,7 +716,7 @@ const { status, data } = await apiInstance.photoEntryControllerMarkMediaUploaded
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | Created photo entry folders |  -  |
+|**200** | Photo entry with media marked as uploaded |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -435,6 +774,114 @@ const { status, data } = await apiInstance.photoEntryControllerPatch(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **photoEntryControllerPatchPostStage**
+> PhotoEntryResponse photoEntryControllerPatchPostStage(patchPhotoEntryPostStageDto)
+
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration,
+    PatchPhotoEntryPostStageDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let patchPhotoEntryPostStageDto: PatchPhotoEntryPostStageDto; //
+
+const { status, data } = await apiInstance.photoEntryControllerPatchPostStage(
+    id,
+    patchPhotoEntryPostStageDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **patchPhotoEntryPostStageDto** | **PatchPhotoEntryPostStageDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryControllerPatchProgress**
+> PhotoEntryResponse photoEntryControllerPatchProgress(patchPhotoEntryProgressDto)
+
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration,
+    PatchPhotoEntryProgressDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let patchPhotoEntryProgressDto: PatchPhotoEntryProgressDto; //
+
+const { status, data } = await apiInstance.photoEntryControllerPatchProgress(
+    id,
+    patchPhotoEntryProgressDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **patchPhotoEntryProgressDto** | **PatchPhotoEntryProgressDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **photoEntryControllerPatchStatus**
 > PhotoEntryResponse photoEntryControllerPatchStatus(patchPhotoEntryStatusDto)
 
@@ -486,6 +933,530 @@ const { status, data } = await apiInstance.photoEntryControllerPatchStatus(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Patched photo entry status |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryControllerRefreshCounts**
+> PhotoEntryResponse photoEntryControllerRefreshCounts()
+
+photoCount from SOURCE (RAW+JPEG pairs count once; VIDEO and SEQUENCES excluded), selectedCount from SELECTS, editedCount from EXPORT. A stage holding fewer frames than the next one is reported as unknown. Always applies; the nightly run instead keeps counts reported after the folders last changed. GENERAL and WORK entries with created folders only.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryControllerRefreshCounts(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryGearControllerAdd**
+> PhotoEntryGearListResponse photoEntryGearControllerAdd(addPhotoEntryGearDto)
+
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration,
+    AddPhotoEntryGearDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let gearItemId: string; // (default to undefined)
+let addPhotoEntryGearDto: AddPhotoEntryGearDto; //
+
+const { status, data } = await apiInstance.photoEntryGearControllerAdd(
+    id,
+    gearItemId,
+    addPhotoEntryGearDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **addPhotoEntryGearDto** | **AddPhotoEntryGearDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+| **gearItemId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryGearListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryGearControllerAddFromKit**
+> PhotoEntryGearListResponse photoEntryGearControllerAddFromKit()
+
+Copies the kit into ordinary rows. Rows already on the list are kept; RETIRED gear is skipped.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let kitId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryGearControllerAddFromKit(
+    id,
+    kitId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+| **kitId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryGearListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryGearControllerConfirm**
+> PhotoEntryGearListResponse photoEntryGearControllerConfirm()
+
+SHOT entries only; valid with an empty list.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryGearControllerConfirm(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryGearListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryGearControllerList**
+> PhotoEntryGearListResponse photoEntryGearControllerList()
+
+One list, read by phase: PACK before the shoot, SECURE after it. `listed` marks the rows that belong on the list for the current phase.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryGearControllerList(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryGearListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryGearControllerPatch**
+> PhotoEntryGearListResponse photoEntryGearControllerPatch(patchPhotoEntryGearDto)
+
+`secured: true` implies `used`; `used: false` clears `secured`. used/secured need a SHOT entry and gear that is not on the wishlist.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration,
+    PatchPhotoEntryGearDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let gearItemId: string; // (default to undefined)
+let patchPhotoEntryGearDto: PatchPhotoEntryGearDto; //
+
+const { status, data } = await apiInstance.photoEntryGearControllerPatch(
+    id,
+    gearItemId,
+    patchPhotoEntryGearDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **patchPhotoEntryGearDto** | **PatchPhotoEntryGearDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+| **gearItemId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryGearListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryGearControllerPendingMedia**
+> PendingMediaResponse photoEntryGearControllerPendingMedia()
+
+`unsecured`: declared gear with media not yet offloaded/scanned/copied, with per-source thresholds (cards 7 days, film 90). `undeclared`: SHOT entries whose gear was never declared — unknown, never emailed about.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+const { status, data } = await apiInstance.photoEntryGearControllerPendingMedia();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**PendingMediaResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryGearControllerRemove**
+> PhotoEntryGearListResponse photoEntryGearControllerRemove()
+
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let gearItemId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryGearControllerRemove(
+    id,
+    gearItemId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+| **gearItemId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryGearListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryGearControllerReplace**
+> PhotoEntryGearListResponse photoEntryGearControllerReplace(putPhotoEntryGearDto)
+
+Rows missing from `items` are removed; omitted flags on existing rows are left alone.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration,
+    PutPhotoEntryGearDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let putPhotoEntryGearDto: PutPhotoEntryGearDto; //
+
+const { status, data } = await apiInstance.photoEntryGearControllerReplace(
+    id,
+    putPhotoEntryGearDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **putPhotoEntryGearDto** | **PutPhotoEntryGearDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryGearListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryGearControllerShoppingList**
+> PhotoEntryShoppingListResponse photoEntryGearControllerShoppingList()
+
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryGearControllerShoppingList(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryShoppingListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Wishlist gear attached to the entry, with the total |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

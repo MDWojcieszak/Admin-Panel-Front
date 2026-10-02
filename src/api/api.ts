@@ -61,6 +61,31 @@ export interface AddCollectionItemDto {
 /**
  * 
  * @export
+ * @interface AddPhotoEntryGearDto
+ */
+export interface AddPhotoEntryGearDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AddPhotoEntryGearDto
+     */
+    'packed'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AddPhotoEntryGearDto
+     */
+    'used'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof AddPhotoEntryGearDto
+     */
+    'note'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface AddPoiImageDto
  */
 export interface AddPoiImageDto {
@@ -183,6 +208,98 @@ export interface AddSectionPoiDto {
      * @memberof AddSectionPoiDto
      */
     'order'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface AgentContainerDto
+ */
+export interface AgentContainerDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentContainerDto
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentContainerDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentContainerDto
+     */
+    'image': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentContainerDto
+     */
+    'imageDigest'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentContainerDto
+     */
+    'state': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentContainerDto
+     */
+    'health'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof AgentContainerDto
+     */
+    'exitCode'?: number | null;
+    /**
+     * 
+     * @type {object}
+     * @memberof AgentContainerDto
+     */
+    'labels': object;
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentContainerDto
+     */
+    'createdAt'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface AgentHeartbeatDto
+ */
+export interface AgentHeartbeatDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentHeartbeatDto
+     */
+    'version'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof AgentHeartbeatDto
+     */
+    'uptimeSeconds'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AgentHeartbeatDto
+     */
+    'containerCount'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AgentHeartbeatDto
+     */
+    'dockerReachable'?: boolean;
 }
 /**
  * 
@@ -407,6 +524,36 @@ export const AppPlatform = {
 } as const;
 
 export type AppPlatform = typeof AppPlatform[keyof typeof AppPlatform];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const AppSourceType = {
+    Rendered: 'RENDERED',
+    Git: 'GIT',
+    Host: 'HOST'
+} as const;
+
+export type AppSourceType = typeof AppSourceType[keyof typeof AppSourceType];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ApplicationTier = {
+    Bootstrap: 'BOOTSTRAP',
+    Infrastructure: 'INFRASTRUCTURE',
+    Application: 'APPLICATION'
+} as const;
+
+export type ApplicationTier = typeof ApplicationTier[keyof typeof ApplicationTier];
 
 
 /**
@@ -1939,6 +2086,24 @@ export interface CommentListResponse {
  * @enum {string}
  */
 
+export const CommentStage = {
+    Planning: 'PLANNING',
+    AfterShoot: 'AFTER_SHOOT',
+    Selecting: 'SELECTING',
+    Editing: 'EDITING',
+    Finished: 'FINISHED',
+    Cancelled: 'CANCELLED'
+} as const;
+
+export type CommentStage = typeof CommentStage[keyof typeof CommentStage];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
 export const ConnectedServiceType = {
     Google: 'GOOGLE',
     Todoist: 'TODOIST',
@@ -1953,6 +2118,38 @@ export const ConnectedServiceType = {
 export type ConnectedServiceType = typeof ConnectedServiceType[keyof typeof ConnectedServiceType];
 
 
+/**
+ * 
+ * @export
+ * @interface ContainerChangedDto
+ */
+export interface ContainerChangedDto {
+    /**
+     * 
+     * @type {AgentContainerDto}
+     * @memberof ContainerChangedDto
+     */
+    'container': AgentContainerDto;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ContainerChangedDto
+     */
+    'removed'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface ContainerSnapshotDto
+ */
+export interface ContainerSnapshotDto {
+    /**
+     * 
+     * @type {Array<AgentContainerDto>}
+     * @memberof ContainerSnapshotDto
+     */
+    'containers': Array<AgentContainerDto>;
+}
 /**
  * 
  * @export
@@ -2009,6 +2206,63 @@ export interface CpuDto {
      */
     'currentLoadSystem': number;
 }
+/**
+ * 
+ * @export
+ * @interface CreateApplicationDto
+ */
+export interface CreateApplicationDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateApplicationDto
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateApplicationDto
+     */
+    'displayName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateApplicationDto
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {ApplicationTier}
+     * @memberof CreateApplicationDto
+     */
+    'tier'?: ApplicationTier;
+    /**
+     * 
+     * @type {AppSourceType}
+     * @memberof CreateApplicationDto
+     */
+    'sourceType'?: AppSourceType;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateApplicationDto
+     */
+    'image'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateApplicationDto
+     */
+    'gitRepoId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateApplicationDto
+     */
+    'serverCategoryId': string;
+}
+
+
 /**
  * 
  * @export
@@ -2439,9 +2693,70 @@ export interface CreateGearDto {
      * @memberof CreateGearDto
      */
     'visible'?: boolean;
+    /**
+     * 
+     * @type {GearOwnership}
+     * @memberof CreateGearDto
+     */
+    'ownership'?: GearOwnership;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateGearDto
+     */
+    'acquiredAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateGearDto
+     */
+    'retiredAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateGearDto
+     */
+    'priority'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateGearDto
+     */
+    'estimatedPrice'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateGearDto
+     */
+    'purchaseUrl'?: string | null;
 }
 
 
+/**
+ * 
+ * @export
+ * @interface CreateGearKitDto
+ */
+export interface CreateGearKitDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateGearKitDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateGearKitDto
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof CreateGearKitDto
+     */
+    'gearItemIds'?: Array<string>;
+}
 /**
  * 
  * @export
@@ -2621,6 +2936,27 @@ export interface CreatePermissionGroupDto {
      */
     'permissions': Array<string>;
 }
+/**
+ * 
+ * @export
+ * @interface CreatePhotoEntryCommentDto
+ */
+export interface CreatePhotoEntryCommentDto {
+    /**
+     * 
+     * @type {PhotoEntryCommentKind}
+     * @memberof CreatePhotoEntryCommentDto
+     */
+    'kind'?: PhotoEntryCommentKind;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatePhotoEntryCommentDto
+     */
+    'body': string;
+}
+
+
 /**
  * 
  * @export
@@ -2921,6 +3257,39 @@ export interface CreatePostDto {
      * @memberof CreatePostDto
      */
     'seriesOrder'?: number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface CreateReleaseDto
+ */
+export interface CreateReleaseDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateReleaseDto
+     */
+    'composeHash': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateReleaseDto
+     */
+    'version'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateReleaseDto
+     */
+    'digest'?: string;
+    /**
+     * 
+     * @type {ReleaseTrigger}
+     * @memberof CreateReleaseDto
+     */
+    'trigger'?: ReleaseTrigger;
 }
 
 
@@ -3411,6 +3780,49 @@ export interface DashboardUsersDto {
      * @memberof DashboardUsersDto
      */
     'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface DeployResultDto
+ */
+export interface DeployResultDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployResultDto
+     */
+    'releaseId': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DeployResultDto
+     */
+    'success': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DeployResultDto
+     */
+    'healthy': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployResultDto
+     */
+    'digest'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployResultDto
+     */
+    'homelabCommit'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployResultDto
+     */
+    'failureReason'?: string | null;
 }
 /**
  * 
@@ -4352,6 +4764,35 @@ export type EmbedProvider = typeof EmbedProvider[keyof typeof EmbedProvider];
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const EntryGearPhase = {
+    Pack: 'PACK',
+    Secure: 'SECURE',
+    None: 'NONE'
+} as const;
+
+export type EntryGearPhase = typeof EntryGearPhase[keyof typeof EntryGearPhase];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const EntryGearWarning = {
+    Retired: 'RETIRED',
+    NotOwned: 'NOT_OWNED'
+} as const;
+
+export type EntryGearWarning = typeof EntryGearWarning[keyof typeof EntryGearWarning];
+
+
+/**
+ * 
+ * @export
  * @interface FeedbackResponse
  */
 export interface FeedbackResponse {
@@ -5057,10 +5498,42 @@ export interface GalleryTotalsDto {
 
 export const GearCategory = {
     Camera: 'CAMERA',
+    FilmCamera: 'FILM_CAMERA',
     Lens: 'LENS',
+    Teleconverter: 'TELECONVERTER',
+    Adapter: 'ADAPTER',
+    Filter: 'FILTER',
+    Telescope: 'TELESCOPE',
+    SmartTelescope: 'SMART_TELESCOPE',
+    AstroCamera: 'ASTRO_CAMERA',
+    GuideScope: 'GUIDE_SCOPE',
+    Mount: 'MOUNT',
+    Eyepiece: 'EYEPIECE',
+    Binoculars: 'BINOCULARS',
+    Diagonal: 'DIAGONAL',
+    DewHeater: 'DEW_HEATER',
     Tripod: 'TRIPOD',
-    Bag: 'BAG',
+    Head: 'HEAD',
+    Gimbal: 'GIMBAL',
+    Flash: 'FLASH',
     Lighting: 'LIGHTING',
+    LightModifier: 'LIGHT_MODIFIER',
+    Battery: 'BATTERY',
+    Charger: 'CHARGER',
+    PowerBank: 'POWER_BANK',
+    PowerStation: 'POWER_STATION',
+    Drone: 'DRONE',
+    ActionCam: 'ACTION_CAM',
+    Remote: 'REMOTE',
+    MemoryCard: 'MEMORY_CARD',
+    CardReader: 'CARD_READER',
+    Storage: 'STORAGE',
+    Computer: 'COMPUTER',
+    Bag: 'BAG',
+    Strap: 'STRAP',
+    RainCover: 'RAIN_COVER',
+    Cleaning: 'CLEANING',
+    Cable: 'CABLE',
     Accessory: 'ACCESSORY',
     Other: 'OTHER'
 } as const;
@@ -5068,6 +5541,212 @@ export const GearCategory = {
 export type GearCategory = typeof GearCategory[keyof typeof GearCategory];
 
 
+/**
+ * 
+ * @export
+ * @interface GearCategoryResponse
+ */
+export interface GearCategoryResponse {
+    /**
+     * 
+     * @type {GearCategory}
+     * @memberof GearCategoryResponse
+     */
+    'category': GearCategory;
+    /**
+     * 
+     * @type {GearMediaSource}
+     * @memberof GearCategoryResponse
+     */
+    'mediaSource': GearMediaSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearCategoryResponse
+     */
+    'secureAction'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof GearCategoryResponse
+     */
+    'reminderDays'?: number | null;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface GearEntryRefResponse
+ */
+export interface GearEntryRefResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GearEntryRefResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearEntryRefResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearEntryRefResponse
+     */
+    'startDate'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface GearItemAdminResponse
+ */
+export interface GearItemAdminResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {GearCategory}
+     * @memberof GearItemAdminResponse
+     */
+    'category': GearCategory;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'brand': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'model': string;
+    /**
+     * 
+     * @type {GearOwnership}
+     * @memberof GearItemAdminResponse
+     */
+    'ownership': GearOwnership;
+    /**
+     * 
+     * @type {GearMediaSource}
+     * @memberof GearItemAdminResponse
+     */
+    'mediaSource': GearMediaSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'systemId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'coverUrl'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'lowResUrl'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof GearItemAdminResponse
+     */
+    'order': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GearItemAdminResponse
+     */
+    'visible': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'acquiredAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'retiredAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof GearItemAdminResponse
+     */
+    'priority'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof GearItemAdminResponse
+     */
+    'estimatedPrice'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'purchaseUrl'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'neededBy'?: string | null;
+    /**
+     * 
+     * @type {GearEntryRefResponse}
+     * @memberof GearItemAdminResponse
+     */
+    'neededFor'?: GearEntryRefResponse | null;
+    /**
+     * 
+     * @type {Array<GearEntryRefResponse>}
+     * @memberof GearItemAdminResponse
+     */
+    'missedFor': Array<GearEntryRefResponse>;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface GearItemListResponse
+ */
+export interface GearItemListResponse {
+    /**
+     * 
+     * @type {Array<GearItemAdminResponse>}
+     * @memberof GearItemListResponse
+     */
+    'items': Array<GearItemAdminResponse>;
+    /**
+     * 
+     * @type {number}
+     * @memberof GearItemListResponse
+     */
+    'wishlistTotal': number;
+}
 /**
  * 
  * @export
@@ -5098,6 +5777,18 @@ export interface GearItemResponse {
      * @memberof GearItemResponse
      */
     'model': string;
+    /**
+     * 
+     * @type {GearOwnership}
+     * @memberof GearItemResponse
+     */
+    'ownership': GearOwnership;
+    /**
+     * 
+     * @type {GearMediaSource}
+     * @memberof GearItemResponse
+     */
+    'mediaSource': GearMediaSource;
     /**
      * 
      * @type {string}
@@ -5140,6 +5831,79 @@ export interface GearItemResponse {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const GearItemsSort = {
+    Default: 'DEFAULT',
+    NeededBy: 'NEEDED_BY'
+} as const;
+
+export type GearItemsSort = typeof GearItemsSort[keyof typeof GearItemsSort];
+
+
+/**
+ * 
+ * @export
+ * @interface GearKitResponse
+ */
+export interface GearKitResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GearKitResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearKitResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearKitResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {Array<GearItemResponse>}
+     * @memberof GearKitResponse
+     */
+    'items': Array<GearItemResponse>;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearKitResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearKitResponse
+     */
+    'updatedAt': string;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const GearMediaSource = {
+    None: 'NONE',
+    Card: 'CARD',
+    Film: 'FILM',
+    Tethered: 'TETHERED'
+} as const;
+
+export type GearMediaSource = typeof GearMediaSource[keyof typeof GearMediaSource];
+
+
+/**
+ * 
+ * @export
  * @interface GearOverviewResponse
  */
 export interface GearOverviewResponse {
@@ -5156,6 +5920,21 @@ export interface GearOverviewResponse {
      */
     'ungrouped': Array<GearItemResponse>;
 }
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const GearOwnership = {
+    Owned: 'OWNED',
+    Wishlist: 'WISHLIST',
+    Retired: 'RETIRED'
+} as const;
+
+export type GearOwnership = typeof GearOwnership[keyof typeof GearOwnership];
+
+
 /**
  * 
  * @export
@@ -7432,6 +8211,27 @@ export interface PatchHomeConfigDto {
 /**
  * 
  * @export
+ * @interface PatchPhotoEntryCommentDto
+ */
+export interface PatchPhotoEntryCommentDto {
+    /**
+     * 
+     * @type {PhotoEntryCommentKind}
+     * @memberof PatchPhotoEntryCommentDto
+     */
+    'kind'?: PhotoEntryCommentKind;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchPhotoEntryCommentDto
+     */
+    'body'?: string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface PatchPhotoEntryDto
  */
 export interface PatchPhotoEntryDto {
@@ -7468,6 +8268,77 @@ export interface PatchPhotoEntryDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface PatchPhotoEntryGearDto
+ */
+export interface PatchPhotoEntryGearDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchPhotoEntryGearDto
+     */
+    'packed'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchPhotoEntryGearDto
+     */
+    'used'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchPhotoEntryGearDto
+     */
+    'note'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchPhotoEntryGearDto
+     */
+    'secured'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface PatchPhotoEntryPostStageDto
+ */
+export interface PatchPhotoEntryPostStageDto {
+    /**
+     * 
+     * @type {PhotoEntryPostStage}
+     * @memberof PatchPhotoEntryPostStageDto
+     */
+    'postStage': PhotoEntryPostStage;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface PatchPhotoEntryProgressDto
+ */
+export interface PatchPhotoEntryProgressDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchPhotoEntryProgressDto
+     */
+    'photoCount'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchPhotoEntryProgressDto
+     */
+    'selectedCount'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchPhotoEntryProgressDto
+     */
+    'editedCount'?: number | null;
+}
 /**
  * 
  * @export
@@ -8035,6 +8906,125 @@ export interface PatchUserSettingsDto {
      * @memberof PatchUserSettingsDto
      */
     'processPushNotifications'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'photoMediaEmailNotifications'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface PendingMediaEntryResponse
+ */
+export interface PendingMediaEntryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingMediaEntryResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingMediaEntryResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingMediaEntryResponse
+     */
+    'startDate'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingMediaEntryResponse
+     */
+    'endDate'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PendingMediaEntryResponse
+     */
+    'overdue': boolean;
+    /**
+     * 
+     * @type {Array<PendingMediaItemResponse>}
+     * @memberof PendingMediaEntryResponse
+     */
+    'items': Array<PendingMediaItemResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface PendingMediaItemResponse
+ */
+export interface PendingMediaItemResponse {
+    /**
+     * 
+     * @type {GearItemResponse}
+     * @memberof PendingMediaItemResponse
+     */
+    'gear': GearItemResponse;
+    /**
+     * 
+     * @type {GearMediaSource}
+     * @memberof PendingMediaItemResponse
+     */
+    'mediaSource': GearMediaSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingMediaItemResponse
+     */
+    'secureAction': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingMediaItemResponse
+     */
+    'since': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PendingMediaItemResponse
+     */
+    'daysPending': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PendingMediaItemResponse
+     */
+    'reminderDays': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PendingMediaItemResponse
+     */
+    'overdue': boolean;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface PendingMediaResponse
+ */
+export interface PendingMediaResponse {
+    /**
+     * 
+     * @type {Array<PendingMediaEntryResponse>}
+     * @memberof PendingMediaResponse
+     */
+    'unsecured': Array<PendingMediaEntryResponse>;
+    /**
+     * 
+     * @type {Array<UndeclaredEntryResponse>}
+     * @memberof PendingMediaResponse
+     */
+    'undeclared': Array<UndeclaredEntryResponse>;
 }
 /**
  * 
@@ -8650,6 +9640,190 @@ export interface PhotoEntryAstroObjectResponse {
 /**
  * 
  * @export
+ * @interface PhotoEntryCommentGroupResponse
+ */
+export interface PhotoEntryCommentGroupResponse {
+    /**
+     * 
+     * @type {CommentStage}
+     * @memberof PhotoEntryCommentGroupResponse
+     */
+    'stage': CommentStage;
+    /**
+     * 
+     * @type {Array<PhotoEntryCommentResponse>}
+     * @memberof PhotoEntryCommentGroupResponse
+     */
+    'comments': Array<PhotoEntryCommentResponse>;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const PhotoEntryCommentKind = {
+    Note: 'NOTE',
+    Todo: 'TODO',
+    Highlight: 'HIGHLIGHT',
+    Problem: 'PROBLEM'
+} as const;
+
+export type PhotoEntryCommentKind = typeof PhotoEntryCommentKind[keyof typeof PhotoEntryCommentKind];
+
+
+/**
+ * 
+ * @export
+ * @interface PhotoEntryCommentListResponse
+ */
+export interface PhotoEntryCommentListResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryCommentListResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {CommentStage}
+     * @memberof PhotoEntryCommentListResponse
+     */
+    'currentStage': CommentStage;
+    /**
+     * 
+     * @type {Array<PhotoEntryCommentGroupResponse>}
+     * @memberof PhotoEntryCommentListResponse
+     */
+    'groups': Array<PhotoEntryCommentGroupResponse>;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface PhotoEntryCommentResponse
+ */
+export interface PhotoEntryCommentResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {PhotoEntryCommentKind}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'kind': PhotoEntryCommentKind;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'body': string;
+    /**
+     * 
+     * @type {PhotoEntryStatus}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'atStatus': PhotoEntryStatus;
+    /**
+     * 
+     * @type {PhotoEntryPostStage}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'atPostStage': PhotoEntryPostStage;
+    /**
+     * 
+     * @type {CommentStage}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'stage': CommentStage;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'resolvedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'authorId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryCommentResponse
+     */
+    'updatedAt': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface PhotoEntryCommentSummaryResponse
+ */
+export interface PhotoEntryCommentSummaryResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryCommentSummaryResponse
+     */
+    'openTodos': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryCommentSummaryResponse
+     */
+    'highlights': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryCommentSummaryResponse
+     */
+    'problems': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryCommentSummaryResponse
+     */
+    'total': number;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const PhotoEntryCountsSource = {
+    Reported: 'REPORTED',
+    Scanned: 'SCANNED'
+} as const;
+
+export type PhotoEntryCountsSource = typeof PhotoEntryCountsSource[keyof typeof PhotoEntryCountsSource];
+
+
+/**
+ * 
+ * @export
  * @interface PhotoEntryDetailsResponse
  */
 export interface PhotoEntryDetailsResponse {
@@ -8677,6 +9851,72 @@ export interface PhotoEntryDetailsResponse {
      * @memberof PhotoEntryDetailsResponse
      */
     'status': PhotoEntryStatus;
+    /**
+     * 
+     * @type {PhotoEntryPostStage}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'postStage': PhotoEntryPostStage;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'isHappeningNow': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'wasEdited': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'firstEditedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'gearConfirmedAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'photoCount'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'selectedCount'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'editedCount'?: number | null;
+    /**
+     * 
+     * @type {PhotoEntryCountsSource}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'countsSource'?: PhotoEntryCountsSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'countsUpdatedAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'remainingToEdit'?: number | null;
     /**
      * 
      * @type {string}
@@ -8725,6 +9965,12 @@ export interface PhotoEntryDetailsResponse {
      * @memberof PhotoEntryDetailsResponse
      */
     'updatedAt': string;
+    /**
+     * 
+     * @type {PhotoEntryCommentSummaryResponse}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'commentSummary'?: PhotoEntryCommentSummaryResponse;
     /**
      * 
      * @type {Array<PhotoEntryAstroObjectResponse>}
@@ -8842,6 +10088,157 @@ export interface PhotoEntryFolderStructureResponse {
 /**
  * 
  * @export
+ * @interface PhotoEntryGearInputDto
+ */
+export interface PhotoEntryGearInputDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryGearInputDto
+     */
+    'packed'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryGearInputDto
+     */
+    'used'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryGearInputDto
+     */
+    'note'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryGearInputDto
+     */
+    'gearItemId': string;
+}
+/**
+ * 
+ * @export
+ * @interface PhotoEntryGearItemResponse
+ */
+export interface PhotoEntryGearItemResponse {
+    /**
+     * 
+     * @type {GearItemResponse}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'gear': GearItemResponse;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'packed': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'used': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'secured': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'securedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'note'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'listed': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'needsSecuring': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'secureAction'?: string | null;
+    /**
+     * 
+     * @type {EntryGearWarning}
+     * @memberof PhotoEntryGearItemResponse
+     */
+    'warning'?: EntryGearWarning;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface PhotoEntryGearListResponse
+ */
+export interface PhotoEntryGearListResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryGearListResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {PhotoEntryStatus}
+     * @memberof PhotoEntryGearListResponse
+     */
+    'status': PhotoEntryStatus;
+    /**
+     * 
+     * @type {EntryGearPhase}
+     * @memberof PhotoEntryGearListResponse
+     */
+    'phase': EntryGearPhase;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryGearListResponse
+     */
+    'gearConfirmedAt'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryGearListResponse
+     */
+    'needsGearConfirmation': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryGearListResponse
+     */
+    'mediaSecured'?: boolean | null;
+    /**
+     * 
+     * @type {Array<PhotoEntryGearItemResponse>}
+     * @memberof PhotoEntryGearListResponse
+     */
+    'items': Array<PhotoEntryGearItemResponse>;
+}
+
+
+/**
+ * 
+ * @export
  * @interface PhotoEntryListResponse
  */
 export interface PhotoEntryListResponse {
@@ -8858,6 +10255,22 @@ export interface PhotoEntryListResponse {
      */
     'photoEntries': Array<PhotoEntryResponse>;
 }
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const PhotoEntryPostStage = {
+    None: 'NONE',
+    Selecting: 'SELECTING',
+    Editing: 'EDITING',
+    Finished: 'FINISHED'
+} as const;
+
+export type PhotoEntryPostStage = typeof PhotoEntryPostStage[keyof typeof PhotoEntryPostStage];
+
+
 /**
  * 
  * @export
@@ -8888,6 +10301,72 @@ export interface PhotoEntryResponse {
      * @memberof PhotoEntryResponse
      */
     'status': PhotoEntryStatus;
+    /**
+     * 
+     * @type {PhotoEntryPostStage}
+     * @memberof PhotoEntryResponse
+     */
+    'postStage': PhotoEntryPostStage;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryResponse
+     */
+    'isHappeningNow': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryResponse
+     */
+    'wasEdited': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryResponse
+     */
+    'firstEditedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryResponse
+     */
+    'gearConfirmedAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryResponse
+     */
+    'photoCount'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryResponse
+     */
+    'selectedCount'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryResponse
+     */
+    'editedCount'?: number | null;
+    /**
+     * 
+     * @type {PhotoEntryCountsSource}
+     * @memberof PhotoEntryResponse
+     */
+    'countsSource'?: PhotoEntryCountsSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryResponse
+     */
+    'countsUpdatedAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryResponse
+     */
+    'remainingToEdit'?: number | null;
     /**
      * 
      * @type {string}
@@ -8936,9 +10415,46 @@ export interface PhotoEntryResponse {
      * @memberof PhotoEntryResponse
      */
     'updatedAt': string;
+    /**
+     * 
+     * @type {PhotoEntryCommentSummaryResponse}
+     * @memberof PhotoEntryResponse
+     */
+    'commentSummary'?: PhotoEntryCommentSummaryResponse;
 }
 
 
+/**
+ * 
+ * @export
+ * @interface PhotoEntryShoppingListResponse
+ */
+export interface PhotoEntryShoppingListResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryShoppingListResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryShoppingListResponse
+     */
+    'neededBy'?: string | null;
+    /**
+     * 
+     * @type {Array<ShoppingListItemResponse>}
+     * @memberof PhotoEntryShoppingListResponse
+     */
+    'items': Array<ShoppingListItemResponse>;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryShoppingListResponse
+     */
+    'total': number;
+}
 /**
  * 
  * @export
@@ -8947,10 +10463,8 @@ export interface PhotoEntryResponse {
 
 export const PhotoEntryStatus = {
     Planned: 'PLANNED',
-    Active: 'ACTIVE',
-    Selected: 'SELECTED',
-    Editing: 'EDITING',
-    Completed: 'COMPLETED'
+    Shot: 'SHOT',
+    Cancelled: 'CANCELLED'
 } as const;
 
 export type PhotoEntryStatus = typeof PhotoEntryStatus[keyof typeof PhotoEntryStatus];
@@ -11074,6 +12588,27 @@ export interface ProcessResponseDto {
 /**
  * 
  * @export
+ * @interface ProcessStatusDto
+ */
+export interface ProcessStatusDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProcessStatusDto
+     */
+    'processId': string;
+    /**
+     * 
+     * @type {ServerProcessStatus}
+     * @memberof ProcessStatusDto
+     */
+    'status': ServerProcessStatus;
+}
+
+
+/**
+ * 
+ * @export
  * @interface PublicAuthorListResponse
  */
 export interface PublicAuthorListResponse {
@@ -11558,6 +13093,19 @@ export interface PullModelDto {
 /**
  * 
  * @export
+ * @interface PutPhotoEntryGearDto
+ */
+export interface PutPhotoEntryGearDto {
+    /**
+     * 
+     * @type {Array<PhotoEntryGearInputDto>}
+     * @memberof PutPhotoEntryGearDto
+     */
+    'items': Array<PhotoEntryGearInputDto>;
+}
+/**
+ * 
+ * @export
  * @interface RecentFeedbackResponse
  */
 export interface RecentFeedbackResponse {
@@ -11735,6 +13283,90 @@ export interface RegisterDto {
      */
     'password': string;
 }
+/**
+ * 
+ * @export
+ * @interface RegisterProcessDto
+ */
+export interface RegisterProcessDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterProcessDto
+     */
+    'categoryId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterProcessDto
+     */
+    'userId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterProcessDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterProcessDto
+     */
+    'commandValue'?: string;
+    /**
+     * 
+     * @type {ServerProcessStatus}
+     * @memberof RegisterProcessDto
+     */
+    'status'?: ServerProcessStatus;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface RegisterProcessLogDto
+ */
+export interface RegisterProcessLogDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterProcessLogDto
+     */
+    'processId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterProcessLogDto
+     */
+    'message': string;
+    /**
+     * 
+     * @type {ProcessLogLevel}
+     * @memberof RegisterProcessLogDto
+     */
+    'level'?: ProcessLogLevel;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ReleaseTrigger = {
+    Manual: 'MANUAL',
+    Webhook: 'WEBHOOK',
+    Schedule: 'SCHEDULE',
+    AutoUpdate: 'AUTO_UPDATE',
+    Rollback: 'ROLLBACK',
+    AutoRollback: 'AUTO_ROLLBACK'
+} as const;
+
+export type ReleaseTrigger = typeof ReleaseTrigger[keyof typeof ReleaseTrigger];
+
+
 /**
  * 
  * @export
@@ -13965,6 +15597,37 @@ export type SettingType = typeof SettingType[keyof typeof SettingType];
 /**
  * 
  * @export
+ * @interface ShoppingListItemResponse
+ */
+export interface ShoppingListItemResponse {
+    /**
+     * 
+     * @type {GearItemResponse}
+     * @memberof ShoppingListItemResponse
+     */
+    'gear': GearItemResponse;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShoppingListItemResponse
+     */
+    'priority'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShoppingListItemResponse
+     */
+    'estimatedPrice'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ShoppingListItemResponse
+     */
+    'purchaseUrl'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface SignInDto
  */
 export interface SignInDto {
@@ -14449,6 +16112,82 @@ export interface TrendsSeriesDto {
 /**
  * 
  * @export
+ * @interface UndeclaredEntryResponse
+ */
+export interface UndeclaredEntryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof UndeclaredEntryResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UndeclaredEntryResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UndeclaredEntryResponse
+     */
+    'startDate'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UndeclaredEntryResponse
+     */
+    'endDate'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateApplicationDto
+ */
+export interface UpdateApplicationDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateApplicationDto
+     */
+    'displayName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateApplicationDto
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {ApplicationTier}
+     * @memberof UpdateApplicationDto
+     */
+    'tier'?: ApplicationTier;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateApplicationDto
+     */
+    'image'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateApplicationDto
+     */
+    'gitRepoId'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpdateApplicationDto
+     */
+    'webhookEnabled'?: boolean;
+}
+
+
+/**
+ * 
+ * @export
  * @interface UpdateCommandProgressMarkerDto
  */
 export interface UpdateCommandProgressMarkerDto {
@@ -14594,9 +16333,70 @@ export interface UpdateGearDto {
      * @memberof UpdateGearDto
      */
     'visible'?: boolean;
+    /**
+     * 
+     * @type {GearOwnership}
+     * @memberof UpdateGearDto
+     */
+    'ownership'?: GearOwnership;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateGearDto
+     */
+    'acquiredAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateGearDto
+     */
+    'retiredAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateGearDto
+     */
+    'priority'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateGearDto
+     */
+    'estimatedPrice'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateGearDto
+     */
+    'purchaseUrl'?: string | null;
 }
 
 
+/**
+ * 
+ * @export
+ * @interface UpdateGearKitDto
+ */
+export interface UpdateGearKitDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateGearKitDto
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateGearKitDto
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UpdateGearKitDto
+     */
+    'gearItemIds'?: Array<string>;
+}
 /**
  * 
  * @export
@@ -14724,6 +16524,25 @@ export interface UploadResponseDto {
 /**
  * 
  * @export
+ * @interface UpsertApplicationEnvDto
+ */
+export interface UpsertApplicationEnvDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertApplicationEnvDto
+     */
+    'value': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpsertApplicationEnvDto
+     */
+    'isSecret'?: boolean;
+}
+/**
+ * 
+ * @export
  * @interface UpsertCategoryTranslationDto
  */
 export interface UpsertCategoryTranslationDto {
@@ -14793,6 +16612,74 @@ export interface UpsertFeedbackDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface UpsertGitAccountDto
+ */
+export interface UpsertGitAccountDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertGitAccountDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertGitAccountDto
+     */
+    'provider'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertGitAccountDto
+     */
+    'username': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertGitAccountDto
+     */
+    'token'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface UpsertGitRepoDto
+ */
+export interface UpsertGitRepoDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertGitRepoDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertGitRepoDto
+     */
+    'repo': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertGitRepoDto
+     */
+    'branch'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertGitRepoDto
+     */
+    'clonePath'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertGitRepoDto
+     */
+    'accountId'?: string | null;
+}
 /**
  * 
  * @export
@@ -14923,6 +16810,37 @@ export interface UpsertSectionTranslationDto {
      * @memberof UpsertSectionTranslationDto
      */
     'keywords'?: Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface UpsertVariableDto
+ */
+export interface UpsertVariableDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertVariableDto
+     */
+    'key': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertVariableDto
+     */
+    'value': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpsertVariableDto
+     */
+    'isSecret'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpsertVariableDto
+     */
+    'description'?: string;
 }
 /**
  * 
@@ -15100,6 +17018,12 @@ export interface UserSettingsResponseDto {
      * @memberof UserSettingsResponseDto
      */
     'processPushNotifications': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'photoMediaEmailNotifications': boolean;
 }
 /**
  * 
@@ -30687,6 +32611,3111 @@ export class DefaultApi extends BaseAPI {
 
 
 /**
+ * DeployApi - axios parameter creator
+ * @export
+ */
+export const DeployApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} project 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerAdoptStack: async (project: string, serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'project' is not null or undefined
+            assertParamExists('deployControllerAdoptStack', 'project', project)
+            // verify required parameter 'serverId' is not null or undefined
+            assertParamExists('deployControllerAdoptStack', 'serverId', serverId)
+            const localVarPath = `/deploy/containers/{project}/adopt`
+                .replace(`{${"project"}}`, encodeURIComponent(String(project)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (serverId !== undefined) {
+                localVarQueryParameter['serverId'] = serverId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerAgentStatus: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/deploy/agent`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerApplyImport: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerApplyImport', 'id', id)
+            const localVarPath = `/deploy/applications/{id}/import`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CreateApplicationDto} createApplicationDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCreateApplication: async (createApplicationDto: CreateApplicationDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createApplicationDto' is not null or undefined
+            assertParamExists('deployControllerCreateApplication', 'createApplicationDto', createApplicationDto)
+            const localVarPath = `/deploy/applications`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createApplicationDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {UpsertGitAccountDto} upsertGitAccountDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCreateGitAccount: async (upsertGitAccountDto: UpsertGitAccountDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'upsertGitAccountDto' is not null or undefined
+            assertParamExists('deployControllerCreateGitAccount', 'upsertGitAccountDto', upsertGitAccountDto)
+            const localVarPath = `/deploy/git/accounts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upsertGitAccountDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {UpsertGitRepoDto} upsertGitRepoDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCreateGitRepo: async (upsertGitRepoDto: UpsertGitRepoDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'upsertGitRepoDto' is not null or undefined
+            assertParamExists('deployControllerCreateGitRepo', 'upsertGitRepoDto', upsertGitRepoDto)
+            const localVarPath = `/deploy/git/repos`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upsertGitRepoDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {CreateReleaseDto} createReleaseDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCreateRelease: async (id: string, createReleaseDto: CreateReleaseDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerCreateRelease', 'id', id)
+            // verify required parameter 'createReleaseDto' is not null or undefined
+            assertParamExists('deployControllerCreateRelease', 'createReleaseDto', createReleaseDto)
+            const localVarPath = `/deploy/applications/{id}/releases`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createReleaseDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteApplication: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerDeleteApplication', 'id', id)
+            const localVarPath = `/deploy/applications/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} key 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteEnv: async (id: string, key: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerDeleteEnv', 'id', id)
+            // verify required parameter 'key' is not null or undefined
+            assertParamExists('deployControllerDeleteEnv', 'key', key)
+            const localVarPath = `/deploy/applications/{id}/env/{key}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"key"}}`, encodeURIComponent(String(key)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteGitAccount: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerDeleteGitAccount', 'id', id)
+            const localVarPath = `/deploy/git/accounts/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteGitRepo: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerDeleteGitRepo', 'id', id)
+            const localVarPath = `/deploy/git/repos/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteVariable: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerDeleteVariable', 'id', id)
+            const localVarPath = `/deploy/variables/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDisableWebhook: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerDisableWebhook', 'id', id)
+            const localVarPath = `/deploy/applications/{id}/webhook`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerGetApplication: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerGetApplication', 'id', id)
+            const localVarPath = `/deploy/applications/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} project 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerGetContainerStack: async (project: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'project' is not null or undefined
+            assertParamExists('deployControllerGetContainerStack', 'project', project)
+            const localVarPath = `/deploy/containers/{project}`
+                .replace(`{${"project"}}`, encodeURIComponent(String(project)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerGetGitRepo: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerGetGitRepo', 'id', id)
+            const localVarPath = `/deploy/git/repos/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListApplications: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/deploy/applications`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} entityType 
+         * @param {string} entityId 
+         * @param {string} take 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListAudit: async (entityType: string, entityId: string, take: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'entityType' is not null or undefined
+            assertParamExists('deployControllerListAudit', 'entityType', entityType)
+            // verify required parameter 'entityId' is not null or undefined
+            assertParamExists('deployControllerListAudit', 'entityId', entityId)
+            // verify required parameter 'take' is not null or undefined
+            assertParamExists('deployControllerListAudit', 'take', take)
+            const localVarPath = `/deploy/audit/{entityType}/{entityId}`
+                .replace(`{${"entityType"}}`, encodeURIComponent(String(entityType)))
+                .replace(`{${"entityId"}}`, encodeURIComponent(String(entityId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (take !== undefined) {
+                localVarQueryParameter['take'] = take;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListContainers: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/deploy/containers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListEnv: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerListEnv', 'id', id)
+            const localVarPath = `/deploy/applications/{id}/env`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListGitAccounts: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/deploy/git/accounts`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListGitRepos: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/deploy/git/repos`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListReleases: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerListReleases', 'id', id)
+            const localVarPath = `/deploy/applications/{id}/releases`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListVariables: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/deploy/variables`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerPreviewImport: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerPreviewImport', 'id', id)
+            const localVarPath = `/deploy/applications/{id}/import/preview`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRefreshContainers: async (serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'serverId' is not null or undefined
+            assertParamExists('deployControllerRefreshContainers', 'serverId', serverId)
+            const localVarPath = `/deploy/containers/refresh`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (serverId !== undefined) {
+                localVarQueryParameter['serverId'] = serverId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRenderApplication: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerRenderApplication', 'id', id)
+            const localVarPath = `/deploy/applications/{id}/render`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRollback: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerRollback', 'id', id)
+            const localVarPath = `/deploy/releases/{id}/rollback`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRotateWebhookSecret: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerRotateWebhookSecret', 'id', id)
+            const localVarPath = `/deploy/applications/{id}/webhook/rotate`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} project 
+         * @param {string} action 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRunStackAction: async (project: string, action: string, serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'project' is not null or undefined
+            assertParamExists('deployControllerRunStackAction', 'project', project)
+            // verify required parameter 'action' is not null or undefined
+            assertParamExists('deployControllerRunStackAction', 'action', action)
+            // verify required parameter 'serverId' is not null or undefined
+            assertParamExists('deployControllerRunStackAction', 'serverId', serverId)
+            const localVarPath = `/deploy/containers/{project}/actions/{action}`
+                .replace(`{${"project"}}`, encodeURIComponent(String(project)))
+                .replace(`{${"action"}}`, encodeURIComponent(String(action)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (serverId !== undefined) {
+                localVarQueryParameter['serverId'] = serverId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} project 
+         * @param {string} tail 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerStackLogs: async (project: string, tail: string, serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'project' is not null or undefined
+            assertParamExists('deployControllerStackLogs', 'project', project)
+            // verify required parameter 'tail' is not null or undefined
+            assertParamExists('deployControllerStackLogs', 'tail', tail)
+            // verify required parameter 'serverId' is not null or undefined
+            assertParamExists('deployControllerStackLogs', 'serverId', serverId)
+            const localVarPath = `/deploy/containers/{project}/logs`
+                .replace(`{${"project"}}`, encodeURIComponent(String(project)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (tail !== undefined) {
+                localVarQueryParameter['tail'] = tail;
+            }
+
+            if (serverId !== undefined) {
+                localVarQueryParameter['serverId'] = serverId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateApplicationDto} updateApplicationDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpdateApplication: async (id: string, updateApplicationDto: UpdateApplicationDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerUpdateApplication', 'id', id)
+            // verify required parameter 'updateApplicationDto' is not null or undefined
+            assertParamExists('deployControllerUpdateApplication', 'updateApplicationDto', updateApplicationDto)
+            const localVarPath = `/deploy/applications/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateApplicationDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpsertGitAccountDto} upsertGitAccountDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpdateGitAccount: async (id: string, upsertGitAccountDto: UpsertGitAccountDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerUpdateGitAccount', 'id', id)
+            // verify required parameter 'upsertGitAccountDto' is not null or undefined
+            assertParamExists('deployControllerUpdateGitAccount', 'upsertGitAccountDto', upsertGitAccountDto)
+            const localVarPath = `/deploy/git/accounts/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upsertGitAccountDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpsertGitRepoDto} upsertGitRepoDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpdateGitRepo: async (id: string, upsertGitRepoDto: UpsertGitRepoDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerUpdateGitRepo', 'id', id)
+            // verify required parameter 'upsertGitRepoDto' is not null or undefined
+            assertParamExists('deployControllerUpdateGitRepo', 'upsertGitRepoDto', upsertGitRepoDto)
+            const localVarPath = `/deploy/git/repos/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upsertGitRepoDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} key 
+         * @param {UpsertApplicationEnvDto} upsertApplicationEnvDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpsertEnv: async (id: string, key: string, upsertApplicationEnvDto: UpsertApplicationEnvDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerUpsertEnv', 'id', id)
+            // verify required parameter 'key' is not null or undefined
+            assertParamExists('deployControllerUpsertEnv', 'key', key)
+            // verify required parameter 'upsertApplicationEnvDto' is not null or undefined
+            assertParamExists('deployControllerUpsertEnv', 'upsertApplicationEnvDto', upsertApplicationEnvDto)
+            const localVarPath = `/deploy/applications/{id}/env/{key}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"key"}}`, encodeURIComponent(String(key)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upsertApplicationEnvDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {UpsertVariableDto} upsertVariableDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpsertVariable: async (upsertVariableDto: UpsertVariableDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'upsertVariableDto' is not null or undefined
+            assertParamExists('deployControllerUpsertVariable', 'upsertVariableDto', upsertVariableDto)
+            const localVarPath = `/deploy/variables`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upsertVariableDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DeployApi - functional programming interface
+ * @export
+ */
+export const DeployApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DeployApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} project 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerAdoptStack(project: string, serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerAdoptStack(project, serverId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerAdoptStack']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerAgentStatus(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerAgentStatus(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerAgentStatus']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerApplyImport(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerApplyImport(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerApplyImport']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CreateApplicationDto} createApplicationDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerCreateApplication(createApplicationDto: CreateApplicationDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCreateApplication(createApplicationDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCreateApplication']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {UpsertGitAccountDto} upsertGitAccountDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerCreateGitAccount(upsertGitAccountDto: UpsertGitAccountDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCreateGitAccount(upsertGitAccountDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCreateGitAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {UpsertGitRepoDto} upsertGitRepoDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerCreateGitRepo(upsertGitRepoDto: UpsertGitRepoDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCreateGitRepo(upsertGitRepoDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCreateGitRepo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {CreateReleaseDto} createReleaseDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerCreateRelease(id: string, createReleaseDto: CreateReleaseDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCreateRelease(id, createReleaseDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCreateRelease']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerDeleteApplication(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerDeleteApplication(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerDeleteApplication']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} key 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerDeleteEnv(id: string, key: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerDeleteEnv(id, key, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerDeleteEnv']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerDeleteGitAccount(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerDeleteGitAccount(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerDeleteGitAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerDeleteGitRepo(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerDeleteGitRepo(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerDeleteGitRepo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerDeleteVariable(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerDeleteVariable(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerDeleteVariable']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerDisableWebhook(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerDisableWebhook(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerDisableWebhook']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerGetApplication(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerGetApplication(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerGetApplication']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} project 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerGetContainerStack(project: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerGetContainerStack(project, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerGetContainerStack']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerGetGitRepo(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerGetGitRepo(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerGetGitRepo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerListApplications(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListApplications(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListApplications']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} entityType 
+         * @param {string} entityId 
+         * @param {string} take 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerListAudit(entityType: string, entityId: string, take: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListAudit(entityType, entityId, take, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListAudit']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerListContainers(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListContainers(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListContainers']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerListEnv(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListEnv(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListEnv']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerListGitAccounts(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListGitAccounts(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListGitAccounts']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerListGitRepos(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListGitRepos(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListGitRepos']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerListReleases(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListReleases(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListReleases']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerListVariables(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListVariables(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListVariables']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerPreviewImport(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerPreviewImport(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerPreviewImport']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerRefreshContainers(serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRefreshContainers(serverId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRefreshContainers']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerRenderApplication(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRenderApplication(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRenderApplication']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerRollback(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRollback(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRollback']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerRotateWebhookSecret(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRotateWebhookSecret(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRotateWebhookSecret']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} project 
+         * @param {string} action 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerRunStackAction(project: string, action: string, serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRunStackAction(project, action, serverId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRunStackAction']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} project 
+         * @param {string} tail 
+         * @param {string} serverId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerStackLogs(project: string, tail: string, serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerStackLogs(project, tail, serverId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerStackLogs']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateApplicationDto} updateApplicationDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerUpdateApplication(id: string, updateApplicationDto: UpdateApplicationDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpdateApplication(id, updateApplicationDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpdateApplication']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpsertGitAccountDto} upsertGitAccountDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerUpdateGitAccount(id: string, upsertGitAccountDto: UpsertGitAccountDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpdateGitAccount(id, upsertGitAccountDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpdateGitAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpsertGitRepoDto} upsertGitRepoDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerUpdateGitRepo(id: string, upsertGitRepoDto: UpsertGitRepoDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpdateGitRepo(id, upsertGitRepoDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpdateGitRepo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} key 
+         * @param {UpsertApplicationEnvDto} upsertApplicationEnvDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerUpsertEnv(id: string, key: string, upsertApplicationEnvDto: UpsertApplicationEnvDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpsertEnv(id, key, upsertApplicationEnvDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpsertEnv']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {UpsertVariableDto} upsertVariableDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerUpsertVariable(upsertVariableDto: UpsertVariableDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpsertVariable(upsertVariableDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpsertVariable']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DeployApi - factory interface
+ * @export
+ */
+export const DeployApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DeployApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {DeployApiDeployControllerAdoptStackRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerAdoptStack(requestParameters: DeployApiDeployControllerAdoptStackRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerAdoptStack(requestParameters.project, requestParameters.serverId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerAgentStatus(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerAgentStatus(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerApplyImportRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerApplyImport(requestParameters: DeployApiDeployControllerApplyImportRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerApplyImport(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerCreateApplicationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCreateApplication(requestParameters: DeployApiDeployControllerCreateApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerCreateApplication(requestParameters.createApplicationDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerCreateGitAccountRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCreateGitAccount(requestParameters: DeployApiDeployControllerCreateGitAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerCreateGitAccount(requestParameters.upsertGitAccountDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerCreateGitRepoRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCreateGitRepo(requestParameters: DeployApiDeployControllerCreateGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerCreateGitRepo(requestParameters.upsertGitRepoDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerCreateReleaseRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCreateRelease(requestParameters: DeployApiDeployControllerCreateReleaseRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerCreateRelease(requestParameters.id, requestParameters.createReleaseDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerDeleteApplicationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteApplication(requestParameters: DeployApiDeployControllerDeleteApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerDeleteApplication(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerDeleteEnvRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteEnv(requestParameters: DeployApiDeployControllerDeleteEnvRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerDeleteEnv(requestParameters.id, requestParameters.key, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerDeleteGitAccountRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteGitAccount(requestParameters: DeployApiDeployControllerDeleteGitAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerDeleteGitAccount(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerDeleteGitRepoRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteGitRepo(requestParameters: DeployApiDeployControllerDeleteGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerDeleteGitRepo(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerDeleteVariableRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDeleteVariable(requestParameters: DeployApiDeployControllerDeleteVariableRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerDeleteVariable(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerDisableWebhookRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerDisableWebhook(requestParameters: DeployApiDeployControllerDisableWebhookRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerDisableWebhook(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerGetApplicationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerGetApplication(requestParameters: DeployApiDeployControllerGetApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerGetApplication(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerGetContainerStackRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerGetContainerStack(requestParameters: DeployApiDeployControllerGetContainerStackRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerGetContainerStack(requestParameters.project, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerGetGitRepoRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerGetGitRepo(requestParameters: DeployApiDeployControllerGetGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerGetGitRepo(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListApplications(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerListApplications(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerListAuditRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListAudit(requestParameters: DeployApiDeployControllerListAuditRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerListAudit(requestParameters.entityType, requestParameters.entityId, requestParameters.take, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListContainers(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerListContainers(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerListEnvRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListEnv(requestParameters: DeployApiDeployControllerListEnvRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerListEnv(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListGitAccounts(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerListGitAccounts(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListGitRepos(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerListGitRepos(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerListReleasesRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListReleases(requestParameters: DeployApiDeployControllerListReleasesRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerListReleases(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListVariables(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerListVariables(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerPreviewImportRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerPreviewImport(requestParameters: DeployApiDeployControllerPreviewImportRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerPreviewImport(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerRefreshContainersRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRefreshContainers(requestParameters: DeployApiDeployControllerRefreshContainersRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerRefreshContainers(requestParameters.serverId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerRenderApplicationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRenderApplication(requestParameters: DeployApiDeployControllerRenderApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerRenderApplication(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerRollbackRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRollback(requestParameters: DeployApiDeployControllerRollbackRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerRollback(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerRotateWebhookSecretRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRotateWebhookSecret(requestParameters: DeployApiDeployControllerRotateWebhookSecretRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerRotateWebhookSecret(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerRunStackActionRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRunStackAction(requestParameters: DeployApiDeployControllerRunStackActionRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerRunStackAction(requestParameters.project, requestParameters.action, requestParameters.serverId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerStackLogsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerStackLogs(requestParameters: DeployApiDeployControllerStackLogsRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerStackLogs(requestParameters.project, requestParameters.tail, requestParameters.serverId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerUpdateApplicationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpdateApplication(requestParameters: DeployApiDeployControllerUpdateApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerUpdateApplication(requestParameters.id, requestParameters.updateApplicationDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerUpdateGitAccountRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpdateGitAccount(requestParameters: DeployApiDeployControllerUpdateGitAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerUpdateGitAccount(requestParameters.id, requestParameters.upsertGitAccountDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerUpdateGitRepoRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpdateGitRepo(requestParameters: DeployApiDeployControllerUpdateGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerUpdateGitRepo(requestParameters.id, requestParameters.upsertGitRepoDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerUpsertEnvRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpsertEnv(requestParameters: DeployApiDeployControllerUpsertEnvRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerUpsertEnv(requestParameters.id, requestParameters.key, requestParameters.upsertApplicationEnvDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerUpsertVariableRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerUpsertVariable(requestParameters: DeployApiDeployControllerUpsertVariableRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerUpsertVariable(requestParameters.upsertVariableDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for deployControllerAdoptStack operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerAdoptStackRequest
+ */
+export interface DeployApiDeployControllerAdoptStackRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerAdoptStack
+     */
+    readonly project: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerAdoptStack
+     */
+    readonly serverId: string
+}
+
+/**
+ * Request parameters for deployControllerApplyImport operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerApplyImportRequest
+ */
+export interface DeployApiDeployControllerApplyImportRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerApplyImport
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerCreateApplication operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerCreateApplicationRequest
+ */
+export interface DeployApiDeployControllerCreateApplicationRequest {
+    /**
+     * 
+     * @type {CreateApplicationDto}
+     * @memberof DeployApiDeployControllerCreateApplication
+     */
+    readonly createApplicationDto: CreateApplicationDto
+}
+
+/**
+ * Request parameters for deployControllerCreateGitAccount operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerCreateGitAccountRequest
+ */
+export interface DeployApiDeployControllerCreateGitAccountRequest {
+    /**
+     * 
+     * @type {UpsertGitAccountDto}
+     * @memberof DeployApiDeployControllerCreateGitAccount
+     */
+    readonly upsertGitAccountDto: UpsertGitAccountDto
+}
+
+/**
+ * Request parameters for deployControllerCreateGitRepo operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerCreateGitRepoRequest
+ */
+export interface DeployApiDeployControllerCreateGitRepoRequest {
+    /**
+     * 
+     * @type {UpsertGitRepoDto}
+     * @memberof DeployApiDeployControllerCreateGitRepo
+     */
+    readonly upsertGitRepoDto: UpsertGitRepoDto
+}
+
+/**
+ * Request parameters for deployControllerCreateRelease operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerCreateReleaseRequest
+ */
+export interface DeployApiDeployControllerCreateReleaseRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerCreateRelease
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {CreateReleaseDto}
+     * @memberof DeployApiDeployControllerCreateRelease
+     */
+    readonly createReleaseDto: CreateReleaseDto
+}
+
+/**
+ * Request parameters for deployControllerDeleteApplication operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerDeleteApplicationRequest
+ */
+export interface DeployApiDeployControllerDeleteApplicationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerDeleteApplication
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerDeleteEnv operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerDeleteEnvRequest
+ */
+export interface DeployApiDeployControllerDeleteEnvRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerDeleteEnv
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerDeleteEnv
+     */
+    readonly key: string
+}
+
+/**
+ * Request parameters for deployControllerDeleteGitAccount operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerDeleteGitAccountRequest
+ */
+export interface DeployApiDeployControllerDeleteGitAccountRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerDeleteGitAccount
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerDeleteGitRepo operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerDeleteGitRepoRequest
+ */
+export interface DeployApiDeployControllerDeleteGitRepoRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerDeleteGitRepo
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerDeleteVariable operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerDeleteVariableRequest
+ */
+export interface DeployApiDeployControllerDeleteVariableRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerDeleteVariable
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerDisableWebhook operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerDisableWebhookRequest
+ */
+export interface DeployApiDeployControllerDisableWebhookRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerDisableWebhook
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerGetApplication operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerGetApplicationRequest
+ */
+export interface DeployApiDeployControllerGetApplicationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerGetApplication
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerGetContainerStack operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerGetContainerStackRequest
+ */
+export interface DeployApiDeployControllerGetContainerStackRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerGetContainerStack
+     */
+    readonly project: string
+}
+
+/**
+ * Request parameters for deployControllerGetGitRepo operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerGetGitRepoRequest
+ */
+export interface DeployApiDeployControllerGetGitRepoRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerGetGitRepo
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerListAudit operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerListAuditRequest
+ */
+export interface DeployApiDeployControllerListAuditRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerListAudit
+     */
+    readonly entityType: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerListAudit
+     */
+    readonly entityId: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerListAudit
+     */
+    readonly take: string
+}
+
+/**
+ * Request parameters for deployControllerListEnv operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerListEnvRequest
+ */
+export interface DeployApiDeployControllerListEnvRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerListEnv
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerListReleases operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerListReleasesRequest
+ */
+export interface DeployApiDeployControllerListReleasesRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerListReleases
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerPreviewImport operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerPreviewImportRequest
+ */
+export interface DeployApiDeployControllerPreviewImportRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerPreviewImport
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerRefreshContainers operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerRefreshContainersRequest
+ */
+export interface DeployApiDeployControllerRefreshContainersRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRefreshContainers
+     */
+    readonly serverId: string
+}
+
+/**
+ * Request parameters for deployControllerRenderApplication operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerRenderApplicationRequest
+ */
+export interface DeployApiDeployControllerRenderApplicationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRenderApplication
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerRollback operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerRollbackRequest
+ */
+export interface DeployApiDeployControllerRollbackRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRollback
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerRotateWebhookSecret operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerRotateWebhookSecretRequest
+ */
+export interface DeployApiDeployControllerRotateWebhookSecretRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRotateWebhookSecret
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerRunStackAction operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerRunStackActionRequest
+ */
+export interface DeployApiDeployControllerRunStackActionRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRunStackAction
+     */
+    readonly project: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRunStackAction
+     */
+    readonly action: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRunStackAction
+     */
+    readonly serverId: string
+}
+
+/**
+ * Request parameters for deployControllerStackLogs operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerStackLogsRequest
+ */
+export interface DeployApiDeployControllerStackLogsRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerStackLogs
+     */
+    readonly project: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerStackLogs
+     */
+    readonly tail: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerStackLogs
+     */
+    readonly serverId: string
+}
+
+/**
+ * Request parameters for deployControllerUpdateApplication operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerUpdateApplicationRequest
+ */
+export interface DeployApiDeployControllerUpdateApplicationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerUpdateApplication
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {UpdateApplicationDto}
+     * @memberof DeployApiDeployControllerUpdateApplication
+     */
+    readonly updateApplicationDto: UpdateApplicationDto
+}
+
+/**
+ * Request parameters for deployControllerUpdateGitAccount operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerUpdateGitAccountRequest
+ */
+export interface DeployApiDeployControllerUpdateGitAccountRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerUpdateGitAccount
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {UpsertGitAccountDto}
+     * @memberof DeployApiDeployControllerUpdateGitAccount
+     */
+    readonly upsertGitAccountDto: UpsertGitAccountDto
+}
+
+/**
+ * Request parameters for deployControllerUpdateGitRepo operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerUpdateGitRepoRequest
+ */
+export interface DeployApiDeployControllerUpdateGitRepoRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerUpdateGitRepo
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {UpsertGitRepoDto}
+     * @memberof DeployApiDeployControllerUpdateGitRepo
+     */
+    readonly upsertGitRepoDto: UpsertGitRepoDto
+}
+
+/**
+ * Request parameters for deployControllerUpsertEnv operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerUpsertEnvRequest
+ */
+export interface DeployApiDeployControllerUpsertEnvRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerUpsertEnv
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerUpsertEnv
+     */
+    readonly key: string
+
+    /**
+     * 
+     * @type {UpsertApplicationEnvDto}
+     * @memberof DeployApiDeployControllerUpsertEnv
+     */
+    readonly upsertApplicationEnvDto: UpsertApplicationEnvDto
+}
+
+/**
+ * Request parameters for deployControllerUpsertVariable operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerUpsertVariableRequest
+ */
+export interface DeployApiDeployControllerUpsertVariableRequest {
+    /**
+     * 
+     * @type {UpsertVariableDto}
+     * @memberof DeployApiDeployControllerUpsertVariable
+     */
+    readonly upsertVariableDto: UpsertVariableDto
+}
+
+/**
+ * DeployApi - object-oriented interface
+ * @export
+ * @class DeployApi
+ * @extends {BaseAPI}
+ */
+export class DeployApi extends BaseAPI {
+    /**
+     * 
+     * @param {DeployApiDeployControllerAdoptStackRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerAdoptStack(requestParameters: DeployApiDeployControllerAdoptStackRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerAdoptStack(requestParameters.project, requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerAgentStatus(options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerAgentStatus(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerApplyImportRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerApplyImport(requestParameters: DeployApiDeployControllerApplyImportRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerApplyImport(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerCreateApplicationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerCreateApplication(requestParameters: DeployApiDeployControllerCreateApplicationRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerCreateApplication(requestParameters.createApplicationDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerCreateGitAccountRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerCreateGitAccount(requestParameters: DeployApiDeployControllerCreateGitAccountRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerCreateGitAccount(requestParameters.upsertGitAccountDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerCreateGitRepoRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerCreateGitRepo(requestParameters: DeployApiDeployControllerCreateGitRepoRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerCreateGitRepo(requestParameters.upsertGitRepoDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerCreateReleaseRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerCreateRelease(requestParameters: DeployApiDeployControllerCreateReleaseRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerCreateRelease(requestParameters.id, requestParameters.createReleaseDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerDeleteApplicationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerDeleteApplication(requestParameters: DeployApiDeployControllerDeleteApplicationRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerDeleteApplication(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerDeleteEnvRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerDeleteEnv(requestParameters: DeployApiDeployControllerDeleteEnvRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerDeleteEnv(requestParameters.id, requestParameters.key, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerDeleteGitAccountRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerDeleteGitAccount(requestParameters: DeployApiDeployControllerDeleteGitAccountRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerDeleteGitAccount(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerDeleteGitRepoRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerDeleteGitRepo(requestParameters: DeployApiDeployControllerDeleteGitRepoRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerDeleteGitRepo(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerDeleteVariableRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerDeleteVariable(requestParameters: DeployApiDeployControllerDeleteVariableRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerDeleteVariable(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerDisableWebhookRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerDisableWebhook(requestParameters: DeployApiDeployControllerDisableWebhookRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerDisableWebhook(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerGetApplicationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerGetApplication(requestParameters: DeployApiDeployControllerGetApplicationRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerGetApplication(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerGetContainerStackRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerGetContainerStack(requestParameters: DeployApiDeployControllerGetContainerStackRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerGetContainerStack(requestParameters.project, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerGetGitRepoRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerGetGitRepo(requestParameters: DeployApiDeployControllerGetGitRepoRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerGetGitRepo(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerListApplications(options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerListApplications(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerListAuditRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerListAudit(requestParameters: DeployApiDeployControllerListAuditRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerListAudit(requestParameters.entityType, requestParameters.entityId, requestParameters.take, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerListContainers(options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerListContainers(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerListEnvRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerListEnv(requestParameters: DeployApiDeployControllerListEnvRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerListEnv(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerListGitAccounts(options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerListGitAccounts(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerListGitRepos(options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerListGitRepos(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerListReleasesRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerListReleases(requestParameters: DeployApiDeployControllerListReleasesRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerListReleases(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerListVariables(options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerListVariables(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerPreviewImportRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerPreviewImport(requestParameters: DeployApiDeployControllerPreviewImportRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerPreviewImport(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerRefreshContainersRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerRefreshContainers(requestParameters: DeployApiDeployControllerRefreshContainersRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerRefreshContainers(requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerRenderApplicationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerRenderApplication(requestParameters: DeployApiDeployControllerRenderApplicationRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerRenderApplication(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerRollbackRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerRollback(requestParameters: DeployApiDeployControllerRollbackRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerRollback(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerRotateWebhookSecretRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerRotateWebhookSecret(requestParameters: DeployApiDeployControllerRotateWebhookSecretRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerRotateWebhookSecret(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerRunStackActionRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerRunStackAction(requestParameters: DeployApiDeployControllerRunStackActionRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerRunStackAction(requestParameters.project, requestParameters.action, requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerStackLogsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerStackLogs(requestParameters: DeployApiDeployControllerStackLogsRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerStackLogs(requestParameters.project, requestParameters.tail, requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerUpdateApplicationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerUpdateApplication(requestParameters: DeployApiDeployControllerUpdateApplicationRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerUpdateApplication(requestParameters.id, requestParameters.updateApplicationDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerUpdateGitAccountRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerUpdateGitAccount(requestParameters: DeployApiDeployControllerUpdateGitAccountRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerUpdateGitAccount(requestParameters.id, requestParameters.upsertGitAccountDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerUpdateGitRepoRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerUpdateGitRepo(requestParameters: DeployApiDeployControllerUpdateGitRepoRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerUpdateGitRepo(requestParameters.id, requestParameters.upsertGitRepoDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerUpsertEnvRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerUpsertEnv(requestParameters: DeployApiDeployControllerUpsertEnvRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerUpsertEnv(requestParameters.id, requestParameters.key, requestParameters.upsertApplicationEnvDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerUpsertVariableRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerUpsertVariable(requestParameters: DeployApiDeployControllerUpsertVariableRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerUpsertVariable(requestParameters.upsertVariableDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * DeviceAuthorizationApi - axios parameter creator
  * @export
  */
@@ -34023,6 +39052,45 @@ export const GearApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @param {CreateGearKitDto} createGearKitDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerCreateKit: async (createGearKitDto: CreateGearKitDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createGearKitDto' is not null or undefined
+            assertParamExists('gearControllerCreateKit', 'createGearKitDto', createGearKitDto)
+            const localVarPath = `/gear/kits`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createGearKitDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {CreateGearSystemDto} createGearSystemDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -34054,6 +39122,80 @@ export const GearApiAxiosParamCreator = function (configuration?: Configuration)
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(createGearSystemDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerGetItem: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gearControllerGetItem', 'id', id)
+            const localVarPath = `/gear/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerGetKit: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gearControllerGetKit', 'id', id)
+            const localVarPath = `/gear/kits/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -34095,6 +39237,125 @@ export const GearApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerListCategories: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/gear/categories`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {GearOwnership} [ownership] 
+         * @param {GearCategory} [category] 
+         * @param {GearItemsSort} [sort] 
+         * @param {number} [neededWithinDays] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerListItems: async (ownership?: GearOwnership, category?: GearCategory, sort?: GearItemsSort, neededWithinDays?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/gear/items`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (ownership !== undefined) {
+                localVarQueryParameter['ownership'] = ownership;
+            }
+
+            if (category !== undefined) {
+                localVarQueryParameter['category'] = category;
+            }
+
+            if (sort !== undefined) {
+                localVarQueryParameter['sort'] = sort;
+            }
+
+            if (neededWithinDays !== undefined) {
+                localVarQueryParameter['neededWithinDays'] = neededWithinDays;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerListKits: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/gear/kits`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -34103,6 +39364,43 @@ export const GearApiAxiosParamCreator = function (configuration?: Configuration)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('gearControllerRemove', 'id', id)
             const localVarPath = `/gear/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerRemoveKit: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gearControllerRemoveKit', 'id', id)
+            const localVarPath = `/gear/kits/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -34291,6 +39589,49 @@ export const GearApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @param {string} id 
+         * @param {UpdateGearKitDto} updateGearKitDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerUpdateKit: async (id: string, updateGearKitDto: UpdateGearKitDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gearControllerUpdateKit', 'id', id)
+            // verify required parameter 'updateGearKitDto' is not null or undefined
+            assertParamExists('gearControllerUpdateKit', 'updateGearKitDto', updateGearKitDto)
+            const localVarPath = `/gear/kits/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateGearKitDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {UpdateGearSystemDto} updateGearSystemDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -34347,10 +39688,22 @@ export const GearApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gearControllerCreate(createGearDto: CreateGearDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearItemResponse>> {
+        async gearControllerCreate(createGearDto: CreateGearDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearItemAdminResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerCreate(createGearDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CreateGearKitDto} createGearKitDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerCreateKit(createGearKitDto: CreateGearKitDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearKitResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerCreateKit(createGearKitDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerCreateKit']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -34367,6 +39720,30 @@ export const GearApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerGetItem(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearItemAdminResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerGetItem(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerGetItem']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerGetKit(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearKitResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerGetKit(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerGetKit']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -34374,6 +39751,43 @@ export const GearApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerList(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerListCategories(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GearCategoryResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerListCategories(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerListCategories']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {GearOwnership} [ownership] 
+         * @param {GearCategory} [category] 
+         * @param {GearItemsSort} [sort] 
+         * @param {number} [neededWithinDays] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerListItems(ownership?: GearOwnership, category?: GearCategory, sort?: GearItemsSort, neededWithinDays?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearItemListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerListItems(ownership, category, sort, neededWithinDays, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerListItems']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerListKits(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GearKitResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerListKits(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerListKits']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -34386,6 +39800,18 @@ export const GearApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerRemove(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerRemove']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerRemoveKit(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerRemoveKit(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerRemoveKit']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -34431,10 +39857,23 @@ export const GearApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gearControllerUpdate(id: string, updateGearDto: UpdateGearDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearItemResponse>> {
+        async gearControllerUpdate(id: string, updateGearDto: UpdateGearDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearItemAdminResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerUpdate(id, updateGearDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateGearKitDto} updateGearKitDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerUpdateKit(id: string, updateGearKitDto: UpdateGearKitDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearKitResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerUpdateKit(id, updateGearKitDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerUpdateKit']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -34466,8 +39905,17 @@ export const GearApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gearControllerCreate(requestParameters: GearApiGearControllerCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<GearItemResponse> {
+        gearControllerCreate(requestParameters: GearApiGearControllerCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<GearItemAdminResponse> {
             return localVarFp.gearControllerCreate(requestParameters.createGearDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {GearApiGearControllerCreateKitRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerCreateKit(requestParameters: GearApiGearControllerCreateKitRequest, options?: RawAxiosRequestConfig): AxiosPromise<GearKitResponse> {
+            return localVarFp.gearControllerCreateKit(requestParameters.createGearKitDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -34480,11 +39928,54 @@ export const GearApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @param {GearApiGearControllerGetItemRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerGetItem(requestParameters: GearApiGearControllerGetItemRequest, options?: RawAxiosRequestConfig): AxiosPromise<GearItemAdminResponse> {
+            return localVarFp.gearControllerGetItem(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {GearApiGearControllerGetKitRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerGetKit(requestParameters: GearApiGearControllerGetKitRequest, options?: RawAxiosRequestConfig): AxiosPromise<GearKitResponse> {
+            return localVarFp.gearControllerGetKit(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         gearControllerList(options?: RawAxiosRequestConfig): AxiosPromise<GearOverviewResponse> {
             return localVarFp.gearControllerList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerListCategories(options?: RawAxiosRequestConfig): AxiosPromise<Array<GearCategoryResponse>> {
+            return localVarFp.gearControllerListCategories(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {GearApiGearControllerListItemsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerListItems(requestParameters: GearApiGearControllerListItemsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<GearItemListResponse> {
+            return localVarFp.gearControllerListItems(requestParameters.ownership, requestParameters.category, requestParameters.sort, requestParameters.neededWithinDays, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerListKits(options?: RawAxiosRequestConfig): AxiosPromise<Array<GearKitResponse>> {
+            return localVarFp.gearControllerListKits(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -34494,6 +39985,15 @@ export const GearApiFactory = function (configuration?: Configuration, basePath?
          */
         gearControllerRemove(requestParameters: GearApiGearControllerRemoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.gearControllerRemove(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {GearApiGearControllerRemoveKitRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerRemoveKit(requestParameters: GearApiGearControllerRemoveKitRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.gearControllerRemoveKit(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -34528,8 +40028,17 @@ export const GearApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gearControllerUpdate(requestParameters: GearApiGearControllerUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<GearItemResponse> {
+        gearControllerUpdate(requestParameters: GearApiGearControllerUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<GearItemAdminResponse> {
             return localVarFp.gearControllerUpdate(requestParameters.id, requestParameters.updateGearDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {GearApiGearControllerUpdateKitRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerUpdateKit(requestParameters: GearApiGearControllerUpdateKitRequest, options?: RawAxiosRequestConfig): AxiosPromise<GearKitResponse> {
+            return localVarFp.gearControllerUpdateKit(requestParameters.id, requestParameters.updateGearKitDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -34558,6 +40067,20 @@ export interface GearApiGearControllerCreateRequest {
 }
 
 /**
+ * Request parameters for gearControllerCreateKit operation in GearApi.
+ * @export
+ * @interface GearApiGearControllerCreateKitRequest
+ */
+export interface GearApiGearControllerCreateKitRequest {
+    /**
+     * 
+     * @type {CreateGearKitDto}
+     * @memberof GearApiGearControllerCreateKit
+     */
+    readonly createGearKitDto: CreateGearKitDto
+}
+
+/**
  * Request parameters for gearControllerCreateSystem operation in GearApi.
  * @export
  * @interface GearApiGearControllerCreateSystemRequest
@@ -34572,6 +40095,69 @@ export interface GearApiGearControllerCreateSystemRequest {
 }
 
 /**
+ * Request parameters for gearControllerGetItem operation in GearApi.
+ * @export
+ * @interface GearApiGearControllerGetItemRequest
+ */
+export interface GearApiGearControllerGetItemRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof GearApiGearControllerGetItem
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for gearControllerGetKit operation in GearApi.
+ * @export
+ * @interface GearApiGearControllerGetKitRequest
+ */
+export interface GearApiGearControllerGetKitRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof GearApiGearControllerGetKit
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for gearControllerListItems operation in GearApi.
+ * @export
+ * @interface GearApiGearControllerListItemsRequest
+ */
+export interface GearApiGearControllerListItemsRequest {
+    /**
+     * 
+     * @type {GearOwnership}
+     * @memberof GearApiGearControllerListItems
+     */
+    readonly ownership?: GearOwnership
+
+    /**
+     * 
+     * @type {GearCategory}
+     * @memberof GearApiGearControllerListItems
+     */
+    readonly category?: GearCategory
+
+    /**
+     * 
+     * @type {GearItemsSort}
+     * @memberof GearApiGearControllerListItems
+     */
+    readonly sort?: GearItemsSort
+
+    /**
+     * 
+     * @type {number}
+     * @memberof GearApiGearControllerListItems
+     */
+    readonly neededWithinDays?: number
+}
+
+/**
  * Request parameters for gearControllerRemove operation in GearApi.
  * @export
  * @interface GearApiGearControllerRemoveRequest
@@ -34581,6 +40167,20 @@ export interface GearApiGearControllerRemoveRequest {
      * 
      * @type {string}
      * @memberof GearApiGearControllerRemove
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for gearControllerRemoveKit operation in GearApi.
+ * @export
+ * @interface GearApiGearControllerRemoveKitRequest
+ */
+export interface GearApiGearControllerRemoveKitRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof GearApiGearControllerRemoveKit
      */
     readonly id: string
 }
@@ -34649,6 +40249,27 @@ export interface GearApiGearControllerUpdateRequest {
 }
 
 /**
+ * Request parameters for gearControllerUpdateKit operation in GearApi.
+ * @export
+ * @interface GearApiGearControllerUpdateKitRequest
+ */
+export interface GearApiGearControllerUpdateKitRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof GearApiGearControllerUpdateKit
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {UpdateGearKitDto}
+     * @memberof GearApiGearControllerUpdateKit
+     */
+    readonly updateGearKitDto: UpdateGearKitDto
+}
+
+/**
  * Request parameters for gearControllerUpdateSystem operation in GearApi.
  * @export
  * @interface GearApiGearControllerUpdateSystemRequest
@@ -34689,6 +40310,17 @@ export class GearApi extends BaseAPI {
 
     /**
      * 
+     * @param {GearApiGearControllerCreateKitRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerCreateKit(requestParameters: GearApiGearControllerCreateKitRequest, options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerCreateKit(requestParameters.createGearKitDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {GearApiGearControllerCreateSystemRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -34696,6 +40328,28 @@ export class GearApi extends BaseAPI {
      */
     public gearControllerCreateSystem(requestParameters: GearApiGearControllerCreateSystemRequest, options?: RawAxiosRequestConfig) {
         return GearApiFp(this.configuration).gearControllerCreateSystem(requestParameters.createGearSystemDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {GearApiGearControllerGetItemRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerGetItem(requestParameters: GearApiGearControllerGetItemRequest, options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerGetItem(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {GearApiGearControllerGetKitRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerGetKit(requestParameters: GearApiGearControllerGetKitRequest, options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerGetKit(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -34710,6 +40364,37 @@ export class GearApi extends BaseAPI {
 
     /**
      * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerListCategories(options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerListCategories(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {GearApiGearControllerListItemsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerListItems(requestParameters: GearApiGearControllerListItemsRequest = {}, options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerListItems(requestParameters.ownership, requestParameters.category, requestParameters.sort, requestParameters.neededWithinDays, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerListKits(options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerListKits(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {GearApiGearControllerRemoveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -34717,6 +40402,17 @@ export class GearApi extends BaseAPI {
      */
     public gearControllerRemove(requestParameters: GearApiGearControllerRemoveRequest, options?: RawAxiosRequestConfig) {
         return GearApiFp(this.configuration).gearControllerRemove(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {GearApiGearControllerRemoveKitRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerRemoveKit(requestParameters: GearApiGearControllerRemoveKitRequest, options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerRemoveKit(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -34761,6 +40457,17 @@ export class GearApi extends BaseAPI {
      */
     public gearControllerUpdate(requestParameters: GearApiGearControllerUpdateRequest, options?: RawAxiosRequestConfig) {
         return GearApiFp(this.configuration).gearControllerUpdate(requestParameters.id, requestParameters.updateGearDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {GearApiGearControllerUpdateKitRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerUpdateKit(requestParameters: GearApiGearControllerUpdateKitRequest, options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerUpdateKit(requestParameters.id, requestParameters.updateGearKitDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -38511,6 +44218,255 @@ export class PersonApi extends BaseAPI {
 export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * The stage is stamped from the entry as it is now and cannot be changed later.
+         * @summary Add a comment
+         * @param {string} id 
+         * @param {CreatePhotoEntryCommentDto} createPhotoEntryCommentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerCreate: async (id: string, createPhotoEntryCommentDto: CreatePhotoEntryCommentDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryCommentControllerCreate', 'id', id)
+            // verify required parameter 'createPhotoEntryCommentDto' is not null or undefined
+            assertParamExists('photoEntryCommentControllerCreate', 'createPhotoEntryCommentDto', createPhotoEntryCommentDto)
+            const localVarPath = `/photo-entry/{id}/comments`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createPhotoEntryCommentDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Groups follow the entry history: planning, after the shoot, selecting, editing, finished. `unresolved=true` keeps only open TODOs.
+         * @summary Comments of an entry, grouped by stage
+         * @param {string} id 
+         * @param {boolean} [unresolved] 
+         * @param {PhotoEntryCommentKind} [kind] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerList: async (id: string, unresolved?: boolean, kind?: PhotoEntryCommentKind, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryCommentControllerList', 'id', id)
+            const localVarPath = `/photo-entry/{id}/comments`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (unresolved !== undefined) {
+                localVarQueryParameter['unresolved'] = unresolved;
+            }
+
+            if (kind !== undefined) {
+                localVarQueryParameter['kind'] = kind;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Turning a TODO into another kind drops its resolution.
+         * @summary Edit body or kind
+         * @param {string} commentId 
+         * @param {PatchPhotoEntryCommentDto} patchPhotoEntryCommentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerPatch: async (commentId: string, patchPhotoEntryCommentDto: PatchPhotoEntryCommentDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'commentId' is not null or undefined
+            assertParamExists('photoEntryCommentControllerPatch', 'commentId', commentId)
+            // verify required parameter 'patchPhotoEntryCommentDto' is not null or undefined
+            assertParamExists('photoEntryCommentControllerPatch', 'patchPhotoEntryCommentDto', patchPhotoEntryCommentDto)
+            const localVarPath = `/photo-entry/comments/{commentId}`
+                .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchPhotoEntryCommentDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} commentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerRemove: async (commentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'commentId' is not null or undefined
+            assertParamExists('photoEntryCommentControllerRemove', 'commentId', commentId)
+            const localVarPath = `/photo-entry/comments/{commentId}`
+                .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Undo a resolve
+         * @param {string} commentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerReopen: async (commentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'commentId' is not null or undefined
+            assertParamExists('photoEntryCommentControllerReopen', 'commentId', commentId)
+            const localVarPath = `/photo-entry/comments/{commentId}/reopen`
+                .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Tick a TODO off (TODO comments only)
+         * @param {string} commentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerResolve: async (commentId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'commentId' is not null or undefined
+            assertParamExists('photoEntryCommentControllerResolve', 'commentId', commentId)
+            const localVarPath = `/photo-entry/comments/{commentId}/resolve`
+                .replace(`{${"commentId"}}`, encodeURIComponent(String(commentId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {CreatePhotoEntryDto} createPhotoEntryDto 
          * @param {*} [options] Override http request option.
@@ -38570,10 +44526,6 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-
-            // authentication bearer required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -38702,6 +44654,7 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
          * 
          * @param {PhotoEntryType} [type] 
          * @param {PhotoEntryStatus} [status] 
+         * @param {PhotoEntryPostStage} [postStage] 
          * @param {string} [astroObjectId] 
          * @param {string} [search] 
          * @param {number} [take] 
@@ -38709,7 +44662,7 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        photoEntryControllerList: async (type?: PhotoEntryType, status?: PhotoEntryStatus, astroObjectId?: string, search?: string, take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        photoEntryControllerList: async (type?: PhotoEntryType, status?: PhotoEntryStatus, postStage?: PhotoEntryPostStage, astroObjectId?: string, search?: string, take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/photo-entry`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -38732,6 +44685,10 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
 
             if (status !== undefined) {
                 localVarQueryParameter['status'] = status;
+            }
+
+            if (postStage !== undefined) {
+                localVarQueryParameter['postStage'] = postStage;
             }
 
             if (astroObjectId !== undefined) {
@@ -38762,7 +44719,8 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
             };
         },
         /**
-         * 
+         * Shortcut for \"everything is offloaded\": secures every used gear row that produces media and declares the gear, then derives uploadStatus.
+         * @summary Mark all media as secured
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -38844,6 +44802,88 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
         /**
          * 
          * @param {string} id 
+         * @param {PatchPhotoEntryPostStageDto} patchPhotoEntryPostStageDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerPatchPostStage: async (id: string, patchPhotoEntryPostStageDto: PatchPhotoEntryPostStageDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryControllerPatchPostStage', 'id', id)
+            // verify required parameter 'patchPhotoEntryPostStageDto' is not null or undefined
+            assertParamExists('photoEntryControllerPatchPostStage', 'patchPhotoEntryPostStageDto', patchPhotoEntryPostStageDto)
+            const localVarPath = `/photo-entry/{id}/post-stage`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchPhotoEntryPostStageDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {PatchPhotoEntryProgressDto} patchPhotoEntryProgressDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerPatchProgress: async (id: string, patchPhotoEntryProgressDto: PatchPhotoEntryProgressDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryControllerPatchProgress', 'id', id)
+            // verify required parameter 'patchPhotoEntryProgressDto' is not null or undefined
+            assertParamExists('photoEntryControllerPatchProgress', 'patchPhotoEntryProgressDto', patchPhotoEntryProgressDto)
+            const localVarPath = `/photo-entry/{id}/progress`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchPhotoEntryProgressDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {PatchPhotoEntryStatusDto} patchPhotoEntryStatusDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -38884,6 +44924,413 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * photoCount from SOURCE (RAW+JPEG pairs count once; VIDEO and SEQUENCES excluded), selectedCount from SELECTS, editedCount from EXPORT. A stage holding fewer frames than the next one is reported as unknown. Always applies; the nightly run instead keeps counts reported after the folders last changed. GENERAL and WORK entries with created folders only.
+         * @summary Count photos from the entry folders
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerRefreshCounts: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryControllerRefreshCounts', 'id', id)
+            const localVarPath = `/photo-entry/{id}/refresh-counts`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} gearItemId 
+         * @param {AddPhotoEntryGearDto} addPhotoEntryGearDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerAdd: async (id: string, gearItemId: string, addPhotoEntryGearDto: AddPhotoEntryGearDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryGearControllerAdd', 'id', id)
+            // verify required parameter 'gearItemId' is not null or undefined
+            assertParamExists('photoEntryGearControllerAdd', 'gearItemId', gearItemId)
+            // verify required parameter 'addPhotoEntryGearDto' is not null or undefined
+            assertParamExists('photoEntryGearControllerAdd', 'addPhotoEntryGearDto', addPhotoEntryGearDto)
+            const localVarPath = `/photo-entry/{id}/gear/{gearItemId}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"gearItemId"}}`, encodeURIComponent(String(gearItemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(addPhotoEntryGearDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Copies the kit into ordinary rows. Rows already on the list are kept; RETIRED gear is skipped.
+         * @summary Expand a kit into the list
+         * @param {string} id 
+         * @param {string} kitId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerAddFromKit: async (id: string, kitId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryGearControllerAddFromKit', 'id', id)
+            // verify required parameter 'kitId' is not null or undefined
+            assertParamExists('photoEntryGearControllerAddFromKit', 'kitId', kitId)
+            const localVarPath = `/photo-entry/{id}/gear/from-kit/{kitId}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"kitId"}}`, encodeURIComponent(String(kitId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * SHOT entries only; valid with an empty list.
+         * @summary Declare the gear as complete
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerConfirm: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryGearControllerConfirm', 'id', id)
+            const localVarPath = `/photo-entry/{id}/gear/confirm`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * One list, read by phase: PACK before the shoot, SECURE after it. `listed` marks the rows that belong on the list for the current phase.
+         * @summary Gear list of an entry
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerList: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryGearControllerList', 'id', id)
+            const localVarPath = `/photo-entry/{id}/gear`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * `secured: true` implies `used`; `used: false` clears `secured`. used/secured need a SHOT entry and gear that is not on the wishlist.
+         * @summary Tick one row
+         * @param {string} id 
+         * @param {string} gearItemId 
+         * @param {PatchPhotoEntryGearDto} patchPhotoEntryGearDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerPatch: async (id: string, gearItemId: string, patchPhotoEntryGearDto: PatchPhotoEntryGearDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryGearControllerPatch', 'id', id)
+            // verify required parameter 'gearItemId' is not null or undefined
+            assertParamExists('photoEntryGearControllerPatch', 'gearItemId', gearItemId)
+            // verify required parameter 'patchPhotoEntryGearDto' is not null or undefined
+            assertParamExists('photoEntryGearControllerPatch', 'patchPhotoEntryGearDto', patchPhotoEntryGearDto)
+            const localVarPath = `/photo-entry/{id}/gear/{gearItemId}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"gearItemId"}}`, encodeURIComponent(String(gearItemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchPhotoEntryGearDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * `unsecured`: declared gear with media not yet offloaded/scanned/copied, with per-source thresholds (cards 7 days, film 90). `undeclared`: SHOT entries whose gear was never declared — unknown, never emailed about.
+         * @summary Media still waiting to be secured
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerPendingMedia: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/photo-entry/pending-media`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} gearItemId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerRemove: async (id: string, gearItemId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryGearControllerRemove', 'id', id)
+            // verify required parameter 'gearItemId' is not null or undefined
+            assertParamExists('photoEntryGearControllerRemove', 'gearItemId', gearItemId)
+            const localVarPath = `/photo-entry/{id}/gear/{gearItemId}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"gearItemId"}}`, encodeURIComponent(String(gearItemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Rows missing from `items` are removed; omitted flags on existing rows are left alone.
+         * @summary Replace the gear list
+         * @param {string} id 
+         * @param {PutPhotoEntryGearDto} putPhotoEntryGearDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerReplace: async (id: string, putPhotoEntryGearDto: PutPhotoEntryGearDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryGearControllerReplace', 'id', id)
+            // verify required parameter 'putPhotoEntryGearDto' is not null or undefined
+            assertParamExists('photoEntryGearControllerReplace', 'putPhotoEntryGearDto', putPhotoEntryGearDto)
+            const localVarPath = `/photo-entry/{id}/gear`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(putPhotoEntryGearDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerShoppingList: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryGearControllerShoppingList', 'id', id)
+            const localVarPath = `/photo-entry/{id}/shopping-list`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -38894,6 +45341,87 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
 export const PhotoEntryApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = PhotoEntryApiAxiosParamCreator(configuration)
     return {
+        /**
+         * The stage is stamped from the entry as it is now and cannot be changed later.
+         * @summary Add a comment
+         * @param {string} id 
+         * @param {CreatePhotoEntryCommentDto} createPhotoEntryCommentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryCommentControllerCreate(id: string, createPhotoEntryCommentDto: CreatePhotoEntryCommentDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryCommentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryCommentControllerCreate(id, createPhotoEntryCommentDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryCommentControllerCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Groups follow the entry history: planning, after the shoot, selecting, editing, finished. `unresolved=true` keeps only open TODOs.
+         * @summary Comments of an entry, grouped by stage
+         * @param {string} id 
+         * @param {boolean} [unresolved] 
+         * @param {PhotoEntryCommentKind} [kind] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryCommentControllerList(id: string, unresolved?: boolean, kind?: PhotoEntryCommentKind, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryCommentListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryCommentControllerList(id, unresolved, kind, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryCommentControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Turning a TODO into another kind drops its resolution.
+         * @summary Edit body or kind
+         * @param {string} commentId 
+         * @param {PatchPhotoEntryCommentDto} patchPhotoEntryCommentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryCommentControllerPatch(commentId: string, patchPhotoEntryCommentDto: PatchPhotoEntryCommentDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryCommentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryCommentControllerPatch(commentId, patchPhotoEntryCommentDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryCommentControllerPatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} commentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryCommentControllerRemove(commentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryCommentControllerRemove(commentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryCommentControllerRemove']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Undo a resolve
+         * @param {string} commentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryCommentControllerReopen(commentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryCommentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryCommentControllerReopen(commentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryCommentControllerReopen']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Tick a TODO off (TODO comments only)
+         * @param {string} commentId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryCommentControllerResolve(commentId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryCommentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryCommentControllerResolve(commentId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryCommentControllerResolve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * 
          * @param {CreatePhotoEntryDto} createPhotoEntryDto 
@@ -38959,6 +45487,7 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
          * 
          * @param {PhotoEntryType} [type] 
          * @param {PhotoEntryStatus} [status] 
+         * @param {PhotoEntryPostStage} [postStage] 
          * @param {string} [astroObjectId] 
          * @param {string} [search] 
          * @param {number} [take] 
@@ -38966,14 +45495,15 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async photoEntryControllerList(type?: PhotoEntryType, status?: PhotoEntryStatus, astroObjectId?: string, search?: string, take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryControllerList(type, status, astroObjectId, search, take, skip, options);
+        async photoEntryControllerList(type?: PhotoEntryType, status?: PhotoEntryStatus, postStage?: PhotoEntryPostStage, astroObjectId?: string, search?: string, take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryControllerList(type, status, postStage, astroObjectId, search, take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryControllerList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Shortcut for \"everything is offloaded\": secures every used gear row that produces media and declares the gear, then derives uploadStatus.
+         * @summary Mark all media as secured
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -39000,6 +45530,32 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
+         * @param {PatchPhotoEntryPostStageDto} patchPhotoEntryPostStageDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryControllerPatchPostStage(id: string, patchPhotoEntryPostStageDto: PatchPhotoEntryPostStageDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryControllerPatchPostStage(id, patchPhotoEntryPostStageDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryControllerPatchPostStage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {PatchPhotoEntryProgressDto} patchPhotoEntryProgressDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryControllerPatchProgress(id: string, patchPhotoEntryProgressDto: PatchPhotoEntryProgressDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryControllerPatchProgress(id, patchPhotoEntryProgressDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryControllerPatchProgress']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {PatchPhotoEntryStatusDto} patchPhotoEntryStatusDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -39008,6 +45564,139 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryControllerPatchStatus(id, patchPhotoEntryStatusDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryControllerPatchStatus']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * photoCount from SOURCE (RAW+JPEG pairs count once; VIDEO and SEQUENCES excluded), selectedCount from SELECTS, editedCount from EXPORT. A stage holding fewer frames than the next one is reported as unknown. Always applies; the nightly run instead keeps counts reported after the folders last changed. GENERAL and WORK entries with created folders only.
+         * @summary Count photos from the entry folders
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryControllerRefreshCounts(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryControllerRefreshCounts(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryControllerRefreshCounts']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} gearItemId 
+         * @param {AddPhotoEntryGearDto} addPhotoEntryGearDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryGearControllerAdd(id: string, gearItemId: string, addPhotoEntryGearDto: AddPhotoEntryGearDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryGearListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerAdd(id, gearItemId, addPhotoEntryGearDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerAdd']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Copies the kit into ordinary rows. Rows already on the list are kept; RETIRED gear is skipped.
+         * @summary Expand a kit into the list
+         * @param {string} id 
+         * @param {string} kitId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryGearControllerAddFromKit(id: string, kitId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryGearListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerAddFromKit(id, kitId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerAddFromKit']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * SHOT entries only; valid with an empty list.
+         * @summary Declare the gear as complete
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryGearControllerConfirm(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryGearListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerConfirm(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerConfirm']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * One list, read by phase: PACK before the shoot, SECURE after it. `listed` marks the rows that belong on the list for the current phase.
+         * @summary Gear list of an entry
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryGearControllerList(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryGearListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerList(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * `secured: true` implies `used`; `used: false` clears `secured`. used/secured need a SHOT entry and gear that is not on the wishlist.
+         * @summary Tick one row
+         * @param {string} id 
+         * @param {string} gearItemId 
+         * @param {PatchPhotoEntryGearDto} patchPhotoEntryGearDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryGearControllerPatch(id: string, gearItemId: string, patchPhotoEntryGearDto: PatchPhotoEntryGearDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryGearListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerPatch(id, gearItemId, patchPhotoEntryGearDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerPatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * `unsecured`: declared gear with media not yet offloaded/scanned/copied, with per-source thresholds (cards 7 days, film 90). `undeclared`: SHOT entries whose gear was never declared — unknown, never emailed about.
+         * @summary Media still waiting to be secured
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryGearControllerPendingMedia(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PendingMediaResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerPendingMedia(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerPendingMedia']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} gearItemId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryGearControllerRemove(id: string, gearItemId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryGearListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerRemove(id, gearItemId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerRemove']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Rows missing from `items` are removed; omitted flags on existing rows are left alone.
+         * @summary Replace the gear list
+         * @param {string} id 
+         * @param {PutPhotoEntryGearDto} putPhotoEntryGearDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryGearControllerReplace(id: string, putPhotoEntryGearDto: PutPhotoEntryGearDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryGearListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerReplace(id, putPhotoEntryGearDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerReplace']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryGearControllerShoppingList(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryShoppingListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerShoppingList(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerShoppingList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -39020,6 +45709,65 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
 export const PhotoEntryApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = PhotoEntryApiFp(configuration)
     return {
+        /**
+         * The stage is stamped from the entry as it is now and cannot be changed later.
+         * @summary Add a comment
+         * @param {PhotoEntryApiPhotoEntryCommentControllerCreateRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerCreate(requestParameters: PhotoEntryApiPhotoEntryCommentControllerCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryCommentResponse> {
+            return localVarFp.photoEntryCommentControllerCreate(requestParameters.id, requestParameters.createPhotoEntryCommentDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Groups follow the entry history: planning, after the shoot, selecting, editing, finished. `unresolved=true` keeps only open TODOs.
+         * @summary Comments of an entry, grouped by stage
+         * @param {PhotoEntryApiPhotoEntryCommentControllerListRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerList(requestParameters: PhotoEntryApiPhotoEntryCommentControllerListRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryCommentListResponse> {
+            return localVarFp.photoEntryCommentControllerList(requestParameters.id, requestParameters.unresolved, requestParameters.kind, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Turning a TODO into another kind drops its resolution.
+         * @summary Edit body or kind
+         * @param {PhotoEntryApiPhotoEntryCommentControllerPatchRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerPatch(requestParameters: PhotoEntryApiPhotoEntryCommentControllerPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryCommentResponse> {
+            return localVarFp.photoEntryCommentControllerPatch(requestParameters.commentId, requestParameters.patchPhotoEntryCommentDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PhotoEntryApiPhotoEntryCommentControllerRemoveRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerRemove(requestParameters: PhotoEntryApiPhotoEntryCommentControllerRemoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.photoEntryCommentControllerRemove(requestParameters.commentId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Undo a resolve
+         * @param {PhotoEntryApiPhotoEntryCommentControllerReopenRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerReopen(requestParameters: PhotoEntryApiPhotoEntryCommentControllerReopenRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryCommentResponse> {
+            return localVarFp.photoEntryCommentControllerReopen(requestParameters.commentId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Tick a TODO off (TODO comments only)
+         * @param {PhotoEntryApiPhotoEntryCommentControllerResolveRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryCommentControllerResolve(requestParameters: PhotoEntryApiPhotoEntryCommentControllerResolveRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryCommentResponse> {
+            return localVarFp.photoEntryCommentControllerResolve(requestParameters.commentId, options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @param {PhotoEntryApiPhotoEntryControllerCreateRequest} requestParameters Request parameters.
@@ -39073,10 +45821,11 @@ export const PhotoEntryApiFactory = function (configuration?: Configuration, bas
          * @throws {RequiredError}
          */
         photoEntryControllerList(requestParameters: PhotoEntryApiPhotoEntryControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryListResponse> {
-            return localVarFp.photoEntryControllerList(requestParameters.type, requestParameters.status, requestParameters.astroObjectId, requestParameters.search, requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
+            return localVarFp.photoEntryControllerList(requestParameters.type, requestParameters.status, requestParameters.postStage, requestParameters.astroObjectId, requestParameters.search, requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Shortcut for \"everything is offloaded\": secures every used gear row that produces media and declares the gear, then derives uploadStatus.
+         * @summary Mark all media as secured
          * @param {PhotoEntryApiPhotoEntryControllerMarkMediaUploadedRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -39095,6 +45844,24 @@ export const PhotoEntryApiFactory = function (configuration?: Configuration, bas
         },
         /**
          * 
+         * @param {PhotoEntryApiPhotoEntryControllerPatchPostStageRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerPatchPostStage(requestParameters: PhotoEntryApiPhotoEntryControllerPatchPostStageRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryResponse> {
+            return localVarFp.photoEntryControllerPatchPostStage(requestParameters.id, requestParameters.patchPhotoEntryPostStageDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PhotoEntryApiPhotoEntryControllerPatchProgressRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerPatchProgress(requestParameters: PhotoEntryApiPhotoEntryControllerPatchProgressRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryResponse> {
+            return localVarFp.photoEntryControllerPatchProgress(requestParameters.id, requestParameters.patchPhotoEntryProgressDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {PhotoEntryApiPhotoEntryControllerPatchStatusRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -39102,8 +45869,216 @@ export const PhotoEntryApiFactory = function (configuration?: Configuration, bas
         photoEntryControllerPatchStatus(requestParameters: PhotoEntryApiPhotoEntryControllerPatchStatusRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryResponse> {
             return localVarFp.photoEntryControllerPatchStatus(requestParameters.id, requestParameters.patchPhotoEntryStatusDto, options).then((request) => request(axios, basePath));
         },
+        /**
+         * photoCount from SOURCE (RAW+JPEG pairs count once; VIDEO and SEQUENCES excluded), selectedCount from SELECTS, editedCount from EXPORT. A stage holding fewer frames than the next one is reported as unknown. Always applies; the nightly run instead keeps counts reported after the folders last changed. GENERAL and WORK entries with created folders only.
+         * @summary Count photos from the entry folders
+         * @param {PhotoEntryApiPhotoEntryControllerRefreshCountsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryControllerRefreshCounts(requestParameters: PhotoEntryApiPhotoEntryControllerRefreshCountsRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryResponse> {
+            return localVarFp.photoEntryControllerRefreshCounts(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PhotoEntryApiPhotoEntryGearControllerAddRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerAdd(requestParameters: PhotoEntryApiPhotoEntryGearControllerAddRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryGearListResponse> {
+            return localVarFp.photoEntryGearControllerAdd(requestParameters.id, requestParameters.gearItemId, requestParameters.addPhotoEntryGearDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Copies the kit into ordinary rows. Rows already on the list are kept; RETIRED gear is skipped.
+         * @summary Expand a kit into the list
+         * @param {PhotoEntryApiPhotoEntryGearControllerAddFromKitRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerAddFromKit(requestParameters: PhotoEntryApiPhotoEntryGearControllerAddFromKitRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryGearListResponse> {
+            return localVarFp.photoEntryGearControllerAddFromKit(requestParameters.id, requestParameters.kitId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * SHOT entries only; valid with an empty list.
+         * @summary Declare the gear as complete
+         * @param {PhotoEntryApiPhotoEntryGearControllerConfirmRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerConfirm(requestParameters: PhotoEntryApiPhotoEntryGearControllerConfirmRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryGearListResponse> {
+            return localVarFp.photoEntryGearControllerConfirm(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * One list, read by phase: PACK before the shoot, SECURE after it. `listed` marks the rows that belong on the list for the current phase.
+         * @summary Gear list of an entry
+         * @param {PhotoEntryApiPhotoEntryGearControllerListRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerList(requestParameters: PhotoEntryApiPhotoEntryGearControllerListRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryGearListResponse> {
+            return localVarFp.photoEntryGearControllerList(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * `secured: true` implies `used`; `used: false` clears `secured`. used/secured need a SHOT entry and gear that is not on the wishlist.
+         * @summary Tick one row
+         * @param {PhotoEntryApiPhotoEntryGearControllerPatchRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerPatch(requestParameters: PhotoEntryApiPhotoEntryGearControllerPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryGearListResponse> {
+            return localVarFp.photoEntryGearControllerPatch(requestParameters.id, requestParameters.gearItemId, requestParameters.patchPhotoEntryGearDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * `unsecured`: declared gear with media not yet offloaded/scanned/copied, with per-source thresholds (cards 7 days, film 90). `undeclared`: SHOT entries whose gear was never declared — unknown, never emailed about.
+         * @summary Media still waiting to be secured
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerPendingMedia(options?: RawAxiosRequestConfig): AxiosPromise<PendingMediaResponse> {
+            return localVarFp.photoEntryGearControllerPendingMedia(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PhotoEntryApiPhotoEntryGearControllerRemoveRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerRemove(requestParameters: PhotoEntryApiPhotoEntryGearControllerRemoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryGearListResponse> {
+            return localVarFp.photoEntryGearControllerRemove(requestParameters.id, requestParameters.gearItemId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Rows missing from `items` are removed; omitted flags on existing rows are left alone.
+         * @summary Replace the gear list
+         * @param {PhotoEntryApiPhotoEntryGearControllerReplaceRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerReplace(requestParameters: PhotoEntryApiPhotoEntryGearControllerReplaceRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryGearListResponse> {
+            return localVarFp.photoEntryGearControllerReplace(requestParameters.id, requestParameters.putPhotoEntryGearDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PhotoEntryApiPhotoEntryGearControllerShoppingListRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryGearControllerShoppingList(requestParameters: PhotoEntryApiPhotoEntryGearControllerShoppingListRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryShoppingListResponse> {
+            return localVarFp.photoEntryGearControllerShoppingList(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
     };
 };
+
+/**
+ * Request parameters for photoEntryCommentControllerCreate operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryCommentControllerCreateRequest
+ */
+export interface PhotoEntryApiPhotoEntryCommentControllerCreateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerCreate
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {CreatePhotoEntryCommentDto}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerCreate
+     */
+    readonly createPhotoEntryCommentDto: CreatePhotoEntryCommentDto
+}
+
+/**
+ * Request parameters for photoEntryCommentControllerList operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryCommentControllerListRequest
+ */
+export interface PhotoEntryApiPhotoEntryCommentControllerListRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerList
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerList
+     */
+    readonly unresolved?: boolean
+
+    /**
+     * 
+     * @type {PhotoEntryCommentKind}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerList
+     */
+    readonly kind?: PhotoEntryCommentKind
+}
+
+/**
+ * Request parameters for photoEntryCommentControllerPatch operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryCommentControllerPatchRequest
+ */
+export interface PhotoEntryApiPhotoEntryCommentControllerPatchRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerPatch
+     */
+    readonly commentId: string
+
+    /**
+     * 
+     * @type {PatchPhotoEntryCommentDto}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerPatch
+     */
+    readonly patchPhotoEntryCommentDto: PatchPhotoEntryCommentDto
+}
+
+/**
+ * Request parameters for photoEntryCommentControllerRemove operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryCommentControllerRemoveRequest
+ */
+export interface PhotoEntryApiPhotoEntryCommentControllerRemoveRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerRemove
+     */
+    readonly commentId: string
+}
+
+/**
+ * Request parameters for photoEntryCommentControllerReopen operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryCommentControllerReopenRequest
+ */
+export interface PhotoEntryApiPhotoEntryCommentControllerReopenRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerReopen
+     */
+    readonly commentId: string
+}
+
+/**
+ * Request parameters for photoEntryCommentControllerResolve operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryCommentControllerResolveRequest
+ */
+export interface PhotoEntryApiPhotoEntryCommentControllerResolveRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryCommentControllerResolve
+     */
+    readonly commentId: string
+}
 
 /**
  * Request parameters for photoEntryControllerCreate operation in PhotoEntryApi.
@@ -39197,6 +46172,13 @@ export interface PhotoEntryApiPhotoEntryControllerListRequest {
 
     /**
      * 
+     * @type {PhotoEntryPostStage}
+     * @memberof PhotoEntryApiPhotoEntryControllerList
+     */
+    readonly postStage?: PhotoEntryPostStage
+
+    /**
+     * 
      * @type {string}
      * @memberof PhotoEntryApiPhotoEntryControllerList
      */
@@ -39260,6 +46242,48 @@ export interface PhotoEntryApiPhotoEntryControllerPatchRequest {
 }
 
 /**
+ * Request parameters for photoEntryControllerPatchPostStage operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryControllerPatchPostStageRequest
+ */
+export interface PhotoEntryApiPhotoEntryControllerPatchPostStageRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryControllerPatchPostStage
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {PatchPhotoEntryPostStageDto}
+     * @memberof PhotoEntryApiPhotoEntryControllerPatchPostStage
+     */
+    readonly patchPhotoEntryPostStageDto: PatchPhotoEntryPostStageDto
+}
+
+/**
+ * Request parameters for photoEntryControllerPatchProgress operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryControllerPatchProgressRequest
+ */
+export interface PhotoEntryApiPhotoEntryControllerPatchProgressRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryControllerPatchProgress
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {PatchPhotoEntryProgressDto}
+     * @memberof PhotoEntryApiPhotoEntryControllerPatchProgress
+     */
+    readonly patchPhotoEntryProgressDto: PatchPhotoEntryProgressDto
+}
+
+/**
  * Request parameters for photoEntryControllerPatchStatus operation in PhotoEntryApi.
  * @export
  * @interface PhotoEntryApiPhotoEntryControllerPatchStatusRequest
@@ -39281,12 +46305,258 @@ export interface PhotoEntryApiPhotoEntryControllerPatchStatusRequest {
 }
 
 /**
+ * Request parameters for photoEntryControllerRefreshCounts operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryControllerRefreshCountsRequest
+ */
+export interface PhotoEntryApiPhotoEntryControllerRefreshCountsRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryControllerRefreshCounts
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for photoEntryGearControllerAdd operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryGearControllerAddRequest
+ */
+export interface PhotoEntryApiPhotoEntryGearControllerAddRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerAdd
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerAdd
+     */
+    readonly gearItemId: string
+
+    /**
+     * 
+     * @type {AddPhotoEntryGearDto}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerAdd
+     */
+    readonly addPhotoEntryGearDto: AddPhotoEntryGearDto
+}
+
+/**
+ * Request parameters for photoEntryGearControllerAddFromKit operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryGearControllerAddFromKitRequest
+ */
+export interface PhotoEntryApiPhotoEntryGearControllerAddFromKitRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerAddFromKit
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerAddFromKit
+     */
+    readonly kitId: string
+}
+
+/**
+ * Request parameters for photoEntryGearControllerConfirm operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryGearControllerConfirmRequest
+ */
+export interface PhotoEntryApiPhotoEntryGearControllerConfirmRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerConfirm
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for photoEntryGearControllerList operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryGearControllerListRequest
+ */
+export interface PhotoEntryApiPhotoEntryGearControllerListRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerList
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for photoEntryGearControllerPatch operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryGearControllerPatchRequest
+ */
+export interface PhotoEntryApiPhotoEntryGearControllerPatchRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerPatch
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerPatch
+     */
+    readonly gearItemId: string
+
+    /**
+     * 
+     * @type {PatchPhotoEntryGearDto}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerPatch
+     */
+    readonly patchPhotoEntryGearDto: PatchPhotoEntryGearDto
+}
+
+/**
+ * Request parameters for photoEntryGearControllerRemove operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryGearControllerRemoveRequest
+ */
+export interface PhotoEntryApiPhotoEntryGearControllerRemoveRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerRemove
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerRemove
+     */
+    readonly gearItemId: string
+}
+
+/**
+ * Request parameters for photoEntryGearControllerReplace operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryGearControllerReplaceRequest
+ */
+export interface PhotoEntryApiPhotoEntryGearControllerReplaceRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerReplace
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {PutPhotoEntryGearDto}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerReplace
+     */
+    readonly putPhotoEntryGearDto: PutPhotoEntryGearDto
+}
+
+/**
+ * Request parameters for photoEntryGearControllerShoppingList operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryGearControllerShoppingListRequest
+ */
+export interface PhotoEntryApiPhotoEntryGearControllerShoppingListRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryGearControllerShoppingList
+     */
+    readonly id: string
+}
+
+/**
  * PhotoEntryApi - object-oriented interface
  * @export
  * @class PhotoEntryApi
  * @extends {BaseAPI}
  */
 export class PhotoEntryApi extends BaseAPI {
+    /**
+     * The stage is stamped from the entry as it is now and cannot be changed later.
+     * @summary Add a comment
+     * @param {PhotoEntryApiPhotoEntryCommentControllerCreateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryCommentControllerCreate(requestParameters: PhotoEntryApiPhotoEntryCommentControllerCreateRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryCommentControllerCreate(requestParameters.id, requestParameters.createPhotoEntryCommentDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Groups follow the entry history: planning, after the shoot, selecting, editing, finished. `unresolved=true` keeps only open TODOs.
+     * @summary Comments of an entry, grouped by stage
+     * @param {PhotoEntryApiPhotoEntryCommentControllerListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryCommentControllerList(requestParameters: PhotoEntryApiPhotoEntryCommentControllerListRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryCommentControllerList(requestParameters.id, requestParameters.unresolved, requestParameters.kind, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Turning a TODO into another kind drops its resolution.
+     * @summary Edit body or kind
+     * @param {PhotoEntryApiPhotoEntryCommentControllerPatchRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryCommentControllerPatch(requestParameters: PhotoEntryApiPhotoEntryCommentControllerPatchRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryCommentControllerPatch(requestParameters.commentId, requestParameters.patchPhotoEntryCommentDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PhotoEntryApiPhotoEntryCommentControllerRemoveRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryCommentControllerRemove(requestParameters: PhotoEntryApiPhotoEntryCommentControllerRemoveRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryCommentControllerRemove(requestParameters.commentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Undo a resolve
+     * @param {PhotoEntryApiPhotoEntryCommentControllerReopenRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryCommentControllerReopen(requestParameters: PhotoEntryApiPhotoEntryCommentControllerReopenRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryCommentControllerReopen(requestParameters.commentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Tick a TODO off (TODO comments only)
+     * @param {PhotoEntryApiPhotoEntryCommentControllerResolveRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryCommentControllerResolve(requestParameters: PhotoEntryApiPhotoEntryCommentControllerResolveRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryCommentControllerResolve(requestParameters.commentId, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {PhotoEntryApiPhotoEntryControllerCreateRequest} requestParameters Request parameters.
@@ -39351,11 +46621,12 @@ export class PhotoEntryApi extends BaseAPI {
      * @memberof PhotoEntryApi
      */
     public photoEntryControllerList(requestParameters: PhotoEntryApiPhotoEntryControllerListRequest = {}, options?: RawAxiosRequestConfig) {
-        return PhotoEntryApiFp(this.configuration).photoEntryControllerList(requestParameters.type, requestParameters.status, requestParameters.astroObjectId, requestParameters.search, requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
+        return PhotoEntryApiFp(this.configuration).photoEntryControllerList(requestParameters.type, requestParameters.status, requestParameters.postStage, requestParameters.astroObjectId, requestParameters.search, requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 
+     * Shortcut for \"everything is offloaded\": secures every used gear row that produces media and declares the gear, then derives uploadStatus.
+     * @summary Mark all media as secured
      * @param {PhotoEntryApiPhotoEntryControllerMarkMediaUploadedRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -39378,6 +46649,28 @@ export class PhotoEntryApi extends BaseAPI {
 
     /**
      * 
+     * @param {PhotoEntryApiPhotoEntryControllerPatchPostStageRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryControllerPatchPostStage(requestParameters: PhotoEntryApiPhotoEntryControllerPatchPostStageRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryControllerPatchPostStage(requestParameters.id, requestParameters.patchPhotoEntryPostStageDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PhotoEntryApiPhotoEntryControllerPatchProgressRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryControllerPatchProgress(requestParameters: PhotoEntryApiPhotoEntryControllerPatchProgressRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryControllerPatchProgress(requestParameters.id, requestParameters.patchPhotoEntryProgressDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {PhotoEntryApiPhotoEntryControllerPatchStatusRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -39385,6 +46678,122 @@ export class PhotoEntryApi extends BaseAPI {
      */
     public photoEntryControllerPatchStatus(requestParameters: PhotoEntryApiPhotoEntryControllerPatchStatusRequest, options?: RawAxiosRequestConfig) {
         return PhotoEntryApiFp(this.configuration).photoEntryControllerPatchStatus(requestParameters.id, requestParameters.patchPhotoEntryStatusDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * photoCount from SOURCE (RAW+JPEG pairs count once; VIDEO and SEQUENCES excluded), selectedCount from SELECTS, editedCount from EXPORT. A stage holding fewer frames than the next one is reported as unknown. Always applies; the nightly run instead keeps counts reported after the folders last changed. GENERAL and WORK entries with created folders only.
+     * @summary Count photos from the entry folders
+     * @param {PhotoEntryApiPhotoEntryControllerRefreshCountsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryControllerRefreshCounts(requestParameters: PhotoEntryApiPhotoEntryControllerRefreshCountsRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryControllerRefreshCounts(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PhotoEntryApiPhotoEntryGearControllerAddRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryGearControllerAdd(requestParameters: PhotoEntryApiPhotoEntryGearControllerAddRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryGearControllerAdd(requestParameters.id, requestParameters.gearItemId, requestParameters.addPhotoEntryGearDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Copies the kit into ordinary rows. Rows already on the list are kept; RETIRED gear is skipped.
+     * @summary Expand a kit into the list
+     * @param {PhotoEntryApiPhotoEntryGearControllerAddFromKitRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryGearControllerAddFromKit(requestParameters: PhotoEntryApiPhotoEntryGearControllerAddFromKitRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryGearControllerAddFromKit(requestParameters.id, requestParameters.kitId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * SHOT entries only; valid with an empty list.
+     * @summary Declare the gear as complete
+     * @param {PhotoEntryApiPhotoEntryGearControllerConfirmRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryGearControllerConfirm(requestParameters: PhotoEntryApiPhotoEntryGearControllerConfirmRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryGearControllerConfirm(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * One list, read by phase: PACK before the shoot, SECURE after it. `listed` marks the rows that belong on the list for the current phase.
+     * @summary Gear list of an entry
+     * @param {PhotoEntryApiPhotoEntryGearControllerListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryGearControllerList(requestParameters: PhotoEntryApiPhotoEntryGearControllerListRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryGearControllerList(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * `secured: true` implies `used`; `used: false` clears `secured`. used/secured need a SHOT entry and gear that is not on the wishlist.
+     * @summary Tick one row
+     * @param {PhotoEntryApiPhotoEntryGearControllerPatchRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryGearControllerPatch(requestParameters: PhotoEntryApiPhotoEntryGearControllerPatchRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryGearControllerPatch(requestParameters.id, requestParameters.gearItemId, requestParameters.patchPhotoEntryGearDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * `unsecured`: declared gear with media not yet offloaded/scanned/copied, with per-source thresholds (cards 7 days, film 90). `undeclared`: SHOT entries whose gear was never declared — unknown, never emailed about.
+     * @summary Media still waiting to be secured
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryGearControllerPendingMedia(options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryGearControllerPendingMedia(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PhotoEntryApiPhotoEntryGearControllerRemoveRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryGearControllerRemove(requestParameters: PhotoEntryApiPhotoEntryGearControllerRemoveRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryGearControllerRemove(requestParameters.id, requestParameters.gearItemId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Rows missing from `items` are removed; omitted flags on existing rows are left alone.
+     * @summary Replace the gear list
+     * @param {PhotoEntryApiPhotoEntryGearControllerReplaceRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryGearControllerReplace(requestParameters: PhotoEntryApiPhotoEntryGearControllerReplaceRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryGearControllerReplace(requestParameters.id, requestParameters.putPhotoEntryGearDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PhotoEntryApiPhotoEntryGearControllerShoppingListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryGearControllerShoppingList(requestParameters: PhotoEntryApiPhotoEntryGearControllerShoppingListRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryGearControllerShoppingList(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

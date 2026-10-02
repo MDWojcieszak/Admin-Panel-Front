@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
 import { HiOutlineCamera, HiOutlineMagnifyingGlass } from 'react-icons/hi2';
-import { AstroObjectResponse, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
+import { AstroObjectResponse, PhotoEntryPostStage, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Select } from '~/components/Select';
 import { mkUseStyles } from '~/utils/theme';
@@ -12,11 +12,13 @@ import { IoMdClose } from 'react-icons/io';
 type PhotoLibraryToolbarProps = {
   search: string;
   status?: PhotoEntryStatus;
+  postStage?: PhotoEntryPostStage;
   type?: PhotoEntryType;
   astroObjectId?: string;
   astroObjects: AstroObjectResponse[];
   onSearchChange: (value: string) => void;
   onStatusChange: (value?: PhotoEntryStatus) => void;
+  onPostStageChange: (value?: PhotoEntryPostStage) => void;
   onTypeChange: (value?: PhotoEntryType) => void;
   onAstroObjectChange: (value?: string) => void;
   onResetFilters: () => void;
@@ -25,6 +27,7 @@ type PhotoLibraryToolbarProps = {
 
 type ToolbarFormValues = {
   status: string;
+  postStage: string;
   type: string;
   astroObjectId: string;
 };
@@ -33,16 +36,27 @@ const getStatusLabel = (status: PhotoEntryStatus) => {
   switch (status) {
     case PhotoEntryStatus.Planned:
       return 'Planned';
-    case PhotoEntryStatus.Active:
-      return 'Active';
-    case PhotoEntryStatus.Selected:
-      return 'Selected';
-    case PhotoEntryStatus.Editing:
-      return 'Editing';
-    case PhotoEntryStatus.Completed:
-      return 'Completed';
+    case PhotoEntryStatus.Shot:
+      return 'Shot';
+    case PhotoEntryStatus.Cancelled:
+      return 'Cancelled';
     default:
       return status;
+  }
+};
+
+const getPostStageLabel = (postStage: PhotoEntryPostStage) => {
+  switch (postStage) {
+    case PhotoEntryPostStage.None:
+      return 'Nothing done';
+    case PhotoEntryPostStage.Selecting:
+      return 'Selecting';
+    case PhotoEntryPostStage.Editing:
+      return 'Editing';
+    case PhotoEntryPostStage.Finished:
+      return 'Finished';
+    default:
+      return postStage;
   }
 };
 
@@ -51,11 +65,13 @@ const getTypeLabel = (type: PhotoEntryType) => type;
 export const PhotoLibraryToolbar = ({
   search,
   status,
+  postStage,
   type,
   astroObjectId,
   astroObjects,
   onSearchChange,
   onStatusChange,
+  onPostStageChange,
   onTypeChange,
   onAstroObjectChange,
   onResetFilters,
@@ -68,6 +84,19 @@ export const PhotoLibraryToolbar = ({
       { label: 'All statuses', value: '' },
       ...Object.values(PhotoEntryStatus).map((item) => ({
         label: getStatusLabel(item),
+        value: item,
+      })),
+    ],
+    [],
+  );
+
+  // Independent of status on purpose: "what was done with the material" is its own
+  // axis, so filtering by it must not imply anything about whether the shoot happened.
+  const postStageOptions = useMemo(
+    () => [
+      { label: 'Any stage', value: '' },
+      ...Object.values(PhotoEntryPostStage).map((item) => ({
+        label: getPostStageLabel(item),
         value: item,
       })),
     ],
@@ -99,6 +128,7 @@ export const PhotoLibraryToolbar = ({
   const { control, setValue } = useForm<ToolbarFormValues>({
     defaultValues: {
       status: status || '',
+      postStage: postStage || '',
       type: type || '',
       astroObjectId: astroObjectId || '',
     },
@@ -109,6 +139,10 @@ export const PhotoLibraryToolbar = ({
   }, [status, setValue]);
 
   useEffect(() => {
+    setValue('postStage', postStage || '');
+  }, [postStage, setValue]);
+
+  useEffect(() => {
     setValue('type', type || '');
   }, [type, setValue]);
 
@@ -116,10 +150,11 @@ export const PhotoLibraryToolbar = ({
     setValue('astroObjectId', astroObjectId || '');
   }, [astroObjectId, setValue]);
 
-  const hasActiveFilters = Boolean(search.trim() || status || type || astroObjectId);
+  const hasActiveFilters = Boolean(search.trim() || status || postStage || type || astroObjectId);
 
   const handleResetFilters = () => {
     setValue('status', '');
+    setValue('postStage', '');
     setValue('type', '');
     setValue('astroObjectId', '');
     onResetFilters();
@@ -152,6 +187,18 @@ export const PhotoLibraryToolbar = ({
             options={statusOptions}
             style={styles.select}
             onValueChange={(value) => onStatusChange(value ? (value as PhotoEntryStatus) : undefined)}
+          />
+        </div>
+
+        <div style={styles.selectWrap}>
+          <Select<ToolbarFormValues>
+            name='postStage'
+            label='Stage'
+            control={control}
+            variant='secondary'
+            options={postStageOptions}
+            style={styles.select}
+            onValueChange={(value) => onPostStageChange(value ? (value as PhotoEntryPostStage) : undefined)}
           />
         </div>
 
@@ -222,7 +269,7 @@ const useStyles = mkUseStyles((t) => ({
     justifyContent: 'space-between',
     flexDirection: 'row',
     gap: 16,
-    minWidth: 1100,
+    minWidth: 1280,
     padding: t.spacing.m,
     borderRadius: t.borderRadius.large,
     background: colors.gray04 + t.colorOpacity(0.7),

@@ -9,6 +9,8 @@ Name | Type | Description | Notes
 **category** | [**GearCategory**](GearCategory.md) |  | [default to undefined]
 **brand** | **string** |  | [default to undefined]
 **model** | **string** |  | [default to undefined]
+**ownership** | [**GearOwnership**](GearOwnership.md) |  | [default to undefined]
+**mediaSource** | [**GearMediaSource**](GearMediaSource.md) |  | [default to undefined]
 **systemId** | **string** |  | [optional] [default to undefined]
 **description** | **string** |  | [optional] [default to undefined]
 **coverUrl** | **string** |  | [optional] [default to undefined]
@@ -26,6 +28,8 @@ const instance: GearItemResponse = {
     category,
     brand,
     model,
+    ownership,
+    mediaSource,
     systemId,
     description,
     coverUrl,

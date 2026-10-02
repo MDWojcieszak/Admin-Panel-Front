@@ -1,24 +1,53 @@
 import { format } from 'date-fns';
 import { motion, useMotionValue } from 'framer-motion';
-import { useMemo, useRef } from 'react';
-import { FiAlertCircle, FiBriefcase, FiCheckCircle, FiFileText, FiFolder, FiMoon } from 'react-icons/fi';
+import { CSSProperties, useMemo, useRef } from 'react';
+import {
+  FiAlertCircle,
+  FiAlertTriangle,
+  FiBriefcase,
+  FiCheckCircle,
+  FiCheckSquare,
+  FiEdit3,
+  FiFileText,
+  FiFolder,
+  FiMoon,
+  FiRadio,
+  FiStar,
+} from 'react-icons/fi';
 import { IconType } from 'react-icons';
-import { MediaStatus, PhotoEntryResponse, PhotoEntryType } from '~/api/api';
-import { getPhotoEntryStatusColors } from '~/routes/PhotoManagement/utils/colors';
+import {
+  MediaStatus,
+  PhotoEntryPostStage,
+  PhotoEntryResponse,
+  PhotoEntryStatus,
+  PhotoEntryType,
+} from '~/api/api';
 
 type PhotoEntryKanbanCardProps = {
   entry: PhotoEntryResponse;
+  accentColor: string;
   pending: boolean;
   isDragging: boolean;
   onCardClick: (entry: PhotoEntryResponse) => void;
   onDragStart: (entry: PhotoEntryResponse) => void;
   onDragMove: (x: number, y: number) => void;
   onDragEnd: (entry: PhotoEntryResponse) => void;
-  styles: Record<string, any>;
+  styles: Record<string, CSSProperties>;
+};
+
+type Chip = {
+  key: string;
+  label: string;
+  icon: IconType;
+  background: string;
+  border: string;
+  color: string;
+  pulse?: boolean;
 };
 
 export const PhotoEntryKanbanCard = ({
   entry,
+  accentColor,
   pending,
   isDragging,
   onCardClick,
@@ -27,7 +56,6 @@ export const PhotoEntryKanbanCard = ({
   onDragEnd,
   styles,
 }: PhotoEntryKanbanCardProps) => {
-  const cardColors = getPhotoEntryStatusColors(entry.status);
   const typeMeta = useMemo(() => getPhotoEntryTypeMeta(entry.type), [entry.type]);
 
   const x = useMotionValue(0);
@@ -38,13 +66,10 @@ export const PhotoEntryKanbanCard = ({
   const endDate = useMemo(() => parseDate(entry.endDate), [entry.endDate]);
 
   const dateRange = useMemo(() => formatDateRange(startDate, endDate), [startDate, endDate]);
-  const folderStatus = useMemo(
-    () => getFolderStatusMeta(entry.foldersCreated, entry.uploadStatus),
-    [entry.foldersCreated, entry.uploadStatus],
-  );
+  const mediaChip = useMemo(() => getMediaChip(entry), [entry]);
+  const signalChips = useMemo(() => getSignalChips(entry), [entry]);
 
   const TypeIcon = typeMeta.icon;
-  const FolderStatusIcon = folderStatus.icon;
 
   return (
     <motion.div
@@ -54,7 +79,7 @@ export const PhotoEntryKanbanCard = ({
       dragElastic={0.03}
       style={{
         ...styles.card,
-        borderLeft: `3px solid ${cardColors.accent}`,
+        borderLeft: `3px solid ${accentColor}`,
         position: 'relative',
         zIndex: isDragging ? 9999 : 1,
         x,
@@ -121,45 +146,16 @@ export const PhotoEntryKanbanCard = ({
           <span>{typeMeta.label}</span>
         </div>
 
-        <motion.div
-          animate={
-            folderStatus.pulse
-              ? {
-                  scale: [1, 1.04, 1],
-                }
-              : {
-                  scale: 1,
-                }
-          }
-          transition={
-            folderStatus.pulse
-              ? {
-                  duration: 1.8,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }
-              : undefined
-          }
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 7,
-            padding: '6px 10px',
-            borderRadius: 999,
-            fontSize: 12,
-            lineHeight: 1,
-            fontWeight: 600,
-            width: 'fit-content',
-            background: folderStatus.background,
-            border: `1px solid ${folderStatus.border}`,
-            color: folderStatus.color,
-          }}
-        >
-          <FolderStatusIcon size={14} />
-          <span>{folderStatus.label}</span>
-        </motion.div>
+        {mediaChip ? <CardChip chip={mediaChip} /> : null}
       </div>
+
+      {signalChips.length ? (
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
+          {signalChips.map((chip) => (
+            <CardChip key={chip.key} chip={chip} />
+          ))}
+        </div>
+      ) : null}
 
       {entry.rootPath ? (
         <div
@@ -185,6 +181,110 @@ export const PhotoEntryKanbanCard = ({
   );
 };
 
+const CardChip = ({ chip }: { chip: Chip }) => {
+  const Icon = chip.icon;
+
+  return (
+    <motion.div
+      animate={chip.pulse ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+      transition={chip.pulse ? { duration: 1.8, repeat: Infinity, ease: 'easeInOut' } : undefined}
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 7,
+        padding: '6px 10px',
+        borderRadius: 999,
+        fontSize: 12,
+        lineHeight: 1,
+        fontWeight: 600,
+        width: 'fit-content',
+        background: chip.background,
+        border: `1px solid ${chip.border}`,
+        color: chip.color,
+      }}
+    >
+      <Icon size={14} />
+      <span>{chip.label}</span>
+    </motion.div>
+  );
+};
+
+const TONES = {
+  amber: { background: 'rgba(232, 179, 72, 0.08)', border: 'rgba(232, 179, 72, 0.18)', color: '#E7BE63' },
+  green: { background: 'rgba(53, 158, 122, 0.10)', border: 'rgba(53, 158, 122, 0.20)', color: '#7BC8A6' },
+  red: { background: 'rgba(220, 68, 55, 0.10)', border: 'rgba(220, 68, 55, 0.22)', color: '#F08A80' },
+  azure: { background: 'rgba(0, 157, 248, 0.10)', border: 'rgba(0, 157, 248, 0.22)', color: '#7FCBFF' },
+  slate: { background: 'rgba(146, 164, 177, 0.08)', border: 'rgba(146, 164, 177, 0.18)', color: '#A9BCC9' },
+};
+
+/**
+ * Unsecured material is only a warning once the session has happened — on a
+ * planned entry "not uploaded" is simply the normal state and saying so would
+ * make every future trip look like a problem.
+ */
+const getMediaChip = (entry: PhotoEntryResponse): Chip | null => {
+  if (!entry.foldersCreated) {
+    return { key: 'folders', label: 'Folders pending', icon: FiFolder, ...TONES.amber };
+  }
+
+  if (entry.uploadStatus === MediaStatus.Uploaded) {
+    return { key: 'uploaded', label: 'Material secured', icon: FiCheckCircle, ...TONES.green };
+  }
+
+  if (entry.status !== PhotoEntryStatus.Shot) return null;
+
+  return { key: 'unsecured', label: 'Material not secured', icon: FiAlertCircle, ...TONES.red, pulse: true };
+};
+
+const getSignalChips = (entry: PhotoEntryResponse): Chip[] => {
+  const chips: Chip[] = [];
+
+  // Derived from the dates by the backend, so it needs no lane of its own.
+  if (entry.isHappeningNow) {
+    chips.push({ key: 'now', label: 'Happening now', icon: FiRadio, ...TONES.azure, pulse: true });
+  }
+
+  // Only worth saying where the stage no longer implies it — an entry parked back
+  // in "After shoot" still carries the fact that it was edited at some point.
+  if (entry.wasEdited && entry.postStage === PhotoEntryPostStage.None) {
+    chips.push({ key: 'edited', label: 'Was edited', icon: FiEdit3, ...TONES.slate });
+  }
+
+  const progress = formatProgress(entry);
+  if (progress) {
+    chips.push({ key: 'progress', label: progress, icon: FiCheckSquare, ...TONES.slate });
+  }
+
+  const summary = entry.commentSummary;
+  if (summary?.highlights) {
+    chips.push({ key: 'highlights', label: String(summary.highlights), icon: FiStar, ...TONES.amber });
+  }
+  if (summary?.openTodos) {
+    chips.push({ key: 'todos', label: `${summary.openTodos} to do`, icon: FiCheckSquare, ...TONES.azure });
+  }
+  if (summary?.problems) {
+    chips.push({ key: 'problems', label: String(summary.problems), icon: FiAlertTriangle, ...TONES.red });
+  }
+
+  return chips;
+};
+
+/**
+ * Counts are nullable and `null` means "unknown", never zero, so each pairing is
+ * only rendered when both of its numbers are actually known.
+ */
+const formatProgress = (entry: PhotoEntryResponse): string | null => {
+  const { photoCount, selectedCount, editedCount } = entry;
+
+  if (editedCount != null && selectedCount != null) return `${editedCount} / ${selectedCount} edited`;
+  if (selectedCount != null && photoCount != null) return `${selectedCount} / ${photoCount} selected`;
+  if (selectedCount != null) return `${selectedCount} selected`;
+  if (photoCount != null) return `${photoCount} frames`;
+
+  return null;
+};
+
 const parseDate = (value?: string | null): Date | null => {
   if (!value) return null;
 
@@ -207,49 +307,6 @@ const formatDateRange = (startDate?: Date | null, endDate?: Date | null) => {
   if (start) return `${start} → ...`;
   if (end) return `... → ${end}`;
   return null;
-};
-
-const getFolderStatusMeta = (
-  foldersCreated: boolean,
-  uploadStatus?: MediaStatus | null,
-): {
-  label: string;
-  icon: IconType;
-  background: string;
-  border: string;
-  color: string;
-  pulse: boolean;
-} => {
-  if (!foldersCreated) {
-    return {
-      label: 'Folders pending',
-      icon: FiFolder,
-      background: 'rgba(232, 179, 72, 0.08)',
-      border: 'rgba(232, 179, 72, 0.18)',
-      color: '#E7BE63',
-      pulse: false,
-    };
-  }
-
-  if (uploadStatus === MediaStatus.Uploaded) {
-    return {
-      label: 'Photo uploaded',
-      icon: FiCheckCircle,
-      background: 'rgba(53, 158, 122, 0.10)',
-      border: 'rgba(53, 158, 122, 0.20)',
-      color: '#7BC8A6',
-      pulse: false,
-    };
-  }
-
-  return {
-    label: 'Waiting for upload',
-    icon: FiAlertCircle,
-    background: 'rgba(220, 68, 55, 0.10)',
-    border: 'rgba(220, 68, 55, 0.22)',
-    color: '#F08A80',
-    pulse: true,
-  };
 };
 
 const getPhotoEntryTypeMeta = (

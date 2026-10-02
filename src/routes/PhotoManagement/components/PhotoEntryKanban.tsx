@@ -1,40 +1,47 @@
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PhotoEntryResponse, PhotoEntryStatus } from '~/api/api';
+import { PhotoEntryResponse } from '~/api/api';
 import { Scrollbar } from '~/components/Scrollbar';
 import { PhotoEntryKanbanCard } from '~/routes/PhotoManagement/components/PhotoEntryKanbanCard';
 import { PhotoEntryKanbanColumnHeader } from '~/routes/PhotoManagement/components/PhotoEntryKanbanColumnHeader';
-import { getPhotoEntryStatusColors } from '~/routes/PhotoManagement/utils/colors';
-import { canMoveToStatus, resolvePhotoEntryStatusDrop } from '~/routes/PhotoManagement/utils/kanban';
+import { getKanbanColumnColors } from '~/routes/PhotoManagement/utils/colors';
+import {
+  KANBAN_COLUMNS,
+  KanbanColumn,
+  KanbanColumnId,
+  canMoveToColumn,
+  getEntryColumn,
+  planColumnMove,
+} from '~/routes/PhotoManagement/utils/kanban';
 import { mkUseStyles } from '~/utils/theme';
 
 import { colors } from '~/utils/theme/colors';
 
 type PhotoEntryKanbanProps = {
   entries: PhotoEntryResponse[];
-  onRequestStatusChange: (entry: PhotoEntryResponse, targetStatus: PhotoEntryStatus) => Promise<void> | void;
+  onRequestColumnChange: (entry: PhotoEntryResponse, column: KanbanColumn) => Promise<void> | void;
+  /** Surfaces why a drop was refused, so a dimmed lane is not the only feedback. */
+  onForbiddenMove?: (reason: string) => void;
   onCardClick: (entry: PhotoEntryResponse) => void;
 };
 
 type DragInfoState = {
   entryId: string;
-  fromStatus: PhotoEntryStatus;
-  hoverStatus: PhotoEntryStatus | null;
+  fromColumn: KanbanColumnId;
+  hoverColumn: KanbanColumnId | null;
 } | null;
 
-const KANBAN_COLUMNS = [
-  { title: 'Planned', status: PhotoEntryStatus.Planned },
-  { title: 'Active', status: PhotoEntryStatus.Active },
-  { title: 'Selected', status: PhotoEntryStatus.Selected },
-  { title: 'Editing', status: PhotoEntryStatus.Editing },
-  { title: 'Completed', status: PhotoEntryStatus.Completed },
-];
-
-export const PhotoEntryKanban = ({ entries, onRequestStatusChange, onCardClick }: PhotoEntryKanbanProps) => {
+export const PhotoEntryKanban = ({
+  entries,
+  onRequestColumnChange,
+  onForbiddenMove,
+  onCardClick,
+}: PhotoEntryKanbanProps) => {
   const styles = useStyles();
   const [optimisticEntries, setOptimisticEntries] = useState(entries);
   const [dragState, setDragState] = useState<DragInfoState>(null);
   const [pendingEntryId, setPendingEntryId] = useState<string | null>(null);
+  const [cancelledOpen, setCancelledOpen] = useState(false);
 
   const columnRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -47,15 +54,34 @@ export const PhotoEntryKanban = ({ entries, onRequestStatusChange, onCardClick }
     return optimisticEntries.find((entry) => entry.id === dragState.entryId) ?? null;
   }, [dragState, optimisticEntries]);
 
-  const getColumnFromPoint = (x: number, y: number): PhotoEntryStatus | null => {
+  const entriesByColumn = useMemo(() => {
+    const grouped = new Map<KanbanColumnId, PhotoEntryResponse[]>();
+    KANBAN_COLUMNS.forEach((column) => grouped.set(column.id, []));
+
+    optimisticEntries.forEach((entry) => {
+      const column = getEntryColumn(entry);
+      if (column) grouped.get(column)?.push(entry);
+    });
+
+    return grouped;
+  }, [optimisticEntries]);
+
+  // Cancelled entries have no lane, so without this strip filtering by
+  // "Cancelled" would render an empty board and look broken.
+  const cancelledEntries = useMemo(
+    () => optimisticEntries.filter((entry) => getEntryColumn(entry) === null),
+    [optimisticEntries],
+  );
+
+  const getColumnFromPoint = (x: number, y: number): KanbanColumnId | null => {
     for (const column of KANBAN_COLUMNS) {
-      const el = columnRefs.current[column.status];
+      const el = columnRefs.current[column.id];
       if (!el) continue;
 
       const rect = el.getBoundingClientRect();
       const inside = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 
-      if (inside) return column.status;
+      if (inside) return column.id;
     }
 
     return null;
@@ -67,7 +93,7 @@ export const PhotoEntryKanban = ({ entries, onRequestStatusChange, onCardClick }
 
       return {
         ...prev,
-        hoverStatus: getColumnFromPoint(x, y),
+        hoverColumn: getColumnFromPoint(x, y),
       };
     });
   };
@@ -78,29 +104,30 @@ export const PhotoEntryKanban = ({ entries, onRequestStatusChange, onCardClick }
 
     if (!currentDrag) return;
 
-    const targetStatus = currentDrag.hoverStatus;
-    if (!targetStatus) return;
-    if (entry.status === targetStatus) return;
+    const targetId = currentDrag.hoverColumn;
+    if (!targetId || targetId === currentDrag.fromColumn) return;
 
-    const decision = resolvePhotoEntryStatusDrop(entry, targetStatus);
-    if (decision.type !== 'allowed') return;
+    const target = KANBAN_COLUMNS.find((column) => column.id === targetId);
+    if (!target) return;
+
+    const move = planColumnMove(entry, target);
+    if (move.kind === 'noop') return;
+    if (move.kind === 'forbidden') {
+      onForbiddenMove?.(move.reason);
+      return;
+    }
 
     const previousEntries = optimisticEntries;
 
     setOptimisticEntries((prev) =>
       prev.map((item) =>
-        item.id === entry.id
-          ? {
-              ...item,
-              status: targetStatus,
-            }
-          : item,
+        item.id === entry.id ? { ...item, status: target.status, postStage: target.postStage } : item,
       ),
     );
 
     try {
       setPendingEntryId(entry.id);
-      await onRequestStatusChange(entry, targetStatus);
+      await onRequestColumnChange(entry, target);
     } catch (error) {
       setOptimisticEntries(previousEntries);
     } finally {
@@ -108,48 +135,54 @@ export const PhotoEntryKanban = ({ entries, onRequestStatusChange, onCardClick }
     }
   };
 
+  const describeLane = (column: KanbanColumn) => {
+    const columnColors = getKanbanColumnColors(column.id);
+    const columnEntries = entriesByColumn.get(column.id) ?? [];
+
+    const isDragging = Boolean(dragState);
+    const isHover = dragState?.hoverColumn === column.id;
+    const isDraggedSource = dragState?.fromColumn === column.id;
+
+    const draggedCanMoveHere = draggedEntry ? canMoveToColumn(draggedEntry, column) : false;
+    const shouldDim = Boolean(isDragging && draggedEntry && !isDraggedSource && !draggedCanMoveHere);
+    const shouldHighlight = Boolean(isDragging && draggedEntry && isHover && draggedCanMoveHere);
+
+    return { columnColors, columnEntries, isDraggedSource, draggedCanMoveHere, shouldDim, shouldHighlight };
+  };
+
   return (
     <LayoutGroup>
       <div style={styles.wrapper}>
         <div style={styles.boardHeaders}>
           {KANBAN_COLUMNS.map((column) => {
-            const statusColors = getPhotoEntryStatusColors(column.status);
-            const columnEntries = optimisticEntries.filter((entry) => entry.status === column.status);
-
-            const isDragging = Boolean(dragState);
-            const isHover = dragState?.hoverStatus === column.status;
-            const isDraggedSource = dragState?.fromStatus === column.status;
-            const shouldRaiseColumn = dragState?.fromStatus === column.status;
-
-            const draggedCanMoveHere = draggedEntry ? canMoveToStatus(draggedEntry.status, column.status) : false;
-            const shouldDim = isDragging && draggedEntry && !isDraggedSource && !draggedCanMoveHere;
-            const shouldHighlight = isDragging && draggedEntry && isHover && draggedCanMoveHere;
+            const { columnColors, columnEntries, isDraggedSource, draggedCanMoveHere, shouldDim, shouldHighlight } =
+              describeLane(column);
 
             return (
               <motion.div
-                key={column.status}
+                key={column.id}
                 layout
                 animate={{
                   opacity: shouldDim ? 0.35 : 1,
-                  border: shouldHighlight ? `1px solid ${statusColors.accent}` : `1px solid ${statusColors.border}`,
+                  border: shouldHighlight ? `1px solid ${columnColors.accent}` : `1px solid ${columnColors.border}`,
                   borderBottom: 'none',
                   backgroundColor: dragState
                     ? draggedCanMoveHere
-                      ? statusColors.background
-                      : statusColors.border
-                    : statusColors.activeBackground,
+                      ? columnColors.background
+                      : columnColors.border
+                    : columnColors.activeBackground,
                 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 30 }}
                 style={{
                   ...styles.columnHeaderShell,
-                  backgroundColor: statusColors.background,
-                  zIndex: shouldRaiseColumn ? 20 : 1,
+                  backgroundColor: columnColors.background,
+                  zIndex: isDraggedSource ? 20 : 1,
                 }}
               >
                 <PhotoEntryKanbanColumnHeader
                   title={column.title}
                   count={columnEntries.length}
-                  accentColor={statusColors.accent}
+                  accentColor={columnColors.accent}
                   shouldHighlight={shouldHighlight}
                   styles={styles}
                 />
@@ -162,41 +195,32 @@ export const PhotoEntryKanban = ({ entries, onRequestStatusChange, onCardClick }
           <Scrollbar style={styles.boardScroll}>
             <div style={styles.boardCards}>
               {KANBAN_COLUMNS.map((column) => {
-                const statusColors = getPhotoEntryStatusColors(column.status);
-                const columnEntries = optimisticEntries.filter((entry) => entry.status === column.status);
-
-                const isDragging = Boolean(dragState);
-                const isHover = dragState?.hoverStatus === column.status;
-                const isDraggedSource = dragState?.fromStatus === column.status;
-                const shouldRaiseColumn = dragState?.fromStatus === column.status;
-
-                const draggedCanMoveHere = draggedEntry ? canMoveToStatus(draggedEntry.status, column.status) : false;
-                const shouldDim = isDragging && draggedEntry && !isDraggedSource && !draggedCanMoveHere;
-                const shouldHighlight = isDragging && draggedEntry && isHover && draggedCanMoveHere;
+                const { columnColors, columnEntries, isDraggedSource, draggedCanMoveHere, shouldDim, shouldHighlight } =
+                  describeLane(column);
 
                 return (
                   <motion.div
-                    key={column.status}
+                    key={column.id}
                     ref={(node) => {
-                      columnRefs.current[column.status] = node;
+                      columnRefs.current[column.id] = node;
                     }}
                     layout
                     animate={{
                       opacity: shouldDim ? 0.35 : 1,
-                      border: shouldHighlight ? `1px solid ${statusColors.accent}` : `1px solid ${statusColors.border}`,
+                      border: shouldHighlight ? `1px solid ${columnColors.accent}` : `1px solid ${columnColors.border}`,
                       backgroundColor: dragState
                         ? draggedCanMoveHere
-                          ? statusColors.background
-                          : statusColors.border
-                        : statusColors.activeBackground,
+                          ? columnColors.background
+                          : columnColors.border
+                        : columnColors.activeBackground,
 
                       borderTop: 'none',
                     }}
                     transition={{ type: 'spring', stiffness: 320, damping: 30 }}
                     style={{
                       ...styles.columnBodyShell,
-                      backgroundColor: statusColors.background,
-                      zIndex: shouldRaiseColumn ? 20 : 1,
+                      backgroundColor: columnColors.background,
+                      zIndex: isDraggedSource ? 20 : 1,
                     }}
                   >
                     <div style={styles.cards}>
@@ -205,14 +229,18 @@ export const PhotoEntryKanban = ({ entries, onRequestStatusChange, onCardClick }
                           <PhotoEntryKanbanCard
                             key={entry.id}
                             entry={entry}
+                            accentColor={columnColors.accent}
                             pending={pendingEntryId === entry.id}
                             isDragging={dragState?.entryId === entry.id}
                             onCardClick={onCardClick}
                             onDragStart={(dragged) => {
+                              const fromColumn = getEntryColumn(dragged);
+                              if (!fromColumn) return;
+
                               setDragState({
                                 entryId: dragged.id,
-                                fromStatus: dragged.status,
-                                hoverStatus: dragged.status,
+                                fromColumn,
+                                hoverColumn: fromColumn,
                               });
                             }}
                             onDragMove={handleDragMove}
@@ -228,6 +256,60 @@ export const PhotoEntryKanban = ({ entries, onRequestStatusChange, onCardClick }
             </div>
           </Scrollbar>
         </div>
+
+        {cancelledEntries.length ? (
+          <div style={styles.cancelledStrip}>
+            <div
+              role='button'
+              tabIndex={0}
+              style={styles.cancelledHeader}
+              onClick={() => setCancelledOpen((prev) => !prev)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setCancelledOpen((prev) => !prev);
+                }
+              }}
+            >
+              <span style={styles.cancelledTitle}>Cancelled</span>
+              <span style={styles.columnCount}>{cancelledEntries.length}</span>
+              <span style={styles.cancelledToggle}>{cancelledOpen ? 'Hide' : 'Show'}</span>
+            </div>
+
+            <AnimatePresence initial={false}>
+              {cancelledOpen ? (
+                <motion.div
+                  key='cancelled-list'
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <div style={styles.cancelledList}>
+                    {cancelledEntries.map((entry) => (
+                      <div
+                        key={entry.id}
+                        role='button'
+                        tabIndex={0}
+                        style={styles.cancelledItem}
+                        onClick={() => onCardClick(entry)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            onCardClick(entry);
+                          }
+                        }}
+                      >
+                        {entry.name}
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+        ) : null}
       </div>
     </LayoutGroup>
   );
@@ -370,5 +452,50 @@ const useStyles = mkUseStyles((t) => ({
     marginTop: t.spacing.xs,
     lineHeight: 1.4,
     wordBreak: 'break-word',
+  },
+  cancelledStrip: {
+    flexShrink: 0,
+    marginTop: t.spacing.s,
+    marginRight: t.spacing.l + t.spacing.xs,
+    borderRadius: t.borderRadius.large,
+    border: '1px solid rgba(247, 94, 121, 0.22)',
+    backgroundColor: 'rgba(247, 94, 121, 0.06)',
+    overflow: 'hidden',
+  },
+  cancelledHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    padding: t.spacing.s,
+    cursor: 'pointer',
+    userSelect: 'none',
+  },
+  cancelledTitle: {
+    color: colors.white,
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  cancelledToggle: {
+    marginLeft: 'auto',
+    color: colors.dark05,
+    fontSize: 12,
+  },
+  cancelledList: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: t.spacing.s,
+    padding: t.spacing.s,
+    paddingTop: 0,
+  },
+  cancelledItem: {
+    padding: `${t.spacing.xs}px ${t.spacing.s}px`,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    color: colors.dark05,
+    fontSize: 12,
+    cursor: 'pointer',
+    textDecoration: 'line-through',
   },
 }));

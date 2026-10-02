@@ -27,7 +27,7 @@ const PhotoEntrySchema = z
   .object({
     name: z.string({ required_error: 'Name is required' }).min(1, 'Name is required'),
     type: z.nativeEnum(PhotoEntryType),
-    status: z.enum([PhotoEntryStatus.Planned, PhotoEntryStatus.Active]),
+    status: z.enum([PhotoEntryStatus.Planned, PhotoEntryStatus.Shot]),
     startDate: z.string().optional(),
     endDate: z.string().optional(),
     selectedAstroObjectIds: z.array(z.string()).optional(),
@@ -123,7 +123,7 @@ export const CreatePhotoEntryModal = (p: CreatePhotoEntryModalProps) => {
           description='Select entry status'
           options={[
             { label: 'Planned', value: PhotoEntryStatus.Planned },
-            { label: 'Active', value: PhotoEntryStatus.Active },
+            { label: 'Shot', value: PhotoEntryStatus.Shot },
           ]}
         />
       </div>

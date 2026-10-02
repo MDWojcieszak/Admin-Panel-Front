@@ -13,6 +13,12 @@ Name | Type | Description | Notes
 **imageId** | **string** |  | [optional] [default to undefined]
 **order** | **number** |  | [optional] [default to undefined]
 **visible** | **boolean** |  | [optional] [default to undefined]
+**ownership** | [**GearOwnership**](GearOwnership.md) |  | [optional] [default to undefined]
+**acquiredAt** | **string** |  | [optional] [default to undefined]
+**retiredAt** | **string** |  | [optional] [default to undefined]
+**priority** | **number** |  | [optional] [default to undefined]
+**estimatedPrice** | **number** |  | [optional] [default to undefined]
+**purchaseUrl** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -28,6 +34,12 @@ const instance: UpdateGearDto = {
     imageId,
     order,
     visible,
+    ownership,
+    acquiredAt,
+    retiredAt,
+    priority,
+    estimatedPrice,
+    purchaseUrl,
 };
 ```
 

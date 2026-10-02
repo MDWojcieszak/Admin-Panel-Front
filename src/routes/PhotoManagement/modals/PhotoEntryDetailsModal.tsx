@@ -292,6 +292,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                 <div style={styles.row}>
                   <ReadOnlyField label='Type' value={p.entry.type} style={styles.flex} />
                   <ReadOnlyField label='Status' value={p.entry.status} style={styles.flex} />
+                  <ReadOnlyField label='Stage' value={p.entry.postStage} style={styles.flex} />
                 </div>
                 <div style={styles.row}>
                   <ReadOnlyField label='Start Date' value={formatDate(p.entry.startDate)} style={styles.flex} />
@@ -305,6 +306,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                 <div style={styles.row}>
                   <ReadOnlyField label='Type' value={p.entry.type} style={styles.flex} />
                   <ReadOnlyField label='Status' value={p.entry.status} style={styles.flex} />
+                  <ReadOnlyField label='Stage' value={p.entry.postStage} style={styles.flex} />
                 </div>
 
                 <div style={styles.row}>

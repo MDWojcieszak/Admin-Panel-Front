@@ -4,6 +4,7 @@ import {
   AstroObjectListResponse,
   PhotoEntryDetailsResponse,
   PhotoEntryListResponse,
+  PhotoEntryPostStage,
   PhotoEntryResponse,
   PhotoEntryStatus,
   PhotoEntryType,
@@ -11,12 +12,15 @@ import {
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
+import { useToast } from '~/hooks/useToast';
 import { AstroObjectSidebar } from '~/routes/PhotoManagement/components/AstroObjectSidebar';
 import { PhotoEntryKanban } from '~/routes/PhotoManagement/components/PhotoEntryKanban';
 import { PhotoLibraryToolbar } from '~/routes/PhotoManagement/components/PhotoLibraryToolbar';
 import { CreateAstroObjectModal } from '~/routes/PhotoManagement/modals/CreateAstroObjectModal';
 import { CreatePhotoEntryModal } from '~/routes/PhotoManagement/modals/CreatePhotoEntryModal';
 import { PhotoEntryDetailsModal } from '~/routes/PhotoManagement/modals/PhotoEntryDetailsModal';
+import { KanbanColumn, planColumnMove } from '~/routes/PhotoManagement/utils/kanban';
+import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles } from '~/utils/theme';
 import { colors } from '~/utils/theme/colors';
 
@@ -24,10 +28,12 @@ export const PhotoManagement = () => {
   const styles = useStyles();
   const navigate = useNavigate();
   const { photoEntryApi, astroObjectApi } = useApi();
+  const toast = useToast();
 
   const [filters, setFilters] = useState<{
     search: string;
     status?: PhotoEntryStatus;
+    postStage?: PhotoEntryPostStage;
     type?: PhotoEntryType;
     astroObjectId?: string;
   }>({
@@ -40,12 +46,20 @@ export const PhotoManagement = () => {
     const response = await photoEntryApi.photoEntryControllerList({
       search: filters.search || undefined,
       status: filters.status,
+      postStage: filters.postStage,
       type: filters.type,
       astroObjectId: filters.astroObjectId,
     });
 
     return response.data;
-  }, [photoEntryApi, filters.search, filters.status, filters.type, filters.astroObjectId]);
+  }, [
+    photoEntryApi,
+    filters.search,
+    filters.status,
+    filters.postStage,
+    filters.type,
+    filters.astroObjectId,
+  ]);
 
   const astroObjectsQuery = useAsync<AstroObjectListResponse>(async () => {
     if (!astroObjectApi) return undefined;
@@ -116,18 +130,38 @@ export const PhotoManagement = () => {
     },
   );
 
-  const patchStatus = async (entryId: string, status: PhotoEntryStatus) => {
+  /**
+   * The two axes are separate endpoints and the backend rejects inconsistent
+   * pairs, so the steps are applied strictly in the order the planner returned
+   * them — status before stage when leaving `PLANNED`. The first failure stops
+   * the sequence and the board rolls its optimistic move back.
+   */
+  const handleRequestColumnChange = async (entry: PhotoEntryResponse, column: KanbanColumn) => {
     if (!photoEntryApi) return;
 
-    await photoEntryApi.photoEntryControllerPatchStatus({
-      id: entryId,
-      patchPhotoEntryStatusDto: { status },
-    });
-  };
+    const move = planColumnMove(entry, column);
+    if (move.kind !== 'allowed') return;
 
-  const handleRequestStatusChange = async (entry: PhotoEntryResponse, targetStatus: PhotoEntryStatus) => {
-    await patchStatus(entry.id, targetStatus);
-    await photoEntriesQuery.reload();
+    try {
+      for (const step of move.steps) {
+        if (step.op === 'status') {
+          await photoEntryApi.photoEntryControllerPatchStatus({
+            id: entry.id,
+            patchPhotoEntryStatusDto: { status: step.status },
+          });
+        } else {
+          await photoEntryApi.photoEntryControllerPatchPostStage({
+            id: entry.id,
+            patchPhotoEntryPostStageDto: { postStage: step.postStage },
+          });
+        }
+      }
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'Could not move this session.'), 'error');
+      throw e;
+    } finally {
+      await photoEntriesQuery.reload();
+    }
   };
 
   const handleOpenEntryDetails = async (entry: PhotoEntryResponse) => {
@@ -170,17 +204,20 @@ export const PhotoManagement = () => {
       <PhotoLibraryToolbar
         search={filters.search}
         status={filters.status}
+        postStage={filters.postStage}
         type={filters.type}
         astroObjectId={filters.astroObjectId}
         astroObjects={astroObjects}
         onSearchChange={(search) => setFilters((prev) => ({ ...prev, search }))}
         onStatusChange={(status) => setFilters((prev) => ({ ...prev, status }))}
+        onPostStageChange={(postStage) => setFilters((prev) => ({ ...prev, postStage }))}
         onTypeChange={(type) => setFilters((prev) => ({ ...prev, type }))}
         onAstroObjectChange={(astroObjectId) => setFilters((prev) => ({ ...prev, astroObjectId }))}
         onResetFilters={() =>
           setFilters({
             search: '',
             status: undefined,
+            postStage: undefined,
             type: undefined,
             astroObjectId: undefined,
           })
@@ -197,7 +234,8 @@ export const PhotoManagement = () => {
           <div style={styles.kanbanCard}>
             <PhotoEntryKanban
               entries={photoEntriesQuery.data?.photoEntries || []}
-              onRequestStatusChange={handleRequestStatusChange}
+              onRequestColumnChange={handleRequestColumnChange}
+              onForbiddenMove={(reason) => toast(reason, 'error')}
               onCardClick={handleOpenEntryDetails}
             />
           </div>
