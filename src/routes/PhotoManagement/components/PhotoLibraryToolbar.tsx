@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
 import { HiOutlineCamera, HiOutlineMagnifyingGlass } from 'react-icons/hi2';
-import { AstroObjectResponse, PhotoEntryPostStage, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
+import { PhotoEntryPostStage, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Select } from '~/components/Select';
 import { mkUseStyles } from '~/utils/theme';
@@ -14,13 +14,10 @@ type PhotoLibraryToolbarProps = {
   status?: PhotoEntryStatus;
   postStage?: PhotoEntryPostStage;
   type?: PhotoEntryType;
-  astroObjectId?: string;
-  astroObjects: AstroObjectResponse[];
   onSearchChange: (value: string) => void;
   onStatusChange: (value?: PhotoEntryStatus) => void;
   onPostStageChange: (value?: PhotoEntryPostStage) => void;
   onTypeChange: (value?: PhotoEntryType) => void;
-  onAstroObjectChange: (value?: string) => void;
   onResetFilters: () => void;
   onAddEntry: () => void;
 };
@@ -29,7 +26,6 @@ type ToolbarFormValues = {
   status: string;
   postStage: string;
   type: string;
-  astroObjectId: string;
 };
 
 const getStatusLabel = (status: PhotoEntryStatus) => {
@@ -67,13 +63,10 @@ export const PhotoLibraryToolbar = ({
   status,
   postStage,
   type,
-  astroObjectId,
-  astroObjects,
   onSearchChange,
   onStatusChange,
   onPostStageChange,
   onTypeChange,
-  onAstroObjectChange,
   onResetFilters,
   onAddEntry,
 }: PhotoLibraryToolbarProps) => {
@@ -114,23 +107,11 @@ export const PhotoLibraryToolbar = ({
     [],
   );
 
-  const astroOptions = useMemo(
-    () => [
-      { label: 'All astro objects', value: '' },
-      ...astroObjects.map((item) => ({
-        label: item.code ? `${item.code} · ${item.name}` : item.name,
-        value: item.id,
-      })),
-    ],
-    [astroObjects],
-  );
-
   const { control, setValue } = useForm<ToolbarFormValues>({
     defaultValues: {
       status: status || '',
       postStage: postStage || '',
       type: type || '',
-      astroObjectId: astroObjectId || '',
     },
   });
 
@@ -146,17 +127,12 @@ export const PhotoLibraryToolbar = ({
     setValue('type', type || '');
   }, [type, setValue]);
 
-  useEffect(() => {
-    setValue('astroObjectId', astroObjectId || '');
-  }, [astroObjectId, setValue]);
-
-  const hasActiveFilters = Boolean(search.trim() || status || postStage || type || astroObjectId);
+  const hasActiveFilters = Boolean(search.trim() || status || postStage || type);
 
   const handleResetFilters = () => {
     setValue('status', '');
     setValue('postStage', '');
     setValue('type', '');
-    setValue('astroObjectId', '');
     onResetFilters();
   };
 
@@ -211,18 +187,6 @@ export const PhotoLibraryToolbar = ({
             options={typeOptions}
             style={styles.select}
             onValueChange={(value) => onTypeChange(value ? (value as PhotoEntryType) : undefined)}
-          />
-        </div>
-
-        <div style={styles.selectWideWrap}>
-          <Select<ToolbarFormValues>
-            name='astroObjectId'
-            label='Astro Object'
-            control={control}
-            variant='secondary'
-            options={astroOptions}
-            style={styles.selectWide}
-            onValueChange={(value) => onAstroObjectChange(value || undefined)}
           />
         </div>
 
@@ -330,17 +294,8 @@ const useStyles = mkUseStyles((t) => ({
     minWidth: 170,
     flexShrink: 0,
   },
-  selectWideWrap: {
-    width: 220,
-    minWidth: 220,
-    marginRight: 40,
-    flexShrink: 0,
-  },
   select: {
     width: '100%',
-  },
-  selectWide: {
-    width: 'calc(100% + 40px)',
   },
   resetButton: {
     padding: '0 14px',

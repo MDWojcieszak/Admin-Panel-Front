@@ -13,16 +13,13 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
-import { AstroObjectSidebar } from '~/routes/PhotoManagement/components/AstroObjectSidebar';
 import { PhotoEntryKanban } from '~/routes/PhotoManagement/components/PhotoEntryKanban';
 import { PhotoLibraryToolbar } from '~/routes/PhotoManagement/components/PhotoLibraryToolbar';
-import { CreateAstroObjectModal } from '~/routes/PhotoManagement/modals/CreateAstroObjectModal';
 import { CreatePhotoEntryModal } from '~/routes/PhotoManagement/modals/CreatePhotoEntryModal';
 import { PhotoEntryDetailsModal } from '~/routes/PhotoManagement/modals/PhotoEntryDetailsModal';
 import { KanbanColumn, planColumnMove } from '~/routes/PhotoManagement/utils/kanban';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles } from '~/utils/theme';
-import { colors } from '~/utils/theme/colors';
 
 export const PhotoManagement = () => {
   const styles = useStyles();
@@ -35,7 +32,6 @@ export const PhotoManagement = () => {
     status?: PhotoEntryStatus;
     postStage?: PhotoEntryPostStage;
     type?: PhotoEntryType;
-    astroObjectId?: string;
   }>({
     search: '',
   });
@@ -48,7 +44,6 @@ export const PhotoManagement = () => {
       status: filters.status,
       postStage: filters.postStage,
       type: filters.type,
-      astroObjectId: filters.astroObjectId,
     });
 
     return response.data;
@@ -58,7 +53,6 @@ export const PhotoManagement = () => {
     filters.status,
     filters.postStage,
     filters.type,
-    filters.astroObjectId,
   ]);
 
   const astroObjectsQuery = useAsync<AstroObjectListResponse>(async () => {
@@ -91,18 +85,6 @@ export const PhotoManagement = () => {
       handleClose: async () => {
         await refreshAll();
         createPhotoEntryModal.hide();
-      },
-    },
-  );
-
-  const createAstroObjectModal = useModal(
-    'create-astro-object',
-    CreateAstroObjectModal,
-    { title: 'New Astro Object' },
-    {
-      handleClose: async () => {
-        await refreshAll();
-        createAstroObjectModal.hide();
       },
     },
   );
@@ -206,20 +188,16 @@ export const PhotoManagement = () => {
         status={filters.status}
         postStage={filters.postStage}
         type={filters.type}
-        astroObjectId={filters.astroObjectId}
-        astroObjects={astroObjects}
         onSearchChange={(search) => setFilters((prev) => ({ ...prev, search }))}
         onStatusChange={(status) => setFilters((prev) => ({ ...prev, status }))}
         onPostStageChange={(postStage) => setFilters((prev) => ({ ...prev, postStage }))}
         onTypeChange={(type) => setFilters((prev) => ({ ...prev, type }))}
-        onAstroObjectChange={(astroObjectId) => setFilters((prev) => ({ ...prev, astroObjectId }))}
         onResetFilters={() =>
           setFilters({
             search: '',
             status: undefined,
             postStage: undefined,
             type: undefined,
-            astroObjectId: undefined,
           })
         }
         onAddEntry={() =>
@@ -229,32 +207,15 @@ export const PhotoManagement = () => {
         }
       />
 
-      <div style={styles.mainGrid}>
-        <div style={styles.kanbanSection}>
-          <div style={styles.kanbanCard}>
-            <PhotoEntryKanban
-              entries={photoEntriesQuery.data?.photoEntries || []}
-              onRequestColumnChange={handleRequestColumnChange}
-              onForbiddenMove={(reason) => toast(reason, 'error')}
-              onCardClick={handleOpenEntryDetails}
-            />
-          </div>
-        </div>
-
-        <div style={styles.sidebarSection}>
-          <AstroObjectSidebar
-            astroObjects={astroObjects}
-            total={astroObjectsQuery.data?.total || 0}
-            selectedAstroObjectId={filters.astroObjectId}
-            onObjectClick={(astroObject) =>
-              setFilters((prev) => ({
-                ...prev,
-                astroObjectId: prev.astroObjectId === astroObject.id ? undefined : astroObject.id,
-              }))
-            }
-            onAddAstroObject={() => createAstroObjectModal.show()}
-          />
-        </div>
+      {/* Astro targets moved to their own tab — they never competed well for
+          attention next to sessions of every other type. */}
+      <div style={styles.kanbanCard}>
+        <PhotoEntryKanban
+          entries={photoEntriesQuery.data?.photoEntries || []}
+          onRequestColumnChange={handleRequestColumnChange}
+          onForbiddenMove={(reason) => toast(reason, 'error')}
+          onCardClick={handleOpenEntryDetails}
+        />
       </div>
     </div>
   );
@@ -270,48 +231,10 @@ const useStyles = mkUseStyles(() => ({
     boxSizing: 'border-box',
   },
 
-  mainGrid: {
-    flex: 1,
-    minHeight: 0,
-    display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1fr) 330px',
-    gap: 16,
-  },
-  kanbanSection: {
-    minWidth: 0,
-    minHeight: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-  },
-  sectionHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
-    padding: '0 4px',
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 700,
-    color: colors.white,
-  },
-  sectionSubtitle: {
-    fontSize: 12,
-    color: colors.dark05,
-  },
   kanbanCard: {
     flex: 1,
     minHeight: 0,
     padding: 1,
     overflow: 'hidden',
-  },
-
-  sidebarSection: {
-    minWidth: 0,
-    minHeight: 0,
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
   },
 }));

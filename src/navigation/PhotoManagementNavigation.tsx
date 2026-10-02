@@ -1,12 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
 import { PhotoNavigationRoute } from '~/navigation/types';
 import { ImmichAlbums } from '~/routes/PhotoManagement/Albums';
+import { Astro } from '~/routes/PhotoManagement/Astro';
 import { PhotoManagement } from '~/routes/PhotoManagement';
 import { mkUseStyles } from '~/utils/theme';
 
 /**
- * Photo Library section. The sub-navigation (Library / Albums) is rendered in the
- * sidebar beneath the active item, so here we only route to the active sub-page.
+ * Photo Library section. The sub-navigation (Library / Astro / Albums) is rendered
+ * in the sidebar beneath the active item, so here we only route to the active
+ * sub-page.
  */
 export const PhotoManagementNavigation = () => {
   const styles = useStyles();
@@ -14,6 +16,7 @@ export const PhotoManagementNavigation = () => {
     <div style={styles.content}>
       <Routes>
         <Route index element={<PhotoManagement />} />
+        <Route path={PhotoNavigationRoute.ASTRO} element={<Astro />} />
         <Route path={PhotoNavigationRoute.ALBUMS} element={<ImmichAlbums />} />
       </Routes>
     </div>

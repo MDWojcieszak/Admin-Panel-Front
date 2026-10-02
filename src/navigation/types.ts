@@ -19,6 +19,7 @@ export enum MainNavigationRoute {
 
 export enum PhotoNavigationRoute {
   LIBRARY = '',
+  ASTRO = 'astro',
   ALBUMS = 'albums',
 }
 
