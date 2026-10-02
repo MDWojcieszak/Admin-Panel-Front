@@ -1,5 +1,5 @@
 import { DragEvent, useEffect, useRef, useState } from 'react';
-import { FiImage, FiLayers, FiMove, FiPlus, FiShoppingCart } from 'react-icons/fi';
+import { FiEye, FiEyeOff, FiImage, FiLayers, FiMove, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import { MdCameraAlt } from 'react-icons/md';
 import {
   GearCategory,
@@ -328,7 +328,12 @@ export const GearView = () => {
                       <div style={styles.systemTitleRow}>
                         <span style={styles.blockTitle}>{system.name}</span>
                         {system.label ? <span style={styles.systemLabel}>{system.label}</span> : null}
-                        {!system.visible ? <span style={styles.hiddenChip}>Hidden</span> : null}
+                        <span
+                          style={system.visible ? styles.eyeOn : styles.eyeOff}
+                          title={system.visible ? 'Shown on the public page' : 'Hidden from the public page'}
+                        >
+                          {system.visible ? <FiEye size={13} /> : <FiEyeOff size={13} />}
+                        </span>
                         <span style={styles.count}>{system.items.length}</span>
                       </div>
                       {system.description ? <span style={styles.systemDesc}>{system.description}</span> : null}
@@ -343,6 +348,7 @@ export const GearView = () => {
                 <ItemsGrid
                   details={details}
                   items={system.items}
+                  systemHidden={!system.visible}
                   emptyLabel='No items in this system yet.'
                   onOpen={openItemDetails}
                   onReorder={persistItemOrder}
@@ -375,12 +381,14 @@ type ItemsGridProps = {
   items: GearItemResponse[];
   /** Planning fields joined in from the flat admin list, keyed by item id. */
   details?: Map<string, GearItemAdminResponse>;
+  /** A hidden system takes its items off the public page whatever their own flag says. */
+  systemHidden?: boolean;
   emptyLabel: string;
   onOpen: (item: GearItemResponse) => void;
   onReorder: (ids: string[]) => void;
 };
 
-const ItemsGrid = ({ items, details, emptyLabel, onOpen, onReorder }: ItemsGridProps) => {
+const ItemsGrid = ({ items, details, systemHidden, emptyLabel, onOpen, onReorder }: ItemsGridProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const [local, setLocal] = useState<GearItemResponse[]>(items);
@@ -423,6 +431,7 @@ const ItemsGrid = ({ items, details, emptyLabel, onOpen, onReorder }: ItemsGridP
         // which is exactly what made ordering look broken — so it is refused
         // here, visibly, instead.
         const blocked = dragCategory !== null && dragCategory !== item.category;
+        const publicity = describePublicity(item, systemHidden);
 
         const meta = detail
           ? [
@@ -504,7 +513,9 @@ const ItemsGrid = ({ items, details, emptyLabel, onOpen, onReorder }: ItemsGridP
                   {item.ownership === GearOwnership.Wishlist ? 'Don’t have it' : 'Retired'}
                 </span>
               )}
-              {!item.visible ? <span style={styles.itemHiddenChip}>Hidden</span> : null}
+              <span style={publicity.shown ? styles.itemEyeOn : styles.itemEyeOff} title={publicity.reason}>
+                {publicity.shown ? <FiEye size={12} /> : <FiEyeOff size={12} />}
+              </span>
             </div>
 
             <div style={styles.itemInfo}>
@@ -531,6 +542,21 @@ const ItemsGrid = ({ items, details, emptyLabel, onOpen, onReorder }: ItemsGridP
   );
 };
 
+/**
+ * Whether an item really appears on the public page, not just what its own
+ * switch says. The public list drops anything not owned and everything inside
+ * a hidden system, so an eye driven by `visible` alone would show an open eye
+ * on gear nobody can see.
+ */
+const describePublicity = (item: GearItemResponse, systemHidden?: boolean): { shown: boolean; reason: string } => {
+  if (!item.visible) return { shown: false, reason: 'Hidden from the public page' };
+  if (item.ownership !== GearOwnership.Owned) {
+    return { shown: false, reason: 'Not on the public page — only owned gear is shown there' };
+  }
+  if (systemHidden) return { shown: false, reason: 'Not on the public page — its system is hidden' };
+  return { shown: true, reason: 'Shown on the public page' };
+};
+
 const formatShort = (value?: string | null): string => {
   if (!value) return '';
   const date = new Date(value);
@@ -547,6 +573,18 @@ const chip = {
   fontWeight: 700,
   padding: '2px 7px',
   borderRadius: 999,
+} as const;
+
+const eye = {
+  position: 'absolute',
+  bottom: 6,
+  right: 6,
+  width: 22,
+  height: 22,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '50%',
 } as const;
 
 const useStyles = mkUseStyles((t) => ({
@@ -617,14 +655,8 @@ const useStyles = mkUseStyles((t) => ({
     padding: '2px 8px',
     borderRadius: 999,
   },
-  hiddenChip: {
-    fontSize: 11,
-    fontWeight: 700,
-    color: t.colors.yellow,
-    backgroundColor: t.colors.gray05 + t.colorOpacity(0.72),
-    padding: '2px 8px',
-    borderRadius: 999,
-  },
+  eyeOn: { display: 'inline-flex', alignItems: 'center', color: t.colors.lightGreen },
+  eyeOff: { display: 'inline-flex', alignItems: 'center', color: t.colors.yellow },
   systemDesc: {
     fontSize: 12,
     color: t.colors.dark05,
@@ -682,12 +714,16 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.white,
     backgroundColor: t.colors.gray05 + t.colorOpacity(0.72),
   },
-  itemHiddenChip: {
-    ...chip,
-    bottom: 6,
-    right: 6,
+  itemEyeOn: {
+    ...eye,
+    color: t.colors.lightGreen,
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.78),
+  },
+  itemEyeOff: {
+    ...eye,
     color: t.colors.yellow,
     backgroundColor: t.colors.gray05 + t.colorOpacity(0.78),
+    border: `1px solid ${t.colors.yellow + t.colorOpacity(0.35)}`,
   },
   wishlistChip: {
     ...chip,
