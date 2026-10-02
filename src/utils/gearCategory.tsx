@@ -1,10 +1,11 @@
 import { IconType } from 'react-icons';
 import {
   FiAperture,
+  FiBattery,
   FiBatteryCharging,
   FiCamera,
-  FiCpu,
-  FiCrop,
+  FiCircle,
+  FiCompass,
   FiDroplet,
   FiFilm,
   FiHardDrive,
@@ -14,15 +15,31 @@ import {
   FiMoon,
   FiPackage,
   FiRadio,
-  FiSave,
+  FiRotateCw,
   FiSun,
   FiTarget,
   FiThermometer,
   FiTool,
+  FiTriangle,
   FiUmbrella,
   FiVideo,
   FiZap,
+  FiZoomIn,
 } from 'react-icons/fi';
+import { BsBinoculars } from 'react-icons/bs';
+import {
+  TbBackpack,
+  TbBolt,
+  TbDeviceSdCard,
+  TbDrone,
+  TbLamp,
+  TbPlug,
+  TbPrism,
+  TbRotate360,
+  TbSatellite,
+  TbTelescope,
+  TbUsb,
+} from 'react-icons/tb';
 import { GearCategory, GearMediaSource, GearOwnership } from '~/api/api';
 
 /**
@@ -74,46 +91,55 @@ export const GEAR_CATEGORY_GROUPS: { label: string; categories: GearCategory[] }
   { label: 'Other', categories: [GearCategory.Remote, GearCategory.Cable, GearCategory.Accessory, GearCategory.Other] },
 ];
 
+/**
+ * Chosen to say what the thing physically is: a tripod reads as the triangle its
+ * legs make, a star diagonal as a prism, a mount as the pole it aligns to. Kept
+ * to stroke-drawn sets (Feather and Tabler, plus Bootstrap where neither has the
+ * concept) so the weights match at the small sizes these render at.
+ *
+ * A few icons repeat where the concepts genuinely overlap — adapters, cables and
+ * straps are all "something that attaches" and no set draws them apart.
+ */
 const CATEGORY_ICONS: Record<GearCategory, IconType> = {
   [GearCategory.Camera]: FiCamera,
   [GearCategory.FilmCamera]: FiFilm,
   [GearCategory.AstroCamera]: FiMoon,
-  [GearCategory.Drone]: FiRadio,
+  [GearCategory.Drone]: TbDrone,
   [GearCategory.ActionCam]: FiVideo,
   [GearCategory.Lens]: FiAperture,
-  [GearCategory.Teleconverter]: FiAperture,
+  [GearCategory.Teleconverter]: FiZoomIn,
   [GearCategory.Adapter]: FiLink,
   [GearCategory.Filter]: FiLayers,
-  [GearCategory.Telescope]: FiTarget,
-  [GearCategory.SmartTelescope]: FiTarget,
+  [GearCategory.Telescope]: TbTelescope,
+  [GearCategory.SmartTelescope]: TbSatellite,
   [GearCategory.GuideScope]: FiTarget,
-  [GearCategory.Mount]: FiCrop,
-  [GearCategory.Eyepiece]: FiAperture,
-  [GearCategory.Binoculars]: FiTarget,
-  [GearCategory.Diagonal]: FiCrop,
+  [GearCategory.Mount]: FiCompass,
+  [GearCategory.Eyepiece]: FiCircle,
+  [GearCategory.Binoculars]: BsBinoculars,
+  [GearCategory.Diagonal]: TbPrism,
   [GearCategory.DewHeater]: FiThermometer,
-  [GearCategory.Tripod]: FiCrop,
-  [GearCategory.Head]: FiCrop,
-  [GearCategory.Gimbal]: FiCrop,
+  [GearCategory.Tripod]: FiTriangle,
+  [GearCategory.Head]: FiRotateCw,
+  [GearCategory.Gimbal]: TbRotate360,
   [GearCategory.Flash]: FiZap,
-  [GearCategory.Lighting]: FiSun,
-  [GearCategory.LightModifier]: FiUmbrella,
-  [GearCategory.Battery]: FiBatteryCharging,
-  [GearCategory.Charger]: FiBatteryCharging,
+  [GearCategory.Lighting]: TbLamp,
+  [GearCategory.LightModifier]: FiSun,
+  [GearCategory.Battery]: FiBattery,
+  [GearCategory.Charger]: TbPlug,
   [GearCategory.PowerBank]: FiBatteryCharging,
-  [GearCategory.PowerStation]: FiZap,
-  [GearCategory.MemoryCard]: FiSave,
-  [GearCategory.CardReader]: FiCpu,
+  [GearCategory.PowerStation]: TbBolt,
+  [GearCategory.MemoryCard]: TbDeviceSdCard,
+  [GearCategory.CardReader]: TbUsb,
   [GearCategory.Storage]: FiHardDrive,
   [GearCategory.Computer]: FiMonitor,
-  [GearCategory.Bag]: FiPackage,
+  [GearCategory.Bag]: TbBackpack,
   [GearCategory.Strap]: FiLink,
   [GearCategory.RainCover]: FiUmbrella,
   [GearCategory.Cleaning]: FiDroplet,
   [GearCategory.Remote]: FiRadio,
   [GearCategory.Cable]: FiLink,
   [GearCategory.Accessory]: FiTool,
-  [GearCategory.Other]: FiTool,
+  [GearCategory.Other]: FiPackage,
 };
 
 /** `FILM_CAMERA` → `Film camera`, so a category added on the backend still reads well. */
