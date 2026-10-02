@@ -181,6 +181,16 @@ export const Settings = () => {
         { key: 'processPushNotifications', label: 'Process push', description: 'Push notifications for processes.' },
       ],
     },
+    {
+      title: 'Photo library',
+      rows: [
+        {
+          key: 'photoMediaEmailNotifications',
+          label: 'Unsecured material (email)',
+          description: 'Daily email while a card or roll from a shoot still has not been offloaded.',
+        },
+      ],
+    },
   ];
 
   return (

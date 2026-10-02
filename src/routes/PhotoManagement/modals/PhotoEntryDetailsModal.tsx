@@ -43,6 +43,8 @@ type PhotoEntryDetailsModalProps = Partial<InternalModalProps> & {
   onFoldersCreated?: () => void | Promise<void>;
   /** Jump to the Immich Albums tab for this entry (navigation lives in the routed parent). */
   onAddToAlbum?: (entryId: string) => void;
+  /** Which tab to open on — the dashboard links straight at the gear checklist. */
+  initialTab?: DetailsTab;
 };
 
 const photoEntryDetailsSchema = z.object({
@@ -55,7 +57,7 @@ const photoEntryDetailsSchema = z.object({
 
 type PhotoEntryDetailsFormValues = z.infer<typeof photoEntryDetailsSchema>;
 
-type DetailsTab = 'general' | 'gear' | 'comments' | 'progress';
+export type DetailsTab = 'general' | 'gear' | 'comments' | 'progress';
 
 const DETAILS_TABS: { label: string; value: DetailsTab }[] = [
   { label: 'General', value: 'general' },
@@ -84,7 +86,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const [foldersLoading, setFoldersLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [tab, setTab] = useState<DetailsTab>('general');
+  const [tab, setTab] = useState<DetailsTab>(p.initialTab ?? 'general');
 
   const astroObjects = useMemo(() => p.astroObjects ?? [], [p.astroObjects]);
   const isLocked = p.entry.foldersCreated;
