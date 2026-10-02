@@ -26,6 +26,7 @@ import { GearShoppingModal } from '~/routes/Gear/modals/GearShoppingModal';
 import { GearSystemDetailsModal } from '~/routes/Gear/modals/GearSystemDetailsModal';
 import { GearSystemModal } from '~/routes/Gear/modals/GearSystemModal';
 import { imgUrl } from '~/routes/Galleries/utils';
+import { formatAmount } from '~/utils/formatAmount';
 import { gearCategoryColor, gearCategoryIcon, gearCategoryLabel } from '~/utils/gearCategory';
 import { getApiErrorMessage, getApiErrorStatus } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -425,7 +426,7 @@ const ItemsGrid = ({ items, details, emptyLabel, onOpen, onReorder }: ItemsGridP
 
         const meta = detail
           ? [
-              detail.estimatedPrice != null ? `${detail.estimatedPrice}` : null,
+              detail.estimatedPrice != null ? formatAmount(detail.estimatedPrice) : null,
               detail.neededBy ? needLabel(item.ownership, detail.neededBy) : null,
               detail.acquiredAt && owned ? `since ${formatShort(detail.acquiredAt)}` : null,
             ]

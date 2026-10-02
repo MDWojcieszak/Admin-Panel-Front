@@ -10,6 +10,7 @@ import { useToast } from '~/hooks/useToast';
 import { imgUrl } from '~/routes/Galleries/utils';
 import { GearCategoryChip } from '~/routes/Gear/components/GearCategoryChip';
 import { getApiErrorMessage } from '~/utils/apiError';
+import { formatAmount } from '~/utils/formatAmount';
 import { OWNERSHIP_LABELS, gearCategoryColor, gearCategoryIcon } from '~/utils/gearCategory';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -112,7 +113,7 @@ export const GearItemDetailsModal = (p: GearItemDetailsModalProps) => {
               : `Has to be secured · ${item.mediaSource}`
           }
         />
-        {detail?.estimatedPrice != null ? <Fact label='Estimated price' value={String(detail.estimatedPrice)} /> : null}
+        {detail?.estimatedPrice != null ? <Fact label='Estimated price' value={formatAmount(detail.estimatedPrice)} /> : null}
         {formatDate(detail?.acquiredAt) ? <Fact label='Acquired' value={formatDate(detail?.acquiredAt)} /> : null}
         {formatDate(detail?.retiredAt) ? <Fact label='Retired' value={formatDate(detail?.retiredAt)} /> : null}
         {formatDate(detail?.neededBy) ? (

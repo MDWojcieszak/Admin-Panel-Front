@@ -11,6 +11,7 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { GearCategoryChip } from '~/routes/Gear/components/GearCategoryChip';
 import { GearThumb } from '~/routes/Gear/components/GearThumb';
+import { formatAmount } from '~/utils/formatAmount';
 import { mkUseStyles } from '~/utils/theme';
 
 type GearShoppingModalProps = Partial<InternalModalProps>;
@@ -84,7 +85,7 @@ export const GearShoppingModal = (p: GearShoppingModalProps) => {
         {query.data ? (
           <div style={styles.budget}>
             <span style={styles.budgetLabel}>BUDGET</span>
-            <span style={styles.budgetValue}>{query.data.wishlistTotal}</span>
+            <span style={styles.budgetValue}>{formatAmount(query.data.wishlistTotal)}</span>
           </div>
         ) : null}
       </div>
@@ -147,7 +148,7 @@ const Row = ({ item }: { item: GearItemAdminResponse }) => {
       </div>
 
       <div style={styles.rowSide}>
-        {item.estimatedPrice != null ? <span style={styles.price}>{item.estimatedPrice}</span> : null}
+        {item.estimatedPrice != null ? <span style={styles.price}>{formatAmount(item.estimatedPrice)}</span> : null}
 
         {item.neededBy ? (
           <>

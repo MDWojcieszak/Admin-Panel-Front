@@ -19,6 +19,7 @@ import { Scrollbar } from '~/components/Scrollbar';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
 import { getApiErrorMessage } from '~/utils/apiError';
+import { formatAmount } from '~/utils/formatAmount';
 import { gearCategoryIcon, gearCategoryLabel, gearItemLabel, holdsMedia } from '~/utils/gearCategory';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -449,7 +450,7 @@ export const EntryGearTab = ({ entryId, onChanged }: EntryGearTabProps) => {
                   : 'No date set'}
               </span>
             </div>
-            <Badge label={`${shoppingList.total}`} tone='yellow' />
+            <Badge label={formatAmount(shoppingList.total)} tone='yellow' />
           </div>
 
           <div style={styles.list}>
@@ -457,7 +458,7 @@ export const EntryGearTab = ({ entryId, onChanged }: EntryGearTabProps) => {
               <div key={item.gear.id} style={styles.shoppingRow}>
                 <span style={styles.itemName}>{gearItemLabel(item.gear)}</span>
                 {item.estimatedPrice != null ? (
-                  <span style={styles.itemCategory}>{item.estimatedPrice}</span>
+                  <span style={styles.itemCategory}>{formatAmount(item.estimatedPrice)}</span>
                 ) : null}
                 {item.purchaseUrl ? (
                   <a href={item.purchaseUrl} target='_blank' rel='noreferrer' style={styles.shopLink}>
