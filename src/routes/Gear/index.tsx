@@ -1,20 +1,26 @@
 import { DragEvent, useEffect, useRef, useState } from 'react';
-import { FiEdit2, FiImage, FiMove, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiEdit2, FiImage, FiLayers, FiMove, FiPlus, FiShoppingCart, FiTrash2 } from 'react-icons/fi';
 import { MdCameraAlt } from 'react-icons/md';
-import { GearCategory, GearItemResponse, GearOverviewResponse, GearOwnership, GearSystemResponse } from '~/api/api';
+import {
+  GearCategory,
+  GearItemAdminResponse,
+  GearItemResponse,
+  GearOverviewResponse,
+  GearOwnership,
+  GearSystemResponse,
+} from '~/api/api';
 import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
-import { SegmentedTabs } from '~/components/SegmentedTabs';
 import { Switch } from '~/components/Switch';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
-import { GearKitsPanel } from '~/routes/Gear/components/GearKitsPanel';
-import { GearPlanPanel } from '~/routes/Gear/components/GearPlanPanel';
 import { GearItemModal } from '~/routes/Gear/modals/GearItemModal';
+import { GearKitsModal } from '~/routes/Gear/modals/GearKitsModal';
+import { GearShoppingModal } from '~/routes/Gear/modals/GearShoppingModal';
 import { GearSystemModal } from '~/routes/Gear/modals/GearSystemModal';
 import { imgUrl } from '~/routes/Galleries/utils';
 import { gearCategoryIcon } from '~/utils/gearCategory';
@@ -22,14 +28,6 @@ import { getApiErrorMessage, getApiErrorStatus } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 const categoryLabel = (c: string) => c.charAt(0) + c.slice(1).toLowerCase();
-
-type GearTab = 'portfolio' | 'plan' | 'kits';
-
-const GEAR_TABS: { label: string; value: GearTab }[] = [
-  { label: 'Portfolio', value: 'portfolio' },
-  { label: 'Plan', value: 'plan' },
-  { label: 'Kits', value: 'kits' },
-];
 
 export const GearView = () => {
   const styles = useStyles();
@@ -43,12 +41,24 @@ export const GearView = () => {
     return data;
   }, [gearApi]);
 
+  /**
+   * The overview carries the grouping and the ordering but not the planning
+   * fields, so the flat admin list is pulled alongside it and joined by id.
+   * That keeps one inventory on screen without hiding the detail behind a tab.
+   */
+  const detailsQuery = useAsync<Map<string, GearItemAdminResponse>>(async () => {
+    if (!gearApi) return undefined;
+    const { data } = await gearApi.gearControllerListItems({});
+    return new Map(data.items.map((item) => [item.id, item]));
+  }, [gearApi]);
+
+  const details = detailsQuery.data;
+
   // Local copies so drag&drop feels immediate; synced from the query.
   const [systems, setSystems] = useState<GearSystemResponse[]>([]);
   const systemsRef = useRef<GearSystemResponse[]>([]);
   const sysDrag = useRef<number | null>(null);
   const [ungrouped, setUngrouped] = useState<GearItemResponse[]>([]);
-  const [tab, setTab] = useState<GearTab>('portfolio');
 
   const setSystemsLocal = (next: GearSystemResponse[]) => {
     systemsRef.current = next;
@@ -67,12 +77,14 @@ export const GearView = () => {
   };
 
   const reload = async () => {
-    await gearQuery.reload();
+    await Promise.all([gearQuery.reload(), detailsQuery.reload()]);
   };
 
   const systemModal = useModal('gear-system', GearSystemModal, { title: 'System' });
   const itemModal = useModal('gear-item', GearItemModal, { title: 'Gear item' });
   const confirmModal = useModal('gear-confirm', ConfirmModal, { title: 'Delete' });
+  const shoppingModal = useModal('gear-shopping', GearShoppingModal, { title: 'Shopping list' });
+  const kitsModal = useModal('gear-kits', GearKitsModal, { title: 'Kits' });
 
   const openCreateSystem = () => systemModal.show({ onSaved: reload });
   const openEditSystem = (system: GearSystemResponse) => systemModal.show({ system, onSaved: reload });
@@ -196,6 +208,10 @@ export const GearView = () => {
     }
   };
 
+  const wishlistCount = details
+    ? Array.from(details.values()).filter((item) => item.ownership === GearOwnership.Wishlist).length
+    : 0;
+
   const isEmpty = !gearQuery.loading && systems.length === 0 && ungrouped.length === 0;
 
   return (
@@ -208,25 +224,20 @@ export const GearView = () => {
               One inventory, shared by session packing lists, the public “Gear” page and the blog.
             </span>
           </div>
-          {tab === 'portfolio' ? (
-            <div style={styles.headerActions}>
-              <Button label='Add system' variant='secondary' icon={<FiPlus size={14} />} onClick={openCreateSystem} />
-              <Button label='Add gear' icon={<FiPlus size={14} />} onClick={() => openCreateItem()} />
-            </div>
-          ) : null}
+          <div style={styles.headerActions}>
+            <Button
+              label={wishlistCount ? `To buy · ${wishlistCount}` : 'To buy'}
+              variant='secondary'
+              icon={<FiShoppingCart size={14} />}
+              onClick={() => shoppingModal.show({ onEdit: openEditItem })}
+            />
+            <Button label='Kits' variant='secondary' icon={<FiLayers size={14} />} onClick={() => kitsModal.show()} />
+            <Button label='Add system' variant='secondary' icon={<FiPlus size={14} />} onClick={openCreateSystem} />
+            <Button label='Add gear' icon={<FiPlus size={14} />} onClick={() => openCreateItem()} />
+          </div>
         </div>
 
-        <SegmentedTabs
-          layoutId='gear-view-tabs'
-          items={GEAR_TABS}
-          selected={tab}
-          handleSelect={(value) => setTab(value as GearTab)}
-        />
-
-        {tab === 'plan' ? <GearPlanPanel systems={systems} onChanged={reload} /> : null}
-        {tab === 'kits' ? <GearKitsPanel /> : null}
-
-        {tab !== 'portfolio' ? null : gearQuery.loading && !gearQuery.data ? (
+        {gearQuery.loading && !gearQuery.data ? (
           <Loader />
         ) : isEmpty ? (
           <EmptyState
@@ -294,6 +305,7 @@ export const GearView = () => {
                 </div>
 
                 <ItemsGrid
+                  details={details}
                   items={system.items}
                   emptyLabel='No items in this system yet.'
                   onEdit={openEditItem}
@@ -310,6 +322,7 @@ export const GearView = () => {
                   <span style={styles.blockTitle}>Ungrouped</span>
                 </div>
                 <ItemsGrid
+                  details={details}
                   items={ungrouped}
                   emptyLabel='No standalone items.'
                   onEdit={openEditItem}
@@ -334,6 +347,8 @@ const CategoryIcon = ({ category, size, color }: { category: GearCategory; size?
 
 type ItemsGridProps = {
   items: GearItemResponse[];
+  /** Planning fields joined in from the flat admin list, keyed by item id. */
+  details?: Map<string, GearItemAdminResponse>;
   emptyLabel: string;
   onEdit: (item: GearItemResponse) => void;
   onDelete: (item: GearItemResponse) => void;
@@ -341,7 +356,7 @@ type ItemsGridProps = {
   onReorder: (ids: string[]) => void;
 };
 
-const ItemsGrid = ({ items, emptyLabel, onEdit, onDelete, onToggleVisible, onReorder }: ItemsGridProps) => {
+const ItemsGrid = ({ items, details, emptyLabel, onEdit, onDelete, onToggleVisible, onReorder }: ItemsGridProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const [local, setLocal] = useState<GearItemResponse[]>(items);
@@ -369,10 +384,16 @@ const ItemsGrid = ({ items, emptyLabel, onEdit, onDelete, onToggleVisible, onReo
 
   return (
     <div style={styles.itemsGrid}>
-      {local.map((item, i) => (
+      {local.map((item, i) => {
+        const detail = details?.get(item.id);
+        // Anything not actually owned reads as unavailable rather than being
+        // hidden, so the wishlist stays visible next to what it belongs with.
+        const owned = item.ownership === GearOwnership.Owned;
+
+        return (
         <div
           key={item.id}
-          style={styles.itemTile}
+          style={{ ...styles.itemTile, opacity: owned ? 1 : 0.6 }}
           draggable
           onDragStart={(e: DragEvent) => {
             e.stopPropagation();
@@ -401,12 +422,38 @@ const ItemsGrid = ({ items, emptyLabel, onEdit, onDelete, onToggleVisible, onReo
             )}
             <span style={styles.categoryChip}>{categoryLabel(item.category)}</span>
             {!item.visible ? <span style={styles.itemHiddenChip}>Hidden</span> : null}
+            {owned ? null : (
+              <span style={item.ownership === GearOwnership.Wishlist ? styles.wishlistChip : styles.retiredChip}>
+                {item.ownership === GearOwnership.Wishlist ? 'Don’t have it' : 'Retired'}
+              </span>
+            )}
           </div>
           <div style={styles.itemInfo}>
             <span style={styles.itemBrand}>{item.brand}</span>
             <span style={styles.itemModel} title={item.model}>
               {item.model}
             </span>
+
+            {/* Planning detail, only where there is something to say. */}
+            {detail ? (
+              <span style={styles.itemMeta}>
+                {[
+                  detail.estimatedPrice != null ? `${detail.estimatedPrice}` : null,
+                  detail.neededBy ? needLabel(item.ownership, detail.neededBy) : null,
+                  detail.acquiredAt && owned ? `since ${formatShort(detail.acquiredAt)}` : null,
+                ]
+                  .filter(Boolean)
+                  .join(' · ') || ' '}
+              </span>
+            ) : null}
+
+            {detail?.neededFor ? (
+              <span style={styles.itemMeta} title={detail.neededFor.name}>
+                for {detail.neededFor.name}
+              </span>
+            ) : null}
+
+            {detail?.missedFor.length ? <span style={styles.itemMissed}>a trip went without it</span> : null}
           </div>
           <div style={styles.itemActions}>
             <Switch checked={item.visible} onChange={() => onToggleVisible(item)} />
@@ -420,10 +467,21 @@ const ItemsGrid = ({ items, emptyLabel, onEdit, onDelete, onToggleVisible, onReo
             </div>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
+
+const formatShort = (value?: string | null): string => {
+  if (!value) return '';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString();
+};
+
+/** `neededBy` means a buy-by date on the wishlist and the next use when owned. */
+const needLabel = (ownership: GearOwnership, neededBy: string): string =>
+  ownership === GearOwnership.Wishlist ? `buy by ${formatShort(neededBy)}` : `next ${formatShort(neededBy)}`;
 
 const useStyles = mkUseStyles((t) => ({
   scroll: { height: '100%', minHeight: 0, width: '100%', overflowY: 'auto' },
@@ -567,8 +625,40 @@ const useStyles = mkUseStyles((t) => ({
     padding: '2px 7px',
     borderRadius: 999,
   },
+  wishlistChip: {
+    position: 'absolute',
+    bottom: 6,
+    left: 6,
+    fontSize: 10,
+    fontWeight: 700,
+    color: t.colors.yellow,
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.78),
+    border: `1px solid ${t.colors.yellow + t.colorOpacity(0.35)}`,
+    padding: '2px 7px',
+    borderRadius: 999,
+  },
+  retiredChip: {
+    position: 'absolute',
+    bottom: 6,
+    left: 6,
+    fontSize: 10,
+    fontWeight: 700,
+    color: t.colors.dark05,
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.78),
+    border: `1px solid ${t.colors.dark04 + t.colorOpacity(0.45)}`,
+    padding: '2px 7px',
+    borderRadius: 999,
+  },
   itemInfo: { gap: 1, padding: t.spacing.s, minWidth: 0 },
   itemBrand: { fontSize: 12, color: t.colors.dark05 },
+  itemMeta: {
+    fontSize: 11,
+    color: t.colors.dark05,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  itemMissed: { fontSize: 11, color: t.colors.yellow },
   itemModel: { fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
   itemActions: {
     flexDirection: 'row',
