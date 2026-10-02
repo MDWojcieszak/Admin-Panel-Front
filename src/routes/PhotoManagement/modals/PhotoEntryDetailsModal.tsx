@@ -1,10 +1,11 @@
-import { CSSProperties, ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useViewportSize } from '@mantine/hooks';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FiAlertTriangle, FiCheck, FiCheckCircle, FiFolder, FiMoon } from 'react-icons/fi';
+import { FiAlertTriangle, FiCheck, FiCheckCircle, FiEdit2, FiFolder, FiLock } from 'react-icons/fi';
 
+import { Badge, BadgeTone } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
 import { Scrollbar } from '~/components/Scrollbar';
@@ -15,7 +16,14 @@ import { ImmichAlbumsSection } from '~/routes/PhotoManagement/components/ImmichA
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { mkUseStyles } from '~/utils/theme';
-import { MediaStatus, PatchPhotoEntryDto, PhotoEntryDetailsResponse, PhotoEntryType } from '~/api/api';
+import {
+  MediaStatus,
+  PatchPhotoEntryDto,
+  PhotoEntryDetailsResponse,
+  PhotoEntryPostStage,
+  PhotoEntryStatus,
+  PhotoEntryType,
+} from '~/api/api';
 
 type AstroObjectListItem = {
   id: string;
@@ -30,10 +38,6 @@ type PhotoEntryAstroRelation = {
   astroObject?: {
     id?: string;
   };
-};
-
-type MatchedAstroObjectItem = AstroObjectListItem & {
-  relationRootPath?: string | null;
 };
 
 type PhotoEntryDetailsModalProps = Partial<InternalModalProps> & {
@@ -67,94 +71,115 @@ const mapAstroObjectIds = (astroObjects: Array<object> | undefined): string[] =>
     .filter((id): id is string => Boolean(id));
 };
 
+const NO_WRAP = { flexShrink: 0, whiteSpace: 'nowrap' } as const;
+
+const STATUS_META: Record<PhotoEntryStatus, { label: string; tone: BadgeTone }> = {
+  [PhotoEntryStatus.Planned]: { label: 'Planned', tone: 'neutral' },
+  [PhotoEntryStatus.Shot]: { label: 'Shot', tone: 'green' },
+  [PhotoEntryStatus.Cancelled]: { label: 'Cancelled', tone: 'red' },
+};
+
+const STAGE_LABELS: Record<PhotoEntryPostStage, string> = {
+  [PhotoEntryPostStage.None]: 'Not touched yet',
+  [PhotoEntryPostStage.Selecting]: 'Selecting',
+  [PhotoEntryPostStage.Editing]: 'Editing',
+  [PhotoEntryPostStage.Finished]: 'Finished',
+};
+
+const TYPE_TONE: Record<PhotoEntryType, BadgeTone> = {
+  [PhotoEntryType.General]: 'green',
+  [PhotoEntryType.Work]: 'blue',
+  [PhotoEntryType.Astro]: 'purple',
+};
+
+/** What the card is for at this point in the session's life, in one line. */
+const describeFocus = (entry: PhotoEntryDetailsResponse): string => {
+  if (entry.status === PhotoEntryStatus.Cancelled) return 'Cancelled — kept for the record.';
+  if (entry.status === PhotoEntryStatus.Planned) return 'Planning — what to take, and what still has to be bought.';
+  if (entry.postStage === PhotoEntryPostStage.None) return 'Shot — get the material off the gear, then count it.';
+  if (entry.postStage === PhotoEntryPostStage.Finished) return 'Finished — the numbers and notes below are the record.';
+  return 'In post-production — progress first, gear below.';
+};
+
 export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const styles = useStyles();
   const { photoEntryApi } = useApi();
 
+  // Local copy: re-showing an already-visible modal does not refresh its props,
+  // so after a save the card would keep rendering the name it was opened with.
+  const [entry, setEntry] = useState(p.entry);
+  // Nothing is editable until asked for. A card that opens as a form invites
+  // accidental changes and hides what the session currently says.
+  const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [foldersLoading, setFoldersLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { width: viewportWidth } = useViewportSize();
-  // Three columns need the room; below that the sections stack into one scroll.
-  const stacked = viewportWidth > 0 && viewportWidth < 1180;
+  const stacked = viewportWidth > 0 && viewportWidth < 1000;
+
+  useEffect(() => {
+    setEntry(p.entry);
+    setEditing(false);
+  }, [p.entry]);
 
   const astroObjects = useMemo(() => p.astroObjects ?? [], [p.astroObjects]);
-  const isLocked = p.entry.foldersCreated;
-  const uploadStatus = p.entry.uploadStatus;
-  const isAstro = p.entry.type === PhotoEntryType.Astro;
+  const isLocked = entry.foldersCreated;
+  const uploadStatus = entry.uploadStatus;
+  const isAstro = entry.type === PhotoEntryType.Astro;
 
-  const initialSelectedAstroObjectIds = useMemo(() => mapAstroObjectIds(p.entry.astroObjects), [p.entry.astroObjects]);
+  const initialSelectedAstroObjectIds = useMemo(() => mapAstroObjectIds(entry.astroObjects), [entry.astroObjects]);
 
   const formMethods = useForm<PhotoEntryDetailsFormValues>({
     resolver: zodResolver(photoEntryDetailsSchema),
     defaultValues: {
-      name: p.entry.name ?? '',
-      startDate: toInputDate(p.entry.startDate),
-      endDate: toInputDate(p.entry.endDate),
+      name: entry.name ?? '',
+      startDate: toInputDate(entry.startDate),
+      endDate: toInputDate(entry.endDate),
       selectedAstroObjectIds: initialSelectedAstroObjectIds,
     },
   });
 
-  useEffect(() => {
+  const resetForm = (source: PhotoEntryDetailsResponse) =>
     formMethods.reset({
-      name: p.entry.name ?? '',
-      startDate: toInputDate(p.entry.startDate),
-      endDate: toInputDate(p.entry.endDate),
-      selectedAstroObjectIds: mapAstroObjectIds(p.entry.astroObjects),
+      name: source.name ?? '',
+      startDate: toInputDate(source.startDate),
+      endDate: toInputDate(source.endDate),
+      selectedAstroObjectIds: mapAstroObjectIds(source.astroObjects),
     });
-    setConfirmDelete(false);
-  }, [p.entry, formMethods]);
 
-  const startDate = useWatch({ control: formMethods.control, name: 'startDate' });
-  const endDate = useWatch({ control: formMethods.control, name: 'endDate' });
+  useEffect(() => {
+    resetForm(entry);
+    setConfirmDelete(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entry]);
+
   const selectedAstroObjectIds = useWatch({
     control: formMethods.control,
     name: 'selectedAstroObjectIds',
     defaultValue: initialSelectedAstroObjectIds,
   });
 
-  const relationMap = useMemo(() => {
-    const map = new Map<string, PhotoEntryAstroRelation>();
-
-    for (const item of (p.entry.astroObjects ?? []) as PhotoEntryAstroRelation[]) {
-      const id = getRelationAstroObjectId(item);
-      if (!id) continue;
-      map.set(id, item);
-    }
-
-    return map;
-  }, [p.entry.astroObjects]);
-
-  const assignedAstroObjects = useMemo<MatchedAstroObjectItem[]>(() => {
+  const assignedAstroObjects = useMemo(() => {
     const ids = new Set(initialSelectedAstroObjectIds);
+    return astroObjects.filter((astroObject) => ids.has(astroObject.id));
+  }, [astroObjects, initialSelectedAstroObjectIds]);
 
-    return astroObjects
-      .filter((astroObject) => ids.has(astroObject.id))
-      .map((astroObject) => ({
-        ...astroObject,
-        relationRootPath: relationMap.get(astroObject.id)?.rootPath ?? null,
-      }));
-  }, [astroObjects, initialSelectedAstroObjectIds, relationMap]);
+  const canCreateFolders = !entry.foldersCreated && Boolean(entry.startDate && entry.endDate);
 
-  const editableAstroObjects = useMemo<MatchedAstroObjectItem[]>(() => {
-    return astroObjects.map((astroObject) => ({
-      ...astroObject,
-      relationRootPath: relationMap.get(astroObject.id)?.rootPath ?? null,
-    }));
-  }, [astroObjects, relationMap]);
+  const reloadEntry = async () => {
+    if (!photoEntryApi) return;
+    const { data } = await photoEntryApi.photoEntryControllerGetById({ id: entry.id });
+    setEntry(data);
+  };
 
-  const astroObjectsToRender = isLocked ? assignedAstroObjects : editableAstroObjects;
-
-  const canCreateFolders = useMemo(() => {
-    if (p.entry.foldersCreated) return false;
-    if (!startDate || !endDate) return false;
-    return true;
-  }, [p.entry.foldersCreated, startDate, endDate]);
+  /** Gear, counts and comments all change what the header and the board show. */
+  const refresh = async () => {
+    await reloadEntry();
+    await p.onSaved?.();
+  };
 
   const toggleAstroObject = (astroObjectId: string) => {
-    if (isLocked) return;
-
     const current = selectedAstroObjectIds ?? [];
     const exists = current.includes(astroObjectId);
 
@@ -180,10 +205,12 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
       };
 
       await photoEntryApi.photoEntryControllerPatch({
-        id: p.entry.id,
+        id: entry.id,
         patchPhotoEntryDto: payload,
       });
 
+      await reloadEntry();
+      setEditing(false);
       await p.onSaved?.();
     } catch (error) {
       console.log((error as Error)?.message);
@@ -196,11 +223,10 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
     if (!photoEntryApi || !canCreateFolders) return;
 
     setFoldersLoading(true);
-    setConfirmDelete(false);
 
     try {
       await photoEntryApi.photoEntryControllerCreateFolders({
-        id: p.entry.id,
+        id: entry.id,
       });
 
       await p.onFoldersCreated?.();
@@ -218,7 +244,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
 
     try {
       await photoEntryApi.photoEntryControllerMarkMediaUploaded({
-        id: p.entry.id,
+        id: entry.id,
       });
 
       await p.onFoldersCreated?.();
@@ -240,7 +266,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
     setDeleteLoading(true);
 
     try {
-      await photoEntryApi.photoEntryControllerDelete({ id: p.entry.id });
+      await photoEntryApi.photoEntryControllerDelete({ id: entry.id });
       await p.handleClose?.();
     } catch (error) {
       console.log((error as Error)?.message);
@@ -250,73 +276,45 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
     }
   };
 
+  const cancelEditing = () => {
+    resetForm(entry);
+    setConfirmDelete(false);
+    setEditing(false);
+  };
+
+  const gearSection = (
+    <Section key='gear'>
+      <EntryGearPanel entryId={entry.id} onChanged={refresh} />
+    </Section>
+  );
+
+  const progressSection = (
+    <Section key='progress' title='Progress' hint='How far the material has got.'>
+      <EntryProgressPanel entry={entry} onChanged={refresh} />
+    </Section>
+  );
+
+  // The card follows the session's phase instead of one fixed order. Before the
+  // shoot there is nothing to count, so progress is not shown at all and the
+  // gear list leads; straight after it, securing the material comes first; once
+  // post-production has started, the numbers do.
+  const mainSections =
+    entry.status !== PhotoEntryStatus.Shot
+      ? [gearSection]
+      : entry.postStage === PhotoEntryPostStage.None
+        ? [gearSection, progressSection]
+        : [progressSection, gearSection];
+
+  const status = STATUS_META[entry.status];
+
   return (
     <FormProvider {...formMethods}>
-      <div style={stacked ? styles.cardStacked : styles.card}>
-        <Column stacked={stacked}>
-          <span style={styles.sectionLabel}>Details</span>
-        {isLocked && uploadStatus === MediaStatus.NotUploaded && (
-          <div style={styles.uploadWarningBanner}>
-            <div style={styles.uploadWarningIcon}>
-              <FiAlertTriangle size={14} />
-            </div>
-
-            <div style={styles.uploadWarningContent}>
-              <div style={styles.uploadWarningTitle}>Folders created</div>
-              <div style={styles.uploadWarningText}>Confirm once photos are uploaded.</div>
-            </div>
-
-            <Button
-              loading={foldersLoading}
-              label=' Mark as uploaded'
-              variant='secondary'
-              onClick={handleMarkAsUploaded}
-            ></Button>
-          </div>
-        )}
-
-        {isLocked && uploadStatus === MediaStatus.Uploaded && (
-          <div style={styles.uploadSuccessBanner}>
-            <div style={styles.uploadSuccessIcon}>
-              <FiCheckCircle size={14} />
-            </div>
-
-            <div style={styles.uploadSuccessContent}>
-              <div style={styles.uploadSuccessTitle}>Upload confirmed</div>
-              <div style={styles.uploadSuccessText}>Photos have been uploaded to the server.</div>
-            </div>
-          </div>
-        )}
-
-        <div
-          style={{
-            ...styles.layout,
-            ...styles.layoutOneColumn,
-          }}
-        >
-          <div style={styles.leftColumn}>
-            {isLocked ? (
-              <>
-                <ReadOnlyField label='Name' value={p.entry.name} />
-                <div style={styles.row}>
-                  <ReadOnlyField label='Type' value={p.entry.type} style={styles.flex} />
-                  <ReadOnlyField label='Status' value={p.entry.status} style={styles.flex} />
-                  <ReadOnlyField label='Stage' value={p.entry.postStage} style={styles.flex} />
-                </div>
-                <div style={styles.row}>
-                  <ReadOnlyField label='Start Date' value={formatDate(p.entry.startDate)} style={styles.flex} />
-                  <ReadOnlyField label='End Date' value={formatDate(p.entry.endDate)} style={styles.flex} />
-                </div>
-              </>
-            ) : (
-              <>
+      <Scrollbar style={styles.scroll}>
+        <div style={styles.page}>
+          <div style={styles.hero}>
+            {editing ? (
+              <div style={styles.editForm}>
                 <Input name='name' label='Name' description='Photo entry name' type='text' />
-
-                <div style={styles.row}>
-                  <ReadOnlyField label='Type' value={p.entry.type} style={styles.flex} />
-                  <ReadOnlyField label='Status' value={p.entry.status} style={styles.flex} />
-                  <ReadOnlyField label='Stage' value={p.entry.postStage} style={styles.flex} />
-                </div>
 
                 <div style={styles.row}>
                   <Input
@@ -328,211 +326,213 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                   />
                   <Input name='endDate' style={styles.flex} label='End Date' description='Entry end date' type='date' />
                 </div>
+
+                {isAstro ? (
+                  <div style={styles.astroPicker}>
+                    <span style={styles.factLabel}>Targets · {selectedAstroObjectIds?.length ?? 0} selected</span>
+                    {astroObjects.length === 0 ? (
+                      <span style={styles.muted}>No astro objects available.</span>
+                    ) : (
+                      <Scrollbar maxHeight={220}>
+                        <div style={styles.astroList}>
+                          {astroObjects.map((astroObject) => {
+                            const checked = (selectedAstroObjectIds ?? []).includes(astroObject.id);
+
+                            return (
+                              <button
+                                key={astroObject.id}
+                                type='button'
+                                onClick={() => toggleAstroObject(astroObject.id)}
+                                style={{ ...styles.astroItem, ...(checked ? styles.astroItemActive : {}) }}
+                              >
+                                <div style={{ ...styles.checkbox, ...(checked ? styles.checkboxActive : {}) }}>
+                                  {checked ? <FiCheck size={12} /> : null}
+                                </div>
+                                <span style={styles.astroItemTitle}>{astroObject.code || astroObject.name}</span>
+                                {astroObject.code ? <span style={styles.muted}>{astroObject.name}</span> : null}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </Scrollbar>
+                    )}
+                  </div>
+                ) : null}
+
+                <div style={styles.editActions}>
+                  <Button
+                    label={confirmDelete ? 'Confirm delete' : 'Delete session'}
+                    style={NO_WRAP}
+                    onClick={handleDelete}
+                    loading={deleteLoading}
+                    variant={confirmDelete ? 'danger' : 'secondary'}
+                  />
+                  <div style={styles.heroActions}>
+                    <Button label='Cancel' variant='secondary' style={NO_WRAP} onClick={cancelEditing} />
+                    <Button
+                      label='Save changes'
+                      style={NO_WRAP}
+                      onClick={formMethods.handleSubmit(handleSave)}
+                      loading={loading}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div style={styles.heroTop}>
+                  <div style={styles.titleBlock}>
+                    <span style={styles.name}>{entry.name}</span>
+                    <div style={styles.chips}>
+                      <Badge label={entry.type} tone={TYPE_TONE[entry.type] ?? 'neutral'} />
+                      <Badge label={status.label} tone={status.tone} />
+                      {entry.status === PhotoEntryStatus.Shot ? (
+                        <Badge
+                          label={STAGE_LABELS[entry.postStage]}
+                          tone={entry.postStage === PhotoEntryPostStage.Finished ? 'green' : 'blue'}
+                        />
+                      ) : null}
+                      {entry.isHappeningNow ? <Badge label='Happening now' tone='yellow' /> : null}
+                      {entry.wasEdited && entry.postStage === PhotoEntryPostStage.None ? (
+                        <Badge label='Was edited' tone='neutral' />
+                      ) : null}
+                    </div>
+                    <span style={styles.focus}>{describeFocus(entry)}</span>
+                  </div>
+
+                  <div style={styles.heroActions}>
+                    {!entry.foldersCreated ? (
+                      <Button
+                        label='Create folders'
+                        variant='secondary'
+                        style={NO_WRAP}
+                        onClick={handleCreateFolders}
+                        loading={foldersLoading}
+                        disabled={!canCreateFolders}
+                        icon={<FiFolder size={14} />}
+                      />
+                    ) : null}
+                    {isLocked ? null : (
+                      <Button
+                        label='Edit'
+                        style={NO_WRAP}
+                        icon={<FiEdit2 size={14} />}
+                        onClick={() => setEditing(true)}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <div style={styles.facts}>
+                  <Fact label='DATES' value={formatRange(entry.startDate, entry.endDate)} />
+                  <Fact
+                    label='FOLDERS'
+                    value={entry.foldersCreated ? `Created ${formatDate(entry.foldersCreatedAt)}` : 'Not created'}
+                  />
+                  <Fact label='ROOT PATH' value={entry.rootPath || '—'} />
+                  {isAstro ? (
+                    <Fact
+                      label='TARGETS'
+                      value={
+                        assignedAstroObjects.length
+                          ? assignedAstroObjects.map((item) => item.code || item.name).join(', ')
+                          : 'None'
+                      }
+                    />
+                  ) : null}
+                  <Fact label='UPDATED' value={formatDateTime(entry.updatedAt)} />
+                </div>
+
+                {isLocked ? (
+                  <span style={styles.lockNote}>
+                    <FiLock size={12} /> Folders exist, so the name and dates can no longer be changed.
+                  </span>
+                ) : !canCreateFolders ? (
+                  <span style={styles.lockNote}>Set both dates to be able to create folders.</span>
+                ) : null}
               </>
             )}
 
-            <div style={styles.metaCard}>
-              <div style={styles.metaRow}>
-                <span style={styles.metaLabel}>Root path</span>
-                <span style={styles.metaValue}>{p.entry.rootPath || '—'}</span>
-              </div>
-
-              <div style={styles.metaRow}>
-                <span style={styles.metaLabel}>Folders</span>
-                <span style={styles.metaValue}>{p.entry.foldersCreated ? 'Created' : 'Not created'}</span>
-              </div>
-
-              <div style={styles.metaRow}>
-                <span style={styles.metaLabel}>Folders created at</span>
-                <span style={styles.metaValue}>{formatDateTime(p.entry.foldersCreatedAt)}</span>
-              </div>
-
-              <div style={styles.metaRow}>
-                <span style={styles.metaLabel}>Created at</span>
-                <span style={styles.metaValue}>{formatDateTime(p.entry.createdAt)}</span>
-              </div>
-
-              <div style={styles.metaRow}>
-                <span style={styles.metaLabel}>Updated at</span>
-                <span style={styles.metaValue}>{formatDateTime(p.entry.updatedAt)}</span>
-              </div>
-
-              {isAstro ? (
-                <div style={styles.metaRow}>
-                  <span style={styles.metaLabel}>Astro objects</span>
-                  <span style={styles.metaValue}>{selectedAstroObjectIds?.length ?? 0}</span>
+            {isLocked && uploadStatus === MediaStatus.NotUploaded ? (
+              <div style={styles.uploadWarningBanner}>
+                <FiAlertTriangle size={16} />
+                <div style={styles.bannerText}>
+                  <span style={styles.bannerTitle}>Folders created</span>
+                  <span>Confirm once photos are uploaded.</span>
                 </div>
+                <Button
+                  loading={foldersLoading}
+                  label='Mark as uploaded'
+                  variant='secondary'
+                  style={NO_WRAP}
+                  onClick={handleMarkAsUploaded}
+                />
+              </div>
+            ) : null}
+
+            {isLocked && uploadStatus === MediaStatus.Uploaded ? (
+              <div style={styles.uploadSuccessBanner}>
+                <FiCheckCircle size={16} />
+                <div style={styles.bannerText}>
+                  <span style={styles.bannerTitle}>Upload confirmed</span>
+                  <span>Photos have been uploaded to the server.</span>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <div style={stacked ? styles.bodyStacked : styles.body}>
+            <div style={styles.bodyColumn}>
+              {mainSections}
+
+              {isLocked ? (
+                <Section>
+                  <ImmichAlbumsSection photoEntryId={entry.id} onAddToAlbum={() => p.onAddToAlbum?.(entry.id)} />
+                </Section>
               ) : null}
             </div>
-          </div>
 
-          {isAstro ? (
-            <div style={styles.rightColumn}>
-              <div style={styles.astroSection}>
-                <div style={styles.sectionHeader}>
-                  <div style={styles.sectionIconWrap}>
-                    <FiMoon size={14} />
-                  </div>
-
-                  <div style={styles.sectionHeaderText}>
-                    <div style={styles.sectionTitle}>Astro objects</div>
-                    <div style={styles.sectionDescription}>
-                      {isLocked ? 'Assigned astro objects' : 'Select astro objects for this entry'}
-                    </div>
-                  </div>
-                </div>
-
-                <div style={styles.astroScrollWrap}>
-                  <Scrollbar style={styles.astroScrollbar}>
-                    <div style={styles.astroList}>
-                      {astroObjectsToRender.length === 0 ? (
-                        <div style={styles.emptyState}>
-                          {isLocked ? 'No astro objects assigned' : 'No astro objects available'}
-                        </div>
-                      ) : (
-                        astroObjectsToRender.map((astroObject) => {
-                          const checked = (selectedAstroObjectIds ?? []).includes(astroObject.id);
-
-                          return (
-                            <button
-                              key={astroObject.id}
-                              type='button'
-                              aria-disabled={isLocked}
-                              onClick={() => {
-                                if (isLocked) return;
-                                toggleAstroObject(astroObject.id);
-                              }}
-                              style={{
-                                ...styles.astroItem,
-                                ...(checked ? styles.astroItemActive : {}),
-                                cursor: isLocked ? 'default' : 'pointer',
-                              }}
-                            >
-                              {!isLocked ? (
-                                <div
-                                  style={{
-                                    ...styles.checkbox,
-                                    ...(checked ? styles.checkboxActive : {}),
-                                  }}
-                                >
-                                  {checked ? <FiCheck size={12} /> : null}
-                                </div>
-                              ) : null}
-
-                              <div style={styles.astroItemContent}>
-                                <div style={styles.astroItemTitle}>
-                                  {astroObject.code ? astroObject.code : astroObject.name}
-                                </div>
-
-                                <div style={styles.astroItemSubtitle}>{astroObject.name}</div>
-
-                                {astroObject.relationRootPath ? (
-                                  <div style={styles.astroItemPath} title={astroObject.relationRootPath}>
-                                    {astroObject.relationRootPath}
-                                  </div>
-                                ) : null}
-                              </div>
-                            </button>
-                          );
-                        })
-                      )}
-                    </div>
-                  </Scrollbar>
-                </div>
-
-                {formMethods.formState.errors.selectedAstroObjectIds ? (
-                  <div style={styles.errorText}>{formMethods.formState.errors.selectedAstroObjectIds.message}</div>
-                ) : null}
-              </div>
+            <div style={styles.bodyColumn}>
+              <Section
+                title='Notes'
+                hint='Notes, to-dos, highlights and problems, pinned to the stage they were written in.'
+              >
+                <EntryCommentsPanel entryId={entry.id} onChanged={refresh} />
+              </Section>
             </div>
-          ) : null}
-        </div>
-
-        {isLocked ? (
-          <ImmichAlbumsSection photoEntryId={p.entry.id} onAddToAlbum={() => p.onAddToAlbum?.(p.entry.id)} />
-        ) : null}
-
-        <div style={styles.actionsRow}>
-          {!isLocked ? (
-            <div style={styles.leftActions}>
-              <Button
-                label={confirmDelete ? 'Confirm' : 'Delete'}
-                onClick={handleDelete}
-                loading={deleteLoading}
-                variant={confirmDelete ? 'danger' : 'secondary'}
-              />
-            </div>
-          ) : (
-            <div />
-          )}
-
-          <div style={styles.rightActions}>
-            {!isLocked ? (
-              <Button label='Save changes' onClick={formMethods.handleSubmit(handleSave)} loading={loading} />
-            ) : null}
-
-            {!p.entry.foldersCreated ? (
-              <Button
-                label='Create folders'
-                onClick={handleCreateFolders}
-                loading={foldersLoading}
-                disabled={!canCreateFolders}
-                icon={<FiFolder size={14} />}
-              />
-            ) : null}
           </div>
         </div>
-        </Column>
-
-        <Column stacked={stacked}>
-          <span style={styles.sectionLabel}>Progress</span>
-          <EntryProgressPanel entry={p.entry} onChanged={p.onSaved} />
-
-          <span style={styles.sectionLabel}>Gear</span>
-          <EntryGearPanel entryId={p.entry.id} onChanged={p.onSaved} />
-        </Column>
-
-        <Column stacked={stacked}>
-          <span style={styles.sectionLabel}>Comments</span>
-          <EntryCommentsPanel entryId={p.entry.id} onChanged={p.onSaved} />
-        </Column>
-      </div>
+      </Scrollbar>
     </FormProvider>
   );
 };
 
-/**
- * One of the card's columns. Side by side each scrolls on its own, so a long
- * comment thread does not push the gear list out of reach; stacked, they are
- * plain blocks inside the card's single scroll.
- */
-const Column = ({ stacked, children }: { stacked: boolean; children: ReactNode }) => {
+/** A block of the card. Titled only when the panel inside does not title itself. */
+const Section = ({ title, hint, children }: { title?: string; hint?: string; children: ReactNode }) => {
   const styles = useStyles();
 
-  if (stacked) return <div style={styles.columnInner}>{children}</div>;
-
   return (
-    <Scrollbar style={styles.column}>
-      <div style={styles.columnInner}>{children}</div>
-    </Scrollbar>
+    <div style={styles.section}>
+      {title ? (
+        <div style={styles.sectionHead}>
+          <span style={styles.sectionTitle}>{title}</span>
+          {hint ? <span style={styles.muted}>{hint}</span> : null}
+        </div>
+      ) : null}
+      {children}
+    </div>
   );
 };
 
-const ReadOnlyField = ({
-  label,
-  value,
-  style,
-}: {
-  label: string;
-  value?: string | null;
-  style?: CSSProperties;
-}) => {
+const Fact = ({ label, value }: { label: string; value: string }) => {
   const styles = useStyles();
 
   return (
-    <div style={{ ...styles.readOnlyField, ...style }}>
-      <div style={styles.readOnlyLabel}>{label}</div>
-      <div style={styles.readOnlyValue}>{value || '—'}</div>
+    <div style={styles.fact}>
+      <span style={styles.factLabel}>{label}</span>
+      <span style={styles.factValue} title={value}>
+        {value}
+      </span>
     </div>
   );
 };
@@ -555,6 +555,11 @@ const formatDate = (value?: string | null): string => {
   return date.toLocaleDateString();
 };
 
+const formatRange = (start?: string | null, end?: string | null): string => {
+  if (!start && !end) return 'Not set';
+  return `${formatDate(start)} → ${formatDate(end)}`;
+};
+
 const formatDateTime = (value?: string | null): string => {
   if (!value) return '—';
 
@@ -565,285 +570,102 @@ const formatDateTime = (value?: string | null): string => {
 };
 
 const useStyles = mkUseStyles((t) => ({
-  // Every section at once, in the side panel: the tabs this replaced hid three
-  // quarters of a session behind a click and gave no way to see gear and
-  // comments together.
-  card: {
-    display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr)',
+  scroll: { height: '100%' },
+  // One page with one scroll. Three side-by-side scrolling columns read as
+  // three unrelated strips; this reads as a single screen about one session.
+  page: {
     gap: t.spacing.m,
-    height: '100%',
-    minHeight: 0,
-    minWidth: 0,
-  },
-  cardStacked: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: t.spacing.l,
-    height: '100%',
-    minHeight: 0,
-    overflowY: 'auto',
-    paddingRight: t.spacing.s,
-  },
-  column: {
-    height: '100%',
-    minWidth: 0,
-  },
-  columnInner: {
-    gap: t.spacing.m,
-    minWidth: 0,
     paddingRight: t.spacing.l,
     paddingBottom: t.spacing.m,
-  },
-  sectionLabel: {
-    fontSize: 11,
-    fontWeight: 700,
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-    color: t.colors.blue04,
-    paddingBottom: t.spacing.xs,
-    borderBottom: `1px solid ${t.colors.dark04 + t.colorOpacity(0.35)}`,
-  },
-  layout: {
-    display: 'grid',
-    gap: t.spacing.l,
-    width: '100%',
-    alignItems: 'stretch',
-  },
-  layoutOneColumn: {
-    gridTemplateColumns: 'minmax(0, 1fr)',
-  },
-  leftColumn: {
     minWidth: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: t.spacing.m,
   },
-  rightColumn: {
-    minWidth: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: t.spacing.s,
-    minHeight: 0,
-    height: '100%',
-  },
-  row: {
-    display: 'flex',
-    gap: t.spacing.m,
-    flexDirection: 'row',
-  },
-  flex: {
-    flex: 1,
-  },
-  uploadWarningBanner: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
+  hero: {
     gap: t.spacing.m,
     padding: t.spacing.m,
-    borderRadius: 12,
-    backgroundColor: 'rgba(220, 68, 55, 0.08)',
-    border: '1px solid rgba(220, 68, 55, 0.18)',
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
+    border: `1px solid ${t.colors.gray01 + t.colorOpacity(0.5)}`,
   },
-
-  uploadWarningIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 999,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(220, 68, 55, 0.14)',
-    color: '#DC4437',
-    flexShrink: 0,
+  heroTop: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: t.spacing.m,
+    flexWrap: 'wrap',
   },
-
-  uploadWarningContent: {
-    display: 'flex',
-    flexDirection: 'column',
+  titleBlock: { gap: t.spacing.xs, minWidth: 0, flex: 1 },
+  name: { fontSize: 26, fontWeight: 700, lineHeight: 1.15, wordBreak: 'break-word' },
+  chips: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexWrap: 'wrap' },
+  focus: { fontSize: 13, color: t.colors.blue04, marginTop: 2 },
+  heroActions: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap' },
+  facts: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+    gap: t.spacing.s,
+  },
+  fact: {
     gap: 2,
-    flex: 1,
     minWidth: 0,
+    padding: `${t.spacing.s}px ${t.spacing.sm}px`,
+    borderRadius: t.borderRadius.medium,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.55),
   },
-
-  uploadWarningTitle: {
+  factLabel: { fontSize: 10, fontWeight: 700, letterSpacing: 0.6, color: t.colors.dark05 },
+  factValue: {
     fontSize: 13,
     fontWeight: 600,
-    color: '#DC4437',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
-
-  uploadWarningText: {
-    fontSize: 13,
-    opacity: 0.92,
+  lockNote: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.xs,
+    fontSize: 12,
+    color: t.colors.dark05,
   },
-
-  uploadSuccessBanner: {
+  editForm: { gap: t.spacing.s },
+  editActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: t.spacing.s,
+    flexWrap: 'wrap',
+  },
+  row: { display: 'flex', gap: t.spacing.m, flexDirection: 'row' },
+  flex: { flex: 1 },
+  muted: { fontSize: 12, color: t.colors.dark05 },
+  astroPicker: { gap: t.spacing.xs },
+  astroList: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))',
+    gap: t.spacing.xs,
+    paddingRight: t.spacing.l,
+  },
+  astroItem: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.s,
     padding: t.spacing.s,
-    borderRadius: 12,
-    backgroundColor: 'rgba(53, 158, 122, 0.10)',
-    border: '1px solid rgba(53, 158, 122, 0.20)',
-  },
-
-  uploadSuccessIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 999,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(53, 158, 122, 0.16)',
-    color: '#359E7A',
-    flexShrink: 0,
-  },
-
-  uploadSuccessContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 2,
-    flex: 1,
-    minWidth: 0,
-  },
-
-  uploadSuccessTitle: {
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#359E7A',
-  },
-
-  uploadSuccessText: {
-    fontSize: 13,
-    opacity: 0.92,
-  },
-  readOnlyField: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6,
-    padding: 12,
-    borderRadius: 12,
-    border: `1px solid ${t.colors.gray01}`,
-    backgroundColor: 'rgba(255,255,255,0.02)',
-    minWidth: 0,
-  },
-  readOnlyLabel: {
-    fontSize: 12,
-    opacity: 0.68,
-  },
-  readOnlyValue: {
-    fontSize: 14,
-    fontWeight: 500,
-    wordBreak: 'break-word',
-  },
-  metaCard: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-    padding: t.spacing.m,
-    borderRadius: 12,
-    border: `1px solid ${t.colors.gray01}`,
-    backgroundColor: 'rgba(255,255,255,0.02)',
-  },
-  metaRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: t.spacing.m,
-    alignItems: 'flex-start',
-  },
-  metaLabel: {
-    opacity: 0.68,
-    fontSize: 13,
-  },
-  metaValue: {
-    fontSize: 13,
-    fontWeight: '500',
-    maxWidth: '60%',
-    textAlign: 'right',
-    wordBreak: 'break-word',
-  },
-  astroSection: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: t.spacing.s,
-    minWidth: 0,
-    minHeight: 0,
-    height: '100%',
-  },
-  sectionHeader: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.s,
-  },
-  sectionIconWrap: {
-    width: 28,
-    height: 28,
-    borderRadius: 999,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(168, 85, 247, 0.10)',
-    border: '1px solid rgba(168, 85, 247, 0.18)',
-    color: '#D1B3FF',
-    flexShrink: 0,
-  },
-  sectionHeaderText: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 2,
-    minWidth: 0,
-  },
-  sectionTitle: {
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    opacity: 0.7,
-    fontSize: 13,
-  },
-  astroScrollWrap: {
-    flex: 1,
-    minHeight: 0,
-  },
-  astroScrollbar: {
-    height: '100%',
-  },
-  astroList: {
-    display: 'flex',
-    marginRight: t.spacing.l,
-    flexDirection: 'column',
-    gap: t.spacing.s,
-    minWidth: 0,
-  },
-  astroItem: {
-    width: '100%',
-    border: '1px solid rgba(255,255,255,0.06)',
-    borderRadius: 12,
-    padding: 12,
-    backgroundColor: 'rgba(255,255,255,0.02)',
-    display: 'flex',
-    flexDirection: 'row',
-    gap: t.spacing.s,
-    alignItems: 'flex-start',
-    textAlign: 'left',
-    appearance: 'none',
-    WebkitAppearance: 'none',
-    outline: 'none',
-    boxSizing: 'border-box',
-    margin: 0,
-    font: 'inherit',
-    color: 'inherit',
-    textDecoration: 'none',
-    borderStyle: 'solid',
+    borderRadius: t.borderRadius.medium,
     borderWidth: 1,
-    boxShadow: 'none',
+    borderStyle: 'solid',
+    borderColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: 'rgba(255,255,255,0.02)',
+    color: 'inherit',
+    font: 'inherit',
+    textAlign: 'left',
+    cursor: 'pointer',
+    minWidth: 0,
   },
   astroItemActive: {
-    border: '1px solid rgba(168, 85, 247, 0.28)',
+    borderColor: 'rgba(168, 85, 247, 0.28)',
     backgroundColor: 'rgba(168, 85, 247, 0.08)',
   },
+  astroItemTitle: { fontWeight: 600, fontSize: 13 },
   checkbox: {
     width: 18,
     height: 18,
@@ -854,70 +676,54 @@ const useStyles = mkUseStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'center',
     color: '#fff',
-    backgroundColor: 'transparent',
-    flexShrink: 0,
-    marginTop: 1,
   },
   checkboxActive: {
     border: '1px solid rgba(168, 85, 247, 0.32)',
     backgroundColor: 'rgba(168, 85, 247, 0.22)',
     color: '#DCC2FF',
   },
-  astroItemContent: {
-    flex: 1,
-    minWidth: 0,
+  uploadWarningBanner: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: 4,
-    userSelect: 'text',
-    WebkitUserSelect: 'text',
-  },
-  astroItemTitle: {
-    fontWeight: '500',
-  },
-  astroItemSubtitle: {
-    fontSize: 12,
-    opacity: 0.7,
-  },
-  astroItemPath: {
-    fontSize: 11,
-    opacity: 0.6,
-    wordBreak: 'break-word',
-    marginTop: 2,
-    userSelect: 'text',
-    WebkitUserSelect: 'text',
-  },
-  emptyState: {
-    opacity: 0.7,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.m,
+    padding: t.spacing.sm,
+    borderRadius: t.borderRadius.large,
     fontSize: 13,
+    color: '#F08A80',
+    backgroundColor: 'rgba(220, 68, 55, 0.08)',
+    border: '1px solid rgba(220, 68, 55, 0.18)',
   },
-  errorText: {
-    color: t.colors.red,
-    fontSize: 12,
-  },
-  actionsRow: {
+  uploadSuccessBanner: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: t.spacing.m,
-    gap: t.spacing.s,
-    // Wraps as whole buttons: in a narrow column the labels broke in two instead.
-    flexWrap: 'wrap',
-    whiteSpace: 'nowrap',
+    gap: t.spacing.m,
+    padding: t.spacing.sm,
+    borderRadius: t.borderRadius.large,
+    fontSize: 13,
+    color: '#7BC8A6',
+    backgroundColor: 'rgba(53, 158, 122, 0.08)',
+    border: '1px solid rgba(53, 158, 122, 0.18)',
   },
-  leftActions: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: t.spacing.s,
-    alignItems: 'center',
+  bannerText: { flex: 1, minWidth: 0, gap: 2 },
+  bannerTitle: { fontWeight: 700 },
+  body: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1.5fr) minmax(0, 1fr)',
+    gap: t.spacing.m,
+    alignItems: 'start',
   },
-  rightActions: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: t.spacing.s,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-end',
+  bodyStacked: { gap: t.spacing.m },
+  bodyColumn: { gap: t.spacing.m, minWidth: 0 },
+  section: {
+    gap: t.spacing.m,
+    padding: t.spacing.m,
+    minWidth: 0,
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
+    border: `1px solid ${t.colors.gray01 + t.colorOpacity(0.5)}`,
   },
+  sectionHead: { gap: 2 },
+  sectionTitle: { fontSize: 15, fontWeight: 700 },
 }));

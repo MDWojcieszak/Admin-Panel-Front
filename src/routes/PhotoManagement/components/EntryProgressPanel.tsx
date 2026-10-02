@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FiRefreshCw } from 'react-icons/fi';
+import { FiEdit2, FiRefreshCw } from 'react-icons/fi';
 import { PhotoEntryCountsSource, PhotoEntryDetailsResponse, PhotoEntryType } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
 import { getApiErrorMessage } from '~/utils/apiError';
+import { formatAmount } from '~/utils/formatAmount';
 import { mkUseStyles } from '~/utils/theme';
 
 type EntryProgressPanelProps = {
@@ -16,6 +17,8 @@ type EntryProgressPanelProps = {
 /** `''` means "clear to unknown", which is a different instruction from "leave alone". */
 type CountField = 'photoCount' | 'selectedCount' | 'editedCount';
 
+const NO_WRAP = { flexShrink: 0, whiteSpace: 'nowrap' } as const;
+
 const toInput = (value?: number | null): string => (value == null ? '' : String(value));
 
 const parseInput = (value: string): number | null | undefined => {
@@ -25,40 +28,45 @@ const parseInput = (value: string): number | null | undefined => {
   return Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : undefined;
 };
 
+/** Unknown is shown as a dash, never as zero — the two mean different things. */
+const show = (value?: number | null): string => (value == null ? '—' : formatAmount(value));
+
 export const EntryProgressPanel = ({ entry, onChanged }: EntryProgressPanelProps) => {
   const styles = useStyles();
   const { photoEntryApi } = useApi();
   const toast = useToast();
 
   // Kept locally because re-showing an already-visible modal does not refresh its
-  // props, so this tab has to pull the entry back itself after it changes it.
+  // props, so this panel has to pull the entry back itself after it changes it.
   const [current, setCurrent] = useState(entry);
   const [values, setValues] = useState<Record<CountField, string>>({
     photoCount: toInput(entry.photoCount),
     selectedCount: toInput(entry.selectedCount),
     editedCount: toInput(entry.editedCount),
   });
+  // Numbers are read far more often than they are typed, so the inputs only
+  // appear on request; an always-open form made the card look half-finished.
+  const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
+  const resetValues = (source: PhotoEntryDetailsResponse) =>
+    setValues({
+      photoCount: toInput(source.photoCount),
+      selectedCount: toInput(source.selectedCount),
+      editedCount: toInput(source.editedCount),
+    });
+
   useEffect(() => {
     setCurrent(entry);
-    setValues({
-      photoCount: toInput(entry.photoCount),
-      selectedCount: toInput(entry.selectedCount),
-      editedCount: toInput(entry.editedCount),
-    });
+    resetValues(entry);
   }, [entry]);
 
   const reloadEntry = async () => {
     if (!photoEntryApi) return;
     const { data } = await photoEntryApi.photoEntryControllerGetById({ id: entry.id });
     setCurrent(data);
-    setValues({
-      photoCount: toInput(data.photoCount),
-      selectedCount: toInput(data.selectedCount),
-      editedCount: toInput(data.editedCount),
-    });
+    resetValues(data);
   };
 
   // Mirrors the backend's rule so the form refuses before the request does.
@@ -90,6 +98,7 @@ export const EntryProgressPanel = ({ entry, onChanged }: EntryProgressPanelProps
       });
       await reloadEntry();
       await onChanged?.();
+      setEditing(false);
       toast('Progress saved', 'success');
     } catch (e) {
       toast(getApiErrorMessage(e, 'Could not save the counts.'), 'error');
@@ -117,63 +126,110 @@ export const EntryProgressPanel = ({ entry, onChanged }: EntryProgressPanelProps
   const canRefresh =
     current.foldersCreated && (current.type === PhotoEntryType.General || current.type === PhotoEntryType.Work);
 
+  if (editing) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.fields}>
+          <CountInput
+            label='Frames'
+            hint='Everything shot. A RAW+JPEG pair is one frame.'
+            value={values.photoCount}
+            onChange={(v) => setValues((prev) => ({ ...prev, photoCount: v }))}
+          />
+          <CountInput
+            label='Selected'
+            hint='Exported to the selects folder.'
+            value={values.selectedCount}
+            onChange={(v) => setValues((prev) => ({ ...prev, selectedCount: v }))}
+          />
+          <CountInput
+            label='Edited'
+            hint='Finished frames.'
+            value={values.editedCount}
+            onChange={(v) => setValues((prev) => ({ ...prev, editedCount: v }))}
+          />
+        </div>
+
+        <span style={styles.hint}>Leave a field empty to record it as unknown — that is not the same as zero.</span>
+
+        {validationError ? <div style={styles.error}>{validationError}</div> : null}
+
+        <div style={styles.actions}>
+          <Button
+            label='Cancel'
+            variant='secondary'
+            style={NO_WRAP}
+            onClick={() => {
+              resetValues(current);
+              setEditing(false);
+            }}
+          />
+          <Button
+            label='Save counts'
+            style={NO_WRAP}
+            onClick={handleSave}
+            loading={saving}
+            disabled={Boolean(validationError)}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.container}>
-      <div style={styles.fields}>
-        <CountInput
-          label='Frames'
-          hint='Everything shot. A RAW+JPEG pair is one frame.'
-          value={values.photoCount}
-          onChange={(v) => setValues((prev) => ({ ...prev, photoCount: v }))}
-        />
-        <CountInput
-          label='Selected'
-          hint='Exported to the selects folder.'
-          value={values.selectedCount}
-          onChange={(v) => setValues((prev) => ({ ...prev, selectedCount: v }))}
-        />
-        <CountInput
-          label='Edited'
-          hint='Finished frames.'
-          value={values.editedCount}
-          onChange={(v) => setValues((prev) => ({ ...prev, editedCount: v }))}
-        />
+      <div style={styles.stats}>
+        <Stat label='Frames' value={show(current.photoCount)} />
+        <Stat label='Selected' value={show(current.selectedCount)} />
+        <Stat label='Edited' value={show(current.editedCount)} />
+        <Stat label='Left to edit' value={show(current.remainingToEdit)} accent />
       </div>
 
-      <span style={styles.hint}>Leave a field empty to record it as unknown — that is not the same as zero.</span>
+      <div style={styles.footer}>
+        <div style={styles.sourceRow}>
+          {current.countsSource ? (
+            <Badge
+              label={current.countsSource === PhotoEntryCountsSource.Scanned ? 'Counted from disk' : 'Reported'}
+              tone={current.countsSource === PhotoEntryCountsSource.Scanned ? 'blue' : 'neutral'}
+            />
+          ) : (
+            <span style={styles.hint}>No counts recorded yet</span>
+          )}
+          {current.countsUpdatedAt ? (
+            <span style={styles.hint}>Updated {new Date(current.countsUpdatedAt).toLocaleString()}</span>
+          ) : null}
+        </div>
 
-      {validationError ? <div style={styles.error}>{validationError}</div> : null}
-
-      {current.remainingToEdit != null ? (
-        <span style={styles.remaining}>{current.remainingToEdit} left to edit</span>
-      ) : null}
-
-      <div style={styles.actions}>
-        {canRefresh ? (
+        <div style={styles.actions}>
+          {canRefresh ? (
+            <Button
+              label='Count from folders'
+              variant='secondary'
+              style={NO_WRAP}
+              icon={<FiRefreshCw size={14} />}
+              onClick={handleRefresh}
+              loading={refreshing}
+            />
+          ) : null}
           <Button
-            label='Count from folders'
+            label='Edit counts'
             variant='secondary'
-            icon={<FiRefreshCw size={14} />}
-            onClick={handleRefresh}
-            loading={refreshing}
+            style={NO_WRAP}
+            icon={<FiEdit2 size={14} />}
+            onClick={() => setEditing(true)}
           />
-        ) : null}
-        <Button label='Save counts' onClick={handleSave} loading={saving} disabled={Boolean(validationError)} />
+        </div>
       </div>
+    </div>
+  );
+};
 
-      <div style={styles.sourceRow}>
-        {current.countsSource ? (
-          <Badge
-            label={current.countsSource === PhotoEntryCountsSource.Scanned ? 'Counted from disk' : 'Reported'}
-            tone={current.countsSource === PhotoEntryCountsSource.Scanned ? 'blue' : 'neutral'}
-          />
-        ) : (
-          <span style={styles.hint}>No counts recorded yet</span>
-        )}
-        {current.countsUpdatedAt ? (
-          <span style={styles.hint}>Updated {new Date(current.countsUpdatedAt).toLocaleString()}</span>
-        ) : null}
-      </div>
+const Stat = ({ label, value, accent }: { label: string; value: string; accent?: boolean }) => {
+  const styles = useStyles();
+  return (
+    <div style={styles.stat}>
+      <span style={accent ? styles.statValueAccent : styles.statValue}>{value}</span>
+      <span style={styles.statLabel}>{label}</span>
     </div>
   );
 };
@@ -213,6 +269,27 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.m,
     minWidth: 0,
   },
+  stats: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))',
+    gap: t.spacing.s,
+  },
+  stat: {
+    gap: 2,
+    padding: t.spacing.sm,
+    borderRadius: t.borderRadius.medium,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.55),
+  },
+  statValue: { fontSize: 24, fontWeight: 700, lineHeight: 1.1 },
+  statValueAccent: { fontSize: 24, fontWeight: 700, lineHeight: 1.1, color: t.colors.blue },
+  statLabel: { fontSize: 12, color: t.colors.dark05 },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: t.spacing.m,
+    flexWrap: 'wrap',
+  },
   fields: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(104px, 1fr))',
@@ -233,15 +310,11 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.white,
     outline: 'none',
     fontSize: 14,
+    minWidth: 0,
   },
   hint: {
     fontSize: 12,
     color: t.colors.dark05,
-  },
-  remaining: {
-    fontSize: 13,
-    fontWeight: 600,
-    color: t.colors.blue04,
   },
   error: {
     padding: t.spacing.s,
@@ -254,7 +327,8 @@ const useStyles = mkUseStyles((t) => ({
   actions: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: t.spacing.m,
+    gap: t.spacing.s,
+    flexWrap: 'wrap',
   },
   sourceRow: {
     flexDirection: 'row',
