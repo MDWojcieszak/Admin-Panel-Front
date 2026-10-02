@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import { FiEdit2, FiRefreshCw } from 'react-icons/fi';
 import { PhotoEntryCountsSource, PhotoEntryDetailsResponse, PhotoEntryType } from '~/api/api';
 import { Badge } from '~/components/Badge';
@@ -182,7 +183,7 @@ export const EntryProgressPanel = ({ entry, onChanged }: EntryProgressPanelProps
         <Stat label='Frames' value={show(current.photoCount)} />
         <Stat label='Selected' value={show(current.selectedCount)} />
         <Stat label='Edited' value={show(current.editedCount)} />
-        <Stat label='Left to edit' value={show(current.remainingToEdit)} accent />
+        <RemainingStat remaining={current.remainingToEdit} />
       </div>
 
       <div style={styles.footer}>
@@ -224,12 +225,71 @@ export const EntryProgressPanel = ({ entry, onChanged }: EntryProgressPanelProps
   );
 };
 
-const Stat = ({ label, value, accent }: { label: string; value: string; accent?: boolean }) => {
+const Stat = ({ label, value }: { label: string; value: string }) => {
   const styles = useStyles();
   return (
     <div style={styles.stat}>
-      <span style={accent ? styles.statValueAccent : styles.statValue}>{value}</span>
+      <span style={styles.statValue}>{value}</span>
       <span style={styles.statLabel}>{label}</span>
+    </div>
+  );
+};
+
+/**
+ * The one figure on this panel that is a verdict rather than a count, so it
+ * says so: outstanding work is amber, and reaching zero is marked as finished
+ * with a tick that draws itself. Unknown stays a neutral dash — it must not be
+ * mistaken for either.
+ */
+const RemainingStat = ({ remaining }: { remaining?: number | null }) => {
+  const styles = useStyles();
+
+  if (remaining == null) return <Stat label='Left to edit' value='—' />;
+
+  if (remaining === 0) {
+    return (
+      <div style={{ ...styles.stat, ...styles.statDone }}>
+        {/* Keyed so the tick redraws each time the count lands on zero. */}
+        <motion.svg
+          key='done'
+          width='28'
+          height='28'
+          viewBox='0 0 28 28'
+          fill='none'
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 420, damping: 18 }}
+        >
+          <motion.circle
+            cx='14'
+            cy='14'
+            r='12'
+            stroke='currentColor'
+            strokeWidth='2'
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+          />
+          <motion.path
+            d='M8.5 14.5l3.6 3.6 7.4-8'
+            stroke='currentColor'
+            strokeWidth='2.4'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.35, delay: 0.3, ease: 'easeOut' }}
+          />
+        </motion.svg>
+        <span style={styles.statLabelStrong}>All done</span>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ ...styles.stat, ...styles.statPending }}>
+      <span style={styles.statValue}>{formatAmount(remaining)}</span>
+      <span style={styles.statLabelStrong}>Left to edit</span>
     </div>
   );
 };
@@ -281,8 +341,18 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.55),
   },
   statValue: { fontSize: 24, fontWeight: 700, lineHeight: 1.1 },
-  statValueAccent: { fontSize: 24, fontWeight: 700, lineHeight: 1.1, color: t.colors.blue },
   statLabel: { fontSize: 12, color: t.colors.dark05 },
+  statLabelStrong: { fontSize: 12, fontWeight: 600 },
+  statPending: {
+    color: t.colors.yellow,
+    backgroundColor: t.colors.yellow + t.colorOpacity(0.1),
+    border: `1px solid ${t.colors.yellow + t.colorOpacity(0.3)}`,
+  },
+  statDone: {
+    color: t.colors.lightGreen,
+    backgroundColor: t.colors.lightGreen + t.colorOpacity(0.1),
+    border: `1px solid ${t.colors.lightGreen + t.colorOpacity(0.3)}`,
+  },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
