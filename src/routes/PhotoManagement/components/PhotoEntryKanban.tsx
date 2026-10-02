@@ -430,33 +430,9 @@ const useStyles = mkUseStyles((t) => ({
     fontWeight: '600',
     wordBreak: 'break-word',
   },
-  cardMetaRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: t.spacing.s,
-    alignItems: 'center',
-    marginTop: 2,
-    flexWrap: 'wrap',
-  },
   cardMeta: {
     color: colors.dark05,
     fontSize: 12,
-    wordBreak: 'break-word',
-  },
-  badge: {
-    fontSize: 11,
-    color: colors.white,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 999,
-    padding: `${t.spacing.xs}px ${t.spacing.s}px`,
-    display: 'inline-flex',
-    alignItems: 'center',
-  },
-  cardNote: {
-    color: colors.dark05,
-    fontSize: 12,
-    marginTop: t.spacing.xs,
-    lineHeight: 1.4,
     wordBreak: 'break-word',
   },
   cancelledStrip: {
