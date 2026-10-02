@@ -2,12 +2,18 @@ import { CSSProperties, useLayoutEffect, useMemo, useRef, useState } from 'react
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FieldValues, UseControllerProps, useController } from 'react-hook-form';
+import { IconType } from 'react-icons';
 import { FaChevronDown } from 'react-icons/fa6';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+
+/** Kept in sync with the left inset applied to the input when an icon is present. */
+const ICON_SIZE = 18;
 
 type Option = {
   label: string;
   value: string;
+  /** Shown on the list row and beside the selected value. Optional per option. */
+  icon?: IconType;
 };
 
 type SelectProps<T extends FieldValues> = {
@@ -52,6 +58,8 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
   const selectedOption = useMemo(() => {
     return p.options.find((option) => option.value === selectedValue) || p.options[0];
   }, [p.options, selectedValue]);
+
+  const SelectedIcon = selectedOption?.icon;
 
   const updateCoords = () => {
     const el = inputRef.current ?? containerRef.current;
@@ -100,16 +108,21 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
     setIsExtended(false);
   };
 
-  const renderOption = (option: Option) => (
-    <motion.li
-      key={option.value}
-      whileHover={{ backgroundColor: theme.colors.blue }}
-      style={styles.option}
-      onClick={() => handleSelect(option.value)}
-    >
-      {option.label}
-    </motion.li>
-  );
+  const renderOption = (option: Option) => {
+    const OptionIcon = option.icon;
+
+    return (
+      <motion.li
+        key={option.value}
+        whileHover={{ backgroundColor: theme.colors.blue }}
+        style={styles.option}
+        onClick={() => handleSelect(option.value)}
+      >
+        {OptionIcon ? <OptionIcon size={ICON_SIZE} color={theme.colors.blue04} /> : null}
+        <span style={styles.optionLabel}>{option.label}</span>
+      </motion.li>
+    );
+  };
 
   const renderDescription = error ? <>{error?.message}</> : p.description;
 
@@ -154,6 +167,19 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
         document.body,
       )}
 
+      {/* An icon cannot live inside an input, so it is overlaid on the value line
+          and the text is inset to clear it. Aligned the same way as the chevron. */}
+      {SelectedIcon ? (
+        <div
+          style={{
+            ...styles.valueIcon,
+            top: variant === 'secondary' ? theme.spacing.m : theme.spacing.l + 4,
+          }}
+        >
+          <SelectedIcon size={ICON_SIZE} color={theme.colors.blue04} />
+        </div>
+      ) : null}
+
       <input
         ref={inputRef}
         value={selectedOption?.label || ''}
@@ -161,6 +187,7 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
           ...styles.input,
           width: variant === 'secondary' ? '100%' : undefined,
           paddingTop: variant === 'secondary' ? theme.spacing.m : theme.spacing.l + 4,
+          paddingLeft: SelectedIcon ? theme.spacing.m + ICON_SIZE + theme.spacing.s : undefined,
         }}
         readOnly
         onClick={handlePress}
@@ -238,10 +265,27 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.white,
   },
   option: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
     padding: t.spacing.s,
     borderRadius: t.borderRadius.default,
     cursor: 'pointer',
     color: t.colors.white,
+  },
+  // Only what the icon row needs; wrapping is left as it was for every other select.
+  optionLabel: {
+    minWidth: 0,
+  },
+  valueIcon: {
+    position: 'absolute',
+    left: t.spacing.m,
+    height: 24,
+    display: 'flex',
+    alignItems: 'center',
+    pointerEvents: 'none',
+    zIndex: 2,
   },
   chevron: {
     position: 'absolute',
