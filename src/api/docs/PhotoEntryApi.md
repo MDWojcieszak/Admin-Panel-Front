@@ -435,7 +435,7 @@ const { status, data } = await apiInstance.photoEntryControllerCreateFolders(
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 
@@ -867,7 +867,7 @@ const { status, data } = await apiInstance.photoEntryControllerPatchProgress(
 
 ### Authorization
 
-No authorization required
+[bearer](../README.md#bearer)
 
 ### HTTP request headers
 

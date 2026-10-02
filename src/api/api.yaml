@@ -3579,6 +3579,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/PhotoEntryResponse'
       tags: *ref_40
+      security:
+        - bearer: []
   /photo-entry/{id}/create-folders:
     post:
       operationId: PhotoEntryController_createFolders
@@ -3596,6 +3598,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/PhotoEntryResponse'
       tags: *ref_40
+      security:
+        - bearer: []
   /photo-entry/{id}/mark-media-uploaded:
     post:
       operationId: PhotoEntryController_markMediaUploaded
