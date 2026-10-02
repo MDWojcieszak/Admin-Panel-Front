@@ -22,7 +22,7 @@ import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
 import { InlineImagePicker } from '~/routes/Galleries/components/InlineImagePicker';
 import { getApiErrorMessage } from '~/utils/apiError';
-import { GEAR_CATEGORY_GROUPS, OWNERSHIP_LABELS, gearCategoryLabel } from '~/utils/gearCategory';
+import { GEAR_CATEGORY_GROUPS, OWNERSHIP_LABELS, gearCategoryIcon, gearCategoryLabel } from '~/utils/gearCategory';
 import { mkUseStyles } from '~/utils/theme';
 
 type GearItemModalProps = {
@@ -33,11 +33,16 @@ type GearItemModalProps = {
   onSaved?: () => void | Promise<void>;
 } & Partial<InternalModalProps>;
 
-/** Flattened with the group as a prefix — Select takes a flat list, 39 values need the hint. */
+/**
+ * Flattened with the group as a prefix — Select takes a flat list, and 39 values
+ * need the hint. Each row carries its category icon, which is the same icon used
+ * wherever an item has no photo of its own.
+ */
 const CATEGORY_OPTIONS = GEAR_CATEGORY_GROUPS.flatMap((group) =>
   group.categories.map((category) => ({
     label: `${group.label} · ${gearCategoryLabel(category)}`,
     value: category,
+    icon: gearCategoryIcon(category),
   })),
 );
 

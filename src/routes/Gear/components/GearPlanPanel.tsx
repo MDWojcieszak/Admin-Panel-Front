@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { FiAlertTriangle, FiCalendar, FiExternalLink, FiPlus } from 'react-icons/fi';
+import { useForm } from 'react-hook-form';
+import { FiAlertTriangle, FiCalendar, FiExternalLink, FiFilter, FiPlus } from 'react-icons/fi';
 import {
   GearCategory,
   GearItemAdminResponse,
@@ -13,6 +14,7 @@ import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
 import { Scrollbar } from '~/components/Scrollbar';
+import { Select } from '~/components/Select';
 import { SegmentedTabs } from '~/components/SegmentedTabs';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
@@ -34,12 +36,22 @@ const OWNERSHIP_TABS = [
   { label: 'Retired', value: GearOwnership.Retired },
 ];
 
+/**
+ * The "all" row carries an icon too, so the selected value keeps the same left
+ * inset whichever row is picked instead of jumping when a category is chosen.
+ */
 const CATEGORY_OPTIONS = [
-  { label: 'All categories', value: '' },
+  { label: 'All categories', value: '', icon: FiFilter },
   ...GEAR_CATEGORY_GROUPS.flatMap((group) =>
-    group.categories.map((category) => ({ label: gearCategoryLabel(category), value: category as string })),
+    group.categories.map((category) => ({
+      label: gearCategoryLabel(category),
+      value: category as string,
+      icon: gearCategoryIcon(category),
+    })),
   ),
 ];
+
+type FilterFormValues = { category: string };
 
 const formatDate = (value?: string | null): string => {
   if (!value) return '—';
@@ -61,6 +73,9 @@ export const GearPlanPanel = ({ systems, onChanged }: GearPlanPanelProps) => {
   const [ownership, setOwnership] = useState<GearOwnership>(GearOwnership.Wishlist);
   const [category, setCategory] = useState<string>('');
   const [budgetWindow, setBudgetWindow] = useState(false);
+
+  // A form purely to drive the themed Select, as the photo library toolbar does.
+  const { control } = useForm<FilterFormValues>({ defaultValues: { category: '' } });
 
   const itemsQuery = useAsync<GearItemListResponse>(async () => {
     if (!gearApi) return undefined;
@@ -122,13 +137,16 @@ export const GearPlanPanel = ({ systems, onChanged }: GearPlanPanelProps) => {
           handleSelect={(value) => setOwnership(value as GearOwnership)}
         />
 
-        <select value={category} onChange={(e) => setCategory(e.target.value)} style={styles.select}>
-          {CATEGORY_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <div style={styles.categoryWrap}>
+          <Select<FilterFormValues>
+            name='category'
+            label='Category'
+            control={control}
+            variant='secondary'
+            options={CATEGORY_OPTIONS}
+            onValueChange={setCategory}
+          />
+        </div>
 
         {ownership === GearOwnership.Wishlist ? (
           <Button
@@ -241,14 +259,9 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.s,
     marginLeft: 'auto',
   },
-  select: {
-    padding: t.spacing.s,
-    borderRadius: t.borderRadius.default,
-    border: `1px solid ${t.colors.blue02 + t.colorOpacity(0.5)}`,
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
-    color: t.colors.white,
-    outline: 'none',
-    fontSize: 13,
+  categoryWrap: {
+    width: 230,
+    minWidth: 230,
   },
   scroll: {
     flex: 1,
