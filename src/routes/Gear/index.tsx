@@ -1,7 +1,7 @@
 import { DragEvent, useEffect, useRef, useState } from 'react';
 import { FiEdit2, FiImage, FiMove, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { MdCameraAlt } from 'react-icons/md';
-import { GearItemResponse, GearOverviewResponse, GearOwnership, GearSystemResponse } from '~/api/api';
+import { GearCategory, GearItemResponse, GearOverviewResponse, GearOwnership, GearSystemResponse } from '~/api/api';
 import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
 import { EmptyState } from '~/components/EmptyState';
@@ -17,6 +17,7 @@ import { GearPlanPanel } from '~/routes/Gear/components/GearPlanPanel';
 import { GearItemModal } from '~/routes/Gear/modals/GearItemModal';
 import { GearSystemModal } from '~/routes/Gear/modals/GearSystemModal';
 import { imgUrl } from '~/routes/Galleries/utils';
+import { gearCategoryIcon } from '~/utils/gearCategory';
 import { getApiErrorMessage, getApiErrorStatus } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -325,6 +326,12 @@ export const GearView = () => {
   );
 };
 
+/** Stands in for a missing photo by showing what kind of gear the item is. */
+const CategoryIcon = ({ category, size, color }: { category: GearCategory; size?: number; color?: string }) => {
+  const Icon = gearCategoryIcon(category);
+  return <Icon size={size} color={color} />;
+};
+
 type ItemsGridProps = {
   items: GearItemResponse[];
   emptyLabel: string;
@@ -388,7 +395,9 @@ const ItemsGrid = ({ items, emptyLabel, onEdit, onDelete, onToggleVisible, onReo
             {imgUrl(item.coverUrl) ? (
               <img src={imgUrl(item.coverUrl)} alt='' style={styles.itemThumbImg} loading='lazy' draggable={false} />
             ) : (
-              <FiImage size={18} color={theme.colors.dark05} />
+              // No photo of this copy: show what kind of thing it is rather than a
+              // generic picture placeholder, which said nothing about the item.
+              <CategoryIcon category={item.category} size={22} color={theme.colors.blue04} />
             )}
             <span style={styles.categoryChip}>{categoryLabel(item.category)}</span>
             {!item.visible ? <span style={styles.itemHiddenChip}>Hidden</span> : null}
