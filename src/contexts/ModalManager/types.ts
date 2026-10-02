@@ -8,6 +8,8 @@ export type InternalModalProps = {
   titleIcon?: React.ReactNode;
   titleColor?: keyof Theme['colors'];
   showHeader?: boolean;
+  /** `side` docks the modal to the right edge at full height; anything else is the centred dialog. */
+  type?: ModalTypes;
   handleShow?: F0<Promise<void>>;
   handleClose?: F0<Promise<void>>;
   resolveShow?: F0;
@@ -16,7 +18,7 @@ export type InternalModalProps = {
 
 export type ModalProps<T extends VFC> = ComponentProps<T> & Partial<InternalModalProps>;
 
-export type ModalTypes = 'bottom' | 'center' | 'custom';
+export type ModalTypes = 'bottom' | 'center' | 'custom' | 'side';
 
 export type ModalConfig = {
   type?: ModalTypes;
