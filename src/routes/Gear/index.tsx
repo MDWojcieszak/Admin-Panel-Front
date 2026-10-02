@@ -1,5 +1,5 @@
 import { DragEvent, useEffect, useRef, useState } from 'react';
-import { FiEdit2, FiImage, FiLayers, FiMove, FiPlus, FiShoppingCart, FiTrash2 } from 'react-icons/fi';
+import { FiImage, FiLayers, FiMove, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import { MdCameraAlt } from 'react-icons/md';
 import {
   GearCategory,
@@ -13,21 +13,22 @@ import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
-import { Switch } from '~/components/Switch';
+import { Scrollbar } from '~/components/Scrollbar';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
+import { GearCategoryChip } from '~/routes/Gear/components/GearCategoryChip';
+import { GearItemDetailsModal } from '~/routes/Gear/modals/GearItemDetailsModal';
 import { GearItemModal } from '~/routes/Gear/modals/GearItemModal';
 import { GearKitsModal } from '~/routes/Gear/modals/GearKitsModal';
 import { GearShoppingModal } from '~/routes/Gear/modals/GearShoppingModal';
+import { GearSystemDetailsModal } from '~/routes/Gear/modals/GearSystemDetailsModal';
 import { GearSystemModal } from '~/routes/Gear/modals/GearSystemModal';
 import { imgUrl } from '~/routes/Galleries/utils';
-import { gearCategoryIcon } from '~/utils/gearCategory';
+import { gearCategoryColor, gearCategoryIcon, gearCategoryLabel } from '~/utils/gearCategory';
 import { getApiErrorMessage, getApiErrorStatus } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
-
-const categoryLabel = (c: string) => c.charAt(0) + c.slice(1).toLowerCase();
 
 export const GearView = () => {
   const styles = useStyles();
@@ -85,13 +86,16 @@ export const GearView = () => {
   const confirmModal = useModal('gear-confirm', ConfirmModal, { title: 'Delete' });
   const shoppingModal = useModal('gear-shopping', GearShoppingModal, { title: 'Shopping list' });
   const kitsModal = useModal('gear-kits', GearKitsModal, { title: 'Kits' });
+  const itemDetailsModal = useModal('gear-item-details', GearItemDetailsModal, { title: 'Gear item' });
+  const systemDetailsModal = useModal('gear-system-details', GearSystemDetailsModal, { title: 'System' });
 
   const openCreateSystem = () => systemModal.show({ onSaved: reload });
   const openEditSystem = (system: GearSystemResponse) => systemModal.show({ system, onSaved: reload });
   const openCreateItem = (defaultSystemId?: string) =>
     itemModal.show({ systems: systemsRef.current, defaultSystemId, onSaved: reload });
+  // The admin record when it is loaded, so the form opens with the planning fields filled in.
   const openEditItem = (item: GearItemResponse) =>
-    itemModal.show({ item, systems: systemsRef.current, onSaved: reload });
+    itemModal.show({ item: details?.get(item.id) ?? item, systems: systemsRef.current, onSaved: reload });
 
   const deleteSystem = (system: GearSystemResponse) =>
     confirmModal.show({
@@ -106,7 +110,7 @@ export const GearView = () => {
         try {
           await gearApi.gearControllerRemoveSystem({ id: system.id });
           toast('System deleted', 'success');
-          await gearQuery.reload();
+          await reload();
         } catch (e) {
           toast(getApiErrorMessage(e, 'Could not delete the system.'), 'error');
         }
@@ -124,7 +128,7 @@ export const GearView = () => {
         try {
           await gearApi.gearControllerUpdate({ id: item.id, updateGearDto: { ownership: GearOwnership.Retired } });
           toast('Moved to retired', 'success');
-          await gearQuery.reload();
+          await reload();
         } catch (e) {
           toast(getApiErrorMessage(e, 'Could not retire the gear item.'), 'error');
           throw e;
@@ -142,7 +146,7 @@ export const GearView = () => {
         try {
           await gearApi.gearControllerRemove({ id: item.id });
           toast('Gear deleted', 'success');
-          await gearQuery.reload();
+          await reload();
         } catch (e) {
           // 409 means the item has usage history, which deleting would erase.
           // Offer the thing the user actually wants instead of just refusing.
@@ -156,26 +160,44 @@ export const GearView = () => {
       },
     });
 
-  const toggleSystemVisible = async (system: GearSystemResponse) => {
-    if (!gearApi) return;
-    setSystemsLocal(systemsRef.current.map((s) => (s.id === system.id ? { ...s, visible: !s.visible } : s)));
-    try {
-      await gearApi.gearControllerUpdateSystem({ id: system.id, updateGearSystemDto: { visible: !system.visible } });
-    } catch (e) {
-      toast(getApiErrorMessage(e, 'Could not update visibility.'), 'error');
-      await gearQuery.reload();
-    }
-  };
+  /**
+   * Only one modal can be visible at a time, so every action that leads out of
+   * a details dialog closes it first. `hide()` is deliberately not awaited: its
+   * promise is only settled by a callback the Modal never fires.
+   */
+  const openItemDetails = (item: GearItemResponse) =>
+    itemDetailsModal.show({
+      item,
+      detail: details?.get(item.id),
+      systemName: systemsRef.current.find((system) => system.id === item.systemId)?.name,
+      onChanged: reload,
+      onEdit: (target: GearItemResponse) => {
+        itemDetailsModal.hide();
+        openEditItem(target);
+      },
+      onDelete: (target: GearItemResponse) => {
+        itemDetailsModal.hide();
+        deleteItem(target);
+      },
+    });
 
-  const toggleItemVisible = async (item: GearItemResponse) => {
-    if (!gearApi) return;
-    try {
-      await gearApi.gearControllerUpdate({ id: item.id, updateGearDto: { visible: !item.visible } });
-      await gearQuery.reload();
-    } catch (e) {
-      toast(getApiErrorMessage(e, 'Could not update visibility.'), 'error');
-    }
-  };
+  const openSystemDetails = (system: GearSystemResponse) =>
+    systemDetailsModal.show({
+      system,
+      onChanged: reload,
+      onEdit: (target: GearSystemResponse) => {
+        systemDetailsModal.hide();
+        openEditSystem(target);
+      },
+      onDelete: (target: GearSystemResponse) => {
+        systemDetailsModal.hide();
+        deleteSystem(target);
+      },
+      onAddItem: (target: GearSystemResponse) => {
+        systemDetailsModal.hide();
+        openCreateItem(target.id);
+      },
+    });
 
   const reorderSystems = (from: number, to: number) => {
     const next = [...systemsRef.current];
@@ -215,13 +237,16 @@ export const GearView = () => {
   const isEmpty = !gearQuery.loading && systems.length === 0 && ungrouped.length === 0;
 
   return (
-    <div style={styles.scroll}>
+    <Scrollbar style={styles.scroll}>
+      {/* Padded on the right so the blocks stop short of the scrollbar track
+          instead of running underneath it. */}
       <div style={styles.content}>
         <div style={styles.header}>
           <div style={styles.titleWrap}>
             <h2 style={styles.heading}>My gear</h2>
             <span style={styles.subheading}>
-              One inventory, shared by session packing lists, the public “Gear” page and the blog.
+              One inventory, shared by session packing lists, the public “Gear” page and the blog. Click anything for
+              its details.
             </span>
           </div>
           <div style={styles.headerActions}>
@@ -229,7 +254,7 @@ export const GearView = () => {
               label={wishlistCount ? `To buy · ${wishlistCount}` : 'To buy'}
               variant='secondary'
               icon={<FiShoppingCart size={14} />}
-              onClick={() => shoppingModal.show({ onEdit: openEditItem })}
+              onClick={() => shoppingModal.show()}
             />
             <Button label='Kits' variant='secondary' icon={<FiLayers size={14} />} onClick={() => kitsModal.show()} />
             <Button label='Add system' variant='secondary' icon={<FiPlus size={14} />} onClick={openCreateSystem} />
@@ -261,19 +286,36 @@ export const GearView = () => {
                 }}
               >
                 <div style={styles.blockHeader}>
-                  <div style={styles.systemMeta}>
-                    <div
-                      style={styles.grip}
-                      title='Drag to reorder systems'
-                      draggable
-                      onDragStart={() => (sysDrag.current = i)}
-                      onDragEnd={() => {
-                        sysDrag.current = null;
-                        persistSystemOrder();
-                      }}
-                    >
-                      <FiMove size={14} />
-                    </div>
+                  <div
+                    style={styles.grip}
+                    title='Drag to reorder systems'
+                    draggable
+                    onDragStart={(e: DragEvent) => {
+                      // Firefox will not start a drag that carries no data.
+                      e.dataTransfer.setData('text/plain', system.id);
+                      e.dataTransfer.effectAllowed = 'move';
+                      sysDrag.current = i;
+                    }}
+                    onDragEnd={() => {
+                      sysDrag.current = null;
+                      persistSystemOrder();
+                    }}
+                  >
+                    <FiMove size={14} />
+                  </div>
+
+                  <div
+                    role='button'
+                    tabIndex={0}
+                    style={styles.systemMeta}
+                    title='System details'
+                    onClick={() => openSystemDetails(system)}
+                    onKeyDown={(e) => {
+                      if (e.key !== 'Enter' && e.key !== ' ') return;
+                      e.preventDefault();
+                      openSystemDetails(system);
+                    }}
+                  >
                     <div style={styles.systemThumb}>
                       {imgUrl(system.coverUrl) ? (
                         <img src={imgUrl(system.coverUrl)} alt='' style={styles.systemThumbImg} loading='lazy' />
@@ -286,31 +328,22 @@ export const GearView = () => {
                         <span style={styles.blockTitle}>{system.name}</span>
                         {system.label ? <span style={styles.systemLabel}>{system.label}</span> : null}
                         {!system.visible ? <span style={styles.hiddenChip}>Hidden</span> : null}
+                        <span style={styles.count}>{system.items.length}</span>
                       </div>
                       {system.description ? <span style={styles.systemDesc}>{system.description}</span> : null}
                     </div>
                   </div>
-                  <div style={styles.blockActions}>
-                    <Switch checked={system.visible} onChange={() => toggleSystemVisible(system)} />
-                    <button style={styles.iconBtn} title='Add item to system' onClick={() => openCreateItem(system.id)}>
-                      <FiPlus size={15} />
-                    </button>
-                    <button style={styles.iconBtn} title='Edit system' onClick={() => openEditSystem(system)}>
-                      <FiEdit2 size={15} />
-                    </button>
-                    <button style={styles.iconBtnDanger} title='Delete system' onClick={() => deleteSystem(system)}>
-                      <FiTrash2 size={15} />
-                    </button>
-                  </div>
+
+                  <button style={styles.iconBtn} title='Add item to system' onClick={() => openCreateItem(system.id)}>
+                    <FiPlus size={15} />
+                  </button>
                 </div>
 
                 <ItemsGrid
                   details={details}
                   items={system.items}
                   emptyLabel='No items in this system yet.'
-                  onEdit={openEditItem}
-                  onDelete={deleteItem}
-                  onToggleVisible={toggleItemVisible}
+                  onOpen={openItemDetails}
                   onReorder={persistItemOrder}
                 />
               </div>
@@ -325,9 +358,7 @@ export const GearView = () => {
                   details={details}
                   items={ungrouped}
                   emptyLabel='No standalone items.'
-                  onEdit={openEditItem}
-                  onDelete={deleteItem}
-                  onToggleVisible={toggleItemVisible}
+                  onOpen={openItemDetails}
                   onReorder={persistItemOrder}
                 />
               </div>
@@ -335,14 +366,8 @@ export const GearView = () => {
           </>
         )}
       </div>
-    </div>
+    </Scrollbar>
   );
-};
-
-/** Stands in for a missing photo by showing what kind of gear the item is. */
-const CategoryIcon = ({ category, size, color }: { category: GearCategory; size?: number; color?: string }) => {
-  const Icon = gearCategoryIcon(category);
-  return <Icon size={size} color={color} />;
 };
 
 type ItemsGridProps = {
@@ -350,18 +375,19 @@ type ItemsGridProps = {
   /** Planning fields joined in from the flat admin list, keyed by item id. */
   details?: Map<string, GearItemAdminResponse>;
   emptyLabel: string;
-  onEdit: (item: GearItemResponse) => void;
-  onDelete: (item: GearItemResponse) => void;
-  onToggleVisible: (item: GearItemResponse) => void;
+  onOpen: (item: GearItemResponse) => void;
   onReorder: (ids: string[]) => void;
 };
 
-const ItemsGrid = ({ items, details, emptyLabel, onEdit, onDelete, onToggleVisible, onReorder }: ItemsGridProps) => {
+const ItemsGrid = ({ items, details, emptyLabel, onOpen, onReorder }: ItemsGridProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const [local, setLocal] = useState<GearItemResponse[]>(items);
   const localRef = useRef<GearItemResponse[]>(items);
   const drag = useRef<number | null>(null);
+  const orderBefore = useRef<string>('');
+  // Drives the dimming of tiles the dragged one cannot trade places with.
+  const [dragCategory, setDragCategory] = useState<GearCategory | null>(null);
 
   useEffect(() => {
     localRef.current = items;
@@ -389,84 +415,115 @@ const ItemsGrid = ({ items, details, emptyLabel, onEdit, onDelete, onToggleVisib
         // Anything not actually owned reads as unavailable rather than being
         // hidden, so the wishlist stays visible next to what it belongs with.
         const owned = item.ownership === GearOwnership.Owned;
+        const Icon = gearCategoryIcon(item.category);
+        // The backend sorts items by category before their saved order, so a
+        // position only sticks among items of the same category. Dropping on
+        // anything else would be written and then silently undone by the reply,
+        // which is exactly what made ordering look broken — so it is refused
+        // here, visibly, instead.
+        const blocked = dragCategory !== null && dragCategory !== item.category;
+
+        const meta = detail
+          ? [
+              detail.estimatedPrice != null ? `${detail.estimatedPrice}` : null,
+              detail.neededBy ? needLabel(item.ownership, detail.neededBy) : null,
+              detail.acquiredAt && owned ? `since ${formatShort(detail.acquiredAt)}` : null,
+            ]
+              .filter(Boolean)
+              .join(' · ')
+          : '';
 
         return (
-        <div
-          key={item.id}
-          style={{ ...styles.itemTile, opacity: owned ? 1 : 0.6 }}
-          draggable
-          onDragStart={(e: DragEvent) => {
-            e.stopPropagation();
-            drag.current = i;
-          }}
-          onDragOver={(e: DragEvent) => {
-            e.stopPropagation();
-            if (drag.current === null || drag.current === i) return;
-            e.preventDefault();
-            reorder(drag.current, i);
-            drag.current = i;
-          }}
-          onDragEnd={(e: DragEvent) => {
-            e.stopPropagation();
-            drag.current = null;
-            onReorder(localRef.current.map((x) => x.id));
-          }}
-        >
-          <div style={styles.itemThumb}>
-            {imgUrl(item.coverUrl) ? (
-              <img src={imgUrl(item.coverUrl)} alt='' style={styles.itemThumbImg} loading='lazy' draggable={false} />
-            ) : (
-              // No photo of this copy: show what kind of thing it is rather than a
-              // generic picture placeholder, which said nothing about the item.
-              <CategoryIcon category={item.category} size={22} color={theme.colors.blue04} />
-            )}
-            <span style={styles.categoryChip}>{categoryLabel(item.category)}</span>
-            {!item.visible ? <span style={styles.itemHiddenChip}>Hidden</span> : null}
-            {owned ? null : (
-              <span style={item.ownership === GearOwnership.Wishlist ? styles.wishlistChip : styles.retiredChip}>
-                {item.ownership === GearOwnership.Wishlist ? 'Don’t have it' : 'Retired'}
-              </span>
-            )}
-          </div>
-          <div style={styles.itemInfo}>
-            <span style={styles.itemBrand}>{item.brand}</span>
-            <span style={styles.itemModel} title={item.model}>
-              {item.model}
-            </span>
+          <div
+            key={item.id}
+            data-gear-tile
+            role='button'
+            tabIndex={0}
+            style={{ ...styles.itemTile, opacity: blocked ? 0.25 : owned ? 1 : 0.6 }}
+            onClick={() => onOpen(item)}
+            onKeyDown={(e) => {
+              if (e.key !== 'Enter' && e.key !== ' ') return;
+              e.preventDefault();
+              onOpen(item);
+            }}
+            onDragOver={(e: DragEvent) => {
+              if (drag.current === null) return;
+              e.stopPropagation();
+              if (blocked) return;
+              // Accepted even over the dragged tile itself, so releasing there
+              // is a drop rather than a cancelled drag.
+              e.preventDefault();
+              if (drag.current === i) return;
+              reorder(drag.current, i);
+              drag.current = i;
+            }}
+          >
+            <div style={styles.itemThumb}>
+              {imgUrl(item.coverUrl) ? (
+                <img src={imgUrl(item.coverUrl)} alt='' style={styles.itemThumbImg} loading='lazy' draggable={false} />
+              ) : (
+                // No photo of this copy: show what kind of thing it is rather than a
+                // generic picture placeholder, which said nothing about the item.
+                <Icon size={26} color={theme.colors[gearCategoryColor(item.category)]} />
+              )}
 
-            {/* Planning detail, only where there is something to say. */}
-            {detail ? (
-              <span style={styles.itemMeta}>
-                {[
-                  detail.estimatedPrice != null ? `${detail.estimatedPrice}` : null,
-                  detail.neededBy ? needLabel(item.ownership, detail.neededBy) : null,
-                  detail.acquiredAt && owned ? `since ${formatShort(detail.acquiredAt)}` : null,
-                ]
-                  .filter(Boolean)
-                  .join(' · ') || ' '}
-              </span>
-            ) : null}
+              <GearCategoryChip category={item.category} style={styles.categoryChip} />
 
-            {detail?.neededFor ? (
-              <span style={styles.itemMeta} title={detail.neededFor.name}>
-                for {detail.neededFor.name}
-              </span>
-            ) : null}
+              {/* The only draggable part. With the whole tile draggable, a click
+                  that moved a pixel became a drag and opening details was a gamble. */}
+              <div
+                style={styles.itemGrip}
+                title={`Drag to reorder among ${gearCategoryLabel(item.category).toLowerCase()} items`}
+                draggable
+                onClick={(e) => e.stopPropagation()}
+                onDragStart={(e: DragEvent) => {
+                  e.stopPropagation();
+                  // Firefox will not start a drag that carries no data.
+                  e.dataTransfer.setData('text/plain', item.id);
+                  e.dataTransfer.effectAllowed = 'move';
+                  const tile = (e.currentTarget as HTMLElement).closest('[data-gear-tile]');
+                  if (tile) e.dataTransfer.setDragImage(tile, 24, 24);
+                  drag.current = i;
+                  orderBefore.current = localRef.current.map((x) => x.id).join();
+                  setDragCategory(item.category);
+                }}
+                onDragEnd={(e: DragEvent) => {
+                  e.stopPropagation();
+                  drag.current = null;
+                  setDragCategory(null);
+                  const ids = localRef.current.map((x) => x.id);
+                  if (ids.join() !== orderBefore.current) onReorder(ids);
+                }}
+              >
+                <FiMove size={12} />
+              </div>
 
-            {detail?.missedFor.length ? <span style={styles.itemMissed}>a trip went without it</span> : null}
-          </div>
-          <div style={styles.itemActions}>
-            <Switch checked={item.visible} onChange={() => onToggleVisible(item)} />
-            <div style={styles.itemActionsRight}>
-              <button style={styles.iconBtn} title='Edit' onClick={() => onEdit(item)}>
-                <FiEdit2 size={14} />
-              </button>
-              <button style={styles.iconBtnDanger} title='Delete' onClick={() => onDelete(item)}>
-                <FiTrash2 size={14} />
-              </button>
+              {owned ? null : (
+                <span style={item.ownership === GearOwnership.Wishlist ? styles.wishlistChip : styles.retiredChip}>
+                  {item.ownership === GearOwnership.Wishlist ? 'Don’t have it' : 'Retired'}
+                </span>
+              )}
+              {!item.visible ? <span style={styles.itemHiddenChip}>Hidden</span> : null}
+            </div>
+
+            <div style={styles.itemInfo}>
+              <span style={styles.itemBrand}>{item.brand}</span>
+              <span style={styles.itemModel} title={item.model}>
+                {item.model}
+              </span>
+
+              {/* Planning detail, only where there is something to say. */}
+              {meta ? <span style={styles.itemMeta}>{meta}</span> : null}
+
+              {detail?.neededFor ? (
+                <span style={styles.itemMeta} title={detail.neededFor.name}>
+                  for {detail.neededFor.name}
+                </span>
+              ) : null}
+
+              {detail?.missedFor.length ? <span style={styles.itemMissed}>a trip went without it</span> : null}
             </div>
           </div>
-        </div>
         );
       })}
     </div>
@@ -483,14 +540,22 @@ const formatShort = (value?: string | null): string => {
 const needLabel = (ownership: GearOwnership, neededBy: string): string =>
   ownership === GearOwnership.Wishlist ? `buy by ${formatShort(neededBy)}` : `next ${formatShort(neededBy)}`;
 
+const chip = {
+  position: 'absolute',
+  fontSize: 10,
+  fontWeight: 700,
+  padding: '2px 7px',
+  borderRadius: 999,
+} as const;
+
 const useStyles = mkUseStyles((t) => ({
-  scroll: { height: '100%', minHeight: 0, width: '100%', overflowY: 'auto' },
-  content: { gap: t.spacing.l, paddingBottom: t.spacing.m },
+  scroll: { height: '100%', width: '100%' },
+  content: { gap: t.spacing.l, paddingRight: t.spacing.l, paddingBottom: t.spacing.m },
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: t.spacing.m },
   titleWrap: { gap: 2, minWidth: 0 },
   heading: { fontSize: 22, fontWeight: 700 },
   subheading: { fontSize: 13, color: t.colors.dark05, maxWidth: 620 },
-  headerActions: { flexDirection: 'row', gap: t.spacing.s, flexWrap: 'wrap' },
+  headerActions: { flexDirection: 'row', gap: t.spacing.s, flexWrap: 'wrap', justifyContent: 'flex-end' },
   block: {
     gap: t.spacing.m,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
@@ -501,11 +566,16 @@ const useStyles = mkUseStyles((t) => ({
   blockHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: t.spacing.m,
-    flexWrap: 'wrap',
+    gap: t.spacing.s,
   },
-  systemMeta: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, minWidth: 0, flex: 1 },
+  systemMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    minWidth: 0,
+    flex: 1,
+    cursor: 'pointer',
+  },
   grip: {
     width: 26,
     height: 26,
@@ -531,6 +601,13 @@ const useStyles = mkUseStyles((t) => ({
   systemTitleWrap: { gap: 2, minWidth: 0 },
   systemTitleRow: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap' },
   blockTitle: { fontWeight: 700, fontSize: 16 },
+  count: {
+    fontSize: 11,
+    color: t.colors.dark05,
+    backgroundColor: t.colors.gray01 + t.colorOpacity(0.5),
+    padding: '2px 8px',
+    borderRadius: 999,
+  },
   systemLabel: {
     fontSize: 11,
     fontWeight: 700,
@@ -555,7 +632,6 @@ const useStyles = mkUseStyles((t) => ({
     textOverflow: 'ellipsis',
     maxWidth: 420,
   },
-  blockActions: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
   iconBtn: {
     width: 30,
     height: 30,
@@ -568,89 +644,69 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.white,
     backgroundColor: t.colors.gray01 + t.colorOpacity(0.6),
   },
-  iconBtnDanger: {
-    width: 30,
-    height: 30,
-    minWidth: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: t.borderRadius.default,
-    border: 0,
-    cursor: 'pointer',
-    color: t.colors.red,
-    backgroundColor: t.colors.red + t.colorOpacity(0.14),
-  },
   emptyLabel: { fontSize: 13, color: t.colors.dark05 },
   itemsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-    gap: t.spacing.m,
+    gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+    gap: t.spacing.sm,
   },
   itemTile: {
     borderRadius: t.borderRadius.large,
     overflow: 'hidden',
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.5),
     border: `1px solid ${t.colors.gray01 + t.colorOpacity(0.5)}`,
-    cursor: 'grab',
+    cursor: 'pointer',
+    transition: 'opacity 0.15s ease',
   },
   itemThumb: {
     position: 'relative',
     width: '100%',
-    aspectRatio: '4 / 3',
+    aspectRatio: '16 / 10',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
   },
   itemThumbImg: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
-  categoryChip: {
-    position: 'absolute',
-    top: 6,
-    left: 6,
-    fontSize: 10,
-    fontWeight: 700,
-    letterSpacing: 0.3,
-    color: t.colors.white,
-    backgroundColor: t.colors.gray05 + t.colorOpacity(0.72),
-    padding: '2px 7px',
-    borderRadius: 999,
-  },
-  itemHiddenChip: {
+  categoryChip: { position: 'absolute', top: 6, left: 6 },
+  itemGrip: {
     position: 'absolute',
     top: 6,
     right: 6,
-    fontSize: 10,
-    fontWeight: 700,
-    color: t.colors.yellow,
+    width: 22,
+    height: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: t.borderRadius.default,
+    cursor: 'grab',
+    color: t.colors.white,
     backgroundColor: t.colors.gray05 + t.colorOpacity(0.72),
-    padding: '2px 7px',
-    borderRadius: 999,
+  },
+  itemHiddenChip: {
+    ...chip,
+    bottom: 6,
+    right: 6,
+    color: t.colors.yellow,
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.78),
   },
   wishlistChip: {
-    position: 'absolute',
+    ...chip,
     bottom: 6,
     left: 6,
-    fontSize: 10,
-    fontWeight: 700,
     color: t.colors.yellow,
     backgroundColor: t.colors.gray05 + t.colorOpacity(0.78),
     border: `1px solid ${t.colors.yellow + t.colorOpacity(0.35)}`,
-    padding: '2px 7px',
-    borderRadius: 999,
   },
   retiredChip: {
-    position: 'absolute',
+    ...chip,
     bottom: 6,
     left: 6,
-    fontSize: 10,
-    fontWeight: 700,
     color: t.colors.dark05,
     backgroundColor: t.colors.gray05 + t.colorOpacity(0.78),
     border: `1px solid ${t.colors.dark04 + t.colorOpacity(0.45)}`,
-    padding: '2px 7px',
-    borderRadius: 999,
   },
   itemInfo: { gap: 1, padding: t.spacing.s, minWidth: 0 },
   itemBrand: { fontSize: 12, color: t.colors.dark05 },
+  itemModel: { fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
   itemMeta: {
     fontSize: 11,
     color: t.colors.dark05,
@@ -659,14 +715,4 @@ const useStyles = mkUseStyles((t) => ({
     textOverflow: 'ellipsis',
   },
   itemMissed: { fontSize: 11, color: t.colors.yellow },
-  itemModel: { fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
-  itemActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: t.spacing.s,
-    padding: t.spacing.s,
-    paddingTop: 0,
-  },
-  itemActionsRight: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
 }));

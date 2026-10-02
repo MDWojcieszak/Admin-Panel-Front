@@ -12,9 +12,7 @@ import { useAsync } from '~/hooks/useAsync';
 import { gearCategoryIcon, gearCategoryLabel, gearItemLabel } from '~/utils/gearCategory';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
-type GearShoppingModalProps = {
-  onEdit?: (item: GearItemAdminResponse) => void;
-} & Partial<InternalModalProps>;
+type GearShoppingModalProps = Partial<InternalModalProps>;
 
 const formatDate = (value?: string | null): string => {
   if (!value) return '—';
@@ -32,7 +30,8 @@ const daysUntil = (value?: string | null): number | null => {
 /**
  * "What do I need to buy, and by when." Deliberately a modal rather than a tab:
  * it answers a question you ask occasionally, and as a tab it competed with the
- * inventory you actually work in.
+ * inventory you actually work in. Read-only on purpose — it is a summary, and
+ * changing an item belongs to that item's own details.
  */
 export const GearShoppingModal = (p: GearShoppingModalProps) => {
   const styles = useStyles();
@@ -88,12 +87,12 @@ export const GearShoppingModal = (p: GearShoppingModalProps) => {
           <div style={styles.list}>
             {dated.length ? <span style={styles.sectionLabel}>Has a deadline</span> : null}
             {dated.map((item) => (
-              <Row key={item.id} item={item} onEdit={p.onEdit} theme={theme} />
+              <Row key={item.id} item={item} theme={theme} />
             ))}
 
             {undated.length ? <span style={styles.sectionLabel}>No trip needs it yet</span> : null}
             {undated.map((item) => (
-              <Row key={item.id} item={item} onEdit={p.onEdit} theme={theme} />
+              <Row key={item.id} item={item} theme={theme} />
             ))}
           </div>
         </Scrollbar>
@@ -108,11 +107,10 @@ export const GearShoppingModal = (p: GearShoppingModalProps) => {
 
 type RowProps = {
   item: GearItemAdminResponse;
-  onEdit?: (item: GearItemAdminResponse) => void;
   theme: ReturnType<typeof useTheme>;
 };
 
-const Row = ({ item, onEdit, theme }: RowProps) => {
+const Row = ({ item, theme }: RowProps) => {
   const styles = useStyles();
   const Icon = gearCategoryIcon(item.category);
   const left = daysUntil(item.neededBy);
@@ -139,8 +137,8 @@ const Row = ({ item, onEdit, theme }: RowProps) => {
 
         {item.missedFor.length ? (
           <span style={styles.missed}>
-            <FiAlertTriangle size={11} /> {item.missedFor.map((entry) => entry.name).join(', ')} went without it —
-            still needed?
+            <FiAlertTriangle size={11} /> {item.missedFor.map((entry) => entry.name).join(', ')} went without it — still
+            needed?
           </span>
         ) : null}
       </div>
@@ -150,8 +148,6 @@ const Row = ({ item, onEdit, theme }: RowProps) => {
           <FiExternalLink size={13} /> Shop
         </a>
       ) : null}
-
-      {onEdit ? <Button label='Edit' variant='secondary' onClick={() => onEdit(item)} /> : null}
     </div>
   );
 };
