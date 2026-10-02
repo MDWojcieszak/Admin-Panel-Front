@@ -519,14 +519,15 @@ const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps)
               <Toggle label='Packed' checked={item.packed} onChange={(v) => onPatch(item.gear.id, { packed: v })} />
             ) : null}
 
-            <Toggle
-              label='Used'
-              checked={item.used}
-              disabled={!canMarkUsed}
-              onChange={(v) => onPatch(item.gear.id, { used: v })}
-            />
+            {/* Shown only where it can be set: before the shoot, or for something
+                still on the wishlist, a dead control just adds noise. */}
+            {canMarkUsed ? (
+              <Toggle label='Used' checked={item.used} onChange={(v) => onPatch(item.gear.id, { used: v })} />
+            ) : null}
 
-            {phase === EntryGearPhase.Secure ? (
+            {/* Only gear that holds material has anything to secure. A lens gets
+                no control at all rather than one that is permanently greyed out. */}
+            {phase === EntryGearPhase.Secure && holdsMedia(item.gear.mediaSource) ? (
               <Toggle
                 label='Secured'
                 checked={item.secured}
