@@ -1,23 +1,34 @@
 import { DragEvent, useEffect, useRef, useState } from 'react';
 import { FiEdit2, FiImage, FiMove, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { MdCameraAlt } from 'react-icons/md';
-import { GearItemResponse, GearOverviewResponse, GearSystemResponse } from '~/api/api';
+import { GearItemResponse, GearOverviewResponse, GearOwnership, GearSystemResponse } from '~/api/api';
 import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
+import { SegmentedTabs } from '~/components/SegmentedTabs';
 import { Switch } from '~/components/Switch';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
+import { GearKitsPanel } from '~/routes/Galleries/components/GearKitsPanel';
+import { GearPlanPanel } from '~/routes/Galleries/components/GearPlanPanel';
 import { GearItemModal } from '~/routes/Galleries/modals/GearItemModal';
 import { GearSystemModal } from '~/routes/Galleries/modals/GearSystemModal';
 import { imgUrl } from '~/routes/Galleries/utils';
-import { getApiErrorMessage } from '~/utils/apiError';
+import { getApiErrorMessage, getApiErrorStatus } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 const categoryLabel = (c: string) => c.charAt(0) + c.slice(1).toLowerCase();
+
+type GearTab = 'portfolio' | 'plan' | 'kits';
+
+const GEAR_TABS: { label: string; value: GearTab }[] = [
+  { label: 'Portfolio', value: 'portfolio' },
+  { label: 'Plan', value: 'plan' },
+  { label: 'Kits', value: 'kits' },
+];
 
 export const GearView = () => {
   const styles = useStyles();
@@ -36,6 +47,7 @@ export const GearView = () => {
   const systemsRef = useRef<GearSystemResponse[]>([]);
   const sysDrag = useRef<number | null>(null);
   const [ungrouped, setUngrouped] = useState<GearItemResponse[]>([]);
+  const [tab, setTab] = useState<GearTab>('portfolio');
 
   const setSystemsLocal = (next: GearSystemResponse[]) => {
     systemsRef.current = next;
@@ -88,6 +100,25 @@ export const GearView = () => {
       },
     });
 
+  const retireItem = (item: GearItemResponse) =>
+    confirmModal.show({
+      message: `Retire “${item.brand} ${item.model}”?`,
+      description:
+        'It was used on a session, so its history has to stay. Retiring keeps the record and takes it out of the public portfolio and out of packing lists.',
+      confirmLabel: 'Retire',
+      onConfirm: async () => {
+        if (!gearApi) return;
+        try {
+          await gearApi.gearControllerUpdate({ id: item.id, updateGearDto: { ownership: GearOwnership.Retired } });
+          toast('Moved to retired', 'success');
+          await gearQuery.reload();
+        } catch (e) {
+          toast(getApiErrorMessage(e, 'Could not retire the gear item.'), 'error');
+          throw e;
+        }
+      },
+    });
+
   const deleteItem = (item: GearItemResponse) =>
     confirmModal.show({
       message: `Delete “${item.brand} ${item.model}”?`,
@@ -100,6 +131,13 @@ export const GearView = () => {
           toast('Gear deleted', 'success');
           await gearQuery.reload();
         } catch (e) {
+          // 409 means the item has usage history, which deleting would erase.
+          // Offer the thing the user actually wants instead of just refusing.
+          if (getApiErrorStatus(e) === 409) {
+            confirmModal.hide();
+            retireItem(item);
+            return;
+          }
           toast(getApiErrorMessage(e, 'Could not delete the gear item.'), 'error');
         }
       },
@@ -169,13 +207,25 @@ export const GearView = () => {
               Systems (camera bodies + their lenses) and standalone items shown on the public “Gear” page.
             </span>
           </div>
-          <div style={styles.headerActions}>
-            <Button label='Add system' variant='secondary' icon={<FiPlus size={14} />} onClick={openCreateSystem} />
-            <Button label='Add gear' icon={<FiPlus size={14} />} onClick={() => openCreateItem()} />
-          </div>
+          {tab === 'portfolio' ? (
+            <div style={styles.headerActions}>
+              <Button label='Add system' variant='secondary' icon={<FiPlus size={14} />} onClick={openCreateSystem} />
+              <Button label='Add gear' icon={<FiPlus size={14} />} onClick={() => openCreateItem()} />
+            </div>
+          ) : null}
         </div>
 
-        {gearQuery.loading && !gearQuery.data ? (
+        <SegmentedTabs
+          layoutId='gear-view-tabs'
+          items={GEAR_TABS}
+          selected={tab}
+          handleSelect={(value) => setTab(value as GearTab)}
+        />
+
+        {tab === 'plan' ? <GearPlanPanel systems={systems} onChanged={reload} /> : null}
+        {tab === 'kits' ? <GearKitsPanel /> : null}
+
+        {tab !== 'portfolio' ? null : gearQuery.loading && !gearQuery.data ? (
           <Loader />
         ) : isEmpty ? (
           <EmptyState
