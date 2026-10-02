@@ -44,11 +44,14 @@ export const mainNavigationRoutes: MainRouteType[] = [
     label: 'Photo Library',
     component: <PhotoManagementNavigation />,
     nested: true,
-    permission: 'photoEntry.read',
+    // Gear sits here but the /gear/* endpoints want gallery.manage, so the
+    // section opens on either permission and each sub-item states its own.
+    permission: ['photoEntry.read', 'gallery.manage'],
     subItems: [
-      { path: PhotoNavigationRoute.LIBRARY, label: 'Library' },
-      { path: PhotoNavigationRoute.ASTRO, label: 'Astro' },
-      { path: PhotoNavigationRoute.ALBUMS, label: 'Immich Albums' },
+      { path: PhotoNavigationRoute.LIBRARY, label: 'Library', permission: 'photoEntry.read' },
+      { path: PhotoNavigationRoute.ASTRO, label: 'Astro', permission: 'photoEntry.read' },
+      { path: PhotoNavigationRoute.GEAR, label: 'Gear', permission: 'gallery.manage' },
+      { path: PhotoNavigationRoute.ALBUMS, label: 'Immich Albums', permission: 'photoEntry.read' },
     ],
   },
   {
@@ -61,7 +64,6 @@ export const mainNavigationRoutes: MainRouteType[] = [
       { path: GalleryNavigationRoute.GALLERIES, label: 'Galleries' },
       { path: GalleryNavigationRoute.IMAGES, label: 'Images' },
       { path: GalleryNavigationRoute.HERO, label: 'Home' },
-      { path: GalleryNavigationRoute.GEAR, label: 'Gear' },
       { path: GalleryNavigationRoute.PROCESSING, label: 'Processing' },
     ],
   },

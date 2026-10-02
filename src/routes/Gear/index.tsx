@@ -12,10 +12,10 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
-import { GearKitsPanel } from '~/routes/Galleries/components/GearKitsPanel';
-import { GearPlanPanel } from '~/routes/Galleries/components/GearPlanPanel';
-import { GearItemModal } from '~/routes/Galleries/modals/GearItemModal';
-import { GearSystemModal } from '~/routes/Galleries/modals/GearSystemModal';
+import { GearKitsPanel } from '~/routes/Gear/components/GearKitsPanel';
+import { GearPlanPanel } from '~/routes/Gear/components/GearPlanPanel';
+import { GearItemModal } from '~/routes/Gear/modals/GearItemModal';
+import { GearSystemModal } from '~/routes/Gear/modals/GearSystemModal';
 import { imgUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage, getApiErrorStatus } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -204,7 +204,7 @@ export const GearView = () => {
           <div style={styles.titleWrap}>
             <h2 style={styles.heading}>My gear</h2>
             <span style={styles.subheading}>
-              Systems (camera bodies + their lenses) and standalone items shown on the public “Gear” page.
+              One inventory, shared by session packing lists, the public “Gear” page and the blog.
             </span>
           </div>
           {tab === 'portfolio' ? (

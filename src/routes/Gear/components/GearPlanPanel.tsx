@@ -18,7 +18,7 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
-import { GearItemModal } from '~/routes/Galleries/modals/GearItemModal';
+import { GearItemModal } from '~/routes/Gear/modals/GearItemModal';
 import { imgUrl } from '~/routes/Galleries/utils';
 import { GEAR_CATEGORY_GROUPS, OWNERSHIP_LABELS, gearCategoryIcon, gearCategoryLabel, gearItemLabel } from '~/utils/gearCategory';
 import { mkUseStyles, useTheme } from '~/utils/theme';

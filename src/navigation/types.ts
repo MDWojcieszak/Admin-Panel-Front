@@ -20,6 +20,7 @@ export enum MainNavigationRoute {
 export enum PhotoNavigationRoute {
   LIBRARY = '',
   ASTRO = 'astro',
+  GEAR = 'gear',
   ALBUMS = 'albums',
 }
 
@@ -27,7 +28,6 @@ export enum GalleryNavigationRoute {
   GALLERIES = '',
   IMAGES = 'images',
   HERO = 'hero',
-  GEAR = 'gear',
   PROCESSING = 'processing',
 }
 

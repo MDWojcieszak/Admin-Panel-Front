@@ -3,13 +3,12 @@ import { GalleryNavigationRoute } from '~/navigation/types';
 import { GalleriesList } from '~/routes/Galleries';
 import { GalleryEditor } from '~/routes/Galleries/GalleryEditor';
 import { GalleryImagesView } from '~/routes/Galleries/GalleryImagesView';
-import { GearView } from '~/routes/Galleries/GearView';
 import { HeroView } from '~/routes/Galleries/HeroView';
 import { ProcessingView } from '~/routes/Galleries/ProcessingView';
 import { mkUseStyles } from '~/utils/theme';
 
 /**
- * Galleries CMS. Sub-navigation (Galleries / Images / Processing) lives in the sidebar;
+ * Galleries CMS. Sub-navigation (Galleries / Images / Home / Processing) lives in the sidebar;
  * a gallery opens its editor at /galleries/:id.
  */
 export const GalleriesNavigation = () => {
@@ -20,7 +19,6 @@ export const GalleriesNavigation = () => {
         <Route index element={<GalleriesList />} />
         <Route path={GalleryNavigationRoute.IMAGES} element={<GalleryImagesView />} />
         <Route path={GalleryNavigationRoute.HERO} element={<HeroView />} />
-        <Route path={GalleryNavigationRoute.GEAR} element={<GearView />} />
         <Route path={GalleryNavigationRoute.PROCESSING} element={<ProcessingView />} />
         <Route path=':id' element={<GalleryEditor />} />
       </Routes>
