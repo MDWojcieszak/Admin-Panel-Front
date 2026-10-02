@@ -41,14 +41,16 @@ import {
   TbUsb,
 } from 'react-icons/tb';
 import { GearCategory, GearMediaSource, GearOwnership } from '~/api/api';
+import { Theme } from '~/utils/theme';
 
 /**
  * Grouping used to keep a 39-value select navigable. It mirrors the backend's
  * own grouping of the enum; the values themselves stay the source of truth.
  */
-export const GEAR_CATEGORY_GROUPS: { label: string; categories: GearCategory[] }[] = [
+export const GEAR_CATEGORY_GROUPS: { label: string; color: keyof Theme['colors']; categories: GearCategory[] }[] = [
   {
     label: 'Cameras',
+    color: 'blue',
     categories: [
       GearCategory.Camera,
       GearCategory.FilmCamera,
@@ -59,10 +61,12 @@ export const GEAR_CATEGORY_GROUPS: { label: string; categories: GearCategory[] }
   },
   {
     label: 'Optics',
+    color: 'purple02',
     categories: [GearCategory.Lens, GearCategory.Teleconverter, GearCategory.Adapter, GearCategory.Filter],
   },
   {
     label: 'Astro',
+    color: 'purple03',
     categories: [
       GearCategory.Telescope,
       GearCategory.SmartTelescope,
@@ -74,21 +78,32 @@ export const GEAR_CATEGORY_GROUPS: { label: string; categories: GearCategory[] }
       GearCategory.DewHeater,
     ],
   },
-  { label: 'Support', categories: [GearCategory.Tripod, GearCategory.Head, GearCategory.Gimbal] },
-  { label: 'Light', categories: [GearCategory.Flash, GearCategory.Lighting, GearCategory.LightModifier] },
+  { label: 'Support', color: 'blue04', categories: [GearCategory.Tripod, GearCategory.Head, GearCategory.Gimbal] },
+  {
+    label: 'Light',
+    color: 'yellow',
+    categories: [GearCategory.Flash, GearCategory.Lighting, GearCategory.LightModifier],
+  },
   {
     label: 'Power',
+    color: 'lightGreen',
     categories: [GearCategory.Battery, GearCategory.Charger, GearCategory.PowerBank, GearCategory.PowerStation],
   },
   {
     label: 'Data',
+    color: 'lightBlue',
     categories: [GearCategory.MemoryCard, GearCategory.CardReader, GearCategory.Storage, GearCategory.Computer],
   },
   {
     label: 'Carry & protect',
+    color: 'mainGreen',
     categories: [GearCategory.Bag, GearCategory.Strap, GearCategory.RainCover, GearCategory.Cleaning],
   },
-  { label: 'Other', categories: [GearCategory.Remote, GearCategory.Cable, GearCategory.Accessory, GearCategory.Other] },
+  {
+    label: 'Other',
+    color: 'dark05',
+    categories: [GearCategory.Remote, GearCategory.Cable, GearCategory.Accessory, GearCategory.Other],
+  },
 ];
 
 /**
@@ -148,6 +163,17 @@ export const gearCategoryLabel = (category: GearCategory | string): string => {
   if (!words.length) return String(category);
   return [words[0].charAt(0).toUpperCase() + words[0].slice(1), ...words.slice(1)].join(' ');
 };
+
+const CATEGORY_COLORS = new Map<GearCategory, keyof Theme['colors']>(
+  GEAR_CATEGORY_GROUPS.flatMap((group) => group.categories.map((category) => [category, group.color] as const)),
+);
+
+/**
+ * One colour per group, not per category: 39 hues would be noise, while nine
+ * are enough to tell a camera from a lens from a battery at a glance.
+ */
+export const gearCategoryColor = (category: GearCategory): keyof Theme['colors'] =>
+  CATEGORY_COLORS.get(category) ?? 'dark05';
 
 export const gearCategoryIcon = (category: GearCategory): IconType => CATEGORY_ICONS[category] ?? FiTool;
 
