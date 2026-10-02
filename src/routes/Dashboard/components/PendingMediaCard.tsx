@@ -7,6 +7,7 @@ import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useCan } from '~/hooks/usePermissions';
 import { PhotoEntryDetailsModal } from '~/routes/PhotoManagement/modals/PhotoEntryDetailsModal';
+import { buildNameQualifiers } from '~/routes/PhotoManagement/utils/entryNames';
 import { gearItemLabel } from '~/utils/gearCategory';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -63,6 +64,15 @@ export const PendingMediaCard = () => {
   const unsecured = query.data?.unsecured ?? [];
   const undeclared = query.data?.undeclared ?? [];
 
+  // Both lists name entries, and a repeated trip name is just as confusing here.
+  const qualifiers = buildNameQualifiers(
+    [...unsecured, ...undeclared].map((entry) => ({
+      id: entry.photoEntryId,
+      name: entry.name,
+      startDate: entry.startDate,
+    })),
+  );
+
   if (!unsecured.length && !undeclared.length) return null;
 
   return (
@@ -84,7 +94,12 @@ export const PendingMediaCard = () => {
               openGear(entry.photoEntryId);
             }}
           >
-            <span style={styles.entryName}>{entry.name}</span>
+            <span style={styles.entryName}>
+              {entry.name}
+              {qualifiers.get(entry.photoEntryId) ? (
+                <span style={{ opacity: 0.55, fontWeight: 400 }}> · {qualifiers.get(entry.photoEntryId)}</span>
+              ) : null}
+            </span>
             <span style={styles.muted}>{formatDate(entry.startDate)}</span>
             {entry.overdue ? (
               <Badge label='Overdue' tone='red' icon={<FiAlertTriangle size={11} />} />
@@ -133,6 +148,9 @@ export const PendingMediaCard = () => {
                 }}
               >
                 {entry.name}
+                {qualifiers.get(entry.photoEntryId) ? (
+                  <span style={{ opacity: 0.55 }}> · {qualifiers.get(entry.photoEntryId)}</span>
+                ) : null}
               </div>
             ))}
           </div>

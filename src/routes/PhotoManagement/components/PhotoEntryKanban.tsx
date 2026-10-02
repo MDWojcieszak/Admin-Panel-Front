@@ -5,6 +5,7 @@ import { Scrollbar } from '~/components/Scrollbar';
 import { PhotoEntryKanbanCard } from '~/routes/PhotoManagement/components/PhotoEntryKanbanCard';
 import { PhotoEntryKanbanColumnHeader } from '~/routes/PhotoManagement/components/PhotoEntryKanbanColumnHeader';
 import { getKanbanColumnColors } from '~/routes/PhotoManagement/utils/colors';
+import { buildNameQualifiers } from '~/routes/PhotoManagement/utils/entryNames';
 import {
   KANBAN_COLUMNS,
   KanbanColumn,
@@ -65,6 +66,10 @@ export const PhotoEntryKanban = ({
 
     return grouped;
   }, [optimisticEntries]);
+
+  // Computed across the whole board, not per lane: two trips with the same name
+  // are confusing wherever they sit, including in different columns.
+  const nameQualifiers = useMemo(() => buildNameQualifiers(optimisticEntries), [optimisticEntries]);
 
   // Cancelled entries have no lane, so without this strip filtering by
   // "Cancelled" would render an empty board and look broken.
@@ -229,6 +234,7 @@ export const PhotoEntryKanban = ({
                           <PhotoEntryKanbanCard
                             key={entry.id}
                             entry={entry}
+                            qualifier={nameQualifiers.get(entry.id)}
                             accentColor={columnColors.accent}
                             pending={pendingEntryId === entry.id}
                             isDragging={dragState?.entryId === entry.id}

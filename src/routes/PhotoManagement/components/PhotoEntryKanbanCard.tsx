@@ -25,6 +25,8 @@ import {
 
 type PhotoEntryKanbanCardProps = {
   entry: PhotoEntryResponse;
+  /** Date label shown beside the name when another entry shares it. */
+  qualifier?: string;
   accentColor: string;
   pending: boolean;
   isDragging: boolean;
@@ -47,6 +49,7 @@ type Chip = {
 
 export const PhotoEntryKanbanCard = ({
   entry,
+  qualifier,
   accentColor,
   pending,
   isDragging,
@@ -115,7 +118,10 @@ export const PhotoEntryKanbanCard = ({
         onCardClick(entry);
       }}
     >
-      <div style={styles.cardTitle}>{entry.name}</div>
+      <div style={styles.cardTitle}>
+        {entry.name}
+        {qualifier ? <span style={{ opacity: 0.55, fontWeight: 400 }}> · {qualifier}</span> : null}
+      </div>
 
       <div
         style={{

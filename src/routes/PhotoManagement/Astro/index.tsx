@@ -20,6 +20,7 @@ import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { CreateAstroObjectModal } from '~/routes/PhotoManagement/modals/CreateAstroObjectModal';
 import { PhotoEntryDetailsModal } from '~/routes/PhotoManagement/modals/PhotoEntryDetailsModal';
+import { buildNameQualifiers } from '~/routes/PhotoManagement/utils/entryNames';
 import { getEntryColumn } from '~/routes/PhotoManagement/utils/kanban';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -133,6 +134,7 @@ export const Astro = () => {
   }, [astroObjects, search]);
 
   const sessions = sessionsQuery.data?.photoEntries ?? [];
+  const sessionQualifiers = useMemo(() => buildNameQualifiers(sessions), [sessions]);
   const selected = astroObjects.find((item) => item.id === selectedId);
 
   return (
@@ -230,7 +232,12 @@ export const Astro = () => {
                       }}
                     >
                       <div style={styles.sessionText}>
-                        <span style={styles.sessionName}>{entry.name}</span>
+                        <span style={styles.sessionName}>
+                          {entry.name}
+                          {sessionQualifiers.get(entry.id) ? (
+                            <span style={{ opacity: 0.55, fontWeight: 400 }}> · {sessionQualifiers.get(entry.id)}</span>
+                          ) : null}
+                        </span>
                         <span style={styles.sessionMeta}>
                           {entry.startDate ? new Date(entry.startDate).toLocaleDateString() : 'No date'}
                         </span>
