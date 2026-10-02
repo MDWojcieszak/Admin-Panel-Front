@@ -90,7 +90,7 @@ export const Astro = () => {
   const detailsModal = useModal(
     'astro-entry-details',
     PhotoEntryDetailsModal,
-    { title: 'Astro Session' },
+    { title: 'Astro Session', type: 'side' },
     {
       handleClose: async () => {
         await refreshAll();

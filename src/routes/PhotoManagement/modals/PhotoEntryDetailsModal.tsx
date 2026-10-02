@@ -1,4 +1,5 @@
-import { CSSProperties, useEffect, useMemo, useState } from 'react';
+import { CSSProperties, ReactNode, useEffect, useMemo, useState } from 'react';
+import { useViewportSize } from '@mantine/hooks';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,10 +8,9 @@ import { FiAlertTriangle, FiCheck, FiCheckCircle, FiFolder, FiMoon } from 'react
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
 import { Scrollbar } from '~/components/Scrollbar';
-import { SegmentedTabs } from '~/components/SegmentedTabs';
-import { EntryCommentsTab } from '~/routes/PhotoManagement/components/EntryCommentsTab';
-import { EntryGearTab } from '~/routes/PhotoManagement/components/EntryGearTab';
-import { EntryProgressTab } from '~/routes/PhotoManagement/components/EntryProgressTab';
+import { EntryCommentsPanel } from '~/routes/PhotoManagement/components/EntryCommentsPanel';
+import { EntryGearPanel } from '~/routes/PhotoManagement/components/EntryGearPanel';
+import { EntryProgressPanel } from '~/routes/PhotoManagement/components/EntryProgressPanel';
 import { ImmichAlbumsSection } from '~/routes/PhotoManagement/components/ImmichAlbumsSection';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
@@ -43,8 +43,6 @@ type PhotoEntryDetailsModalProps = Partial<InternalModalProps> & {
   onFoldersCreated?: () => void | Promise<void>;
   /** Jump to the Immich Albums tab for this entry (navigation lives in the routed parent). */
   onAddToAlbum?: (entryId: string) => void;
-  /** Which tab to open on — the dashboard links straight at the gear checklist. */
-  initialTab?: DetailsTab;
 };
 
 const photoEntryDetailsSchema = z.object({
@@ -56,15 +54,6 @@ const photoEntryDetailsSchema = z.object({
 });
 
 type PhotoEntryDetailsFormValues = z.infer<typeof photoEntryDetailsSchema>;
-
-export type DetailsTab = 'general' | 'gear' | 'comments' | 'progress';
-
-const DETAILS_TABS: { label: string; value: DetailsTab }[] = [
-  { label: 'General', value: 'general' },
-  { label: 'Gear', value: 'gear' },
-  { label: 'Comments', value: 'comments' },
-  { label: 'Progress', value: 'progress' },
-];
 
 const getRelationAstroObjectId = (item: PhotoEntryAstroRelation): string | undefined => {
   return item.astroObjectId || item.astroObject?.id;
@@ -86,7 +75,9 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const [foldersLoading, setFoldersLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [tab, setTab] = useState<DetailsTab>(p.initialTab ?? 'general');
+  const { width: viewportWidth } = useViewportSize();
+  // Three columns need the room; below that the sections stack into one scroll.
+  const stacked = viewportWidth > 0 && viewportWidth < 1180;
 
   const astroObjects = useMemo(() => p.astroObjects ?? [], [p.astroObjects]);
   const isLocked = p.entry.foldersCreated;
@@ -261,20 +252,9 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
 
   return (
     <FormProvider {...formMethods}>
-      <div style={styles.container}>
-        <SegmentedTabs
-          layoutId='photo-entry-details-tabs'
-          items={DETAILS_TABS}
-          selected={tab}
-          handleSelect={(value) => setTab(value as DetailsTab)}
-        />
-
-        {tab === 'gear' ? <EntryGearTab entryId={p.entry.id} onChanged={p.onSaved} /> : null}
-        {tab === 'comments' ? <EntryCommentsTab entryId={p.entry.id} onChanged={p.onSaved} /> : null}
-        {tab === 'progress' ? <EntryProgressTab entry={p.entry} onChanged={p.onSaved} /> : null}
-
-        {tab !== 'general' ? null : (
-          <>
+      <div style={stacked ? styles.cardStacked : styles.card}>
+        <Column stacked={stacked}>
+          <span style={styles.sectionLabel}>Details</span>
         {isLocked && uploadStatus === MediaStatus.NotUploaded && (
           <div style={styles.uploadWarningBanner}>
             <div style={styles.uploadWarningIcon}>
@@ -311,7 +291,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
         <div
           style={{
             ...styles.layout,
-            ...(isAstro ? styles.layoutTwoColumns : styles.layoutOneColumn),
+            ...styles.layoutOneColumn,
           }}
         >
           <div style={styles.leftColumn}>
@@ -502,10 +482,39 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
             ) : null}
           </div>
         </div>
-          </>
-        )}
+        </Column>
+
+        <Column stacked={stacked}>
+          <span style={styles.sectionLabel}>Progress</span>
+          <EntryProgressPanel entry={p.entry} onChanged={p.onSaved} />
+
+          <span style={styles.sectionLabel}>Gear</span>
+          <EntryGearPanel entryId={p.entry.id} onChanged={p.onSaved} />
+        </Column>
+
+        <Column stacked={stacked}>
+          <span style={styles.sectionLabel}>Comments</span>
+          <EntryCommentsPanel entryId={p.entry.id} onChanged={p.onSaved} />
+        </Column>
       </div>
     </FormProvider>
+  );
+};
+
+/**
+ * One of the card's columns. Side by side each scrolls on its own, so a long
+ * comment thread does not push the gear list out of reach; stacked, they are
+ * plain blocks inside the card's single scroll.
+ */
+const Column = ({ stacked, children }: { stacked: boolean; children: ReactNode }) => {
+  const styles = useStyles();
+
+  if (stacked) return <div style={styles.columnInner}>{children}</div>;
+
+  return (
+    <Scrollbar style={styles.column}>
+      <div style={styles.columnInner}>{children}</div>
+    </Scrollbar>
   );
 };
 
@@ -556,22 +565,50 @@ const formatDateTime = (value?: string | null): string => {
 };
 
 const useStyles = mkUseStyles((t) => ({
-  container: {
+  // Every section at once, in the side panel: the tabs this replaced hid three
+  // quarters of a session behind a click and gave no way to see gear and
+  // comments together.
+  card: {
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr)',
+    gap: t.spacing.m,
+    height: '100%',
+    minHeight: 0,
+    minWidth: 0,
+  },
+  cardStacked: {
     display: 'flex',
     flexDirection: 'column',
-    gap: t.spacing.m,
-    width: '100%',
-    minWidth: 400,
+    gap: t.spacing.l,
+    height: '100%',
     minHeight: 0,
+    overflowY: 'auto',
+    paddingRight: t.spacing.s,
+  },
+  column: {
+    height: '100%',
+    minWidth: 0,
+  },
+  columnInner: {
+    gap: t.spacing.m,
+    minWidth: 0,
+    paddingRight: t.spacing.l,
+    paddingBottom: t.spacing.m,
+  },
+  sectionLabel: {
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    color: t.colors.blue04,
+    paddingBottom: t.spacing.xs,
+    borderBottom: `1px solid ${t.colors.dark04 + t.colorOpacity(0.35)}`,
   },
   layout: {
     display: 'grid',
     gap: t.spacing.l,
     width: '100%',
     alignItems: 'stretch',
-  },
-  layoutTwoColumns: {
-    gridTemplateColumns: 'minmax(0, 1fr) 360px',
   },
   layoutOneColumn: {
     gridTemplateColumns: 'minmax(0, 1fr)',
@@ -865,6 +902,9 @@ const useStyles = mkUseStyles((t) => ({
     alignItems: 'center',
     marginTop: t.spacing.m,
     gap: t.spacing.s,
+    // Wraps as whole buttons: in a narrow column the labels broke in two instead.
+    flexWrap: 'wrap',
+    whiteSpace: 'nowrap',
   },
   leftActions: {
     display: 'flex',
@@ -877,5 +917,7 @@ const useStyles = mkUseStyles((t) => ({
     flexDirection: 'row',
     gap: t.spacing.s,
     alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
   },
 }));

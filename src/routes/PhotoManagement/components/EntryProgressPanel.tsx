@@ -8,7 +8,7 @@ import { useToast } from '~/hooks/useToast';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles } from '~/utils/theme';
 
-type EntryProgressTabProps = {
+type EntryProgressPanelProps = {
   entry: PhotoEntryDetailsResponse;
   onChanged?: () => void | Promise<void>;
 };
@@ -25,7 +25,7 @@ const parseInput = (value: string): number | null | undefined => {
   return Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : undefined;
 };
 
-export const EntryProgressTab = ({ entry, onChanged }: EntryProgressTabProps) => {
+export const EntryProgressPanel = ({ entry, onChanged }: EntryProgressPanelProps) => {
   const styles = useStyles();
   const { photoEntryApi } = useApi();
   const toast = useToast();
@@ -215,7 +215,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   fields: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(104px, 1fr))',
     gap: t.spacing.m,
   },
   field: {

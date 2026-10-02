@@ -38,7 +38,7 @@ export const PendingMediaCard = () => {
   const detailsModal = useModal(
     'dashboard-entry-gear',
     PhotoEntryDetailsModal,
-    { title: 'Session gear' },
+    { title: 'Session', type: 'side' },
     {
       handleClose: async () => {
         await query.reload();
@@ -52,7 +52,6 @@ export const PendingMediaCard = () => {
     const { data } = await photoEntryApi.photoEntryControllerGetById({ id: entryId });
     detailsModal.show({
       entry: data as PhotoEntryDetailsResponse,
-      initialTab: 'gear',
       onSaved: async () => {
         await query.reload();
       },

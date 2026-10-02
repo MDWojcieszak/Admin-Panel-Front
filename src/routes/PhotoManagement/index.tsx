@@ -92,7 +92,7 @@ export const PhotoManagement = () => {
   const photoEntryDetailsModal = useModal(
     'photo-entry-details',
     PhotoEntryDetailsModal,
-    { title: 'Photo Entry Details' },
+    { title: 'Session', type: 'side' },
     {
       handleClose: async () => {
         await refreshAll();

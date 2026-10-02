@@ -16,7 +16,7 @@ import { useToast } from '~/hooks/useToast';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
-type EntryCommentsTabProps = {
+type EntryCommentsPanelProps = {
   entryId: string;
   /** The card shows commentSummary, so the parent needs to know it moved. */
   onChanged?: () => void | Promise<void>;
@@ -40,7 +40,7 @@ const KIND_META: Record<PhotoEntryCommentKind, { label: string; icon: IconType; 
 
 const KINDS = Object.values(PhotoEntryCommentKind);
 
-export const EntryCommentsTab = ({ entryId, onChanged }: EntryCommentsTabProps) => {
+export const EntryCommentsPanel = ({ entryId, onChanged }: EntryCommentsPanelProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const { photoEntryApi } = useApi();

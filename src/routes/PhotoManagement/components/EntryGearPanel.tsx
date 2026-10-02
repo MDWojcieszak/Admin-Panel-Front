@@ -20,16 +20,20 @@ import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { formatAmount } from '~/utils/formatAmount';
-import { gearCategoryIcon, gearCategoryLabel, gearItemLabel, holdsMedia } from '~/utils/gearCategory';
+import { GearThumb } from '~/routes/Gear/components/GearThumb';
+import { gearCategoryLabel, gearItemLabel, holdsMedia } from '~/utils/gearCategory';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
-type EntryGearTabProps = {
+/** Keeps a button's label on one line when its column is narrow. */
+const NO_WRAP = { flexShrink: 0, whiteSpace: 'nowrap' } as const;
+
+type EntryGearPanelProps = {
   entryId: string;
   /** Lets the parent refresh the entry, whose gearConfirmedAt and uploadStatus are derived from this list. */
   onChanged?: () => void | Promise<void>;
 };
 
-export const EntryGearTab = ({ entryId, onChanged }: EntryGearTabProps) => {
+export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const { photoEntryApi, gearApi } = useApi();
@@ -246,7 +250,6 @@ export const EntryGearTab = ({ entryId, onChanged }: EntryGearTabProps) => {
           <div style={styles.pickerList}>
             {declarationCandidates.map((item) => {
               const picked = declaredIds.has(item.id);
-              const Icon = gearCategoryIcon(item.category);
               return (
                 <div
                   key={item.id}
@@ -275,7 +278,7 @@ export const EntryGearTab = ({ entryId, onChanged }: EntryGearTabProps) => {
                   <div style={{ ...styles.checkbox, ...(picked ? styles.checkboxOn : {}) }}>
                     {picked ? <FiCheck size={12} /> : null}
                   </div>
-                  <Icon size={15} color={theme.colors.blue04} />
+                  <GearThumb gear={item} size={32} />
                   <span style={styles.itemName}>{gearItemLabel(item)}</span>
                   <span style={styles.itemCategory}>{gearCategoryLabel(item.category)}</span>
                 </div>
@@ -326,6 +329,7 @@ export const EntryGearTab = ({ entryId, onChanged }: EntryGearTabProps) => {
         {phase === EntryGearPhase.None ? null : (
           <Button
             label={adding ? 'Done adding' : 'Add gear'}
+            style={NO_WRAP}
             variant='secondary'
             icon={adding ? <FiX size={14} /> : <FiPlus size={14} />}
             onClick={openCatalog}
@@ -367,7 +371,6 @@ export const EntryGearTab = ({ entryId, onChanged }: EntryGearTabProps) => {
                 <span style={styles.headerHint}>Nothing left to add.</span>
               ) : (
                 availableCatalog.map((item) => {
-                  const Icon = gearCategoryIcon(item.category);
                   return (
                     <div
                       key={item.id}
@@ -382,7 +385,7 @@ export const EntryGearTab = ({ entryId, onChanged }: EntryGearTabProps) => {
                       }}
                     >
                       <FiPlus size={14} color={theme.colors.lightGreen} />
-                      <Icon size={15} color={theme.colors.blue04} />
+                      <GearThumb gear={item} size={32} />
                       <span style={styles.itemName}>{gearItemLabel(item)}</span>
                       <span style={styles.itemCategory}>{gearCategoryLabel(item.category)}</span>
                       {item.ownership === GearOwnership.Wishlist ? <Badge label='Wishlist' tone='yellow' /> : null}
@@ -486,7 +489,6 @@ type GearRowProps = {
 const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps) => {
   const styles = useStyles();
   const theme = useTheme();
-  const Icon = gearCategoryIcon(item.gear.category);
 
   const isWishlist = item.gear.ownership === GearOwnership.Wishlist;
   // Mirrors the backend's own rules so a disabled box replaces a 400 round trip.
@@ -495,7 +497,7 @@ const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps)
 
   return (
     <div style={{ ...styles.row, opacity: busy ? 0.6 : 1 }}>
-      <Icon size={16} color={theme.colors.blue04} />
+      <GearThumb gear={item.gear} size={44} />
 
       <div style={styles.rowText}>
         <div style={styles.rowTitleLine}>
@@ -508,29 +510,33 @@ const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps)
           {gearCategoryLabel(item.gear.category)}
           {item.secureAction ? ` · ${item.secureAction}` : ''}
         </span>
+
+        {/* Under the name rather than beside it: in a column this narrow the
+            toggles otherwise squeeze the name into three lines. */}
+        {phase === EntryGearPhase.None ? null : (
+          <div style={styles.toggleRow}>
+            {phase === EntryGearPhase.Pack ? (
+              <Toggle label='Packed' checked={item.packed} onChange={(v) => onPatch(item.gear.id, { packed: v })} />
+            ) : null}
+
+            <Toggle
+              label='Used'
+              checked={item.used}
+              disabled={!canMarkUsed}
+              onChange={(v) => onPatch(item.gear.id, { used: v })}
+            />
+
+            {phase === EntryGearPhase.Secure ? (
+              <Toggle
+                label='Secured'
+                checked={item.secured}
+                disabled={!canSecure}
+                onChange={(v) => onPatch(item.gear.id, { secured: v })}
+              />
+            ) : null}
+          </div>
+        )}
       </div>
-
-      {phase === EntryGearPhase.Pack ? (
-        <Toggle label='Packed' checked={item.packed} onChange={(v) => onPatch(item.gear.id, { packed: v })} />
-      ) : null}
-
-      {phase !== EntryGearPhase.None ? (
-        <Toggle
-          label='Used'
-          checked={item.used}
-          disabled={!canMarkUsed}
-          onChange={(v) => onPatch(item.gear.id, { used: v })}
-        />
-      ) : null}
-
-      {phase === EntryGearPhase.Secure ? (
-        <Toggle
-          label='Secured'
-          checked={item.secured}
-          disabled={!canSecure}
-          onChange={(v) => onPatch(item.gear.id, { secured: v })}
-        />
-      ) : null}
 
       {phase === EntryGearPhase.None ? null : (
         <div
@@ -658,6 +664,12 @@ const useStyles = mkUseStyles((t) => ({
     flex: 1,
     minWidth: 120,
     gap: 2,
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: t.spacing.xs,
+    marginTop: t.spacing.xs,
   },
   rowTitleLine: {
     flexDirection: 'row',
