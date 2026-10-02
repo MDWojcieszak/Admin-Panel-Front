@@ -7,6 +7,10 @@ import { FiAlertTriangle, FiCheck, FiCheckCircle, FiFolder, FiMoon } from 'react
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
 import { Scrollbar } from '~/components/Scrollbar';
+import { SegmentedTabs } from '~/components/SegmentedTabs';
+import { EntryCommentsTab } from '~/routes/PhotoManagement/components/EntryCommentsTab';
+import { EntryGearTab } from '~/routes/PhotoManagement/components/EntryGearTab';
+import { EntryProgressTab } from '~/routes/PhotoManagement/components/EntryProgressTab';
 import { ImmichAlbumsSection } from '~/routes/PhotoManagement/components/ImmichAlbumsSection';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
@@ -51,6 +55,15 @@ const photoEntryDetailsSchema = z.object({
 
 type PhotoEntryDetailsFormValues = z.infer<typeof photoEntryDetailsSchema>;
 
+type DetailsTab = 'general' | 'gear' | 'comments' | 'progress';
+
+const DETAILS_TABS: { label: string; value: DetailsTab }[] = [
+  { label: 'General', value: 'general' },
+  { label: 'Gear', value: 'gear' },
+  { label: 'Comments', value: 'comments' },
+  { label: 'Progress', value: 'progress' },
+];
+
 const getRelationAstroObjectId = (item: PhotoEntryAstroRelation): string | undefined => {
   return item.astroObjectId || item.astroObject?.id;
 };
@@ -71,6 +84,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const [foldersLoading, setFoldersLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [tab, setTab] = useState<DetailsTab>('general');
 
   const astroObjects = useMemo(() => p.astroObjects ?? [], [p.astroObjects]);
   const isLocked = p.entry.foldersCreated;
@@ -246,6 +260,19 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   return (
     <FormProvider {...formMethods}>
       <div style={styles.container}>
+        <SegmentedTabs
+          layoutId='photo-entry-details-tabs'
+          items={DETAILS_TABS}
+          selected={tab}
+          handleSelect={(value) => setTab(value as DetailsTab)}
+        />
+
+        {tab === 'gear' ? <EntryGearTab entryId={p.entry.id} onChanged={p.onSaved} /> : null}
+        {tab === 'comments' ? <EntryCommentsTab entryId={p.entry.id} onChanged={p.onSaved} /> : null}
+        {tab === 'progress' ? <EntryProgressTab entry={p.entry} onChanged={p.onSaved} /> : null}
+
+        {tab !== 'general' ? null : (
+          <>
         {isLocked && uploadStatus === MediaStatus.NotUploaded && (
           <div style={styles.uploadWarningBanner}>
             <div style={styles.uploadWarningIcon}>
@@ -473,6 +500,8 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
             ) : null}
           </div>
         </div>
+          </>
+        )}
       </div>
     </FormProvider>
   );
