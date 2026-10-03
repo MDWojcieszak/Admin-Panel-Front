@@ -117,7 +117,10 @@ export const InquiriesInbox = () => {
         setItems(data.inquiries);
         setTotal(data.total);
       })
-      .catch((e) => console.error('Error loading inquiries:', e))
+      .catch((e) => {
+        console.error('Error loading inquiries:', e);
+        toast(errorMessage(e, 'Could not load the messages.'), 'error');
+      })
       .finally(() => request === requestRef.current && setLoading(false));
   }, [inquiriesApi, fetchPage]);
 
