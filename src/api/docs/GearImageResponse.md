@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **id** | **string** |  | [default to undefined]
 **coverUrl** | **string** |  | [default to undefined]
 **lowResUrl** | **string** |  | [default to undefined]
+**thumbUrl** | **string** |  | [default to undefined]
 **width** | **number** |  | [optional] [default to undefined]
 **height** | **number** |  | [optional] [default to undefined]
 **createdAt** | **string** |  | [default to undefined]
@@ -22,6 +23,7 @@ const instance: GearImageResponse = {
     id,
     coverUrl,
     lowResUrl,
+    thumbUrl,
     width,
     height,
     createdAt,

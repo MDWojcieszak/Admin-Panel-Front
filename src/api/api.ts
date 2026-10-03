@@ -6166,6 +6166,12 @@ export interface GearImageResponse {
     'lowResUrl': string;
     /**
      * 
+     * @type {string}
+     * @memberof GearImageResponse
+     */
+    'thumbUrl': string;
+    /**
+     * 
      * @type {number}
      * @memberof GearImageResponse
      */
@@ -6296,6 +6302,12 @@ export interface GearItemAdminResponse {
      * @memberof GearItemAdminResponse
      */
     'lowResUrl'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemAdminResponse
+     */
+    'thumbUrl'?: string | null;
     /**
      * 
      * @type {number}
@@ -6444,6 +6456,12 @@ export interface GearItemResponse {
      * @memberof GearItemResponse
      */
     'lowResUrl'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearItemResponse
+     */
+    'thumbUrl'?: string | null;
     /**
      * 
      * @type {number}
@@ -6608,6 +6626,12 @@ export interface GearSystemResponse {
      * @memberof GearSystemResponse
      */
     'lowResUrl'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearSystemResponse
+     */
+    'thumbUrl'?: string | null;
     /**
      * 
      * @type {number}
@@ -42238,6 +42262,42 @@ export const ImageApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        imageControllerGetThumbImage: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('imageControllerGetThumbImage', 'id', id)
+            const localVarPath = `/image/thumb`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -42493,6 +42553,18 @@ export const ImageApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async imageControllerGetThumbImage(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.imageControllerGetThumbImage(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ImageApi.imageControllerGetThumbImage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -42611,6 +42683,15 @@ export const ImageApiFactory = function (configuration?: Configuration, basePath
          */
         imageControllerGetOriginalImage(requestParameters: ImageApiImageControllerGetOriginalImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<File> {
             return localVarFp.imageControllerGetOriginalImage(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ImageApiImageControllerGetThumbImageRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        imageControllerGetThumbImage(requestParameters: ImageApiImageControllerGetThumbImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<File> {
+            return localVarFp.imageControllerGetThumbImage(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -42756,6 +42837,20 @@ export interface ImageApiImageControllerGetOriginalImageRequest {
 }
 
 /**
+ * Request parameters for imageControllerGetThumbImage operation in ImageApi.
+ * @export
+ * @interface ImageApiImageControllerGetThumbImageRequest
+ */
+export interface ImageApiImageControllerGetThumbImageRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImageApiImageControllerGetThumbImage
+     */
+    readonly id: string
+}
+
+/**
  * Request parameters for imageControllerReplaceOriginal operation in ImageApi.
  * @export
  * @interface ImageApiImageControllerReplaceOriginalRequest
@@ -42886,6 +42981,17 @@ export class ImageApi extends BaseAPI {
      */
     public imageControllerGetOriginalImage(requestParameters: ImageApiImageControllerGetOriginalImageRequest, options?: RawAxiosRequestConfig) {
         return ImageApiFp(this.configuration).imageControllerGetOriginalImage(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ImageApiImageControllerGetThumbImageRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ImageApi
+     */
+    public imageControllerGetThumbImage(requestParameters: ImageApiImageControllerGetThumbImageRequest, options?: RawAxiosRequestConfig) {
+        return ImageApiFp(this.configuration).imageControllerGetThumbImage(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -46458,10 +46564,11 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
          * @param {PreviewSize} size 
          * @param {number} exp 
          * @param {string} sig 
+         * @param {string} [v] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        photoEntryExportControllerPreview: async (id: string, key: string, size: PreviewSize, exp: number, sig: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        photoEntryExportControllerPreview: async (id: string, key: string, size: PreviewSize, exp: number, sig: string, v?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('photoEntryExportControllerPreview', 'id', id)
             // verify required parameter 'key' is not null or undefined
@@ -46495,6 +46602,10 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
 
             if (exp !== undefined) {
                 localVarQueryParameter['exp'] = exp;
+            }
+
+            if (v !== undefined) {
+                localVarQueryParameter['v'] = v;
             }
 
             if (sig !== undefined) {
@@ -47329,11 +47440,12 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
          * @param {PreviewSize} size 
          * @param {number} exp 
          * @param {string} sig 
+         * @param {string} [v] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async photoEntryExportControllerPreview(id: string, key: string, size: PreviewSize, exp: number, sig: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryExportControllerPreview(id, key, size, exp, sig, options);
+        async photoEntryExportControllerPreview(id: string, key: string, size: PreviewSize, exp: number, sig: string, v?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryExportControllerPreview(id, key, size, exp, sig, v, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryExportControllerPreview']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -47711,7 +47823,7 @@ export const PhotoEntryApiFactory = function (configuration?: Configuration, bas
          * @throws {RequiredError}
          */
         photoEntryExportControllerPreview(requestParameters: PhotoEntryApiPhotoEntryExportControllerPreviewRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.photoEntryExportControllerPreview(requestParameters.id, requestParameters.key, requestParameters.size, requestParameters.exp, requestParameters.sig, options).then((request) => request(axios, basePath));
+            return localVarFp.photoEntryExportControllerPreview(requestParameters.id, requestParameters.key, requestParameters.size, requestParameters.exp, requestParameters.sig, requestParameters.v, options).then((request) => request(axios, basePath));
         },
         /**
          * Queues the files and returns at once; progress shows in the next scan. NEW files are uploaded, CHANGED (re-exported) ones replace their image in place, PUBLISHED ones are skipped. A new gallery is created as DRAFT.
@@ -48241,6 +48353,13 @@ export interface PhotoEntryApiPhotoEntryExportControllerPreviewRequest {
      * @memberof PhotoEntryApiPhotoEntryExportControllerPreview
      */
     readonly sig: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryExportControllerPreview
+     */
+    readonly v?: string
 }
 
 /**
@@ -48689,7 +48808,7 @@ export class PhotoEntryApi extends BaseAPI {
      * @memberof PhotoEntryApi
      */
     public photoEntryExportControllerPreview(requestParameters: PhotoEntryApiPhotoEntryExportControllerPreviewRequest, options?: RawAxiosRequestConfig) {
-        return PhotoEntryApiFp(this.configuration).photoEntryExportControllerPreview(requestParameters.id, requestParameters.key, requestParameters.size, requestParameters.exp, requestParameters.sig, options).then((request) => request(this.axios, this.basePath));
+        return PhotoEntryApiFp(this.configuration).photoEntryExportControllerPreview(requestParameters.id, requestParameters.key, requestParameters.size, requestParameters.exp, requestParameters.sig, requestParameters.v, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

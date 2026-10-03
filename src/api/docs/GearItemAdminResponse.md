@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **description** | **string** |  | [optional] [default to undefined]
 **coverUrl** | **string** |  | [optional] [default to undefined]
 **lowResUrl** | **string** |  | [optional] [default to undefined]
+**thumbUrl** | **string** |  | [optional] [default to undefined]
 **order** | **number** |  | [default to undefined]
 **visible** | **boolean** |  | [default to undefined]
 **acquiredAt** | **string** |  | [optional] [default to undefined]
@@ -42,6 +43,7 @@ const instance: GearItemAdminResponse = {
     description,
     coverUrl,
     lowResUrl,
+    thumbUrl,
     order,
     visible,
     acquiredAt,

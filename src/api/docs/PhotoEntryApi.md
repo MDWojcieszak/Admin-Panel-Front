@@ -1014,13 +1014,15 @@ let key: string; // (default to undefined)
 let size: PreviewSize; // (default to undefined)
 let exp: number; // (default to undefined)
 let sig: string; // (default to undefined)
+let v: string; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.photoEntryExportControllerPreview(
     id,
     key,
     size,
     exp,
-    sig
+    sig,
+    v
 );
 ```
 
@@ -1033,6 +1035,7 @@ const { status, data } = await apiInstance.photoEntryExportControllerPreview(
 | **size** | **PreviewSize** |  | defaults to undefined|
 | **exp** | [**number**] |  | defaults to undefined|
 | **sig** | [**string**] |  | defaults to undefined|
+| **v** | [**string**] |  | (optional) defaults to undefined|
 
 
 ### Return type

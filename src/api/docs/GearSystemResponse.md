@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **description** | **string** |  | [optional] [default to undefined]
 **coverUrl** | **string** |  | [optional] [default to undefined]
 **lowResUrl** | **string** |  | [optional] [default to undefined]
+**thumbUrl** | **string** |  | [optional] [default to undefined]
 **order** | **number** |  | [default to undefined]
 **visible** | **boolean** |  | [default to undefined]
 **items** | [**Array&lt;GearItemResponse&gt;**](GearItemResponse.md) |  | [default to undefined]
@@ -27,6 +28,7 @@ const instance: GearSystemResponse = {
     description,
     coverUrl,
     lowResUrl,
+    thumbUrl,
     order,
     visible,
     items,

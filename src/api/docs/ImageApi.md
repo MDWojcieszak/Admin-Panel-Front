@@ -11,6 +11,7 @@ All URIs are relative to *http://localhost*
 |[**imageControllerGetList**](#imagecontrollergetlist) | **GET** /image/list | |
 |[**imageControllerGetLowResImage**](#imagecontrollergetlowresimage) | **GET** /image/low-res | |
 |[**imageControllerGetOriginalImage**](#imagecontrollergetoriginalimage) | **GET** /image/original | |
+|[**imageControllerGetThumbImage**](#imagecontrollergetthumbimage) | **GET** /image/thumb | |
 |[**imageControllerProcessingSummary**](#imagecontrollerprocessingsummary) | **GET** /image/processing/summary | |
 |[**imageControllerReplaceOriginal**](#imagecontrollerreplaceoriginal) | **POST** /image/{id}/original | |
 |[**imageControllerReprocess**](#imagecontrollerreprocess) | **POST** /image/reprocess | |
@@ -367,6 +368,56 @@ const { status, data } = await apiInstance.imageControllerGetOriginalImage(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Get original image file stream |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **imageControllerGetThumbImage**
+> File imageControllerGetThumbImage()
+
+
+### Example
+
+```typescript
+import {
+    ImageApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ImageApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.imageControllerGetThumbImage(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**File**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: image/*
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Get the ~640 px image for tiles and pickers (the cover until the image is reprocessed) |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
