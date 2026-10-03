@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **healthy** | **boolean** |  | [default to undefined]
 **digest** | **string** |  | [optional] [default to undefined]
 **homelabCommit** | **string** |  | [optional] [default to undefined]
+**commit** | **string** |  | [optional] [default to undefined]
 **failureReason** | **string** |  | [optional] [default to undefined]
 
 ## Example
@@ -23,6 +24,7 @@ const instance: DeployResultDto = {
     healthy,
     digest,
     homelabCommit,
+    commit,
     failureReason,
 };
 ```

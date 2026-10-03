@@ -1,14 +1,12 @@
-# AppSourceType
+# BuildMode
 
 
 ## Enum
 
-* `Rendered` (value: `'RENDERED'`)
-
-* `Git` (value: `'GIT'`)
-
-* `Host` (value: `'HOST'`)
-
 * `Compose` (value: `'COMPOSE'`)
+
+* `Registry` (value: `'REGISTRY'`)
+
+* `None` (value: `'NONE'`)
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

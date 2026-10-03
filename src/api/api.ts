@@ -273,6 +273,49 @@ export interface AgentContainerDto {
 /**
  * 
  * @export
+ * @interface AgentHealthResponse
+ */
+export interface AgentHealthResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AgentHealthResponse
+     */
+    'online': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentHealthResponse
+     */
+    'lastSeenAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AgentHealthResponse
+     */
+    'version'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof AgentHealthResponse
+     */
+    'uptimeSeconds'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof AgentHealthResponse
+     */
+    'containerCount'?: number | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AgentHealthResponse
+     */
+    'dockerReachable'?: boolean | null;
+}
+/**
+ * 
+ * @export
  * @interface AgentHeartbeatDto
  */
 export interface AgentHeartbeatDto {
@@ -535,10 +578,367 @@ export type AppPlatform = typeof AppPlatform[keyof typeof AppPlatform];
 export const AppSourceType = {
     Rendered: 'RENDERED',
     Git: 'GIT',
-    Host: 'HOST'
+    Host: 'HOST',
+    Compose: 'COMPOSE'
 } as const;
 
 export type AppSourceType = typeof AppSourceType[keyof typeof AppSourceType];
+
+
+/**
+ * 
+ * @export
+ * @interface ApplicationDetailResponse
+ */
+export interface ApplicationDetailResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'displayName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {ApplicationTier}
+     * @memberof ApplicationDetailResponse
+     */
+    'tier': ApplicationTier;
+    /**
+     * 
+     * @type {AppSourceType}
+     * @memberof ApplicationDetailResponse
+     */
+    'sourceType': AppSourceType;
+    /**
+     * 
+     * @type {ContainerOrigin}
+     * @memberof ApplicationDetailResponse
+     */
+    'origin': ContainerOrigin;
+    /**
+     * 
+     * @type {BuildMode}
+     * @memberof ApplicationDetailResponse
+     */
+    'buildMode': BuildMode;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'image'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'gitRepoId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'compose'?: string | null;
+    /**
+     * 
+     * @type {object}
+     * @memberof ApplicationDetailResponse
+     */
+    'spec': object;
+    /**
+     * 
+     * @type {CommandRuntimeStatus}
+     * @memberof ApplicationDetailResponse
+     */
+    'runtimeStatus': CommandRuntimeStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'runtimeSince'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'runtimeMessage'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'availableDigest'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'lastPolledAt'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationDetailResponse
+     */
+    'webhookEnabled': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationDetailResponse
+     */
+    'hasWebhookSecret': boolean;
+    /**
+     * 
+     * @type {ReleaseResponse}
+     * @memberof ApplicationDetailResponse
+     */
+    'currentRelease'?: ReleaseResponse | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
+    'updatedAt': string;
+    /**
+     * 
+     * @type {ApplicationGitRepoResponse}
+     * @memberof ApplicationDetailResponse
+     */
+    'gitRepo'?: ApplicationGitRepoResponse | null;
+    /**
+     * 
+     * @type {Array<ReleaseResponse>}
+     * @memberof ApplicationDetailResponse
+     */
+    'releases': Array<ReleaseResponse>;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ApplicationEnvResponse
+ */
+export interface ApplicationEnvResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationEnvResponse
+     */
+    'key': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationEnvResponse
+     */
+    'isSecret': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationEnvResponse
+     */
+    'value'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationEnvResponse
+     */
+    'isSet': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface ApplicationGitRepoResponse
+ */
+export interface ApplicationGitRepoResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationGitRepoResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationGitRepoResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationGitRepoResponse
+     */
+    'repo': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationGitRepoResponse
+     */
+    'branch': string;
+}
+/**
+ * 
+ * @export
+ * @interface ApplicationResponse
+ */
+export interface ApplicationResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'displayName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {ApplicationTier}
+     * @memberof ApplicationResponse
+     */
+    'tier': ApplicationTier;
+    /**
+     * 
+     * @type {AppSourceType}
+     * @memberof ApplicationResponse
+     */
+    'sourceType': AppSourceType;
+    /**
+     * 
+     * @type {ContainerOrigin}
+     * @memberof ApplicationResponse
+     */
+    'origin': ContainerOrigin;
+    /**
+     * 
+     * @type {BuildMode}
+     * @memberof ApplicationResponse
+     */
+    'buildMode': BuildMode;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'image'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'gitRepoId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'compose'?: string | null;
+    /**
+     * 
+     * @type {object}
+     * @memberof ApplicationResponse
+     */
+    'spec': object;
+    /**
+     * 
+     * @type {CommandRuntimeStatus}
+     * @memberof ApplicationResponse
+     */
+    'runtimeStatus': CommandRuntimeStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'runtimeSince'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'runtimeMessage'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'availableDigest'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'lastPolledAt'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationResponse
+     */
+    'webhookEnabled': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ApplicationResponse
+     */
+    'hasWebhookSecret': boolean;
+    /**
+     * 
+     * @type {ReleaseResponse}
+     * @memberof ApplicationResponse
+     */
+    'currentRelease'?: ReleaseResponse | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'updatedAt': string;
+}
 
 
 /**
@@ -774,6 +1174,116 @@ export interface AttentionResponse {
      */
     'counts': AttentionCountsResponse;
 }
+/**
+ * 
+ * @export
+ * @interface AuditActorResponse
+ */
+export interface AuditActorResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditActorResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditActorResponse
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditActorResponse
+     */
+    'firstName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditActorResponse
+     */
+    'lastName'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface AuditEntryResponse
+ */
+export interface AuditEntryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditEntryResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {AuditActorResponse}
+     * @memberof AuditEntryResponse
+     */
+    'actor'?: AuditActorResponse | null;
+    /**
+     * 
+     * @type {AuditSource}
+     * @memberof AuditEntryResponse
+     */
+    'source': AuditSource;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditEntryResponse
+     */
+    'action': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditEntryResponse
+     */
+    'entityType': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditEntryResponse
+     */
+    'entityId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditEntryResponse
+     */
+    'entityName'?: string | null;
+    /**
+     * 
+     * @type {object}
+     * @memberof AuditEntryResponse
+     */
+    'diff'?: object | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AuditEntryResponse
+     */
+    'createdAt': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const AuditSource = {
+    Panel: 'PANEL',
+    Webhook: 'WEBHOOK',
+    Schedule: 'SCHEDULE',
+    System: 'SYSTEM'
+} as const;
+
+export type AuditSource = typeof AuditSource[keyof typeof AuditSource];
+
+
 /**
  * 
  * @export
@@ -1527,6 +2037,21 @@ export type BlogSectionType = typeof BlogSectionType[keyof typeof BlogSectionTyp
  * @enum {string}
  */
 
+export const BuildMode = {
+    Compose: 'COMPOSE',
+    Registry: 'REGISTRY',
+    None: 'NONE'
+} as const;
+
+export type BuildMode = typeof BuildMode[keyof typeof BuildMode];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
 export const CalloutVariant = {
     Info: 'INFO',
     Tip: 'TIP',
@@ -1684,6 +2209,19 @@ export interface CategoryTranslationResponse {
      * @memberof CategoryTranslationResponse
      */
     'label'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface CheckComposeDto
+ */
+export interface CheckComposeDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CheckComposeDto
+     */
+    'compose': string;
 }
 /**
  * 
@@ -2181,6 +2719,113 @@ export type CommentStage = typeof CommentStage[keyof typeof CommentStage];
 /**
  * 
  * @export
+ * @interface ComposeCheckResponse
+ */
+export interface ComposeCheckResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ComposeCheckResponse
+     */
+    'compose': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ComposeCheckResponse
+     */
+    'movedSecrets': Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ComposeCheckResponse
+     */
+    'notes': Array<string>;
+    /**
+     * 
+     * @type {BuildMode}
+     * @memberof ComposeCheckResponse
+     */
+    'buildMode': BuildMode;
+    /**
+     * 
+     * @type {Array<ComposeVariableResponse>}
+     * @memberof ComposeCheckResponse
+     */
+    'variables': Array<ComposeVariableResponse>;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ComposeTakeoverPreviewResponse
+ */
+export interface ComposeTakeoverPreviewResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ComposeTakeoverPreviewResponse
+     */
+    'compose': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ComposeTakeoverPreviewResponse
+     */
+    'currentCompose': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ComposeTakeoverPreviewResponse
+     */
+    'movedSecrets': Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ComposeTakeoverPreviewResponse
+     */
+    'variablesToFill': Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ComposeTakeoverPreviewResponse
+     */
+    'notes': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ComposeTakeoverPreviewResponse
+     */
+    'workingDir'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ComposeTakeoverPreviewResponse
+     */
+    'projectName': string;
+}
+/**
+ * 
+ * @export
+ * @interface ComposeVariableResponse
+ */
+export interface ComposeVariableResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ComposeVariableResponse
+     */
+    'key': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ComposeVariableResponse
+     */
+    'hasDefault': boolean;
+}
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
@@ -2392,6 +3037,53 @@ export interface ContainerChangedDto {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const ContainerOrigin = {
+    Managed: 'MANAGED',
+    Adoptable: 'ADOPTABLE',
+    Truenas: 'TRUENAS',
+    Standalone: 'STANDALONE'
+} as const;
+
+export type ContainerOrigin = typeof ContainerOrigin[keyof typeof ContainerOrigin];
+
+
+/**
+ * 
+ * @export
+ * @interface ContainerOverviewResponse
+ */
+export interface ContainerOverviewResponse {
+    /**
+     * 
+     * @type {Array<DiscoveredStackResponse>}
+     * @memberof ContainerOverviewResponse
+     */
+    'stacks': Array<DiscoveredStackResponse>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContainerOverviewResponse
+     */
+    'receivedAt'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ContainerOverviewResponse
+     */
+    'known': boolean;
+    /**
+     * 
+     * @type {AgentHealthResponse}
+     * @memberof ContainerOverviewResponse
+     */
+    'agent': AgentHealthResponse;
+}
+/**
+ * 
+ * @export
  * @interface ContainerSnapshotDto
  */
 export interface ContainerSnapshotDto {
@@ -2508,10 +3200,16 @@ export interface CreateApplicationDto {
     'gitRepoId'?: string;
     /**
      * 
+     * @type {object}
+     * @memberof CreateApplicationDto
+     */
+    'spec'?: object;
+    /**
+     * 
      * @type {string}
      * @memberof CreateApplicationDto
      */
-    'serverCategoryId': string;
+    'compose'?: string;
 }
 
 
@@ -3617,6 +4315,12 @@ export interface CreateReleaseDto {
      * @memberof CreateReleaseDto
      */
     'trigger'?: ReleaseTrigger;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateReleaseDto
+     */
+    'ref'?: string;
 }
 
 
@@ -4168,6 +4872,12 @@ export interface DeployResultDto {
      * @type {string}
      * @memberof DeployResultDto
      */
+    'commit'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployResultDto
+     */
     'failureReason'?: string | null;
 }
 /**
@@ -4497,6 +5207,124 @@ export interface DimensionsDto {
      */
     'height': string;
 }
+/**
+ * 
+ * @export
+ * @interface DiscoveredContainerResponse
+ */
+export interface DiscoveredContainerResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredContainerResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredContainerResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredContainerResponse
+     */
+    'image': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredContainerResponse
+     */
+    'imageDigest'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredContainerResponse
+     */
+    'state': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredContainerResponse
+     */
+    'health'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof DiscoveredContainerResponse
+     */
+    'exitCode'?: number | null;
+    /**
+     * 
+     * @type {object}
+     * @memberof DiscoveredContainerResponse
+     */
+    'labels': object;
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredContainerResponse
+     */
+    'createdAt'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface DiscoveredStackResponse
+ */
+export interface DiscoveredStackResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredStackResponse
+     */
+    'project': string;
+    /**
+     * 
+     * @type {ContainerOrigin}
+     * @memberof DiscoveredStackResponse
+     */
+    'origin': ContainerOrigin;
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredStackResponse
+     */
+    'slug'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DiscoveredStackResponse
+     */
+    'workingDir'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof DiscoveredStackResponse
+     */
+    'configFiles': Array<string>;
+    /**
+     * 
+     * @type {CommandRuntimeStatus}
+     * @memberof DiscoveredStackResponse
+     */
+    'runtimeStatus': CommandRuntimeStatus;
+    /**
+     * 
+     * @type {Array<DiscoveredContainerResponse>}
+     * @memberof DiscoveredStackResponse
+     */
+    'containers': Array<DiscoveredContainerResponse>;
+    /**
+     * 
+     * @type {Array<StackActionKind>}
+     * @memberof DiscoveredStackResponse
+     */
+    'allowedActions': Array<StackActionKind>;
+}
+
+
 /**
  * 
  * @export
@@ -6947,6 +7775,191 @@ export interface GenerateTokenResponseDto {
 /**
  * 
  * @export
+ * @interface GitAccountResponse
+ */
+export interface GitAccountResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GitAccountResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitAccountResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitAccountResponse
+     */
+    'provider': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitAccountResponse
+     */
+    'username': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GitAccountResponse
+     */
+    'hasToken': boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof GitAccountResponse
+     */
+    'repoCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitAccountResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitAccountResponse
+     */
+    'updatedAt': string;
+}
+/**
+ * 
+ * @export
+ * @interface GitCredentialsRequestDto
+ */
+export interface GitCredentialsRequestDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof GitCredentialsRequestDto
+     */
+    'repoId': string;
+}
+/**
+ * 
+ * @export
+ * @interface GitRepoAccountResponse
+ */
+export interface GitRepoAccountResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoAccountResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoAccountResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoAccountResponse
+     */
+    'username': string;
+}
+/**
+ * 
+ * @export
+ * @interface GitRepoApplicationResponse
+ */
+export interface GitRepoApplicationResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoApplicationResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoApplicationResponse
+     */
+    'slug': string;
+}
+/**
+ * 
+ * @export
+ * @interface GitRepoResponse
+ */
+export interface GitRepoResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoResponse
+     */
+    'repo': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoResponse
+     */
+    'branch': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoResponse
+     */
+    'clonePath'?: string | null;
+    /**
+     * 
+     * @type {GitRepoAccountResponse}
+     * @memberof GitRepoResponse
+     */
+    'account'?: GitRepoAccountResponse | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoResponse
+     */
+    'lastCommit'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoResponse
+     */
+    'lastFetchedAt'?: string | null;
+    /**
+     * 
+     * @type {Array<GitRepoApplicationResponse>}
+     * @memberof GitRepoResponse
+     */
+    'applications': Array<GitRepoApplicationResponse>;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRepoResponse
+     */
+    'updatedAt': string;
+}
+/**
+ * 
+ * @export
  * @interface GrantListResponse
  */
 export interface GrantListResponse {
@@ -7903,6 +8916,86 @@ export interface ImmichStatusResponse {
      * @memberof ImmichStatusResponse
      */
     'libraryPath'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ImportPreviewResponse
+ */
+export interface ImportPreviewResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImportPreviewResponse
+     */
+    'serviceName': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImportPreviewResponse
+     */
+    'image'?: string | null;
+    /**
+     * 
+     * @type {object}
+     * @memberof ImportPreviewResponse
+     */
+    'spec': object;
+    /**
+     * 
+     * @type {Array<ImportedEnvResponse>}
+     * @memberof ImportPreviewResponse
+     */
+    'env': Array<ImportedEnvResponse>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ImportPreviewResponse
+     */
+    'warnings': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImportPreviewResponse
+     */
+    'currentCompose': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ImportPreviewResponse
+     */
+    'secretKeysToFill': Array<string>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ImportPreviewResponse
+     */
+    'recommended': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface ImportedEnvResponse
+ */
+export interface ImportedEnvResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ImportedEnvResponse
+     */
+    'key': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ImportedEnvResponse
+     */
+    'value'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ImportedEnvResponse
+     */
+    'isSecret': boolean;
 }
 /**
  * 
@@ -14923,6 +16016,19 @@ export interface RedeemResultResponse {
 /**
  * 
  * @export
+ * @interface RefreshRequestedResponse
+ */
+export interface RefreshRequestedResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RefreshRequestedResponse
+     */
+    'requested': boolean;
+}
+/**
+ * 
+ * @export
  * @interface RegisterDeviceDto
  */
 export interface RegisterDeviceDto {
@@ -15029,6 +16135,145 @@ export interface RegisterProcessLogDto {
 /**
  * 
  * @export
+ * @interface ReleaseActorResponse
+ */
+export interface ReleaseActorResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseActorResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseActorResponse
+     */
+    'email': string;
+}
+/**
+ * 
+ * @export
+ * @interface ReleaseResponse
+ */
+export interface ReleaseResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'version'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'digest'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'commit'?: string | null;
+    /**
+     * 
+     * @type {ReleaseStatus}
+     * @memberof ReleaseResponse
+     */
+    'status': ReleaseStatus;
+    /**
+     * 
+     * @type {ReleaseTrigger}
+     * @memberof ReleaseResponse
+     */
+    'trigger': ReleaseTrigger;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'failureReason'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'homelabCommit'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'processId'?: string | null;
+    /**
+     * 
+     * @type {ReleaseActorResponse}
+     * @memberof ReleaseResponse
+     */
+    'triggeredBy'?: ReleaseActorResponse | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'deployedAt'?: string | null;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ReleaseStartedResponse
+ */
+export interface ReleaseStartedResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseStartedResponse
+     */
+    'releaseId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseStartedResponse
+     */
+    'processId': string;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ReleaseStatus = {
+    Pending: 'PENDING',
+    Deploying: 'DEPLOYING',
+    Active: 'ACTIVE',
+    Failed: 'FAILED',
+    Superseded: 'SUPERSEDED',
+    RolledBack: 'ROLLED_BACK',
+    Deferred: 'DEFERRED',
+    Unknown: 'UNKNOWN'
+} as const;
+
+export type ReleaseStatus = typeof ReleaseStatus[keyof typeof ReleaseStatus];
+
+
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
@@ -15044,6 +16289,55 @@ export const ReleaseTrigger = {
 export type ReleaseTrigger = typeof ReleaseTrigger[keyof typeof ReleaseTrigger];
 
 
+/**
+ * 
+ * @export
+ * @interface RenderPreviewResponse
+ */
+export interface RenderPreviewResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof RenderPreviewResponse
+     */
+    'compose'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof RenderPreviewResponse
+     */
+    'composeHash'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof RenderPreviewResponse
+     */
+    'env'?: string | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof RenderPreviewResponse
+     */
+    'envKeys': Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof RenderPreviewResponse
+     */
+    'missingKeys': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof RenderPreviewResponse
+     */
+    'previousCompose'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RenderPreviewResponse
+     */
+    'changed': boolean;
+}
 /**
  * 
  * @export
@@ -17443,6 +18737,58 @@ export interface SkyEclipseResponse {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const StackActionKind = {
+    Deploy: 'deploy',
+    Rollback: 'rollback',
+    Start: 'start',
+    Restart: 'restart',
+    Stop: 'stop',
+    Destroy: 'destroy',
+    Logs: 'logs',
+    Adopt: 'adopt'
+} as const;
+
+export type StackActionKind = typeof StackActionKind[keyof typeof StackActionKind];
+
+
+/**
+ * 
+ * @export
+ * @interface StackActionResponse
+ */
+export interface StackActionResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StackActionResponse
+     */
+    'accepted': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof StackActionResponse
+     */
+    'message'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface StackLogsResponse
+ */
+export interface StackLogsResponse {
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof StackLogsResponse
+     */
+    'lines': Array<string>;
+}
+/**
+ * 
+ * @export
  * @interface SubsystemCheckResponse
  */
 export interface SubsystemCheckResponse {
@@ -17632,6 +18978,19 @@ export interface TagUpdateDto {
      * @memberof TagUpdateDto
      */
     'color'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TakeoverComposeDto
+ */
+export interface TakeoverComposeDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof TakeoverComposeDto
+     */
+    'compose'?: string;
 }
 /**
  * 
@@ -18052,6 +19411,18 @@ export interface UpdateApplicationDto {
      * @memberof UpdateApplicationDto
      */
     'webhookEnabled'?: boolean;
+    /**
+     * 
+     * @type {object}
+     * @memberof UpdateApplicationDto
+     */
+    'spec'?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateApplicationDto
+     */
+    'compose'?: string;
 }
 
 
@@ -18965,6 +20336,55 @@ export interface UserSettingsResponseDto {
 /**
  * 
  * @export
+ * @interface VariableResponse
+ */
+export interface VariableResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof VariableResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof VariableResponse
+     */
+    'key': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof VariableResponse
+     */
+    'isSecret': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof VariableResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof VariableResponse
+     */
+    'value'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof VariableResponse
+     */
+    'isSet': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof VariableResponse
+     */
+    'updatedAt': string;
+}
+/**
+ * 
+ * @export
  * @interface VersionListResponse
  */
 export interface VersionListResponse {
@@ -19213,6 +20633,31 @@ export interface VisibleSectionResponse {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface WebhookSecretResponse
+ */
+export interface WebhookSecretResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof WebhookSecretResponse
+     */
+    'secret': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WebhookSecretResponse
+     */
+    'header': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WebhookSecretResponse
+     */
+    'note': string;
+}
 /**
  * 
  * @export
@@ -34556,15 +36001,12 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 
          * @param {string} project 
-         * @param {string} serverId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerAdoptStack: async (project: string, serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deployControllerAdoptStack: async (project: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'project' is not null or undefined
             assertParamExists('deployControllerAdoptStack', 'project', project)
-            // verify required parameter 'serverId' is not null or undefined
-            assertParamExists('deployControllerAdoptStack', 'serverId', serverId)
             const localVarPath = `/deploy/containers/{project}/adopt`
                 .replace(`{${"project"}}`, encodeURIComponent(String(project)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -34581,10 +36023,6 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication bearer required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (serverId !== undefined) {
-                localVarQueryParameter['serverId'] = serverId;
-            }
 
 
     
@@ -34661,6 +36099,88 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {TakeoverComposeDto} takeoverComposeDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerApplyTakeover: async (id: string, takeoverComposeDto: TakeoverComposeDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerApplyTakeover', 'id', id)
+            // verify required parameter 'takeoverComposeDto' is not null or undefined
+            assertParamExists('deployControllerApplyTakeover', 'takeoverComposeDto', takeoverComposeDto)
+            const localVarPath = `/deploy/applications/{id}/takeover`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(takeoverComposeDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CheckComposeDto} checkComposeDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCheckCompose: async (checkComposeDto: CheckComposeDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'checkComposeDto' is not null or undefined
+            assertParamExists('deployControllerCheckCompose', 'checkComposeDto', checkComposeDto)
+            const localVarPath = `/deploy/compose/check`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(checkComposeDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -35201,17 +36721,15 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
          * 
          * @param {string} entityType 
          * @param {string} entityId 
-         * @param {string} take 
+         * @param {number} [take] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerListAudit: async (entityType: string, entityId: string, take: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deployControllerListAudit: async (entityType: string, entityId: string, take?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'entityType' is not null or undefined
             assertParamExists('deployControllerListAudit', 'entityType', entityType)
             // verify required parameter 'entityId' is not null or undefined
             assertParamExists('deployControllerListAudit', 'entityId', entityId)
-            // verify required parameter 'take' is not null or undefined
-            assertParamExists('deployControllerListAudit', 'take', take)
             const localVarPath = `/deploy/audit/{entityType}/{entityId}`
                 .replace(`{${"entityType"}}`, encodeURIComponent(String(entityType)))
                 .replace(`{${"entityId"}}`, encodeURIComponent(String(entityId)));
@@ -35490,14 +37008,18 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
-         * @param {string} serverId 
+         * @param {string} id 
+         * @param {TakeoverComposeDto} takeoverComposeDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerRefreshContainers: async (serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'serverId' is not null or undefined
-            assertParamExists('deployControllerRefreshContainers', 'serverId', serverId)
-            const localVarPath = `/deploy/containers/refresh`;
+        deployControllerPreviewTakeover: async (id: string, takeoverComposeDto: TakeoverComposeDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerPreviewTakeover', 'id', id)
+            // verify required parameter 'takeoverComposeDto' is not null or undefined
+            assertParamExists('deployControllerPreviewTakeover', 'takeoverComposeDto', takeoverComposeDto)
+            const localVarPath = `/deploy/applications/{id}/takeover/preview`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -35513,9 +37035,41 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (serverId !== undefined) {
-                localVarQueryParameter['serverId'] = serverId;
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(takeoverComposeDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRefreshContainers: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/deploy/containers/refresh`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
             }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -35643,17 +37197,14 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
          * 
          * @param {string} project 
          * @param {string} action 
-         * @param {string} serverId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerRunStackAction: async (project: string, action: string, serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deployControllerRunStackAction: async (project: string, action: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'project' is not null or undefined
             assertParamExists('deployControllerRunStackAction', 'project', project)
             // verify required parameter 'action' is not null or undefined
             assertParamExists('deployControllerRunStackAction', 'action', action)
-            // verify required parameter 'serverId' is not null or undefined
-            assertParamExists('deployControllerRunStackAction', 'serverId', serverId)
             const localVarPath = `/deploy/containers/{project}/actions/{action}`
                 .replace(`{${"project"}}`, encodeURIComponent(String(project)))
                 .replace(`{${"action"}}`, encodeURIComponent(String(action)));
@@ -35672,10 +37223,6 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-            if (serverId !== undefined) {
-                localVarQueryParameter['serverId'] = serverId;
-            }
-
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -35690,18 +37237,13 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 
          * @param {string} project 
-         * @param {string} tail 
-         * @param {string} serverId 
+         * @param {number} [tail] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerStackLogs: async (project: string, tail: string, serverId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deployControllerStackLogs: async (project: string, tail?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'project' is not null or undefined
             assertParamExists('deployControllerStackLogs', 'project', project)
-            // verify required parameter 'tail' is not null or undefined
-            assertParamExists('deployControllerStackLogs', 'tail', tail)
-            // verify required parameter 'serverId' is not null or undefined
-            assertParamExists('deployControllerStackLogs', 'serverId', serverId)
             const localVarPath = `/deploy/containers/{project}/logs`
                 .replace(`{${"project"}}`, encodeURIComponent(String(project)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -35721,10 +37263,6 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
 
             if (tail !== undefined) {
                 localVarQueryParameter['tail'] = tail;
-            }
-
-            if (serverId !== undefined) {
-                localVarQueryParameter['serverId'] = serverId;
             }
 
 
@@ -35966,12 +37504,11 @@ export const DeployApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} project 
-         * @param {string} serverId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerAdoptStack(project: string, serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerAdoptStack(project, serverId, options);
+        async deployControllerAdoptStack(project: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationDetailResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerAdoptStack(project, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerAdoptStack']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -35981,7 +37518,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerAgentStatus(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerAgentStatus(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AgentHealthResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerAgentStatus(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerAgentStatus']?.[localVarOperationServerIndex]?.url;
@@ -35993,10 +37530,35 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerApplyImport(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerApplyImport(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationDetailResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerApplyImport(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerApplyImport']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {TakeoverComposeDto} takeoverComposeDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerApplyTakeover(id: string, takeoverComposeDto: TakeoverComposeDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationDetailResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerApplyTakeover(id, takeoverComposeDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerApplyTakeover']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CheckComposeDto} checkComposeDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerCheckCompose(checkComposeDto: CheckComposeDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ComposeCheckResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCheckCompose(checkComposeDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCheckCompose']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -36005,7 +37567,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerCreateApplication(createApplicationDto: CreateApplicationDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerCreateApplication(createApplicationDto: CreateApplicationDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationDetailResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCreateApplication(createApplicationDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCreateApplication']?.[localVarOperationServerIndex]?.url;
@@ -36017,7 +37579,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerCreateGitAccount(upsertGitAccountDto: UpsertGitAccountDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerCreateGitAccount(upsertGitAccountDto: UpsertGitAccountDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GitAccountResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCreateGitAccount(upsertGitAccountDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCreateGitAccount']?.[localVarOperationServerIndex]?.url;
@@ -36029,7 +37591,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerCreateGitRepo(upsertGitRepoDto: UpsertGitRepoDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerCreateGitRepo(upsertGitRepoDto: UpsertGitRepoDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GitRepoResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCreateGitRepo(upsertGitRepoDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCreateGitRepo']?.[localVarOperationServerIndex]?.url;
@@ -36042,7 +37604,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerCreateRelease(id: string, createReleaseDto: CreateReleaseDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerCreateRelease(id: string, createReleaseDto: CreateReleaseDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReleaseStartedResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCreateRelease(id, createReleaseDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCreateRelease']?.[localVarOperationServerIndex]?.url;
@@ -36127,7 +37689,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerGetApplication(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerGetApplication(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationDetailResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerGetApplication(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerGetApplication']?.[localVarOperationServerIndex]?.url;
@@ -36139,7 +37701,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerGetContainerStack(project: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerGetContainerStack(project: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DiscoveredStackResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerGetContainerStack(project, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerGetContainerStack']?.[localVarOperationServerIndex]?.url;
@@ -36151,7 +37713,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerGetGitRepo(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerGetGitRepo(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GitRepoResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerGetGitRepo(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerGetGitRepo']?.[localVarOperationServerIndex]?.url;
@@ -36162,7 +37724,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerListApplications(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerListApplications(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApplicationResponse>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListApplications(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListApplications']?.[localVarOperationServerIndex]?.url;
@@ -36172,11 +37734,11 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * 
          * @param {string} entityType 
          * @param {string} entityId 
-         * @param {string} take 
+         * @param {number} [take] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerListAudit(entityType: string, entityId: string, take: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerListAudit(entityType: string, entityId: string, take?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AuditEntryResponse>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListAudit(entityType, entityId, take, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListAudit']?.[localVarOperationServerIndex]?.url;
@@ -36187,7 +37749,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerListContainers(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerListContainers(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContainerOverviewResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListContainers(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListContainers']?.[localVarOperationServerIndex]?.url;
@@ -36199,7 +37761,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerListEnv(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerListEnv(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ApplicationEnvResponse>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListEnv(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListEnv']?.[localVarOperationServerIndex]?.url;
@@ -36210,7 +37772,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerListGitAccounts(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerListGitAccounts(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GitAccountResponse>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListGitAccounts(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListGitAccounts']?.[localVarOperationServerIndex]?.url;
@@ -36221,7 +37783,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerListGitRepos(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerListGitRepos(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GitRepoResponse>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListGitRepos(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListGitRepos']?.[localVarOperationServerIndex]?.url;
@@ -36233,7 +37795,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerListReleases(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerListReleases(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ReleaseResponse>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListReleases(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListReleases']?.[localVarOperationServerIndex]?.url;
@@ -36244,7 +37806,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerListVariables(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerListVariables(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<VariableResponse>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListVariables(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListVariables']?.[localVarOperationServerIndex]?.url;
@@ -36256,7 +37818,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerPreviewImport(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerPreviewImport(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImportPreviewResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerPreviewImport(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerPreviewImport']?.[localVarOperationServerIndex]?.url;
@@ -36264,12 +37826,24 @@ export const DeployApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} serverId 
+         * @param {string} id 
+         * @param {TakeoverComposeDto} takeoverComposeDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerRefreshContainers(serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRefreshContainers(serverId, options);
+        async deployControllerPreviewTakeover(id: string, takeoverComposeDto: TakeoverComposeDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ComposeTakeoverPreviewResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerPreviewTakeover(id, takeoverComposeDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerPreviewTakeover']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerRefreshContainers(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RefreshRequestedResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRefreshContainers(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRefreshContainers']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -36280,7 +37854,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerRenderApplication(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerRenderApplication(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RenderPreviewResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRenderApplication(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRenderApplication']?.[localVarOperationServerIndex]?.url;
@@ -36292,7 +37866,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerRollback(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerRollback(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReleaseStartedResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRollback(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRollback']?.[localVarOperationServerIndex]?.url;
@@ -36304,7 +37878,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerRotateWebhookSecret(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerRotateWebhookSecret(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WebhookSecretResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRotateWebhookSecret(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRotateWebhookSecret']?.[localVarOperationServerIndex]?.url;
@@ -36314,12 +37888,11 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * 
          * @param {string} project 
          * @param {string} action 
-         * @param {string} serverId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerRunStackAction(project: string, action: string, serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRunStackAction(project, action, serverId, options);
+        async deployControllerRunStackAction(project: string, action: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StackActionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRunStackAction(project, action, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRunStackAction']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -36327,13 +37900,12 @@ export const DeployApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} project 
-         * @param {string} tail 
-         * @param {string} serverId 
+         * @param {number} [tail] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerStackLogs(project: string, tail: string, serverId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerStackLogs(project, tail, serverId, options);
+        async deployControllerStackLogs(project: string, tail?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StackLogsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerStackLogs(project, tail, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerStackLogs']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -36345,7 +37917,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerUpdateApplication(id: string, updateApplicationDto: UpdateApplicationDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerUpdateApplication(id: string, updateApplicationDto: UpdateApplicationDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationDetailResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpdateApplication(id, updateApplicationDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpdateApplication']?.[localVarOperationServerIndex]?.url;
@@ -36358,7 +37930,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerUpdateGitAccount(id: string, upsertGitAccountDto: UpsertGitAccountDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerUpdateGitAccount(id: string, upsertGitAccountDto: UpsertGitAccountDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GitAccountResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpdateGitAccount(id, upsertGitAccountDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpdateGitAccount']?.[localVarOperationServerIndex]?.url;
@@ -36371,7 +37943,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerUpdateGitRepo(id: string, upsertGitRepoDto: UpsertGitRepoDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerUpdateGitRepo(id: string, upsertGitRepoDto: UpsertGitRepoDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GitRepoResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpdateGitRepo(id, upsertGitRepoDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpdateGitRepo']?.[localVarOperationServerIndex]?.url;
@@ -36385,7 +37957,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerUpsertEnv(id: string, key: string, upsertApplicationEnvDto: UpsertApplicationEnvDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerUpsertEnv(id: string, key: string, upsertApplicationEnvDto: UpsertApplicationEnvDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationEnvResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpsertEnv(id, key, upsertApplicationEnvDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpsertEnv']?.[localVarOperationServerIndex]?.url;
@@ -36397,7 +37969,7 @@ export const DeployApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deployControllerUpsertVariable(upsertVariableDto: UpsertVariableDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async deployControllerUpsertVariable(upsertVariableDto: UpsertVariableDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VariableResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerUpsertVariable(upsertVariableDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerUpsertVariable']?.[localVarOperationServerIndex]?.url;
@@ -36419,15 +37991,15 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerAdoptStack(requestParameters: DeployApiDeployControllerAdoptStackRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.deployControllerAdoptStack(requestParameters.project, requestParameters.serverId, options).then((request) => request(axios, basePath));
+        deployControllerAdoptStack(requestParameters: DeployApiDeployControllerAdoptStackRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationDetailResponse> {
+            return localVarFp.deployControllerAdoptStack(requestParameters.project, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerAgentStatus(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerAgentStatus(options?: RawAxiosRequestConfig): AxiosPromise<AgentHealthResponse> {
             return localVarFp.deployControllerAgentStatus(options).then((request) => request(axios, basePath));
         },
         /**
@@ -36436,8 +38008,26 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerApplyImport(requestParameters: DeployApiDeployControllerApplyImportRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerApplyImport(requestParameters: DeployApiDeployControllerApplyImportRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationDetailResponse> {
             return localVarFp.deployControllerApplyImport(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerApplyTakeoverRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerApplyTakeover(requestParameters: DeployApiDeployControllerApplyTakeoverRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationDetailResponse> {
+            return localVarFp.deployControllerApplyTakeover(requestParameters.id, requestParameters.takeoverComposeDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerCheckComposeRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCheckCompose(requestParameters: DeployApiDeployControllerCheckComposeRequest, options?: RawAxiosRequestConfig): AxiosPromise<ComposeCheckResponse> {
+            return localVarFp.deployControllerCheckCompose(requestParameters.checkComposeDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -36445,7 +38035,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerCreateApplication(requestParameters: DeployApiDeployControllerCreateApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerCreateApplication(requestParameters: DeployApiDeployControllerCreateApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationDetailResponse> {
             return localVarFp.deployControllerCreateApplication(requestParameters.createApplicationDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36454,7 +38044,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerCreateGitAccount(requestParameters: DeployApiDeployControllerCreateGitAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerCreateGitAccount(requestParameters: DeployApiDeployControllerCreateGitAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<GitAccountResponse> {
             return localVarFp.deployControllerCreateGitAccount(requestParameters.upsertGitAccountDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36463,7 +38053,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerCreateGitRepo(requestParameters: DeployApiDeployControllerCreateGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerCreateGitRepo(requestParameters: DeployApiDeployControllerCreateGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<GitRepoResponse> {
             return localVarFp.deployControllerCreateGitRepo(requestParameters.upsertGitRepoDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36472,7 +38062,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerCreateRelease(requestParameters: DeployApiDeployControllerCreateReleaseRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerCreateRelease(requestParameters: DeployApiDeployControllerCreateReleaseRequest, options?: RawAxiosRequestConfig): AxiosPromise<ReleaseStartedResponse> {
             return localVarFp.deployControllerCreateRelease(requestParameters.id, requestParameters.createReleaseDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36535,7 +38125,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerGetApplication(requestParameters: DeployApiDeployControllerGetApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerGetApplication(requestParameters: DeployApiDeployControllerGetApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationDetailResponse> {
             return localVarFp.deployControllerGetApplication(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36544,7 +38134,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerGetContainerStack(requestParameters: DeployApiDeployControllerGetContainerStackRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerGetContainerStack(requestParameters: DeployApiDeployControllerGetContainerStackRequest, options?: RawAxiosRequestConfig): AxiosPromise<DiscoveredStackResponse> {
             return localVarFp.deployControllerGetContainerStack(requestParameters.project, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36553,7 +38143,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerGetGitRepo(requestParameters: DeployApiDeployControllerGetGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerGetGitRepo(requestParameters: DeployApiDeployControllerGetGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<GitRepoResponse> {
             return localVarFp.deployControllerGetGitRepo(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36561,7 +38151,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerListApplications(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerListApplications(options?: RawAxiosRequestConfig): AxiosPromise<Array<ApplicationResponse>> {
             return localVarFp.deployControllerListApplications(options).then((request) => request(axios, basePath));
         },
         /**
@@ -36570,7 +38160,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerListAudit(requestParameters: DeployApiDeployControllerListAuditRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerListAudit(requestParameters: DeployApiDeployControllerListAuditRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<AuditEntryResponse>> {
             return localVarFp.deployControllerListAudit(requestParameters.entityType, requestParameters.entityId, requestParameters.take, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36578,7 +38168,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerListContainers(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerListContainers(options?: RawAxiosRequestConfig): AxiosPromise<ContainerOverviewResponse> {
             return localVarFp.deployControllerListContainers(options).then((request) => request(axios, basePath));
         },
         /**
@@ -36587,7 +38177,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerListEnv(requestParameters: DeployApiDeployControllerListEnvRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerListEnv(requestParameters: DeployApiDeployControllerListEnvRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<ApplicationEnvResponse>> {
             return localVarFp.deployControllerListEnv(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36595,7 +38185,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerListGitAccounts(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerListGitAccounts(options?: RawAxiosRequestConfig): AxiosPromise<Array<GitAccountResponse>> {
             return localVarFp.deployControllerListGitAccounts(options).then((request) => request(axios, basePath));
         },
         /**
@@ -36603,7 +38193,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerListGitRepos(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerListGitRepos(options?: RawAxiosRequestConfig): AxiosPromise<Array<GitRepoResponse>> {
             return localVarFp.deployControllerListGitRepos(options).then((request) => request(axios, basePath));
         },
         /**
@@ -36612,7 +38202,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerListReleases(requestParameters: DeployApiDeployControllerListReleasesRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerListReleases(requestParameters: DeployApiDeployControllerListReleasesRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<ReleaseResponse>> {
             return localVarFp.deployControllerListReleases(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36620,7 +38210,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerListVariables(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerListVariables(options?: RawAxiosRequestConfig): AxiosPromise<Array<VariableResponse>> {
             return localVarFp.deployControllerListVariables(options).then((request) => request(axios, basePath));
         },
         /**
@@ -36629,17 +38219,25 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerPreviewImport(requestParameters: DeployApiDeployControllerPreviewImportRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerPreviewImport(requestParameters: DeployApiDeployControllerPreviewImportRequest, options?: RawAxiosRequestConfig): AxiosPromise<ImportPreviewResponse> {
             return localVarFp.deployControllerPreviewImport(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {DeployApiDeployControllerRefreshContainersRequest} requestParameters Request parameters.
+         * @param {DeployApiDeployControllerPreviewTakeoverRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerRefreshContainers(requestParameters: DeployApiDeployControllerRefreshContainersRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.deployControllerRefreshContainers(requestParameters.serverId, options).then((request) => request(axios, basePath));
+        deployControllerPreviewTakeover(requestParameters: DeployApiDeployControllerPreviewTakeoverRequest, options?: RawAxiosRequestConfig): AxiosPromise<ComposeTakeoverPreviewResponse> {
+            return localVarFp.deployControllerPreviewTakeover(requestParameters.id, requestParameters.takeoverComposeDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRefreshContainers(options?: RawAxiosRequestConfig): AxiosPromise<RefreshRequestedResponse> {
+            return localVarFp.deployControllerRefreshContainers(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -36647,7 +38245,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerRenderApplication(requestParameters: DeployApiDeployControllerRenderApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerRenderApplication(requestParameters: DeployApiDeployControllerRenderApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<RenderPreviewResponse> {
             return localVarFp.deployControllerRenderApplication(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36656,7 +38254,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerRollback(requestParameters: DeployApiDeployControllerRollbackRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerRollback(requestParameters: DeployApiDeployControllerRollbackRequest, options?: RawAxiosRequestConfig): AxiosPromise<ReleaseStartedResponse> {
             return localVarFp.deployControllerRollback(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36665,7 +38263,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerRotateWebhookSecret(requestParameters: DeployApiDeployControllerRotateWebhookSecretRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerRotateWebhookSecret(requestParameters: DeployApiDeployControllerRotateWebhookSecretRequest, options?: RawAxiosRequestConfig): AxiosPromise<WebhookSecretResponse> {
             return localVarFp.deployControllerRotateWebhookSecret(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36674,8 +38272,8 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerRunStackAction(requestParameters: DeployApiDeployControllerRunStackActionRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.deployControllerRunStackAction(requestParameters.project, requestParameters.action, requestParameters.serverId, options).then((request) => request(axios, basePath));
+        deployControllerRunStackAction(requestParameters: DeployApiDeployControllerRunStackActionRequest, options?: RawAxiosRequestConfig): AxiosPromise<StackActionResponse> {
+            return localVarFp.deployControllerRunStackAction(requestParameters.project, requestParameters.action, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -36683,8 +38281,8 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerStackLogs(requestParameters: DeployApiDeployControllerStackLogsRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.deployControllerStackLogs(requestParameters.project, requestParameters.tail, requestParameters.serverId, options).then((request) => request(axios, basePath));
+        deployControllerStackLogs(requestParameters: DeployApiDeployControllerStackLogsRequest, options?: RawAxiosRequestConfig): AxiosPromise<StackLogsResponse> {
+            return localVarFp.deployControllerStackLogs(requestParameters.project, requestParameters.tail, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -36692,7 +38290,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerUpdateApplication(requestParameters: DeployApiDeployControllerUpdateApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerUpdateApplication(requestParameters: DeployApiDeployControllerUpdateApplicationRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationDetailResponse> {
             return localVarFp.deployControllerUpdateApplication(requestParameters.id, requestParameters.updateApplicationDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36701,7 +38299,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerUpdateGitAccount(requestParameters: DeployApiDeployControllerUpdateGitAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerUpdateGitAccount(requestParameters: DeployApiDeployControllerUpdateGitAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<GitAccountResponse> {
             return localVarFp.deployControllerUpdateGitAccount(requestParameters.id, requestParameters.upsertGitAccountDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36710,7 +38308,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerUpdateGitRepo(requestParameters: DeployApiDeployControllerUpdateGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerUpdateGitRepo(requestParameters: DeployApiDeployControllerUpdateGitRepoRequest, options?: RawAxiosRequestConfig): AxiosPromise<GitRepoResponse> {
             return localVarFp.deployControllerUpdateGitRepo(requestParameters.id, requestParameters.upsertGitRepoDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36719,7 +38317,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerUpsertEnv(requestParameters: DeployApiDeployControllerUpsertEnvRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerUpsertEnv(requestParameters: DeployApiDeployControllerUpsertEnvRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationEnvResponse> {
             return localVarFp.deployControllerUpsertEnv(requestParameters.id, requestParameters.key, requestParameters.upsertApplicationEnvDto, options).then((request) => request(axios, basePath));
         },
         /**
@@ -36728,7 +38326,7 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deployControllerUpsertVariable(requestParameters: DeployApiDeployControllerUpsertVariableRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        deployControllerUpsertVariable(requestParameters: DeployApiDeployControllerUpsertVariableRequest, options?: RawAxiosRequestConfig): AxiosPromise<VariableResponse> {
             return localVarFp.deployControllerUpsertVariable(requestParameters.upsertVariableDto, options).then((request) => request(axios, basePath));
         },
     };
@@ -36746,13 +38344,6 @@ export interface DeployApiDeployControllerAdoptStackRequest {
      * @memberof DeployApiDeployControllerAdoptStack
      */
     readonly project: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof DeployApiDeployControllerAdoptStack
-     */
-    readonly serverId: string
 }
 
 /**
@@ -36767,6 +38358,41 @@ export interface DeployApiDeployControllerApplyImportRequest {
      * @memberof DeployApiDeployControllerApplyImport
      */
     readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerApplyTakeover operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerApplyTakeoverRequest
+ */
+export interface DeployApiDeployControllerApplyTakeoverRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerApplyTakeover
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {TakeoverComposeDto}
+     * @memberof DeployApiDeployControllerApplyTakeover
+     */
+    readonly takeoverComposeDto: TakeoverComposeDto
+}
+
+/**
+ * Request parameters for deployControllerCheckCompose operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerCheckComposeRequest
+ */
+export interface DeployApiDeployControllerCheckComposeRequest {
+    /**
+     * 
+     * @type {CheckComposeDto}
+     * @memberof DeployApiDeployControllerCheckCompose
+     */
+    readonly checkComposeDto: CheckComposeDto
 }
 
 /**
@@ -36987,10 +38613,10 @@ export interface DeployApiDeployControllerListAuditRequest {
 
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof DeployApiDeployControllerListAudit
      */
-    readonly take: string
+    readonly take?: number
 }
 
 /**
@@ -37036,17 +38662,24 @@ export interface DeployApiDeployControllerPreviewImportRequest {
 }
 
 /**
- * Request parameters for deployControllerRefreshContainers operation in DeployApi.
+ * Request parameters for deployControllerPreviewTakeover operation in DeployApi.
  * @export
- * @interface DeployApiDeployControllerRefreshContainersRequest
+ * @interface DeployApiDeployControllerPreviewTakeoverRequest
  */
-export interface DeployApiDeployControllerRefreshContainersRequest {
+export interface DeployApiDeployControllerPreviewTakeoverRequest {
     /**
      * 
      * @type {string}
-     * @memberof DeployApiDeployControllerRefreshContainers
+     * @memberof DeployApiDeployControllerPreviewTakeover
      */
-    readonly serverId: string
+    readonly id: string
+
+    /**
+     * 
+     * @type {TakeoverComposeDto}
+     * @memberof DeployApiDeployControllerPreviewTakeover
+     */
+    readonly takeoverComposeDto: TakeoverComposeDto
 }
 
 /**
@@ -37110,13 +38743,6 @@ export interface DeployApiDeployControllerRunStackActionRequest {
      * @memberof DeployApiDeployControllerRunStackAction
      */
     readonly action: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof DeployApiDeployControllerRunStackAction
-     */
-    readonly serverId: string
 }
 
 /**
@@ -37134,17 +38760,10 @@ export interface DeployApiDeployControllerStackLogsRequest {
 
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof DeployApiDeployControllerStackLogs
      */
-    readonly tail: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof DeployApiDeployControllerStackLogs
-     */
-    readonly serverId: string
+    readonly tail?: number
 }
 
 /**
@@ -37267,7 +38886,7 @@ export class DeployApi extends BaseAPI {
      * @memberof DeployApi
      */
     public deployControllerAdoptStack(requestParameters: DeployApiDeployControllerAdoptStackRequest, options?: RawAxiosRequestConfig) {
-        return DeployApiFp(this.configuration).deployControllerAdoptStack(requestParameters.project, requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+        return DeployApiFp(this.configuration).deployControllerAdoptStack(requestParameters.project, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -37289,6 +38908,28 @@ export class DeployApi extends BaseAPI {
      */
     public deployControllerApplyImport(requestParameters: DeployApiDeployControllerApplyImportRequest, options?: RawAxiosRequestConfig) {
         return DeployApiFp(this.configuration).deployControllerApplyImport(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerApplyTakeoverRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerApplyTakeover(requestParameters: DeployApiDeployControllerApplyTakeoverRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerApplyTakeover(requestParameters.id, requestParameters.takeoverComposeDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerCheckComposeRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerCheckCompose(requestParameters: DeployApiDeployControllerCheckComposeRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerCheckCompose(requestParameters.checkComposeDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -37530,13 +39171,23 @@ export class DeployApi extends BaseAPI {
 
     /**
      * 
-     * @param {DeployApiDeployControllerRefreshContainersRequest} requestParameters Request parameters.
+     * @param {DeployApiDeployControllerPreviewTakeoverRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DeployApi
      */
-    public deployControllerRefreshContainers(requestParameters: DeployApiDeployControllerRefreshContainersRequest, options?: RawAxiosRequestConfig) {
-        return DeployApiFp(this.configuration).deployControllerRefreshContainers(requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+    public deployControllerPreviewTakeover(requestParameters: DeployApiDeployControllerPreviewTakeoverRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerPreviewTakeover(requestParameters.id, requestParameters.takeoverComposeDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerRefreshContainers(options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerRefreshContainers(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -37580,7 +39231,7 @@ export class DeployApi extends BaseAPI {
      * @memberof DeployApi
      */
     public deployControllerRunStackAction(requestParameters: DeployApiDeployControllerRunStackActionRequest, options?: RawAxiosRequestConfig) {
-        return DeployApiFp(this.configuration).deployControllerRunStackAction(requestParameters.project, requestParameters.action, requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+        return DeployApiFp(this.configuration).deployControllerRunStackAction(requestParameters.project, requestParameters.action, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -37591,7 +39242,7 @@ export class DeployApi extends BaseAPI {
      * @memberof DeployApi
      */
     public deployControllerStackLogs(requestParameters: DeployApiDeployControllerStackLogsRequest, options?: RawAxiosRequestConfig) {
-        return DeployApiFp(this.configuration).deployControllerStackLogs(requestParameters.project, requestParameters.tail, requestParameters.serverId, options).then((request) => request(this.axios, this.basePath));
+        return DeployApiFp(this.configuration).deployControllerStackLogs(requestParameters.project, requestParameters.tail, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

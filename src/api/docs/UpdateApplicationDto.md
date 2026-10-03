@@ -11,6 +11,8 @@ Name | Type | Description | Notes
 **image** | **string** |  | [optional] [default to undefined]
 **gitRepoId** | **string** |  | [optional] [default to undefined]
 **webhookEnabled** | **boolean** |  | [optional] [default to undefined]
+**spec** | **object** |  | [optional] [default to undefined]
+**compose** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -24,6 +26,8 @@ const instance: UpdateApplicationDto = {
     image,
     gitRepoId,
     webhookEnabled,
+    spec,
+    compose,
 };
 ```
 

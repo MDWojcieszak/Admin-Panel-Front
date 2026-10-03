@@ -1,14 +1,14 @@
-# AppSourceType
+# ContainerOrigin
 
 
 ## Enum
 
-* `Rendered` (value: `'RENDERED'`)
+* `Managed` (value: `'MANAGED'`)
 
-* `Git` (value: `'GIT'`)
+* `Adoptable` (value: `'ADOPTABLE'`)
 
-* `Host` (value: `'HOST'`)
+* `Truenas` (value: `'TRUENAS'`)
 
-* `Compose` (value: `'COMPOSE'`)
+* `Standalone` (value: `'STANDALONE'`)
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

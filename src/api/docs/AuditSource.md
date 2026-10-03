@@ -1,14 +1,14 @@
-# AppSourceType
+# AuditSource
 
 
 ## Enum
 
-* `Rendered` (value: `'RENDERED'`)
+* `Panel` (value: `'PANEL'`)
 
-* `Git` (value: `'GIT'`)
+* `Webhook` (value: `'WEBHOOK'`)
 
-* `Host` (value: `'HOST'`)
+* `Schedule` (value: `'SCHEDULE'`)
 
-* `Compose` (value: `'COMPOSE'`)
+* `System` (value: `'SYSTEM'`)
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

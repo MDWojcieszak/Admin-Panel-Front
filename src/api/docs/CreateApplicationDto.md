@@ -12,7 +12,8 @@ Name | Type | Description | Notes
 **sourceType** | [**AppSourceType**](AppSourceType.md) |  | [optional] [default to undefined]
 **image** | **string** |  | [optional] [default to undefined]
 **gitRepoId** | **string** |  | [optional] [default to undefined]
-**serverCategoryId** | **string** |  | [default to undefined]
+**spec** | **object** |  | [optional] [default to undefined]
+**compose** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -27,7 +28,8 @@ const instance: CreateApplicationDto = {
     sourceType,
     image,
     gitRepoId,
-    serverCategoryId,
+    spec,
+    compose,
 };
 ```
 

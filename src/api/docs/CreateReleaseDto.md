@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **version** | **string** |  | [optional] [default to undefined]
 **digest** | **string** |  | [optional] [default to undefined]
 **trigger** | [**ReleaseTrigger**](ReleaseTrigger.md) |  | [optional] [default to undefined]
+**ref** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -20,6 +21,7 @@ const instance: CreateReleaseDto = {
     version,
     digest,
     trigger,
+    ref,
 };
 ```
 

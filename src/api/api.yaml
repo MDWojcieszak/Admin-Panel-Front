@@ -7732,6 +7732,12 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationResponse'
       tags: &ref_83
         - Deploy
       security: &ref_84
@@ -7746,8 +7752,12 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateApplicationDto'
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetailResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/applications/{id}:
@@ -7762,6 +7772,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetailResponse'
       tags: *ref_83
       security: *ref_84
     patch:
@@ -7781,6 +7795,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetailResponse'
       tags: *ref_83
       security: *ref_84
     delete:
@@ -7796,6 +7814,25 @@ paths:
           description: ''
       tags: *ref_83
       security: *ref_84
+  /deploy/compose/check:
+    post:
+      operationId: DeployController_checkCompose
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckComposeDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComposeCheckResponse'
+      tags: *ref_83
+      security: *ref_84
   /deploy/applications/{id}/render:
     post:
       operationId: DeployController_renderApplication
@@ -7806,8 +7843,12 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RenderPreviewResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/applications/{id}/releases:
@@ -7826,8 +7867,12 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateReleaseDto'
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseStartedResponse'
       tags: *ref_83
       security: *ref_84
     get:
@@ -7841,6 +7886,12 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReleaseResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/releases/{id}/rollback:
@@ -7853,8 +7904,12 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseStartedResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/applications/{id}/webhook/rotate:
@@ -7867,8 +7922,12 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSecretResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/applications/{id}/webhook:
@@ -7895,8 +7954,12 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportPreviewResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/applications/{id}/import:
@@ -7909,8 +7972,60 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetailResponse'
+      tags: *ref_83
+      security: *ref_84
+  /deploy/applications/{id}/takeover/preview:
+    post:
+      operationId: DeployController_previewTakeover
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TakeoverComposeDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComposeTakeoverPreviewResponse'
+      tags: *ref_83
+      security: *ref_84
+  /deploy/applications/{id}/takeover:
+    post:
+      operationId: DeployController_applyTakeover
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TakeoverComposeDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetailResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/git/accounts:
@@ -7920,6 +8035,12 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GitAccountResponse'
       tags: *ref_83
       security: *ref_84
     post:
@@ -7932,8 +8053,12 @@ paths:
             schema:
               $ref: '#/components/schemas/UpsertGitAccountDto'
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitAccountResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/git/accounts/{id}:
@@ -7954,6 +8079,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitAccountResponse'
       tags: *ref_83
       security: *ref_84
     delete:
@@ -7976,6 +8105,12 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GitRepoResponse'
       tags: *ref_83
       security: *ref_84
     post:
@@ -7988,8 +8123,12 @@ paths:
             schema:
               $ref: '#/components/schemas/UpsertGitRepoDto'
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitRepoResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/git/repos/{id}:
@@ -8004,6 +8143,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitRepoResponse'
       tags: *ref_83
       security: *ref_84
     patch:
@@ -8023,6 +8166,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitRepoResponse'
       tags: *ref_83
       security: *ref_84
     delete:
@@ -8050,6 +8197,12 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationEnvResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/applications/{id}/env/{key}:
@@ -8075,6 +8228,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationEnvResponse'
       tags: *ref_83
       security: *ref_84
     delete:
@@ -8102,6 +8259,12 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VariableResponse'
       tags: *ref_83
       security: *ref_84
     put:
@@ -8116,6 +8279,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariableResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/variables/{id}:
@@ -8139,6 +8306,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContainerOverviewResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/containers/{project}:
@@ -8153,6 +8324,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveredStackResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/containers/{project}/adopt:
@@ -8164,14 +8339,13 @@ paths:
           in: path
           schema:
             type: string
-        - name: serverId
-          required: true
-          in: query
-          schema:
-            type: string
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetailResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/containers/{project}/actions/{action}:
@@ -8188,14 +8362,13 @@ paths:
           in: path
           schema:
             type: string
-        - name: serverId
-          required: true
-          in: query
-          schema:
-            type: string
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StackActionResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/containers/{project}/logs:
@@ -8208,32 +8381,30 @@ paths:
           schema:
             type: string
         - name: tail
-          required: true
+          required: false
           in: query
           schema:
-            type: string
-        - name: serverId
-          required: true
-          in: query
-          schema:
-            type: string
+            type: number
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StackLogsResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/containers/refresh:
     post:
       operationId: DeployController_refreshContainers
-      parameters:
-        - name: serverId
-          required: true
-          in: query
-          schema:
-            type: string
+      parameters: []
       responses:
-        '201':
+        '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshRequestedResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/agent:
@@ -8243,6 +8414,10 @@ paths:
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentHealthResponse'
       tags: *ref_83
       security: *ref_84
   /deploy/audit/{entityType}/{entityId}:
@@ -8260,13 +8435,19 @@ paths:
           schema:
             type: string
         - name: take
-          required: true
+          required: false
           in: query
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditEntryResponse'
       tags: *ref_83
       security: *ref_84
 info:
@@ -18207,6 +18388,168 @@ components:
         - RENDERED
         - GIT
         - HOST
+        - COMPOSE
+    ContainerOrigin:
+      type: string
+      enum:
+        - MANAGED
+        - ADOPTABLE
+        - TRUENAS
+        - STANDALONE
+    BuildMode:
+      type: string
+      enum:
+        - COMPOSE
+        - REGISTRY
+        - NONE
+    ReleaseStatus:
+      type: string
+      enum:
+        - PENDING
+        - DEPLOYING
+        - ACTIVE
+        - FAILED
+        - SUPERSEDED
+        - ROLLED_BACK
+        - DEFERRED
+        - UNKNOWN
+    ReleaseTrigger:
+      type: string
+      enum:
+        - MANUAL
+        - WEBHOOK
+        - SCHEDULE
+        - AUTO_UPDATE
+        - ROLLBACK
+        - AUTO_ROLLBACK
+    ReleaseActorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - email
+    ReleaseResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        version:
+          type: string
+          nullable: true
+        digest:
+          type: string
+          nullable: true
+        commit:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ReleaseStatus'
+        trigger:
+          $ref: '#/components/schemas/ReleaseTrigger'
+        failureReason:
+          type: string
+          nullable: true
+        homelabCommit:
+          type: string
+          nullable: true
+        processId:
+          type: string
+          nullable: true
+        triggeredBy:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/ReleaseActorResponse'
+        createdAt:
+          type: string
+          format: date-time
+        deployedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - id
+        - status
+        - trigger
+        - createdAt
+    ApplicationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        tier:
+          $ref: '#/components/schemas/ApplicationTier'
+        sourceType:
+          $ref: '#/components/schemas/AppSourceType'
+        origin:
+          $ref: '#/components/schemas/ContainerOrigin'
+        buildMode:
+          $ref: '#/components/schemas/BuildMode'
+        image:
+          type: string
+          nullable: true
+        gitRepoId:
+          type: string
+          nullable: true
+        compose:
+          type: string
+          nullable: true
+        spec:
+          type: object
+        runtimeStatus:
+          $ref: '#/components/schemas/CommandRuntimeStatus'
+        runtimeSince:
+          type: string
+          format: date-time
+          nullable: true
+        runtimeMessage:
+          type: string
+          nullable: true
+        availableDigest:
+          type: string
+          nullable: true
+        lastPolledAt:
+          type: string
+          format: date-time
+          nullable: true
+        webhookEnabled:
+          type: boolean
+        hasWebhookSecret:
+          type: boolean
+        currentRelease:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/ReleaseResponse'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - slug
+        - tier
+        - sourceType
+        - origin
+        - buildMode
+        - spec
+        - runtimeStatus
+        - webhookEnabled
+        - hasWebhookSecret
+        - createdAt
+        - updatedAt
     CreateApplicationDto:
       type: object
       properties:
@@ -18225,11 +18568,112 @@ components:
           type: string
         gitRepoId:
           type: string
-        serverCategoryId:
+        spec:
+          type: object
+        compose:
           type: string
       required:
         - slug
-        - serverCategoryId
+    ApplicationGitRepoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        repo:
+          type: string
+        branch:
+          type: string
+      required:
+        - id
+        - name
+        - repo
+        - branch
+    ApplicationDetailResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        tier:
+          $ref: '#/components/schemas/ApplicationTier'
+        sourceType:
+          $ref: '#/components/schemas/AppSourceType'
+        origin:
+          $ref: '#/components/schemas/ContainerOrigin'
+        buildMode:
+          $ref: '#/components/schemas/BuildMode'
+        image:
+          type: string
+          nullable: true
+        gitRepoId:
+          type: string
+          nullable: true
+        compose:
+          type: string
+          nullable: true
+        spec:
+          type: object
+        runtimeStatus:
+          $ref: '#/components/schemas/CommandRuntimeStatus'
+        runtimeSince:
+          type: string
+          format: date-time
+          nullable: true
+        runtimeMessage:
+          type: string
+          nullable: true
+        availableDigest:
+          type: string
+          nullable: true
+        lastPolledAt:
+          type: string
+          format: date-time
+          nullable: true
+        webhookEnabled:
+          type: boolean
+        hasWebhookSecret:
+          type: boolean
+        currentRelease:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/ReleaseResponse'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        gitRepo:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/ApplicationGitRepoResponse'
+        releases:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReleaseResponse'
+      required:
+        - id
+        - slug
+        - tier
+        - sourceType
+        - origin
+        - buildMode
+        - spec
+        - runtimeStatus
+        - webhookEnabled
+        - hasWebhookSecret
+        - createdAt
+        - updatedAt
+        - releases
     UpdateApplicationDto:
       type: object
       properties:
@@ -18246,15 +18690,81 @@ components:
           nullable: true
         webhookEnabled:
           type: boolean
-    ReleaseTrigger:
-      type: string
-      enum:
-        - MANUAL
-        - WEBHOOK
-        - SCHEDULE
-        - AUTO_UPDATE
-        - ROLLBACK
-        - AUTO_ROLLBACK
+        spec:
+          type: object
+        compose:
+          type: string
+    CheckComposeDto:
+      type: object
+      properties:
+        compose:
+          type: string
+      required:
+        - compose
+    ComposeVariableResponse:
+      type: object
+      properties:
+        key:
+          type: string
+        hasDefault:
+          type: boolean
+      required:
+        - key
+        - hasDefault
+    ComposeCheckResponse:
+      type: object
+      properties:
+        compose:
+          type: string
+        movedSecrets:
+          type: array
+          items:
+            type: string
+        notes:
+          type: array
+          items:
+            type: string
+        buildMode:
+          $ref: '#/components/schemas/BuildMode'
+        variables:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComposeVariableResponse'
+      required:
+        - compose
+        - movedSecrets
+        - notes
+        - buildMode
+        - variables
+    RenderPreviewResponse:
+      type: object
+      properties:
+        compose:
+          type: string
+          nullable: true
+        composeHash:
+          type: string
+          nullable: true
+        env:
+          type: string
+          nullable: true
+        envKeys:
+          type: array
+          items:
+            type: string
+        missingKeys:
+          type: array
+          items:
+            type: string
+        previousCompose:
+          type: string
+          nullable: true
+        changed:
+          type: boolean
+      required:
+        - envKeys
+        - missingKeys
+        - changed
     CreateReleaseDto:
       type: object
       properties:
@@ -18266,8 +18776,147 @@ components:
           type: string
         trigger:
           $ref: '#/components/schemas/ReleaseTrigger'
+        ref:
+          type: string
+          pattern: ^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._/-]{0,254}$
       required:
         - composeHash
+    ReleaseStartedResponse:
+      type: object
+      properties:
+        releaseId:
+          type: string
+        processId:
+          type: string
+      required:
+        - releaseId
+        - processId
+    WebhookSecretResponse:
+      type: object
+      properties:
+        secret:
+          type: string
+        header:
+          type: string
+        note:
+          type: string
+      required:
+        - secret
+        - header
+        - note
+    ImportedEnvResponse:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+          nullable: true
+        isSecret:
+          type: boolean
+      required:
+        - key
+        - isSecret
+    ImportPreviewResponse:
+      type: object
+      properties:
+        serviceName:
+          type: string
+        image:
+          type: string
+          nullable: true
+        spec:
+          type: object
+        env:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportedEnvResponse'
+        warnings:
+          type: array
+          items:
+            type: string
+        currentCompose:
+          type: string
+        secretKeysToFill:
+          type: array
+          items:
+            type: string
+        recommended:
+          type: boolean
+      required:
+        - serviceName
+        - spec
+        - env
+        - warnings
+        - currentCompose
+        - secretKeysToFill
+        - recommended
+    TakeoverComposeDto:
+      type: object
+      properties:
+        compose:
+          type: string
+    ComposeTakeoverPreviewResponse:
+      type: object
+      properties:
+        compose:
+          type: string
+        currentCompose:
+          type: string
+        movedSecrets:
+          type: array
+          items:
+            type: string
+        variablesToFill:
+          type: array
+          items:
+            type: string
+        notes:
+          type: array
+          items:
+            type: string
+        workingDir:
+          type: string
+          nullable: true
+        projectName:
+          type: string
+      required:
+        - compose
+        - currentCompose
+        - movedSecrets
+        - variablesToFill
+        - notes
+        - projectName
+    GitAccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        provider:
+          type: string
+        username:
+          type: string
+        hasToken:
+          type: boolean
+        repoCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - provider
+        - username
+        - hasToken
+        - repoCount
+        - createdAt
+        - updatedAt
     UpsertGitAccountDto:
       type: object
       properties:
@@ -18283,6 +18932,72 @@ components:
       required:
         - name
         - username
+    GitRepoAccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+      required:
+        - id
+        - name
+        - username
+    GitRepoApplicationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+      required:
+        - id
+        - slug
+    GitRepoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        repo:
+          type: string
+        branch:
+          type: string
+        clonePath:
+          type: string
+          nullable: true
+        account:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/GitRepoAccountResponse'
+        lastCommit:
+          type: string
+          nullable: true
+        lastFetchedAt:
+          type: string
+          format: date-time
+          nullable: true
+        applications:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitRepoApplicationResponse'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - repo
+        - branch
+        - applications
+        - createdAt
+        - updatedAt
     UpsertGitRepoDto:
       type: object
       properties:
@@ -18294,6 +19009,7 @@ components:
           pattern: ^[\w.-]+\/[\w.-]+$
         branch:
           type: string
+          pattern: ^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._/-]{0,254}$
         clonePath:
           type: string
           nullable: true
@@ -18303,6 +19019,21 @@ components:
       required:
         - name
         - repo
+    ApplicationEnvResponse:
+      type: object
+      properties:
+        key:
+          type: string
+        isSecret:
+          type: boolean
+        value:
+          type: string
+        isSet:
+          type: boolean
+      required:
+        - key
+        - isSecret
+        - isSet
     UpsertApplicationEnvDto:
       type: object
       properties:
@@ -18312,6 +19043,31 @@ components:
           type: boolean
       required:
         - value
+    VariableResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        isSecret:
+          type: boolean
+        description:
+          type: string
+          nullable: true
+        value:
+          type: string
+        isSet:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - key
+        - isSecret
+        - isSet
+        - updatedAt
     UpsertVariableDto:
       type: object
       properties:
@@ -18327,6 +19083,205 @@ components:
       required:
         - key
         - value
+    DiscoveredContainerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+        imageDigest:
+          type: string
+          nullable: true
+        state:
+          type: string
+        health:
+          type: string
+          nullable: true
+        exitCode:
+          type: integer
+          nullable: true
+        labels:
+          type: object
+        createdAt:
+          type: string
+          nullable: true
+      required:
+        - id
+        - name
+        - image
+        - state
+        - labels
+    StackActionKind:
+      type: string
+      enum:
+        - deploy
+        - rollback
+        - start
+        - restart
+        - stop
+        - destroy
+        - logs
+        - adopt
+    DiscoveredStackResponse:
+      type: object
+      properties:
+        project:
+          type: string
+        origin:
+          $ref: '#/components/schemas/ContainerOrigin'
+        slug:
+          type: string
+          nullable: true
+        workingDir:
+          type: string
+          nullable: true
+        configFiles:
+          type: array
+          items:
+            type: string
+        runtimeStatus:
+          $ref: '#/components/schemas/CommandRuntimeStatus'
+        containers:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredContainerResponse'
+        allowedActions:
+          type: array
+          items:
+            $ref: '#/components/schemas/StackActionKind'
+      required:
+        - project
+        - origin
+        - configFiles
+        - runtimeStatus
+        - containers
+        - allowedActions
+    AgentHealthResponse:
+      type: object
+      properties:
+        online:
+          type: boolean
+        lastSeenAt:
+          type: string
+          format: date-time
+          nullable: true
+        version:
+          type: string
+          nullable: true
+        uptimeSeconds:
+          type: integer
+          nullable: true
+        containerCount:
+          type: integer
+          nullable: true
+        dockerReachable:
+          type: boolean
+          nullable: true
+      required:
+        - online
+    ContainerOverviewResponse:
+      type: object
+      properties:
+        stacks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredStackResponse'
+        receivedAt:
+          type: string
+          format: date-time
+          nullable: true
+        known:
+          type: boolean
+        agent:
+          $ref: '#/components/schemas/AgentHealthResponse'
+      required:
+        - stacks
+        - known
+        - agent
+    StackActionResponse:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+        message:
+          type: string
+      required:
+        - accepted
+    StackLogsResponse:
+      type: object
+      properties:
+        lines:
+          type: array
+          items:
+            type: string
+      required:
+        - lines
+    RefreshRequestedResponse:
+      type: object
+      properties:
+        requested:
+          type: boolean
+      required:
+        - requested
+    AuditActorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+      required:
+        - id
+        - email
+    AuditSource:
+      type: string
+      enum:
+        - PANEL
+        - WEBHOOK
+        - SCHEDULE
+        - SYSTEM
+    AuditEntryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        actor:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/AuditActorResponse'
+        source:
+          $ref: '#/components/schemas/AuditSource'
+        action:
+          type: string
+        entityType:
+          type: string
+        entityId:
+          type: string
+        entityName:
+          type: string
+          nullable: true
+        diff:
+          type: object
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - source
+        - action
+        - entityType
+        - entityId
+        - createdAt
     AgentContainerDto:
       type: object
       properties:
@@ -18426,6 +19381,13 @@ components:
       required:
         - processId
         - status
+    GitCredentialsRequestDto:
+      type: object
+      properties:
+        repoId:
+          type: string
+      required:
+        - repoId
     DeployResultDto:
       type: object
       properties:
@@ -18439,6 +19401,9 @@ components:
           type: string
           nullable: true
         homelabCommit:
+          type: string
+          nullable: true
+        commit:
           type: string
           nullable: true
         failureReason:

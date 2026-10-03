@@ -7,6 +7,8 @@ All URIs are relative to *http://localhost*
 |[**deployControllerAdoptStack**](#deploycontrolleradoptstack) | **POST** /deploy/containers/{project}/adopt | |
 |[**deployControllerAgentStatus**](#deploycontrolleragentstatus) | **GET** /deploy/agent | |
 |[**deployControllerApplyImport**](#deploycontrollerapplyimport) | **POST** /deploy/applications/{id}/import | |
+|[**deployControllerApplyTakeover**](#deploycontrollerapplytakeover) | **POST** /deploy/applications/{id}/takeover | |
+|[**deployControllerCheckCompose**](#deploycontrollercheckcompose) | **POST** /deploy/compose/check | |
 |[**deployControllerCreateApplication**](#deploycontrollercreateapplication) | **POST** /deploy/applications | |
 |[**deployControllerCreateGitAccount**](#deploycontrollercreategitaccount) | **POST** /deploy/git/accounts | |
 |[**deployControllerCreateGitRepo**](#deploycontrollercreategitrepo) | **POST** /deploy/git/repos | |
@@ -29,6 +31,7 @@ All URIs are relative to *http://localhost*
 |[**deployControllerListReleases**](#deploycontrollerlistreleases) | **GET** /deploy/applications/{id}/releases | |
 |[**deployControllerListVariables**](#deploycontrollerlistvariables) | **GET** /deploy/variables | |
 |[**deployControllerPreviewImport**](#deploycontrollerpreviewimport) | **POST** /deploy/applications/{id}/import/preview | |
+|[**deployControllerPreviewTakeover**](#deploycontrollerpreviewtakeover) | **POST** /deploy/applications/{id}/takeover/preview | |
 |[**deployControllerRefreshContainers**](#deploycontrollerrefreshcontainers) | **POST** /deploy/containers/refresh | |
 |[**deployControllerRenderApplication**](#deploycontrollerrenderapplication) | **POST** /deploy/applications/{id}/render | |
 |[**deployControllerRollback**](#deploycontrollerrollback) | **POST** /deploy/releases/{id}/rollback | |
@@ -42,7 +45,7 @@ All URIs are relative to *http://localhost*
 |[**deployControllerUpsertVariable**](#deploycontrollerupsertvariable) | **PUT** /deploy/variables | |
 
 # **deployControllerAdoptStack**
-> deployControllerAdoptStack()
+> ApplicationDetailResponse deployControllerAdoptStack()
 
 
 ### Example
@@ -57,11 +60,9 @@ const configuration = new Configuration();
 const apiInstance = new DeployApi(configuration);
 
 let project: string; // (default to undefined)
-let serverId: string; // (default to undefined)
 
 const { status, data } = await apiInstance.deployControllerAdoptStack(
-    project,
-    serverId
+    project
 );
 ```
 
@@ -70,12 +71,11 @@ const { status, data } = await apiInstance.deployControllerAdoptStack(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **project** | [**string**] |  | defaults to undefined|
-| **serverId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
 
-void (empty response body)
+**ApplicationDetailResponse**
 
 ### Authorization
 
@@ -84,18 +84,18 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerAgentStatus**
-> deployControllerAgentStatus()
+> AgentHealthResponse deployControllerAgentStatus()
 
 
 ### Example
@@ -118,7 +118,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-void (empty response body)
+**AgentHealthResponse**
 
 ### Authorization
 
@@ -127,7 +127,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -138,7 +138,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerApplyImport**
-> deployControllerApplyImport()
+> ApplicationDetailResponse deployControllerApplyImport()
 
 
 ### Example
@@ -168,7 +168,7 @@ const { status, data } = await apiInstance.deployControllerApplyImport(
 
 ### Return type
 
-void (empty response body)
+**ApplicationDetailResponse**
 
 ### Authorization
 
@@ -177,18 +177,123 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deployControllerApplyTakeover**
+> ApplicationDetailResponse deployControllerApplyTakeover(takeoverComposeDto)
+
+
+### Example
+
+```typescript
+import {
+    DeployApi,
+    Configuration,
+    TakeoverComposeDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DeployApi(configuration);
+
+let id: string; // (default to undefined)
+let takeoverComposeDto: TakeoverComposeDto; //
+
+const { status, data } = await apiInstance.deployControllerApplyTakeover(
+    id,
+    takeoverComposeDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **takeoverComposeDto** | **TakeoverComposeDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**ApplicationDetailResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deployControllerCheckCompose**
+> ComposeCheckResponse deployControllerCheckCompose(checkComposeDto)
+
+
+### Example
+
+```typescript
+import {
+    DeployApi,
+    Configuration,
+    CheckComposeDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DeployApi(configuration);
+
+let checkComposeDto: CheckComposeDto; //
+
+const { status, data } = await apiInstance.deployControllerCheckCompose(
+    checkComposeDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **checkComposeDto** | **CheckComposeDto**|  | |
+
+
+### Return type
+
+**ComposeCheckResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerCreateApplication**
-> deployControllerCreateApplication(createApplicationDto)
+> ApplicationDetailResponse deployControllerCreateApplication(createApplicationDto)
 
 
 ### Example
@@ -219,7 +324,7 @@ const { status, data } = await apiInstance.deployControllerCreateApplication(
 
 ### Return type
 
-void (empty response body)
+**ApplicationDetailResponse**
 
 ### Authorization
 
@@ -228,18 +333,18 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerCreateGitAccount**
-> deployControllerCreateGitAccount(upsertGitAccountDto)
+> GitAccountResponse deployControllerCreateGitAccount(upsertGitAccountDto)
 
 
 ### Example
@@ -270,7 +375,7 @@ const { status, data } = await apiInstance.deployControllerCreateGitAccount(
 
 ### Return type
 
-void (empty response body)
+**GitAccountResponse**
 
 ### Authorization
 
@@ -279,18 +384,18 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerCreateGitRepo**
-> deployControllerCreateGitRepo(upsertGitRepoDto)
+> GitRepoResponse deployControllerCreateGitRepo(upsertGitRepoDto)
 
 
 ### Example
@@ -321,7 +426,7 @@ const { status, data } = await apiInstance.deployControllerCreateGitRepo(
 
 ### Return type
 
-void (empty response body)
+**GitRepoResponse**
 
 ### Authorization
 
@@ -330,18 +435,18 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerCreateRelease**
-> deployControllerCreateRelease(createReleaseDto)
+> ReleaseStartedResponse deployControllerCreateRelease(createReleaseDto)
 
 
 ### Example
@@ -375,7 +480,7 @@ const { status, data } = await apiInstance.deployControllerCreateRelease(
 
 ### Return type
 
-void (empty response body)
+**ReleaseStartedResponse**
 
 ### Authorization
 
@@ -384,13 +489,13 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -698,7 +803,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerGetApplication**
-> deployControllerGetApplication()
+> ApplicationDetailResponse deployControllerGetApplication()
 
 
 ### Example
@@ -728,7 +833,7 @@ const { status, data } = await apiInstance.deployControllerGetApplication(
 
 ### Return type
 
-void (empty response body)
+**ApplicationDetailResponse**
 
 ### Authorization
 
@@ -737,7 +842,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -748,7 +853,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerGetContainerStack**
-> deployControllerGetContainerStack()
+> DiscoveredStackResponse deployControllerGetContainerStack()
 
 
 ### Example
@@ -778,7 +883,7 @@ const { status, data } = await apiInstance.deployControllerGetContainerStack(
 
 ### Return type
 
-void (empty response body)
+**DiscoveredStackResponse**
 
 ### Authorization
 
@@ -787,7 +892,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -798,7 +903,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerGetGitRepo**
-> deployControllerGetGitRepo()
+> GitRepoResponse deployControllerGetGitRepo()
 
 
 ### Example
@@ -828,7 +933,7 @@ const { status, data } = await apiInstance.deployControllerGetGitRepo(
 
 ### Return type
 
-void (empty response body)
+**GitRepoResponse**
 
 ### Authorization
 
@@ -837,7 +942,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -848,7 +953,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerListApplications**
-> deployControllerListApplications()
+> Array<ApplicationResponse> deployControllerListApplications()
 
 
 ### Example
@@ -871,7 +976,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-void (empty response body)
+**Array<ApplicationResponse>**
 
 ### Authorization
 
@@ -880,7 +985,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -891,7 +996,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerListAudit**
-> deployControllerListAudit()
+> Array<AuditEntryResponse> deployControllerListAudit()
 
 
 ### Example
@@ -907,7 +1012,7 @@ const apiInstance = new DeployApi(configuration);
 
 let entityType: string; // (default to undefined)
 let entityId: string; // (default to undefined)
-let take: string; // (default to undefined)
+let take: number; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.deployControllerListAudit(
     entityType,
@@ -922,12 +1027,12 @@ const { status, data } = await apiInstance.deployControllerListAudit(
 |------------- | ------------- | ------------- | -------------|
 | **entityType** | [**string**] |  | defaults to undefined|
 | **entityId** | [**string**] |  | defaults to undefined|
-| **take** | [**string**] |  | defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
 
 
 ### Return type
 
-void (empty response body)
+**Array<AuditEntryResponse>**
 
 ### Authorization
 
@@ -936,7 +1041,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -947,7 +1052,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerListContainers**
-> deployControllerListContainers()
+> ContainerOverviewResponse deployControllerListContainers()
 
 
 ### Example
@@ -970,7 +1075,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-void (empty response body)
+**ContainerOverviewResponse**
 
 ### Authorization
 
@@ -979,7 +1084,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -990,7 +1095,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerListEnv**
-> deployControllerListEnv()
+> Array<ApplicationEnvResponse> deployControllerListEnv()
 
 
 ### Example
@@ -1020,7 +1125,7 @@ const { status, data } = await apiInstance.deployControllerListEnv(
 
 ### Return type
 
-void (empty response body)
+**Array<ApplicationEnvResponse>**
 
 ### Authorization
 
@@ -1029,7 +1134,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1040,7 +1145,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerListGitAccounts**
-> deployControllerListGitAccounts()
+> Array<GitAccountResponse> deployControllerListGitAccounts()
 
 
 ### Example
@@ -1063,7 +1168,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-void (empty response body)
+**Array<GitAccountResponse>**
 
 ### Authorization
 
@@ -1072,7 +1177,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1083,7 +1188,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerListGitRepos**
-> deployControllerListGitRepos()
+> Array<GitRepoResponse> deployControllerListGitRepos()
 
 
 ### Example
@@ -1106,7 +1211,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-void (empty response body)
+**Array<GitRepoResponse>**
 
 ### Authorization
 
@@ -1115,7 +1220,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1126,7 +1231,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerListReleases**
-> deployControllerListReleases()
+> Array<ReleaseResponse> deployControllerListReleases()
 
 
 ### Example
@@ -1156,7 +1261,7 @@ const { status, data } = await apiInstance.deployControllerListReleases(
 
 ### Return type
 
-void (empty response body)
+**Array<ReleaseResponse>**
 
 ### Authorization
 
@@ -1165,7 +1270,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1176,7 +1281,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerListVariables**
-> deployControllerListVariables()
+> Array<VariableResponse> deployControllerListVariables()
 
 
 ### Example
@@ -1199,7 +1304,7 @@ This endpoint does not have any parameters.
 
 ### Return type
 
-void (empty response body)
+**Array<VariableResponse>**
 
 ### Authorization
 
@@ -1208,7 +1313,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1219,7 +1324,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerPreviewImport**
-> deployControllerPreviewImport()
+> ImportPreviewResponse deployControllerPreviewImport()
 
 
 ### Example
@@ -1249,7 +1354,7 @@ const { status, data } = await apiInstance.deployControllerPreviewImport(
 
 ### Return type
 
-void (empty response body)
+**ImportPreviewResponse**
 
 ### Authorization
 
@@ -1258,18 +1363,72 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deployControllerPreviewTakeover**
+> ComposeTakeoverPreviewResponse deployControllerPreviewTakeover(takeoverComposeDto)
+
+
+### Example
+
+```typescript
+import {
+    DeployApi,
+    Configuration,
+    TakeoverComposeDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DeployApi(configuration);
+
+let id: string; // (default to undefined)
+let takeoverComposeDto: TakeoverComposeDto; //
+
+const { status, data } = await apiInstance.deployControllerPreviewTakeover(
+    id,
+    takeoverComposeDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **takeoverComposeDto** | **TakeoverComposeDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**ComposeTakeoverPreviewResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerRefreshContainers**
-> deployControllerRefreshContainers()
+> RefreshRequestedResponse deployControllerRefreshContainers()
 
 
 ### Example
@@ -1283,23 +1442,16 @@ import {
 const configuration = new Configuration();
 const apiInstance = new DeployApi(configuration);
 
-let serverId: string; // (default to undefined)
-
-const { status, data } = await apiInstance.deployControllerRefreshContainers(
-    serverId
-);
+const { status, data } = await apiInstance.deployControllerRefreshContainers();
 ```
 
 ### Parameters
-
-|Name | Type | Description  | Notes|
-|------------- | ------------- | ------------- | -------------|
-| **serverId** | [**string**] |  | defaults to undefined|
+This endpoint does not have any parameters.
 
 
 ### Return type
 
-void (empty response body)
+**RefreshRequestedResponse**
 
 ### Authorization
 
@@ -1308,18 +1460,18 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerRenderApplication**
-> deployControllerRenderApplication()
+> RenderPreviewResponse deployControllerRenderApplication()
 
 
 ### Example
@@ -1349,7 +1501,7 @@ const { status, data } = await apiInstance.deployControllerRenderApplication(
 
 ### Return type
 
-void (empty response body)
+**RenderPreviewResponse**
 
 ### Authorization
 
@@ -1358,18 +1510,18 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerRollback**
-> deployControllerRollback()
+> ReleaseStartedResponse deployControllerRollback()
 
 
 ### Example
@@ -1399,7 +1551,7 @@ const { status, data } = await apiInstance.deployControllerRollback(
 
 ### Return type
 
-void (empty response body)
+**ReleaseStartedResponse**
 
 ### Authorization
 
@@ -1408,18 +1560,18 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerRotateWebhookSecret**
-> deployControllerRotateWebhookSecret()
+> WebhookSecretResponse deployControllerRotateWebhookSecret()
 
 
 ### Example
@@ -1449,7 +1601,7 @@ const { status, data } = await apiInstance.deployControllerRotateWebhookSecret(
 
 ### Return type
 
-void (empty response body)
+**WebhookSecretResponse**
 
 ### Authorization
 
@@ -1458,18 +1610,18 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerRunStackAction**
-> deployControllerRunStackAction()
+> StackActionResponse deployControllerRunStackAction()
 
 
 ### Example
@@ -1485,12 +1637,10 @@ const apiInstance = new DeployApi(configuration);
 
 let project: string; // (default to undefined)
 let action: string; // (default to undefined)
-let serverId: string; // (default to undefined)
 
 const { status, data } = await apiInstance.deployControllerRunStackAction(
     project,
-    action,
-    serverId
+    action
 );
 ```
 
@@ -1500,12 +1650,11 @@ const { status, data } = await apiInstance.deployControllerRunStackAction(
 |------------- | ------------- | ------------- | -------------|
 | **project** | [**string**] |  | defaults to undefined|
 | **action** | [**string**] |  | defaults to undefined|
-| **serverId** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
 
-void (empty response body)
+**StackActionResponse**
 
 ### Authorization
 
@@ -1514,18 +1663,18 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**201** |  |  -  |
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerStackLogs**
-> deployControllerStackLogs()
+> StackLogsResponse deployControllerStackLogs()
 
 
 ### Example
@@ -1540,13 +1689,11 @@ const configuration = new Configuration();
 const apiInstance = new DeployApi(configuration);
 
 let project: string; // (default to undefined)
-let tail: string; // (default to undefined)
-let serverId: string; // (default to undefined)
+let tail: number; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.deployControllerStackLogs(
     project,
-    tail,
-    serverId
+    tail
 );
 ```
 
@@ -1555,13 +1702,12 @@ const { status, data } = await apiInstance.deployControllerStackLogs(
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
 | **project** | [**string**] |  | defaults to undefined|
-| **tail** | [**string**] |  | defaults to undefined|
-| **serverId** | [**string**] |  | defaults to undefined|
+| **tail** | [**number**] |  | (optional) defaults to undefined|
 
 
 ### Return type
 
-void (empty response body)
+**StackLogsResponse**
 
 ### Authorization
 
@@ -1570,7 +1716,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1581,7 +1727,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerUpdateApplication**
-> deployControllerUpdateApplication(updateApplicationDto)
+> ApplicationDetailResponse deployControllerUpdateApplication(updateApplicationDto)
 
 
 ### Example
@@ -1615,7 +1761,7 @@ const { status, data } = await apiInstance.deployControllerUpdateApplication(
 
 ### Return type
 
-void (empty response body)
+**ApplicationDetailResponse**
 
 ### Authorization
 
@@ -1624,7 +1770,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1635,7 +1781,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerUpdateGitAccount**
-> deployControllerUpdateGitAccount(upsertGitAccountDto)
+> GitAccountResponse deployControllerUpdateGitAccount(upsertGitAccountDto)
 
 
 ### Example
@@ -1669,7 +1815,7 @@ const { status, data } = await apiInstance.deployControllerUpdateGitAccount(
 
 ### Return type
 
-void (empty response body)
+**GitAccountResponse**
 
 ### Authorization
 
@@ -1678,7 +1824,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1689,7 +1835,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerUpdateGitRepo**
-> deployControllerUpdateGitRepo(upsertGitRepoDto)
+> GitRepoResponse deployControllerUpdateGitRepo(upsertGitRepoDto)
 
 
 ### Example
@@ -1723,7 +1869,7 @@ const { status, data } = await apiInstance.deployControllerUpdateGitRepo(
 
 ### Return type
 
-void (empty response body)
+**GitRepoResponse**
 
 ### Authorization
 
@@ -1732,7 +1878,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1743,7 +1889,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerUpsertEnv**
-> deployControllerUpsertEnv(upsertApplicationEnvDto)
+> ApplicationEnvResponse deployControllerUpsertEnv(upsertApplicationEnvDto)
 
 
 ### Example
@@ -1780,7 +1926,7 @@ const { status, data } = await apiInstance.deployControllerUpsertEnv(
 
 ### Return type
 
-void (empty response body)
+**ApplicationEnvResponse**
 
 ### Authorization
 
@@ -1789,7 +1935,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
@@ -1800,7 +1946,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **deployControllerUpsertVariable**
-> deployControllerUpsertVariable(upsertVariableDto)
+> VariableResponse deployControllerUpsertVariable(upsertVariableDto)
 
 
 ### Example
@@ -1831,7 +1977,7 @@ const { status, data } = await apiInstance.deployControllerUpsertVariable(
 
 ### Return type
 
-void (empty response body)
+**VariableResponse**
 
 ### Authorization
 
@@ -1840,7 +1986,7 @@ void (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 
 ### HTTP response details
