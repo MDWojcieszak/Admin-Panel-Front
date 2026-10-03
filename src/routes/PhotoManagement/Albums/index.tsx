@@ -351,7 +351,6 @@ export const ImmichAlbums = () => {
         <div style={styles.header}>
           <div style={styles.titleWrap}>
             <h2 style={styles.heading}>Immich Albums</h2>
-            <span style={styles.subheading}>Albums on your Immich server and the photo entries feeding them.</span>
           </div>
           <div style={styles.headerActions}>
             <Button
@@ -428,10 +427,6 @@ const useStyles = mkUseStyles((t) => ({
   heading: {
     fontSize: 22,
     fontWeight: 700,
-  },
-  subheading: {
-    fontSize: 13,
-    color: t.colors.dark05,
   },
   headerActions: {
     flexDirection: 'row',

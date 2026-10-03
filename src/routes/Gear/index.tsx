@@ -271,10 +271,6 @@ export const GearView = () => {
         <div style={styles.header}>
           <div style={styles.titleWrap}>
             <h2 style={styles.heading}>Gear</h2>
-            <span style={styles.subheading}>
-              One inventory, shared by session packing lists, the public “Gear” page and the blog. Click anything for
-              its details.
-            </span>
           </div>
           <div style={styles.headerActions}>
             <Button
@@ -665,7 +661,6 @@ const useStyles = mkUseStyles((t) => ({
   header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: t.spacing.m },
   titleWrap: { gap: 2, minWidth: 0 },
   heading: { fontSize: 22, fontWeight: 700 },
-  subheading: { fontSize: 13, color: t.colors.dark05, maxWidth: 620 },
   headerActions: { flexDirection: 'row', gap: t.spacing.s, flexWrap: 'wrap', justifyContent: 'flex-end' },
   filterRow: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs },
   filterChip: {
