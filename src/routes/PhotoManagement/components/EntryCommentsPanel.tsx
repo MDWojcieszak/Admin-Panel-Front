@@ -290,6 +290,10 @@ const CommentRow = ({
   // Only a to-do carries the notion of being done; changing the kind away from
   // TODO clears the tick, so the control follows the kind rather than the row.
   const isTodo = comment.kind === PhotoEntryCommentKind.Todo;
+  // The bin sits right next to Edit and Tick off, so one stray click wiped a
+  // comment for good. It now only asks; the delete happens on a second,
+  // explicit button that names what it does.
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   return (
     <div style={{ ...styles.comment, opacity: busy ? 0.6 : 1 }}>
@@ -309,11 +313,28 @@ const CommentRow = ({
           <IconBtn title='Edit' onClick={onStartEdit} icon={<FiEdit2 size={13} />} />
           <IconBtn
             title='Delete'
-            onClick={onRemove}
+            onClick={() => setConfirmingDelete(true)}
             icon={<FiTrash2 size={13} color={theme.colors.red} />}
           />
         </div>
       </div>
+
+      {confirmingDelete ? (
+        <div style={styles.confirmBox}>
+          <span style={styles.confirmText}>Delete this comment? This cannot be undone.</span>
+          <div style={styles.editActions}>
+            <Button label='Keep it' variant='secondary' onClick={() => setConfirmingDelete(false)} />
+            <Button
+              label='Delete comment'
+              variant='danger'
+              onClick={() => {
+                setConfirmingDelete(false);
+                onRemove();
+              }}
+            />
+          </div>
+        </div>
+      ) : null}
 
       {editing ? (
         <div style={styles.editBox}>
@@ -435,6 +456,20 @@ const useStyles = mkUseStyles((t) => ({
     alignItems: 'center',
     gap: t.spacing.xs,
     flexWrap: 'wrap',
+  },
+  confirmBox: {
+    gap: t.spacing.s,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: t.colors.red + t.colorOpacity(0.5),
+    backgroundColor: t.colors.red + t.colorOpacity(0.08),
+  },
+  confirmText: {
+    fontSize: 13,
+    fontWeight: 600,
+    color: t.colors.white,
   },
   commentActions: {
     flexDirection: 'row',
