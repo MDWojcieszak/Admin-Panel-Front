@@ -62,7 +62,8 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.white,
     scale: 1,
     fontSize: '16px',
-    borderRadius: t.borderRadius.default,
+    // Same radius as the cards, sections and bars buttons sit on.
+    borderRadius: t.borderRadius.large,
     border: 0,
     outline: 'none',
     cursor: 'pointer',
