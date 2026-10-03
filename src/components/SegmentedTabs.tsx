@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from 'react';
+import { CSSProperties, ReactNode, useState } from 'react';
 import { motion } from 'framer-motion';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -17,9 +17,19 @@ type SegmentedTabsProps = {
   layoutId?: string;
 };
 
-export const SegmentedTabs = ({ items, selected, handleSelect, style, layoutId = 'segmented-tabs' }: SegmentedTabsProps) => {
+export const SegmentedTabs = ({
+  items,
+  selected,
+  handleSelect,
+  style,
+  layoutId = 'segmented-tabs',
+}: SegmentedTabsProps) => {
   const styles = useStyles();
   const theme = useTheme();
+  // Hover is driven from state rather than whileHover: switching whileHover off
+  // on the item that became active left its hover colour behind once it was
+  // inactive again, until the pointer passed over it once more.
+  const [hovered, setHovered] = useState<string | null>(null);
 
   return (
     <div style={{ ...styles.container, ...style }}>
@@ -30,7 +40,16 @@ export const SegmentedTabs = ({ items, selected, handleSelect, style, layoutId =
             key={item.value}
             style={styles.item}
             onClick={() => handleSelect(item.value)}
-            whileHover={isActive ? undefined : { backgroundColor: theme.colors.gray02 + theme.colorOpacity(0.6) }}
+            onHoverStart={() => setHovered(item.value)}
+            onHoverEnd={() => setHovered((prev) => (prev === item.value ? null : prev))}
+            initial={false}
+            animate={{
+              backgroundColor:
+                !isActive && hovered === item.value
+                  ? theme.colors.gray02 + theme.colorOpacity(0.6)
+                  : theme.colors.gray02 + theme.colorOpacity(0),
+            }}
+            transition={{ duration: 0.12 }}
             whileTap={{ scale: 0.97 }}
           >
             {isActive && (
