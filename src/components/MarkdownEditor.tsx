@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import '@uiw/react-md-editor/markdown-editor.css';
+import '~/components/MarkdownEditor.css';
 
 type MarkdownEditorProps = {
   value: string;

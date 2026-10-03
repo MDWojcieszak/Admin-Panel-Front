@@ -1,0 +1,9 @@
+/*
+ * The app makes every div a flex column (index.css). Inside the editor that
+ * shrank the text box to the visible height, and the textarea — sized to
+ * that box — stopped where the scroll began: below it no caret, no selection.
+ */
+.w-md-editor-area,
+.w-md-editor-text {
+  display: block;
+}
