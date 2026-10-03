@@ -462,13 +462,15 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                   <span style={styles.bannerTitle}>Folders created</span>
                   <span>Confirm once photos are uploaded.</span>
                 </div>
-                <Button
-                  loading={foldersLoading}
-                  label='Mark as uploaded'
-                  variant='secondary'
-                  style={NO_WRAP}
-                  onClick={handleMarkAsUploaded}
-                />
+                <div style={styles.bannerAction}>
+                  <Button
+                    loading={foldersLoading}
+                    label='Mark as uploaded'
+                    variant='secondary'
+                    style={NO_WRAP}
+                    onClick={handleMarkAsUploaded}
+                  />
+                </div>
               </div>
             ) : null}
 
@@ -479,6 +481,10 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                   <span style={styles.bannerTitle}>Upload confirmed</span>
                   <span>Photos have been uploaded to the server.</span>
                 </div>
+                {/* Empty, but holding the button's height: ticking "Uploaded" on the
+                    last item swaps one banner for the other, and without the same
+                    height the whole card below jumped by the difference. */}
+                <div style={styles.bannerAction} />
               </div>
             ) : null}
           </div>
@@ -709,6 +715,8 @@ const useStyles = mkUseStyles((t) => ({
     border: '1px solid rgba(53, 158, 122, 0.18)',
   },
   bannerText: { flex: 1, minWidth: 0, gap: 2 },
+  // Sized to a Button (12px padding around a 24px line), so both banners match.
+  bannerAction: { minHeight: 48, display: 'flex', alignItems: 'center' },
   bannerTitle: { fontWeight: 700 },
   body: {
     display: 'grid',
