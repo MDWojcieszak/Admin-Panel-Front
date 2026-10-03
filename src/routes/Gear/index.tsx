@@ -21,13 +21,13 @@ import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
 import { useUrlParams } from '~/hooks/useUrlParam';
 import { GearCategoryChip } from '~/routes/Gear/components/GearCategoryChip';
+import { gearTileImage } from '~/routes/Gear/components/GearThumb';
 import { GearItemDetailsModal } from '~/routes/Gear/modals/GearItemDetailsModal';
 import { GearItemModal } from '~/routes/Gear/modals/GearItemModal';
 import { GearKitsModal } from '~/routes/Gear/modals/GearKitsModal';
 import { GearShoppingModal } from '~/routes/Gear/modals/GearShoppingModal';
 import { GearSystemDetailsModal } from '~/routes/Gear/modals/GearSystemDetailsModal';
 import { GearSystemModal } from '~/routes/Gear/modals/GearSystemModal';
-import { imgUrl } from '~/routes/Galleries/utils';
 import { formatAmount } from '~/utils/formatAmount';
 import { GEAR_CATEGORY_GROUPS, gearCategoryColor, gearCategoryIcon, gearCategoryLabel } from '~/utils/gearCategory';
 import { getApiErrorMessage, getApiErrorStatus } from '~/utils/apiError';
@@ -426,8 +426,8 @@ export const GearView = () => {
                     }}
                   >
                     <div style={styles.systemThumb}>
-                      {imgUrl(system.coverUrl) ? (
-                        <img src={imgUrl(system.coverUrl)} alt='' style={styles.systemThumbImg} loading='lazy' />
+                      {gearTileImage(system).src ? (
+                        <img src={gearTileImage(system).src} alt='' style={styles.systemThumbImg} loading='lazy' />
                       ) : (
                         <FiImage size={16} color={theme.colors.dark05} />
                       )}
@@ -589,8 +589,20 @@ const ItemsGrid = ({
             }}
           >
             <div style={styles.itemThumb}>
-              {imgUrl(item.coverUrl) ? (
-                <img src={imgUrl(item.coverUrl)} alt='' style={styles.itemThumbImg} loading='lazy' draggable={false} />
+              {gearTileImage(item).src ? (
+                <img
+                  src={gearTileImage(item).src}
+                  alt=''
+                  style={{
+                    ...styles.itemThumbImg,
+                    backgroundImage: gearTileImage(item).placeholder
+                      ? `url(${gearTileImage(item).placeholder})`
+                      : undefined,
+                    backgroundSize: 'cover',
+                  }}
+                  loading='lazy'
+                  draggable={false}
+                />
               ) : (
                 // No photo of this copy: show what kind of thing it is rather than a
                 // generic picture placeholder, which said nothing about the item.

@@ -160,7 +160,8 @@ export const GearImagePicker = ({ label = 'Photo', coverUrl, onChange }: GearIma
               <>
                 <div style={styles.grid}>
                   {images.map((image) => {
-                    const url = imgUrl(image.lowResUrl) ?? imgUrl(image.coverUrl);
+                    const url = imgUrl(image.thumbUrl) ?? imgUrl(image.coverUrl);
+                    const placeholder = imgUrl(image.lowResUrl);
                     const caption = usedByCaption(image);
                     return (
                       <button
@@ -173,7 +174,13 @@ export const GearImagePicker = ({ label = 'Photo', coverUrl, onChange }: GearIma
                           setOpen(false);
                         }}
                       >
-                        <div style={styles.tileImage}>
+                        <div
+                          style={{
+                            ...styles.tileImage,
+                            backgroundImage: placeholder ? `url(${placeholder})` : undefined,
+                            backgroundSize: 'cover',
+                          }}
+                        >
                           {url ? <img src={url} alt='' style={styles.tileImg} loading='lazy' /> : null}
                         </div>
                         <span style={{ ...styles.caption, opacity: image.usedBy.length ? 1 : 0.6 }}>{caption}</span>
