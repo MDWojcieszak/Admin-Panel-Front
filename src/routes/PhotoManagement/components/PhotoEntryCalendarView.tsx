@@ -14,7 +14,7 @@ import { CSSProperties, useMemo, useState } from 'react';
 import { FiChevronLeft, FiChevronRight, FiHelpCircle, FiRadio } from 'react-icons/fi';
 import { PhotoEntryResponse } from '~/api/api';
 import { Button } from '~/components/Button';
-import { IlluminationRing } from '~/components/IlluminationRing';
+import { MoonIcon } from '~/components/MoonIcon';
 import { Scrollbar } from '~/components/Scrollbar';
 import { getEntryStateMeta, getMediaChip, getPhotoEntryTypeMeta } from '~/routes/PhotoManagement/utils/entryDisplay';
 import { isOverduePlan } from '~/routes/PhotoManagement/utils/kanban';
@@ -192,10 +192,13 @@ export const PhotoEntryCalendarView = ({ entries, onEntryClick }: PhotoEntryCale
                       <span style={{ ...styles.dayNumber, ...(isToday ? styles.today : {}) }}>{format(day, 'd')}</span>
                       <span style={styles.moon}>
                         {darkSky ? <span style={styles.darkSky}>Dark sky</span> : null}
-                        <IlluminationRing
-                          illumination={moon.illumination}
+                        <span
+                          style={styles.moonValue}
                           title={`${moon.name} · ${Math.round(moon.illumination * 100)}% lit`}
-                        />
+                        >
+                          <MoonIcon phase={moon.phase} size={16} />
+                          <span style={styles.moonPercent}>{Math.round(moon.illumination * 100)}%</span>
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -363,6 +366,15 @@ const useStyles = mkUseStyles((t) => ({
     gap: 4,
   },
   moon: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 6 },
+  moonValue: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 },
+  moonPercent: {
+    minWidth: 28,
+    textAlign: 'right',
+    fontSize: 11,
+    fontWeight: 600,
+    color: '#ECE8D6',
+    opacity: 0.85,
+  },
   darkSky: {
     fontSize: 10,
     fontWeight: 700,
