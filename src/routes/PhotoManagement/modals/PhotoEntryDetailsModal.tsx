@@ -521,14 +521,19 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                         onClick={() => changeStatus(PhotoEntryStatus.Planned)}
                       />
                     ) : null}
-                    {isLocked ? null : (
+                    {/* Stays visible once folders exist, locked, and says why on hover. */}
+                    <span
+                      style={styles.editWrap}
+                      title={isLocked ? 'Folders exist, so the name and dates can no longer be changed.' : undefined}
+                    >
                       <Button
                         label='Edit'
                         style={NO_WRAP}
-                        icon={<FiEdit2 size={14} />}
+                        icon={isLocked ? <FiLock size={14} /> : <FiEdit2 size={14} />}
+                        disabled={isLocked}
                         onClick={() => setEditing(true)}
                       />
-                    )}
+                    </span>
                   </div>
                 </div>
 
@@ -547,11 +552,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                   <Fact label='UPDATED' value={formatDateTime(entry.updatedAt)} />
                 </div>
 
-                {isLocked ? (
-                  <span style={styles.lockNote}>
-                    <FiLock size={12} /> Folders exist, so the name and dates can no longer be changed.
-                  </span>
-                ) : !canCreateFolders ? (
+                {!isLocked && !canCreateFolders ? (
                   <span style={styles.lockNote}>Set both dates to be able to create folders.</span>
                 ) : null}
               </>
@@ -794,6 +795,7 @@ const useStyles = mkUseStyles((t) => ({
     minWidth: 0,
   },
   tabBody: { gap: t.spacing.m, minWidth: 0 },
+  editWrap: { display: 'flex' },
   targets: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: t.spacing.s },
   target: {
     flexDirection: 'row',
