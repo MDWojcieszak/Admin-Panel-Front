@@ -270,7 +270,7 @@ export const GearView = () => {
       <div style={styles.content}>
         <div style={styles.header}>
           <div style={styles.titleWrap}>
-            <h2 style={styles.heading}>My gear</h2>
+            <h2 style={styles.heading}>Gear</h2>
             <span style={styles.subheading}>
               One inventory, shared by session packing lists, the public “Gear” page and the blog. Click anything for
               its details.
