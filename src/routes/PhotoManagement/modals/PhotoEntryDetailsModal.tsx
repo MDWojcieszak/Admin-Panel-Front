@@ -1,4 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { TbGalaxy } from 'react-icons/tb';
 import { useViewportSize } from '@mantine/hooks';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
@@ -10,6 +12,7 @@ import {
   FiEdit2,
   FiFolder,
   FiHelpCircle,
+  FiInfo,
   FiLock,
   FiRotateCcw,
   FiSlash,
@@ -22,6 +25,7 @@ import { DateInput } from '~/components/DateInput';
 import { Input } from '~/components/Input';
 import { useSidePanelReady } from '~/components/Modal';
 import { Scrollbar } from '~/components/Scrollbar';
+import { SegmentedTabs } from '~/components/SegmentedTabs';
 import { EntryCommentsPanel } from '~/routes/PhotoManagement/components/EntryCommentsPanel';
 import { EntryGearPanel } from '~/routes/PhotoManagement/components/EntryGearPanel';
 import { EntryLocationEditor } from '~/routes/PhotoManagement/components/EntryLocationEditor';
@@ -35,7 +39,7 @@ import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
 import { isOverduePlan } from '~/routes/PhotoManagement/utils/kanban';
 import { getApiErrorMessage } from '~/utils/apiError';
-import { mkUseStyles } from '~/utils/theme';
+import { mkUseStyles, useTheme } from '~/utils/theme';
 import {
   MediaStatus,
   PatchPhotoEntryDto,
@@ -51,6 +55,7 @@ type AstroObjectListItem = {
   name: string;
   code?: string;
   aliases?: string;
+  thumbnailUrl?: string;
 };
 
 type PhotoEntryAstroRelation = {
@@ -123,6 +128,7 @@ const describeFocus = (entry: PhotoEntryDetailsResponse): string => {
 
 export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const styles = useStyles();
+  const theme = useTheme();
   const { photoEntryApi } = useApi();
   const toast = useToast();
   const [resolvingPlan, setResolvingPlan] = useState<PhotoEntryStatus | null>(null);
@@ -152,7 +158,10 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const [gearVersion, setGearVersion] = useState(0);
   // Publishing takes the card's body over rather than opening a modal: only one
   // modal shows at a time, and this card already is one.
-  const [publishing, setPublishing] = useState(false);
+  // Two cards in one panel: the session itself, and publishing its exports.
+  // The publish card mounts only when opened, so its folder scan (and the
+  // thumbnails it signs) runs only then.
+  const [tab, setTab] = useState<'info' | 'publish'>('info');
   const panelReady = useSidePanelReady();
   const canPublish =
     entry.foldersCreated && (entry.type === PhotoEntryType.General || entry.type === PhotoEntryType.Work);
@@ -481,15 +490,6 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                   </div>
 
                   <div style={styles.heroActions}>
-                    {canPublish && !publishing ? (
-                      <Button
-                        label='Publish'
-                        variant='secondary'
-                        style={NO_WRAP}
-                        icon={<FiUploadCloud size={14} />}
-                        onClick={() => setPublishing(true)}
-                      />
-                    ) : null}
                     {!entry.foldersCreated ? (
                       <Button
                         label='Create folders'
@@ -539,16 +539,6 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                     value={entry.foldersCreated ? `Created ${formatDate(entry.foldersCreatedAt)}` : 'Not created'}
                   />
                   <Fact label='ROOT PATH' value={entry.rootPath || '—'} />
-                  {isAstro ? (
-                    <Fact
-                      label='TARGETS'
-                      value={
-                        assignedAstroObjects.length
-                          ? assignedAstroObjects.map((item) => item.code || item.name).join(', ')
-                          : 'None'
-                      }
-                    />
-                  ) : null}
                   {/* Lives with the other facts: as a line inside the gear list it
                       pushed the list around for something rarely looked at. */}
                   {entry.gearConfirmedAt ? (
@@ -629,39 +619,111 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
             ) : null}
           </div>
 
-          {/* The body waits for the slide-in to finish: its panels fetch and its
+          {canPublish ? (
+            <SegmentedTabs
+              items={[
+                { label: 'Info', value: 'info', icon: <FiInfo size={14} /> },
+                { label: 'Publish', value: 'publish', icon: <FiUploadCloud size={14} /> },
+              ]}
+              selected={tab}
+              handleSelect={(value) => setTab(value as 'info' | 'publish')}
+              layoutId='entry-card-tab'
+            />
+          ) : null}
+
+          <AnimatePresence mode='wait' initial={false}>
+            {tab === 'publish' && canPublish ? (
+              <motion.div
+                key='publish'
+                style={styles.tabBody}
+                initial={{ opacity: 0, x: 32 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 32 }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+              >
+                <EntryPublishPanel entryId={entry.id} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key='info'
+                style={styles.tabBody}
+                initial={{ opacity: 0, x: -32 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -32 }}
+                transition={{ duration: 0.18, ease: 'easeOut' }}
+              >
+                {/* The body waits for the slide-in to finish: its panels fetch and its
               map starts WebGL, and doing that mid-slide made it stutter. */}
-          {!panelReady ? (
-            <div style={stacked ? styles.bodyStacked : styles.body}>
-              <div style={styles.bodyColumn}>
-                <div style={{ ...styles.skeleton, height: 220 }} />
-                <div style={{ ...styles.skeleton, height: 160 }} />
-              </div>
-              <div style={styles.bodyColumn}>
-                <div style={{ ...styles.skeleton, height: 300 }} />
-              </div>
-            </div>
-          ) : publishing ? (
-            <EntryPublishPanel entryId={entry.id} onClose={() => setPublishing(false)} />
-          ) : (
-            <div style={stacked ? styles.bodyStacked : styles.body}>
-              <div style={styles.bodyColumn}>
-                {mainSections}
+                {!panelReady ? (
+                  <div style={stacked ? styles.bodyStacked : styles.body}>
+                    <div style={styles.bodyColumn}>
+                      <div style={{ ...styles.skeleton, height: 220 }} />
+                      <div style={{ ...styles.skeleton, height: 160 }} />
+                    </div>
+                    <div style={styles.bodyColumn}>
+                      <div style={{ ...styles.skeleton, height: 300 }} />
+                    </div>
+                  </div>
+                ) : (
+                  <div style={stacked ? styles.bodyStacked : styles.body}>
+                    <div style={styles.bodyColumn}>
+                      {mainSections}
 
-                {isLocked ? (
-                  <Section>
-                    <ImmichAlbumsSection photoEntryId={entry.id} onAddToAlbum={() => p.onAddToAlbum?.(entry.id)} />
-                  </Section>
-                ) : null}
-              </div>
+                      {isLocked ? (
+                        <Section>
+                          <ImmichAlbumsSection
+                            photoEntryId={entry.id}
+                            onAddToAlbum={() => p.onAddToAlbum?.(entry.id)}
+                          />
+                        </Section>
+                      ) : null}
+                    </div>
 
-              <div style={styles.bodyColumn}>
-                <Section title='Notes'>
-                  <EntryCommentsPanel entryId={entry.id} onChanged={refresh} />
-                </Section>
-              </div>
-            </div>
-          )}
+                    <div style={styles.bodyColumn}>
+                      {isAstro ? (
+                        <Section title='Targets'>
+                          {assignedAstroObjects.length ? (
+                            <div style={styles.targets}>
+                              {assignedAstroObjects.map((item) => (
+                                <div key={item.id} style={styles.target}>
+                                  <span style={styles.targetThumb}>
+                                    {item.thumbnailUrl ? (
+                                      <img src={item.thumbnailUrl} alt='' style={styles.targetImg} />
+                                    ) : (
+                                      <TbGalaxy size={20} color={theme.colors.purple02} />
+                                    )}
+                                  </span>
+                                  <span style={styles.targetText}>
+                                    <span style={styles.targetCode}>{item.code || item.name}</span>
+                                    {item.code ? <span style={styles.muted}>{item.name}</span> : null}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <span style={styles.muted}>No targets on this session yet.</span>
+                          )}
+                          {/* Targets change in Edit, which locks once folders exist. */}
+                          {isLocked ? null : (
+                            <Button
+                              label={assignedAstroObjects.length ? 'Change targets' : 'Choose targets'}
+                              variant='secondary'
+                              style={{ alignSelf: 'flex-start' }}
+                              onClick={() => setEditing(true)}
+                            />
+                          )}
+                        </Section>
+                      ) : null}
+
+                      <Section title='Notes'>
+                        <EntryCommentsPanel entryId={entry.id} onChanged={refresh} />
+                      </Section>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </Scrollbar>
     </FormProvider>
@@ -740,6 +802,30 @@ const useStyles = mkUseStyles((t) => ({
     paddingBottom: t.spacing.m,
     minWidth: 0,
   },
+  tabBody: { gap: t.spacing.m, minWidth: 0 },
+  targets: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: t.spacing.s },
+  target: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.4),
+  },
+  targetThumb: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 44,
+    height: 44,
+    flexShrink: 0,
+    borderRadius: t.borderRadius.default,
+    overflow: 'hidden',
+    backgroundColor: t.colors.purple02 + t.colorOpacity(0.12),
+  },
+  targetImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  targetText: { display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 },
+  targetCode: { fontSize: 14, fontWeight: 700, color: t.colors.white },
   hero: {
     gap: t.spacing.m,
     padding: t.spacing.m,
