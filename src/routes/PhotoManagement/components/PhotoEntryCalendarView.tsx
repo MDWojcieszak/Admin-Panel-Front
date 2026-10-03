@@ -34,7 +34,7 @@ const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const TILE_HEIGHT = 46;
 const DAY_HEADER = 30;
 const ROW_GAP = 4;
-const WEEK_MIN_HEIGHT = 120;
+const WEEK_MIN_HEIGHT = 100;
 
 /** YYYY-MM-DD read as a local day, so a trip never slides a day in another time zone. */
 const toLocalDay = (value?: string | null): Date | null => {
@@ -337,6 +337,12 @@ const useStyles = mkUseStyles((t) => ({
   scroll: { flex: 1, minHeight: 0 },
   weeks: {
     minHeight: '100%',
+    // The global `div { display: flex }` makes the scroll view a flex column
+    // too, so without this the weeks were squeezed to the view's height and
+    // spilled past it instead of scrolling.
+    flexShrink: 0,
+    // The border is inside the 100%, or it alone made the view scroll by 2px.
+    boxSizing: 'border-box',
     marginRight: t.spacing.m,
     borderRadius: t.borderRadius.default,
     overflow: 'hidden',
@@ -348,7 +354,9 @@ const useStyles = mkUseStyles((t) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
     rowGap: ROW_GAP,
-    flex: 1,
+    // Grow into spare height but never below the content: with a zero basis the
+    // weeks overflowed the scroll area instead of making it scroll.
+    flex: '1 0 auto',
     borderTopWidth: 1,
     borderTopStyle: 'solid',
     borderTopColor: t.colors.white + t.colorOpacity(0.06),
