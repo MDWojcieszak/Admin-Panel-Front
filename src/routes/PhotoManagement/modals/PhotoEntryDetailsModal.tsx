@@ -701,16 +701,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                               ))}
                             </div>
                           ) : (
-                            <span style={styles.muted}>No targets on this session yet.</span>
-                          )}
-                          {/* Targets change in Edit, which locks once folders exist. */}
-                          {isLocked ? null : (
-                            <Button
-                              label={assignedAstroObjects.length ? 'Change targets' : 'Choose targets'}
-                              variant='secondary'
-                              style={{ alignSelf: 'flex-start' }}
-                              onClick={() => setEditing(true)}
-                            />
+                            <span style={styles.muted}>No targets on this session yet — add them in Edit.</span>
                           )}
                         </Section>
                       ) : null}
