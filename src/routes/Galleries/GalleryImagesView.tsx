@@ -7,6 +7,7 @@ import { Loader } from '~/components/Loader';
 import { Switch } from '~/components/Switch';
 import { useApi } from '~/hooks/useApi';
 import { useModal } from '~/hooks/useModal';
+import { ImageProcessingStrip } from '~/routes/Galleries/components/ImageProcessingStrip';
 import { ImagePreviewModal } from '~/routes/Galleries/modals/ImagePreviewModal';
 import { imgUrl } from '~/routes/Galleries/utils';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -56,9 +57,17 @@ export const GalleryImagesView = () => {
           </div>
           <div style={styles.headerActions}>
             <Switch checked={unassignedOnly} onChange={setUnassignedOnly} label='Unassigned only' />
-            <Button label='Refresh' variant='secondary' icon={<FiRefreshCw size={14} />} onClick={() => load(0, true)} loading={loading} />
+            <Button
+              label='Refresh'
+              variant='secondary'
+              icon={<FiRefreshCw size={14} />}
+              onClick={() => load(0, true)}
+              loading={loading}
+            />
           </div>
         </div>
+
+        <ImageProcessingStrip onFinished={() => load(0, true)} />
 
         {loading && images.length === 0 ? (
           <Loader />
@@ -66,7 +75,9 @@ export const GalleryImagesView = () => {
           <EmptyState
             icon={<FiImage size={26} color={theme.colors.blue04} />}
             title='No images'
-            description={unassignedOnly ? 'Every image is used in a gallery.' : 'Upload images from a gallery to get started.'}
+            description={
+              unassignedOnly ? 'Every image is used in a gallery.' : 'Upload images from a gallery to get started.'
+            }
           />
         ) : (
           <>
@@ -74,11 +85,22 @@ export const GalleryImagesView = () => {
               {images.map((img) => {
                 const url = imgUrl(img.coverUrl);
                 const preview = (initialInfo?: boolean) =>
-                  previewModal.show({ imageId: img.imageId, coverUrl: img.coverUrl, initialInfo, localization: img.localization, exif: img.exif });
+                  previewModal.show({
+                    imageId: img.imageId,
+                    coverUrl: img.coverUrl,
+                    initialInfo,
+                    localization: img.localization,
+                    exif: img.exif,
+                  });
                 return (
                   <div key={img.imageId} style={styles.tile} onClick={() => preview()}>
                     {url ? <img src={url} alt='' style={styles.img} loading='lazy' /> : <div style={styles.imgEmpty} />}
-                    <div style={{ ...styles.usageChip, color: img.usageCount > 0 ? theme.colors.lightGreen : theme.colors.dark05 }}>
+                    <div
+                      style={{
+                        ...styles.usageChip,
+                        color: img.usageCount > 0 ? theme.colors.lightGreen : theme.colors.dark05,
+                      }}
+                    >
                       {img.usageCount > 0 ? `In ${img.usageCount} gal.` : 'Unused'}
                     </div>
                     {img.processingStatus !== 'DONE' ? (
@@ -104,7 +126,13 @@ export const GalleryImagesView = () => {
               })}
             </div>
             {images.length < total ? (
-              <Button label='Load more' variant='secondary' onClick={() => load(images.length, false)} loading={loading} style={styles.loadMore} />
+              <Button
+                label='Load more'
+                variant='secondary'
+                onClick={() => load(images.length, false)}
+                loading={loading}
+                style={styles.loadMore}
+              />
             ) : null}
           </>
         )}

@@ -4,7 +4,6 @@ import { GalleriesList } from '~/routes/Galleries';
 import { GalleryEditor } from '~/routes/Galleries/GalleryEditor';
 import { GalleryImagesView } from '~/routes/Galleries/GalleryImagesView';
 import { HeroView } from '~/routes/Galleries/HeroView';
-import { ProcessingView } from '~/routes/Galleries/ProcessingView';
 import { mkUseStyles } from '~/utils/theme';
 
 /**
@@ -19,7 +18,6 @@ export const GalleriesNavigation = () => {
         <Route index element={<GalleriesList />} />
         <Route path={GalleryNavigationRoute.IMAGES} element={<GalleryImagesView />} />
         <Route path={GalleryNavigationRoute.HERO} element={<HeroView />} />
-        <Route path={GalleryNavigationRoute.PROCESSING} element={<ProcessingView />} />
         <Route path=':id' element={<GalleryEditor />} />
       </Routes>
     </div>

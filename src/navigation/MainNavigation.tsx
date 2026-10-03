@@ -62,7 +62,6 @@ export const mainNavigationRoutes: MainRouteType[] = [
       { path: GalleryNavigationRoute.GALLERIES, label: 'Galleries' },
       { path: GalleryNavigationRoute.IMAGES, label: 'Images' },
       { path: GalleryNavigationRoute.HERO, label: 'Home' },
-      { path: GalleryNavigationRoute.PROCESSING, label: 'Processing' },
     ],
   },
   {

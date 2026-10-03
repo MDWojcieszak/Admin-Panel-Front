@@ -26,7 +26,6 @@ export enum GalleryNavigationRoute {
   GALLERIES = '',
   IMAGES = 'images',
   HERO = 'hero',
-  PROCESSING = 'processing',
 }
 
 export enum BlogNavigationRoute {
