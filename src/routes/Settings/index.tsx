@@ -189,6 +189,12 @@ export const Settings = () => {
           label: 'Waiting for upload (email)',
           description: 'Daily email while a card or roll from a shoot still has not been offloaded.',
         },
+        {
+          key: 'tripEmailNotifications',
+          label: 'Before a trip (email)',
+          description:
+            'Reminders ahead of a planned session: wishlist purchases a month and a week out, the forecast three days before, packing the day before.',
+        },
       ],
     },
   ];
