@@ -24,6 +24,7 @@ import { EntryCommentsPanel } from '~/routes/PhotoManagement/components/EntryCom
 import { EntryGearPanel } from '~/routes/PhotoManagement/components/EntryGearPanel';
 import { EntryLocationEditor } from '~/routes/PhotoManagement/components/EntryLocationEditor';
 import { EntryProgressPanel } from '~/routes/PhotoManagement/components/EntryProgressPanel';
+import { EntryForecastPanel } from '~/routes/PhotoManagement/components/EntryForecastPanel';
 import { EntrySkyPanel } from '~/routes/PhotoManagement/components/EntrySkyPanel';
 import { ImmichAlbumsSection } from '~/routes/PhotoManagement/components/ImmichAlbumsSection';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
@@ -341,14 +342,17 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
     }
   };
 
+  // Refetches the sky and the forecast when the place or the dates change.
+  const skyKey = [entry.location?.latitude, entry.location?.longitude, entry.startDate, entry.endDate].join('|');
+
   const skySection = (
     <Section key='sky' title='Location & sky'>
       <EntryLocationEditor location={entry.location} saving={savingLocation} onSave={saveLocation} />
       {entry.location && entry.startDate ? (
-        <EntrySkyPanel
-          entryId={entry.id}
-          reloadKey={[entry.location.latitude, entry.location.longitude, entry.startDate, entry.endDate].join('|')}
-        />
+        <>
+          <EntrySkyPanel entryId={entry.id} reloadKey={skyKey} />
+          <EntryForecastPanel entryId={entry.id} reloadKey={skyKey} />
+        </>
       ) : entry.location ? (
         <span style={styles.muted}>Set the dates to see the sky for this trip.</span>
       ) : null}
