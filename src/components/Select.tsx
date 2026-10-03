@@ -29,6 +29,9 @@ export type SelectRef = {
   value?: Option['value'];
 };
 
+/** Space the description/error line takes under the field, gap included. */
+const DESCRIPTION_LINE = 20;
+
 export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
   const [isExtended, setIsExtended] = useState(false);
   const [isOnList, setIsOnList] = useState(false);
@@ -71,7 +74,11 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
     setCoords({
       left: r.left,
       width: r.width,
-      ...(openUp ? { bottom: window.innerHeight - r.top + theme.spacing.s } : { top: r.bottom + theme.spacing.s }),
+      // Opening down, it starts below the description line shown under the
+      // field while the list is open, instead of covering it.
+      ...(openUp
+        ? { bottom: window.innerHeight - r.top + theme.spacing.s }
+        : { top: r.bottom + (hasBottomSpace ? DESCRIPTION_LINE : theme.spacing.s) }),
     });
   };
 
@@ -297,7 +304,8 @@ const useStyles = mkUseStyles((t) => ({
   description: {
     position: 'absolute',
     left: t.spacing.m,
-    top: 60,
+    // 2 px below the 60 px field; at 60 it sat on the field's bottom edge.
+    top: 62,
     fontSize: 12,
     margin: 0,
     opacity: 0,

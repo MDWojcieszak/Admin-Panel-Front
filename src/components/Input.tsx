@@ -113,7 +113,8 @@ const useStyles = mkUseStyles((t) => ({
   description: {
     position: 'absolute',
     left: t.spacing.m,
-    top: 60,
+    // 2 px below the 60 px field; at 60 it sat on the field's bottom edge.
+    top: 62,
     fontSize: '12px',
     margin: 0,
     opacity: 0,

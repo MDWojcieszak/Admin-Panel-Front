@@ -16,7 +16,7 @@ type DateInputProps<T extends FieldValues> = {
   max?: string;
 } & UseControllerProps<T>;
 
-/** Height of the description/error line under the field. */
+/** Space the description/error line takes under the field, gap included. */
 const DESCRIPTION_LINE = 20;
 const POPOVER_WIDTH = 296;
 const POPOVER_HEIGHT = 372;
@@ -78,7 +78,7 @@ export const DateInput = <T extends FieldValues>(p: DateInputProps<T>) => {
       // while the calendar is open, instead of covering it.
       ...(openUp
         ? { bottom: window.innerHeight - r.top + theme.spacing.s }
-        : { top: r.bottom + theme.spacing.s + (hasBottomSpace ? DESCRIPTION_LINE : 0) }),
+        : { top: r.bottom + (hasBottomSpace ? DESCRIPTION_LINE : theme.spacing.s) }),
     });
   };
 
@@ -168,7 +168,8 @@ export const DateInput = <T extends FieldValues>(p: DateInputProps<T>) => {
         <span style={selected ? styles.value : styles.placeholder}>
           {selected ? format(selected, 'd MMM yyyy') : 'Pick a date'}
         </span>
-        <FiCalendar size={18} color={theme.colors.blue} />
+        {/* Centred on the whole field, not on the value line under the label. */}
+        <FiCalendar size={18} color={theme.colors.blue} style={styles.icon} />
       </div>
 
       {createPortal(
@@ -304,6 +305,9 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.s,
     padding: t.spacing.m,
     paddingTop: t.spacing.l + 4,
+    // Pinned to the 60 px of Input and Select, so fields in a row line up.
+    height: 60,
+    boxSizing: 'border-box',
     cursor: 'pointer',
     borderRadius: t.borderRadius.default,
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
@@ -395,10 +399,12 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.dark05,
     backgroundColor: 'transparent',
   },
+  icon: { position: 'absolute', right: t.spacing.m, top: '50%', transform: 'translateY(-50%)' },
   description: {
     position: 'absolute',
     left: t.spacing.m,
-    top: 60,
+    // 2 px below the 60 px field; at 60 it sat on the field's bottom edge.
+    top: 62,
     fontSize: 12,
     margin: 0,
     zIndex: 5,
