@@ -12560,6 +12560,7 @@ components:
         - uploadStatus
         - createdAt
         - updatedAt
+        - location
     PhotoEntryListResponse:
       type: object
       properties:
@@ -12686,6 +12687,7 @@ components:
         - uploadStatus
         - createdAt
         - updatedAt
+        - location
         - astroObjects
         - astroObjectsCount
     PhotoEntryFolderRole:

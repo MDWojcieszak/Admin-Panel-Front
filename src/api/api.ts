@@ -10788,7 +10788,7 @@ export interface PhotoEntryDetailsResponse {
      * @type {PhotoEntryLocationResponse}
      * @memberof PhotoEntryDetailsResponse
      */
-    'location'?: PhotoEntryLocationResponse | null;
+    'location': PhotoEntryLocationResponse | null;
     /**
      * 
      * @type {Array<PhotoEntryAstroObjectResponse>}
@@ -11367,7 +11367,7 @@ export interface PhotoEntryResponse {
      * @type {PhotoEntryLocationResponse}
      * @memberof PhotoEntryResponse
      */
-    'location'?: PhotoEntryLocationResponse | null;
+    'location': PhotoEntryLocationResponse | null;
 }
 
 
