@@ -134,10 +134,6 @@ export const PhotoSessionLibrary = () => {
       onSaved: async () => {
         await refreshAll();
       },
-      onFoldersCreated: async () => {
-        await refreshAll();
-        photoEntryDetailsModal.hide();
-      },
       onAddToAlbum: (entryId: string) => {
         photoEntryDetailsModal.hide();
         navigate(`/photo-management/albums?entry=${entryId}`);
@@ -211,15 +207,7 @@ export const PhotoSessionLibrary = () => {
           onSaved: async () => {
             await refreshAll();
           },
-          onFoldersCreated: async () => {
-            await refreshAll();
-            photoEntryDetailsModal.hide();
-          },
         });
-      },
-      onFoldersCreated: async () => {
-        await refreshAll();
-        photoEntryDetailsModal.hide();
       },
     });
   };

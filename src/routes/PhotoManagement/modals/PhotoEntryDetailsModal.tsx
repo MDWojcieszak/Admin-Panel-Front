@@ -3,7 +3,17 @@ import { useViewportSize } from '@mantine/hooks';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FiAlertTriangle, FiCheck, FiCheckCircle, FiEdit2, FiFolder, FiHelpCircle, FiLock, FiRotateCcw, FiSlash } from 'react-icons/fi';
+import {
+  FiAlertTriangle,
+  FiCheck,
+  FiCheckCircle,
+  FiEdit2,
+  FiFolder,
+  FiHelpCircle,
+  FiLock,
+  FiRotateCcw,
+  FiSlash,
+} from 'react-icons/fi';
 
 import { Badge, BadgeTone } from '~/components/Badge';
 import { Button } from '~/components/Button';
@@ -48,7 +58,6 @@ type PhotoEntryDetailsModalProps = Partial<InternalModalProps> & {
   entry?: PhotoEntryDetailsResponse;
   astroObjects?: AstroObjectListItem[];
   onSaved?: () => void | Promise<void>;
-  onFoldersCreated?: () => void | Promise<void>;
   /** Jump to the Immich Albums tab for this entry (navigation lives in the routed parent). */
   onAddToAlbum?: (entryId: string) => void;
 };
@@ -131,6 +140,9 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
 
   const astroObjects = useMemo(() => p.astroObjects ?? [], [p.astroObjects]);
   const isLocked = entry.foldersCreated;
+  // Bumped when an action outside the gear panel changes its rows (marking the
+  // material uploaded ticks every card), so the panel reloads them.
+  const [gearVersion, setGearVersion] = useState(0);
   const uploadStatus = entry.uploadStatus;
   const isAstro = entry.type === PhotoEntryType.Astro;
 
@@ -236,9 +248,10 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
         id: entry.id,
       });
 
-      await p.onFoldersCreated?.();
-    } catch (error) {
-      console.log((error as Error)?.message);
+      // The card stays open: the lock note and the upload banner appear in place.
+      await refresh();
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'Could not create the folders.'), 'error');
     } finally {
       setFoldersLoading(false);
     }
@@ -275,9 +288,10 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
         id: entry.id,
       });
 
-      await p.onFoldersCreated?.();
-    } catch (error) {
-      console.log((error as Error)?.message);
+      await refresh();
+      setGearVersion((v) => v + 1);
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'Could not mark the material as uploaded.'), 'error');
     } finally {
       setFoldersLoading(false);
     }
@@ -312,7 +326,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
 
   const gearSection = (
     <Section key='gear'>
-      <EntryGearPanel entryId={entry.id} onChanged={refresh} />
+      <EntryGearPanel key={gearVersion} entryId={entry.id} onChanged={refresh} />
     </Section>
   );
 
