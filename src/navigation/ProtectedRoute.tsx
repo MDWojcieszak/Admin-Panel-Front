@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { Permission, hasAccess } from '~/acl/permissions';
 import { UserState } from '~/contexts/User/AuthContext';
 import { useAuth } from '~/hooks/useAuth';
@@ -14,6 +14,7 @@ type ProtectedRouteProps = {
 export const ProtectedRoute = ({ children, permission }: ProtectedRouteProps) => {
   const auth = useAuth();
   const { can, loading } = usePermissions();
+  const location = useLocation();
 
   switch (auth.userState) {
     case UserState.LOGGED_IN:
@@ -23,7 +24,11 @@ export const ProtectedRoute = ({ children, permission }: ProtectedRouteProps) =>
       return hasAccess(can, permission) ? children : <Navigate to={'/' + MainNavigationRoute.DASHBOARD} />;
     case UserState.UNKNOWN:
       return <></>;
-    default:
-      return <Navigate to={'/' + CommonNavigationRoute.SIGN_IN} />;
+    default: {
+      // Carry the address along, so signing in lands where the link pointed
+      // instead of on the dashboard.
+      const returnUrl = encodeURIComponent(location.pathname + location.search);
+      return <Navigate replace to={`/${CommonNavigationRoute.SIGN_IN}?returnUrl=${returnUrl}`} />;
+    }
   }
 };
