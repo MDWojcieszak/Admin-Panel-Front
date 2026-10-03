@@ -4,6 +4,7 @@ import { ApplicationDetailResponse, ComposeTakeoverPreviewResponse } from '~/api
 import { Button } from '~/components/Button';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
+import { ComposeEditor } from '~/routes/Deploy/components/ComposeEditor';
 import { DiffView, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
 import { getApiErrorMessage } from '~/utils/apiError';
 
@@ -29,6 +30,7 @@ export const TakeoverSection = ({
   const [pasting, setPasting] = useState(false);
   const [pasted, setPasted] = useState('');
   const [readError, setReadError] = useState<string>();
+  const [pasteError, setPasteError] = useState<string>();
 
   const body = () => ({ compose: pasting ? pasted : undefined });
 
@@ -92,10 +94,10 @@ export const TakeoverSection = ({
           />
           <Button
             label='Preview takeover'
-            variant='secondary'
+            variant={preview ? 'secondary' : 'primary'}
             onClick={load}
             loading={busy === 'preview'}
-            disabled={pasting && !pasted.trim()}
+            disabled={pasting && (!pasted.trim() || !!pasteError)}
           />
         </>
       }
@@ -110,20 +112,15 @@ export const TakeoverSection = ({
                 it.
               </span>
             </div>
-          ) : (
-            <span style={shared.muted}>
-              Paste the compose file this stack runs from. It is checked and shown before anything is written.
-            </span>
-          )}
-          <textarea
+          ) : null}
+          <ComposeEditor
             value={pasted}
-            onChange={(e) => {
-              setPasted(e.target.value);
+            onChange={(value) => {
+              setPasted(value);
               setPreview(undefined);
             }}
             rows={14}
-            spellCheck={false}
-            style={shared.textArea}
+            onCheck={(_, error) => setPasteError(error)}
           />
         </>
       ) : null}
@@ -139,7 +136,8 @@ export const TakeoverSection = ({
               </>
             ) : null}
           </span>
-          {preview.movedSecrets.length ? (
+          {/* A pasted file's editor already lists the secrets that move. */}
+          {preview.movedSecrets.length && !pasting ? (
             <div style={shared.warning}>
               <FiLock size={14} />
               <span>
@@ -164,7 +162,9 @@ export const TakeoverSection = ({
                 <FiInfo size={13} /> {note}
               </div>
             ))}
-          <span style={shared.fieldLabel}>Changes against the file on the host (secrets masked)</span>
+          <span style={shared.fieldLabel}>
+            Changes against the {pasting ? 'pasted file' : 'file on the host'} (secrets masked)
+          </span>
           <DiffView before={preview.currentCompose} after={preview.compose} />
           <div style={shared.row}>
             <Button label='Take over' onClick={apply} loading={busy === 'apply'} />
