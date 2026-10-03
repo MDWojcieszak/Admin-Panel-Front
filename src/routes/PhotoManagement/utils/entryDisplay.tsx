@@ -123,8 +123,10 @@ export const getStatusChips = (entry: PhotoEntryResponse): Chip[] => {
     chips.push({ key: 'overdue', label: 'Did it happen?', icon: FiHelpCircle, ...TONES.amber, pulse: true });
   }
 
+  // A finished upload is the resting state, not news: the board only says
+  // something while folders or the upload are still outstanding.
   const media = getMediaChip(entry);
-  if (media) chips.push(media);
+  if (media && media.key !== 'uploaded') chips.push(media);
 
   // Only worth saying where the stage no longer implies it — an entry parked back
   // in "After shoot" still carries the fact that it was edited at some point.
