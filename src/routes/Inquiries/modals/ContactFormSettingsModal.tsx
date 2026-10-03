@@ -530,7 +530,13 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
                 name={`texts.${locale}.privacyNotice`}
                 render={({ field }) =>
                   canManage ? (
-                    <MarkdownEditor value={field.value ?? ''} onChange={field.onChange} height={460} preview='edit' />
+                    <MarkdownEditor
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      height={460}
+                      preview='edit'
+                      hideModeSwitch
+                    />
                   ) : (
                     <span style={{ color: theme.colors.white, whiteSpace: 'pre-wrap' }}>{field.value}</span>
                   )

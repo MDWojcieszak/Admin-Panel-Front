@@ -7,3 +7,102 @@
 .w-md-editor-text {
   display: block;
 }
+
+/* The app's look: colours come from the theme as --app-md-* (MarkdownEditor.tsx). */
+.app-md-editor .w-md-editor {
+  --md-editor-font-family: inherit;
+  --md-editor-background-color: var(--app-md-bg);
+  --md-editor-box-shadow-color: var(--app-md-border);
+  --color-fg-default: var(--app-md-fg);
+  --color-neutral-muted: var(--app-md-hover);
+  --color-accent-fg: var(--app-md-accent);
+  --color-danger-fg: var(--app-md-accent);
+  --color-prettylights-syntax-comment: var(--app-md-muted);
+  --color-prettylights-syntax-constant: var(--app-md-accent);
+  --color-prettylights-syntax-markup-bold: var(--app-md-fg);
+  font-family: inherit;
+  border-radius: var(--app-md-radius);
+  box-shadow: 0 0 0 1px transparent;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease;
+}
+
+.app-md-editor .w-md-editor:focus-within {
+  box-shadow: 0 0 0 1px var(--app-md-focus);
+}
+
+.app-md-editor .w-md-editor-toolbar {
+  /* A row again: the global div rule stacked the two button groups. */
+  flex-direction: row;
+  padding: 6px 8px;
+  background-color: transparent;
+  border-bottom: 1px solid var(--app-md-border);
+  border-radius: 0;
+}
+
+.app-md-editor .w-md-editor-toolbar li > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 6px;
+  color: var(--app-md-muted);
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.app-md-editor .w-md-editor-toolbar li > button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.app-md-editor .w-md-editor-toolbar li > button:hover,
+.app-md-editor .w-md-editor-toolbar li > button:focus {
+  color: var(--app-md-fg);
+  background-color: var(--app-md-hover);
+}
+
+.app-md-editor .w-md-editor-toolbar-divider {
+  height: 16px;
+  margin: 0 6px !important;
+  background-color: var(--app-md-border);
+}
+
+.app-md-editor .w-md-editor-text {
+  padding: 14px 16px;
+}
+
+.app-md-editor .w-md-editor-text-pre > code,
+.app-md-editor .w-md-editor-text-input {
+  font-family: inherit !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+.app-md-editor .w-md-editor-text-input {
+  caret-color: var(--app-md-fg);
+}
+
+.app-md-editor .w-md-editor-text-input::placeholder {
+  color: var(--app-md-muted);
+  -webkit-text-fill-color: var(--app-md-muted);
+}
+
+/* Headings stand out by colour; weight and size would shift the text off the caret. */
+.app-md-editor .w-md-editor-text-pre .token.title {
+  color: var(--app-md-accent) !important;
+}
+
+.app-md-editor .w-md-editor-preview {
+  padding: 14px 16px;
+  box-shadow: inset 1px 0 0 0 var(--app-md-border);
+}
+
+.app-md-editor .wmde-markdown {
+  background-color: transparent;
+  font-family: inherit;
+  font-size: 15px;
+}
