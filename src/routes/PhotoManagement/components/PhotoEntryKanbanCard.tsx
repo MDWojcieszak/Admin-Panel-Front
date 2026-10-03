@@ -10,6 +10,7 @@ import {
   FiEdit3,
   FiFileText,
   FiFolder,
+  FiMessageSquare,
   FiHelpCircle,
   FiImage,
   FiMoon,
@@ -282,6 +283,17 @@ const getCounters = (entry: PhotoEntryResponse): Counter[] => {
   }
 
   const summary = entry.commentSummary;
+  // Plain notes and ticked-off to-dos fall into none of the coloured counts
+  // below, so without the total a session with only those looked uncommented.
+  if (summary?.total) {
+    counters.push({
+      key: 'comments',
+      label: String(summary.total),
+      title: `${summary.total} comment${summary.total === 1 ? '' : 's'}`,
+      icon: FiMessageSquare,
+      color: TONES.slate.color,
+    });
+  }
   if (summary?.openTodos) {
     counters.push({
       key: 'todos',
