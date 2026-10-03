@@ -370,9 +370,6 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
         </div>
       </div>
 
-      {gear.gearConfirmedAt ? (
-        <span style={styles.confirmedNote}>Gear confirmed {new Date(gear.gearConfirmedAt).toLocaleString()}</span>
-      ) : null}
 
       {adding && canAdd ? (
         <div style={styles.addPanel}>
@@ -649,10 +646,6 @@ const useStyles = mkUseStyles((t) => ({
     fontWeight: 700,
     color: t.colors.blue04,
     marginTop: t.spacing.s,
-  },
-  confirmedNote: {
-    fontSize: 12,
-    color: t.colors.dark05,
   },
   promptBanner: {
     flexDirection: 'row',

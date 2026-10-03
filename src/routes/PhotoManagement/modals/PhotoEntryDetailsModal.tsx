@@ -488,6 +488,11 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                       }
                     />
                   ) : null}
+                  {/* Lives with the other facts: as a line inside the gear list it
+                      pushed the list around for something rarely looked at. */}
+                  {entry.gearConfirmedAt ? (
+                    <Fact label='GEAR' value={`Confirmed ${formatDate(entry.gearConfirmedAt)}`} />
+                  ) : null}
                   <Fact label='UPDATED' value={formatDateTime(entry.updatedAt)} />
                 </div>
 
