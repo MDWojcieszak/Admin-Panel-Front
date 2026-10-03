@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FiAlertTriangle, FiCheck, FiPlus, FiShoppingCart, FiTrash2, FiX } from 'react-icons/fi';
+import { FiAlertTriangle, FiCheck, FiEdit2, FiPlus, FiShoppingCart, FiTrash2, FiX } from 'react-icons/fi';
 import {
   EntryGearPhase,
   EntryGearWarning,
@@ -47,6 +47,9 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
   const [catalog, setCatalog] = useState<GearItemResponse[]>([]);
   const [kits, setKits] = useState<GearKitResponse[]>([]);
   const [search, setSearch] = useState('');
+  // After the shoot the list is a record, so its ticks and bins wait behind
+  // Edit. While packing they are the whole point and stay out in the open.
+  const [editing, setEditing] = useState(false);
 
   // Declaration flow for an entry added after the fact: pick what was used, then confirm.
   const [declaring, setDeclaring] = useState(false);
@@ -228,6 +231,8 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
   const isShot = gear.status === PhotoEntryStatus.Shot;
   const phase = gear.phase;
 
+  const interactive = phase === EntryGearPhase.Pack || (phase === EntryGearPhase.Secure && editing);
+
   const listedItems = gear.items.filter((item) => item.listed);
   const otherItems = gear.items.filter((item) => !item.listed);
 
@@ -317,31 +322,43 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
                 ? 'Upload the material'
                 : 'Gear used'}
           </span>
-          <span style={styles.headerHint}>
-            {phase === EntryGearPhase.Pack
-              ? 'Tick things off as they go in the bag.'
-              : phase === EntryGearPhase.Secure
-                ? 'Only gear that was used and holds material needs uploading.'
-                : 'This session is closed — the list is read-only.'}
-          </span>
+          {phase === EntryGearPhase.Pack ? (
+            <span style={styles.headerHint}>Tick things off as they go in the bag.</span>
+          ) : phase === EntryGearPhase.None ? (
+            <span style={styles.headerHint}>This session is closed — the list is read-only.</span>
+          ) : null}
         </div>
 
-        {phase === EntryGearPhase.None ? null : (
-          <Button
-            label={adding ? 'Done adding' : 'Add gear'}
-            style={NO_WRAP}
-            variant='secondary'
-            icon={adding ? <FiX size={14} /> : <FiPlus size={14} />}
-            onClick={openCatalog}
-          />
-        )}
+        <div style={styles.headerActions}>
+          {interactive ? (
+            <Button
+              label={adding ? 'Done adding' : 'Add gear'}
+              style={NO_WRAP}
+              variant='secondary'
+              icon={adding ? <FiX size={14} /> : <FiPlus size={14} />}
+              onClick={openCatalog}
+            />
+          ) : null}
+          {phase === EntryGearPhase.Secure ? (
+            <Button
+              label={editing ? 'Done' : 'Edit'}
+              style={NO_WRAP}
+              variant={editing ? 'primary' : 'secondary'}
+              icon={editing ? <FiCheck size={14} /> : <FiEdit2 size={14} />}
+              onClick={() => {
+                setEditing((prev) => !prev);
+                setAdding(false);
+              }}
+            />
+          ) : null}
+        </div>
       </div>
 
       {gear.gearConfirmedAt ? (
         <span style={styles.confirmedNote}>Gear confirmed {new Date(gear.gearConfirmedAt).toLocaleString()}</span>
       ) : null}
 
-      {adding ? (
+      {adding && interactive ? (
         <div style={styles.addPanel}>
           {kits.length ? (
             <div style={styles.kitRow}>
@@ -414,6 +431,7 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
               key={item.gear.id}
               item={item}
               phase={phase}
+              interactive={interactive}
               isShot={isShot}
               busy={busyId === item.gear.id}
               onPatch={patchItem}
@@ -429,6 +447,7 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
                   key={item.gear.id}
                   item={item}
                   phase={phase}
+                  interactive={interactive}
                   isShot={isShot}
                   busy={busyId === item.gear.id}
                   onPatch={patchItem}
@@ -480,13 +499,15 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
 type GearRowProps = {
   item: PhotoEntryGearItemResponse;
   phase: EntryGearPhase;
+  /** Ticks and the bin: always while packing, behind Edit after the shoot. */
+  interactive: boolean;
   isShot: boolean;
   busy: boolean;
   onPatch: (gearItemId: string, dto: { packed?: boolean; used?: boolean; secured?: boolean }) => void;
   onRemove: (gearItemId: string) => void;
 };
 
-const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps) => {
+const GearRow = ({ item, phase, interactive, isShot, busy, onPatch, onRemove }: GearRowProps) => {
   const styles = useStyles();
   const theme = useTheme();
 
@@ -505,6 +526,11 @@ const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps)
           {item.warning === EntryGearWarning.Retired ? <Badge label='You sold this' tone='red' /> : null}
           {item.warning === EntryGearWarning.NotOwned ? <Badge label='Still on wishlist' tone='yellow' /> : null}
           {item.needsSecuring ? <Badge label='Not uploaded yet' tone='red' /> : null}
+          {/* Read mode states what the ticks would say, so nothing is hidden by Edit. */}
+          {!interactive && phase === EntryGearPhase.Secure && item.used ? <Badge label='Used' tone='blue' /> : null}
+          {!interactive && phase === EntryGearPhase.Secure && item.secured && holdsMedia(item.gear.mediaSource) ? (
+            <Badge label='Uploaded' tone='green' />
+          ) : null}
         </div>
         <span style={styles.itemCategory}>
           {gearCategoryLabel(item.gear.category)}
@@ -513,7 +539,7 @@ const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps)
 
         {/* Under the name rather than beside it: in a column this narrow the
             toggles otherwise squeeze the name into three lines. */}
-        {phase === EntryGearPhase.None ? null : (
+        {interactive ? (
           <div style={styles.toggleRow}>
             {phase === EntryGearPhase.Pack ? (
               <Toggle label='Packed' checked={item.packed} onChange={(v) => onPatch(item.gear.id, { packed: v })} />
@@ -536,10 +562,10 @@ const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps)
               />
             ) : null}
           </div>
-        )}
+        ) : null}
       </div>
 
-      {phase === EntryGearPhase.None ? null : (
+      {interactive ? (
         <div
           role='button'
           tabIndex={0}
@@ -554,7 +580,7 @@ const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps)
         >
           <FiTrash2 size={14} color={theme.colors.red} />
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
@@ -604,6 +630,7 @@ const useStyles = mkUseStyles((t) => ({
     justifyContent: 'space-between',
     gap: t.spacing.m,
   },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap', justifyContent: 'flex-end' },
   headerText: {
     gap: 2,
     minWidth: 0,
