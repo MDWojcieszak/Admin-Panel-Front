@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { HiOutlineSparkles } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,6 +16,7 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
+import { useUrlParams } from '~/hooks/useUrlParam';
 import { PhotoEntryCalendarView } from '~/routes/PhotoManagement/components/PhotoEntryCalendarView';
 import { PhotoEntryKanban } from '~/routes/PhotoManagement/components/PhotoEntryKanban';
 import { MoonSummary } from '~/routes/PhotoManagement/components/MoonSummary';
@@ -188,14 +189,33 @@ export const PhotoSessionLibrary = () => {
     }
   };
 
-  const handleOpenEntryDetails = async (entry: PhotoEntryResponse) => {
+  // The open card and its tab live in the address, so a link (or a refresh)
+  // reopens exactly what was on screen.
+  const [urlState, setUrlState] = useUrlParams(['entry', 'tab'] as const);
+  const openedEntryRef = useRef<string>();
+
+  const handleOpenEntryDetails = async (entry: Pick<PhotoEntryResponse, 'id'>) => {
+    openedEntryRef.current = entry.id;
+    setUrlState({ entry: entry.id });
     const details = await photoEntryDetailsQuery.reload(entry.id);
 
-    if (!details) return;
+    if (!details) {
+      openedEntryRef.current = undefined;
+      setUrlState({ entry: null, tab: null });
+      return;
+    }
 
     photoEntryDetailsModal.show({
       entry: details,
       astroObjects: astroObjectsQuery.data?.astroObjects || [],
+      initialTab: urlState.tab === 'publish' ? 'publish' : 'info',
+      onTabChange: (next: 'info' | 'publish') => setUrlState({ tab: next === 'publish' ? 'publish' : null }),
+      handleClose: async () => {
+        openedEntryRef.current = undefined;
+        setUrlState({ entry: null, tab: null });
+        await refreshAll();
+        photoEntryDetailsModal.hide();
+      },
       onSaved: async () => {
         const refreshedDetails = await photoEntryDetailsQuery.reload(entry.id);
         await refreshAll();
@@ -212,6 +232,13 @@ export const PhotoSessionLibrary = () => {
       },
     });
   };
+
+  // Opening from a link: once the api is ready, show the card the address names.
+  useEffect(() => {
+    if (!photoEntryApi || !urlState.entry || openedEntryRef.current === urlState.entry) return;
+    handleOpenEntryDetails({ id: urlState.entry });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [photoEntryApi, urlState.entry]);
 
   const astroObjects = astroObjectsQuery.data?.astroObjects || [];
   const entries = photoEntriesQuery.data?.photoEntries || [];

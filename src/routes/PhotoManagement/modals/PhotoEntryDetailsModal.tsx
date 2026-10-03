@@ -72,6 +72,10 @@ type PhotoEntryDetailsModalProps = Partial<InternalModalProps> & {
   onSaved?: () => void | Promise<void>;
   /** Jump to the Immich Albums tab for this entry (navigation lives in the routed parent). */
   onAddToAlbum?: (entryId: string) => void;
+  /** The card's tab to open on — a link can point straight at Publish. */
+  initialTab?: 'info' | 'publish';
+  /** Lets the page keep the open tab in the address. */
+  onTabChange?: (tab: 'info' | 'publish') => void;
 };
 
 const photoEntryDetailsSchema = z.object({
@@ -161,7 +165,11 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   // Two cards in one panel: the session itself, and publishing its exports.
   // The publish card mounts only when opened, so its folder scan (and the
   // thumbnails it signs) runs only then.
-  const [tab, setTab] = useState<'info' | 'publish'>('info');
+  const [tab, setTabState] = useState<'info' | 'publish'>(p.initialTab ?? 'info');
+  const setTab = (next: 'info' | 'publish') => {
+    setTabState(next);
+    p.onTabChange?.(next);
+  };
   const panelReady = useSidePanelReady();
   const canPublish =
     entry.foldersCreated && (entry.type === PhotoEntryType.General || entry.type === PhotoEntryType.Work);

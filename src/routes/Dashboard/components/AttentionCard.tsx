@@ -1,5 +1,5 @@
 import { differenceInCalendarDays } from 'date-fns';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { IconType } from 'react-icons';
 import {
   FiAlertTriangle,
@@ -15,6 +15,7 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useCan } from '~/hooks/usePermissions';
+import { useUrlParams } from '~/hooks/useUrlParam';
 import { STAGE_LABELS } from '~/routes/PhotoManagement/components/EntryCommentsPanel';
 import { PhotoEntryDetailsModal } from '~/routes/PhotoManagement/modals/PhotoEntryDetailsModal';
 import { formatAmount } from '~/utils/formatAmount';
@@ -83,16 +84,34 @@ export const AttentionCard = () => {
     },
   );
 
+  const [urlState, setUrlState] = useUrlParams(['entry'] as const);
+  const openedRef = useRef<string>();
+
   const openEntry = async (entryId: string) => {
     if (!photoEntryApi) return;
+    openedRef.current = entryId;
+    setUrlState({ entry: entryId });
     const { data: entry } = await photoEntryApi.photoEntryControllerGetById({ id: entryId });
     detailsModal.show({
       entry: entry as PhotoEntryDetailsResponse,
+      handleClose: async () => {
+        openedRef.current = undefined;
+        setUrlState({ entry: null });
+        await query.reload();
+        detailsModal.hide();
+      },
       onSaved: async () => {
         await query.reload();
       },
     });
   };
+
+  // A dashboard link with ?entry= reopens that session's card.
+  useEffect(() => {
+    if (!photoEntryApi || !urlState.entry || openedRef.current === urlState.entry) return;
+    openEntry(urlState.entry);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [photoEntryApi, urlState.entry]);
 
   const data = query.data;
   if (!canRead || !data) return null;

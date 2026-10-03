@@ -19,6 +19,7 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
+import { useUrlParams } from '~/hooks/useUrlParam';
 import { GearCategoryChip } from '~/routes/Gear/components/GearCategoryChip';
 import { GearItemDetailsModal } from '~/routes/Gear/modals/GearItemDetailsModal';
 import { GearItemModal } from '~/routes/Gear/modals/GearItemModal';
@@ -172,39 +173,82 @@ export const GearView = () => {
    * a details dialog closes it first. `hide()` is deliberately not awaited: its
    * promise is only settled by a callback the Modal never fires.
    */
-  const openItemDetails = (item: GearItemResponse) =>
-    itemDetailsModal.show({
+  // The open details card lives in the address, so a link reopens it.
+  const [urlState, setUrlState] = useUrlParams(['item', 'system'] as const);
+  const openedRef = useRef<string>();
+  const leaveDetails = () => {
+    openedRef.current = undefined;
+    setUrlState({ item: null, system: null });
+  };
+
+  const openItemDetails = (item: GearItemResponse) => {
+    openedRef.current = `item:${item.id}`;
+    setUrlState({ item: item.id, system: null });
+    return itemDetailsModal.show({
       item,
+      handleClose: async () => {
+        leaveDetails();
+        itemDetailsModal.hide();
+      },
       detail: details?.get(item.id),
       systemName: systemsRef.current.find((system) => system.id === item.systemId)?.name,
       onChanged: reload,
       onEdit: (target: GearItemResponse) => {
+        leaveDetails();
         itemDetailsModal.hide();
         openEditItem(target);
       },
       onDelete: (target: GearItemResponse) => {
+        leaveDetails();
         itemDetailsModal.hide();
         deleteItem(target);
       },
     });
+  };
 
-  const openSystemDetails = (system: GearSystemResponse) =>
-    systemDetailsModal.show({
+  const openSystemDetails = (system: GearSystemResponse) => {
+    openedRef.current = `system:${system.id}`;
+    setUrlState({ system: system.id, item: null });
+    return systemDetailsModal.show({
       system,
+      handleClose: async () => {
+        leaveDetails();
+        systemDetailsModal.hide();
+      },
       onChanged: reload,
       onEdit: (target: GearSystemResponse) => {
+        leaveDetails();
         systemDetailsModal.hide();
         openEditSystem(target);
       },
       onDelete: (target: GearSystemResponse) => {
+        leaveDetails();
         systemDetailsModal.hide();
         deleteSystem(target);
       },
       onAddItem: (target: GearSystemResponse) => {
+        leaveDetails();
         systemDetailsModal.hide();
         openCreateItem(target.id);
       },
     });
+  };
+
+  // Opening from a link, once the gear list has loaded.
+  useEffect(() => {
+    if (!gearQuery.data) return;
+    if (urlState.item && openedRef.current !== `item:${urlState.item}`) {
+      const all = [...gearQuery.data.systems.flatMap((system) => system.items), ...gearQuery.data.ungrouped];
+      const item = all.find((candidate) => candidate.id === urlState.item);
+      if (item) openItemDetails(item);
+      else leaveDetails();
+    } else if (urlState.system && openedRef.current !== `system:${urlState.system}`) {
+      const system = gearQuery.data.systems.find((candidate) => candidate.id === urlState.system);
+      if (system) openSystemDetails(system);
+      else leaveDetails();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gearQuery.data, urlState.item, urlState.system]);
 
   const reorderSystems = (from: number, to: number) => {
     const next = [...systemsRef.current];
