@@ -331,9 +331,7 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
 
       <div style={styles.headerRow}>
         <div style={styles.headerText}>
-          <span style={styles.headerTitle}>
-            {phase === EntryGearPhase.Pack ? 'Packing list' : 'Gear used'}
-          </span>
+          <span style={styles.headerTitle}>{phase === EntryGearPhase.Pack ? 'Packing list' : 'Gear used'}</span>
           {phase === EntryGearPhase.Pack ? (
             <span style={styles.headerHint}>Tick things off as they go in the bag.</span>
           ) : phase === EntryGearPhase.None ? (
@@ -365,7 +363,6 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
           ) : null}
         </div>
       </div>
-
 
       {adding && canAdd ? (
         <div style={styles.addPanel}>
@@ -624,7 +621,13 @@ const useStyles = mkUseStyles((t) => ({
     justifyContent: 'space-between',
     gap: t.spacing.m,
   },
-  headerActions: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap', justifyContent: 'flex-end' },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
+  },
   headerText: {
     gap: 2,
     minWidth: 0,
