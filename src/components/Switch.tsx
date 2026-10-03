@@ -9,11 +9,13 @@ type SwitchProps = {
   icon?: ReactNode;
   /** Tooltip and accessible name — required in practice for an icon-only switch. */
   title?: string;
+  /** Colour of the switch when on (track and icon); defaults to the theme blue. */
+  color?: string;
   disabled?: boolean;
 };
 
 /** A themed on/off toggle. */
-export const Switch = ({ checked, onChange, label, icon, title, disabled }: SwitchProps) => {
+export const Switch = ({ checked, onChange, label, icon, title, color, disabled }: SwitchProps) => {
   const styles = useStyles();
   const theme = useTheme();
   return (
@@ -30,13 +32,13 @@ export const Switch = ({ checked, onChange, label, icon, title, disabled }: Swit
       <span
         style={{
           ...styles.track,
-          backgroundColor: checked ? theme.colors.blue : theme.colors.gray02 + theme.colorOpacity(0.8),
+          backgroundColor: checked ? (color ?? theme.colors.blue) : theme.colors.gray02 + theme.colorOpacity(0.8),
         }}
       >
         <span style={{ ...styles.knob, transform: checked ? 'translateX(18px)' : 'translateX(0)' }} />
       </span>
       {icon ? (
-        <span style={{ ...styles.icon, color: checked ? theme.colors.white : theme.colors.dark05 }}>{icon}</span>
+        <span style={{ ...styles.icon, color: checked ? (color ?? theme.colors.blue) : theme.colors.dark05 }}>{icon}</span>
       ) : null}
       {label ? <span style={styles.label}>{label}</span> : null}
     </button>
