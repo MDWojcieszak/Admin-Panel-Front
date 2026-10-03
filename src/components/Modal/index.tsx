@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ReactElement } from 'react';
+import { ReactElement, createContext, useContext, useState } from 'react';
 import { HiX } from 'react-icons/hi';
 import useMeasure from 'react-use-measure';
 import { GlassCard } from '~/components/GlassCard';
@@ -9,6 +9,53 @@ import { mkUseStyles } from '~/utils/theme';
 type ModalProps = {
   children: ReactElement;
 } & InternalModalProps;
+
+/**
+ * False while a side panel is still sliding in. Heavy content (lists that
+ * fetch, maps) waits for it, so the slide is not fighting a mount on the same
+ * frames. Outside a side panel it is always true.
+ */
+const SidePanelReadyContext = createContext(true);
+
+export const useSidePanelReady = () => useContext(SidePanelReadyContext);
+
+const SidePanel = (p: ModalProps) => {
+  const styles = useStyles();
+  const [ready, setReady] = useState(false);
+
+  return (
+    <div style={styles.container}>
+      <motion.div
+        style={styles.sideMask}
+        initial={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={p.handleClose}
+      />
+      <motion.div
+        style={styles.sidePanel}
+        initial={{ x: '100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%' }}
+        transition={{ type: 'tween', ease: [0.22, 1, 0.36, 1], duration: 0.32 }}
+        onAnimationComplete={() => setReady(true)}
+      >
+        <GlassCard style={styles.sideCard}>
+          {p.showHeader === false ? null : (
+            <div style={styles.titleContainer}>
+              <div>{p.title}</div>
+              <HiX size={24} onClick={p.handleClose} style={styles.icon} />
+            </div>
+          )}
+          <div style={styles.sideBody}>
+            <SidePanelReadyContext.Provider value={ready}>{p.children}</SidePanelReadyContext.Provider>
+          </div>
+        </GlassCard>
+      </motion.div>
+    </div>
+  );
+};
 
 export const Modal = (p: ModalProps) => {
   const styles = useStyles();
@@ -21,35 +68,7 @@ export const Modal = (p: ModalProps) => {
   if (p.type === 'side') {
     return (
       <AnimatePresence mode='wait' key={p.title}>
-        {p.isVisible && (
-          <div style={styles.container}>
-            <motion.div
-              style={styles.sideMask}
-              initial={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={p.handleClose}
-            />
-            <motion.div
-              style={styles.sidePanel}
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'tween', ease: [0.22, 1, 0.36, 1], duration: 0.32 }}
-            >
-              <GlassCard style={styles.sideCard}>
-                {p.showHeader === false ? null : (
-                  <div style={styles.titleContainer}>
-                    <div>{p.title}</div>
-                    <HiX size={24} onClick={p.handleClose} style={styles.icon} />
-                  </div>
-                )}
-                <div style={styles.sideBody}>{p.children}</div>
-              </GlassCard>
-            </motion.div>
-          </div>
-        )}
+        {p.isVisible && <SidePanel {...p} />}
       </AnimatePresence>
     );
   }
@@ -160,6 +179,8 @@ const useStyles = mkUseStyles((t) => ({
     width: 'min(1240px, 94vw)',
     padding: t.spacing.m,
     boxSizing: 'border-box',
+    // Its own compositor layer, so the slide is a cheap transform.
+    willChange: 'transform',
   },
   sideCard: {
     height: '100%',
@@ -168,6 +189,11 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.m,
     backgroundColor: t.colors.gray05 + t.colorOpacity(0.92),
     boxShadow: '-18px 0 48px rgba(0, 0, 0, 0.35)',
+    // At 92% opacity the glass blur is all but invisible, yet a moving blurred
+    // layer is re-blurred on every frame of the slide — the main cause of the
+    // stutter. The panel goes without it.
+    backdropFilter: 'none',
+    webkitBackdropFilter: 'none',
   },
   sideBody: {
     flex: 1,
