@@ -96,22 +96,45 @@ const outOfRange = (value: string, limits: { min: number; max: number }) => {
   return !value?.trim() || !Number.isInteger(n) || n < limits.min || n > limits.max;
 };
 
-/** What still blocks going live, as the backend counts it: the notice is needed in the default language only. */
-const missingIn = (values: FormValues, defaultLocale: string) =>
-  [
+/** Placeholders the backend fills in the public notice, as it spells them. */
+const NOTICE_VARIABLES = [
+  { name: 'administratorName', value: (v: FormValues) => v.administratorName },
+  { name: 'administratorEmail', value: (v: FormValues) => v.administratorEmail },
+  { name: 'administratorAddress', value: (v: FormValues) => v.administratorAddress },
+  { name: 'retentionDays', value: (v: FormValues) => v.retentionDays },
+  { name: 'spamRetentionDays', value: (v: FormValues) => v.spamRetentionDays },
+] as const;
+
+const PLACEHOLDER = /\{\{\s*([^{}]*?)\s*\}\}/g;
+
+/** Gaps that would show in the published notice: unknown placeholders, or known ones left empty. */
+const noticeProblems = (text: string, values: FormValues) => {
+  const problems = new Set<string>();
+  for (const [, name] of text.matchAll(PLACEHOLDER)) {
+    const variable = NOTICE_VARIABLES.find((v) => v.name === name);
+    if (!variable) problems.add(`unfilled {{${name}}}`);
+    else if (!variable.value(values)?.trim()) problems.add(`{{${name}}} is empty`);
+  }
+  return [...problems];
+};
+
+/**
+ * What still blocks going live, as the backend counts it: a notice in the
+ * default language, and no notice in any language with gaps.
+ */
+const missingIn = (values: FormValues, defaultLocale: string) => {
+  const missing = [
     !values.administratorName.trim() && 'administrator name',
     !values.administratorEmail.trim() && 'administrator email',
     !textOf(values, defaultLocale).privacyNotice.trim() && `privacy notice (${defaultLocale.toUpperCase()})`,
   ].filter(Boolean) as string[];
-
-/** Placeholders the notice may use; the public page gets them filled in. */
-const NOTICE_VARIABLES = [
-  { token: '{name}', label: 'Name', value: (v: FormValues) => v.administratorName },
-  { token: '{email}', label: 'Email', value: (v: FormValues) => v.administratorEmail },
-  { token: '{address}', label: 'Address', value: (v: FormValues) => v.administratorAddress },
-  { token: '{retentionDays}', label: 'Retention', value: (v: FormValues) => `${v.retentionDays} days` },
-  { token: '{spamRetentionDays}', label: 'Spam retention', value: (v: FormValues) => `${v.spamRetentionDays} days` },
-];
+  Object.keys(values.texts ?? {}).forEach((locale) =>
+    noticeProblems(textOf(values, locale).privacyNotice, values).forEach((problem) =>
+      missing.push(`${locale.toUpperCase()} notice: ${problem}`),
+    ),
+  );
+  return missing;
+};
 
 type ContactFormSettingsModalProps = Partial<InternalModalProps>;
 
@@ -131,6 +154,7 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
   const [activeLocale, setActiveLocale] = useState<string>();
   const [saving, setSaving] = useState(false);
   const noticeRef = useRef<HTMLDivElement>(null);
+  const caretLocaleRef = useRef<string>();
 
   const { control, reset, watch, setValue, getValues } = useForm<FormValues>();
   const values = watch();
@@ -213,8 +237,11 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
     const field = `texts.${locale}.privacyNotice` as const;
     const current = getValues(field) ?? '';
     const textarea = noticeRef.current?.querySelector('textarea');
-    const at = textarea && document.activeElement === textarea ? textarea.selectionStart : current.length;
-    const end = textarea && document.activeElement === textarea ? textarea.selectionEnd : current.length;
+    // A textarea keeps its selection after losing focus; until the notice was
+    // clicked into, there is no caret to honour and the end is used.
+    const known = textarea && caretLocaleRef.current === locale;
+    const at = known ? textarea.selectionStart : current.length;
+    const end = known ? textarea.selectionEnd : current.length;
     setValue(field, current.slice(0, at) + token + current.slice(end), { shouldDirty: true });
     requestAnimationFrame(() => {
       const el = noticeRef.current?.querySelector('textarea');
@@ -294,19 +321,24 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
           </Section>
 
           <Section title='Administrator'>
-            <Input control={control} name='administratorName' label='Name' description='{name} in the notice' />
+            <Input
+              control={control}
+              name='administratorName'
+              label='Name'
+              description='{{administratorName}} in the notice'
+            />
             <Input
               control={control}
               name='administratorEmail'
               label='Email'
               type='email'
-              description='{email} in the notice'
+              description='{{administratorEmail}} in the notice'
             />
             <Input
               control={control}
               name='administratorAddress'
               label='Address'
-              description='{address} in the notice'
+              description='{{administratorAddress}} in the notice'
             />
           </Section>
 
@@ -399,18 +431,20 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
               <div style={styles.variables}>
                 {NOTICE_VARIABLES.map((v) => (
                   <button
-                    key={v.token}
+                    key={v.name}
                     type='button'
-                    title={v.value(values) || 'Not filled in yet'}
+                    title={v.value(values)?.trim() || 'Not filled in yet'}
                     style={styles.variable}
-                    onClick={() => insertVariable(v.token)}
+                    // Keeps the caret in the editor instead of moving focus to the button.
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => insertVariable(`{{${v.name}}}`)}
                   >
-                    {v.token}
+                    {`{{${v.name}}}`}
                   </button>
                 ))}
               </div>
             ) : null}
-            <div ref={noticeRef}>
+            <div ref={noticeRef} onFocus={() => (caretLocaleRef.current = locale)}>
               <Controller
                 key={`notice-${locale}`}
                 control={control}
