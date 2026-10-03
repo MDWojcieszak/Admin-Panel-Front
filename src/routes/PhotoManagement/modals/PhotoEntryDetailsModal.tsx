@@ -13,6 +13,7 @@ import {
   FiLock,
   FiRotateCcw,
   FiSlash,
+  FiUploadCloud,
 } from 'react-icons/fi';
 
 import { Badge, BadgeTone } from '~/components/Badge';
@@ -24,6 +25,7 @@ import { EntryCommentsPanel } from '~/routes/PhotoManagement/components/EntryCom
 import { EntryGearPanel } from '~/routes/PhotoManagement/components/EntryGearPanel';
 import { EntryLocationEditor } from '~/routes/PhotoManagement/components/EntryLocationEditor';
 import { EntryProgressPanel } from '~/routes/PhotoManagement/components/EntryProgressPanel';
+import { EntryPublishPanel } from '~/routes/PhotoManagement/components/EntryPublishPanel';
 import { EntryForecastPanel } from '~/routes/PhotoManagement/components/EntryForecastPanel';
 import { EntrySkyPanel } from '~/routes/PhotoManagement/components/EntrySkyPanel';
 import { ImmichAlbumsSection } from '~/routes/PhotoManagement/components/ImmichAlbumsSection';
@@ -147,6 +149,11 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   // Bumped when an action outside the gear panel changes its rows (marking the
   // material uploaded ticks every card), so the panel reloads them.
   const [gearVersion, setGearVersion] = useState(0);
+  // Publishing takes the card's body over rather than opening a modal: only one
+  // modal shows at a time, and this card already is one.
+  const [publishing, setPublishing] = useState(false);
+  const canPublish =
+    entry.foldersCreated && (entry.type === PhotoEntryType.General || entry.type === PhotoEntryType.Work);
   const uploadStatus = entry.uploadStatus;
   const isAstro = entry.type === PhotoEntryType.Astro;
 
@@ -481,6 +488,15 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                   </div>
 
                   <div style={styles.heroActions}>
+                    {canPublish && !publishing ? (
+                      <Button
+                        label='Publish'
+                        variant='secondary'
+                        style={NO_WRAP}
+                        icon={<FiUploadCloud size={14} />}
+                        onClick={() => setPublishing(true)}
+                      />
+                    ) : null}
                     {!entry.foldersCreated ? (
                       <Button
                         label='Create folders'
@@ -620,23 +636,27 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
             ) : null}
           </div>
 
-          <div style={stacked ? styles.bodyStacked : styles.body}>
-            <div style={styles.bodyColumn}>
-              {mainSections}
+          {publishing ? (
+            <EntryPublishPanel entryId={entry.id} entryName={entry.name} onClose={() => setPublishing(false)} />
+          ) : (
+            <div style={stacked ? styles.bodyStacked : styles.body}>
+              <div style={styles.bodyColumn}>
+                {mainSections}
 
-              {isLocked ? (
-                <Section>
-                  <ImmichAlbumsSection photoEntryId={entry.id} onAddToAlbum={() => p.onAddToAlbum?.(entry.id)} />
+                {isLocked ? (
+                  <Section>
+                    <ImmichAlbumsSection photoEntryId={entry.id} onAddToAlbum={() => p.onAddToAlbum?.(entry.id)} />
+                  </Section>
+                ) : null}
+              </div>
+
+              <div style={styles.bodyColumn}>
+                <Section title='Notes'>
+                  <EntryCommentsPanel entryId={entry.id} onChanged={refresh} />
                 </Section>
-              ) : null}
+              </div>
             </div>
-
-            <div style={styles.bodyColumn}>
-              <Section title='Notes'>
-                <EntryCommentsPanel entryId={entry.id} onChanged={refresh} />
-              </Section>
-            </div>
-          </div>
+          )}
         </div>
       </Scrollbar>
     </FormProvider>
