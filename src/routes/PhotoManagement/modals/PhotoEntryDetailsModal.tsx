@@ -381,9 +381,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   // Location and sky always lead; then progress (only once shot, before that
   // there is nothing to count) and the material.
   const mainSections =
-    entry.status === PhotoEntryStatus.Shot
-      ? [skySection, progressSection, gearSection]
-      : [skySection, gearSection];
+    entry.status === PhotoEntryStatus.Shot ? [skySection, progressSection, gearSection] : [skySection, gearSection];
 
   const status = STATUS_META[entry.status];
 
@@ -630,7 +628,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
           </div>
 
           {publishing ? (
-            <EntryPublishPanel entryId={entry.id} entryName={entry.name} onClose={() => setPublishing(false)} />
+            <EntryPublishPanel entryId={entry.id} onClose={() => setPublishing(false)} />
           ) : (
             <div style={stacked ? styles.bodyStacked : styles.body}>
               <div style={styles.bodyColumn}>

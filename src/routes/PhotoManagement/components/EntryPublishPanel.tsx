@@ -7,7 +7,6 @@ import {
   FiChevronRight,
   FiExternalLink,
   FiImage,
-  FiPlus,
   FiRefreshCw,
   FiSearch,
   FiUploadCloud,
@@ -32,7 +31,6 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type EntryPublishPanelProps = {
   entryId: string;
-  entryName: string;
   onClose: () => void;
 };
 
@@ -63,7 +61,7 @@ const isSelectable = (file: ExportFileResponse) =>
  * in the gallery. A changed file replaces its published copy in place; RAW and
  * HEIC files cannot go and say why.
  */
-export const EntryPublishPanel = ({ entryId, entryName, onClose }: EntryPublishPanelProps) => {
+export const EntryPublishPanel = ({ entryId, onClose }: EntryPublishPanelProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const toast = useToast();
@@ -74,8 +72,8 @@ export const EntryPublishPanel = ({ entryId, entryName, onClose }: EntryPublishP
   const [error, setError] = useState<string>();
   const [selected, setSelected] = useState<string[]>([]);
   const [galleries, setGalleries] = useState<GalleryResponse[]>([]);
-  const [target, setTarget] = useState<string>('new');
-  const [newTitle, setNewTitle] = useState(entryName);
+  // No preselected gallery: where photos go is chosen, never assumed.
+  const [target, setTarget] = useState<string>();
   const [publishing, setPublishing] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const pollRef = useRef<number>();
@@ -135,11 +133,8 @@ export const EntryPublishPanel = ({ entryId, entryName, onClose }: EntryPublishP
     setSelected((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
 
   const publish = async () => {
-    if (!photoEntryApi || !selected.length) return;
-    const body: PublishExportsDto =
-      target === 'new'
-        ? { keys: selected, newGallery: true, newGalleryTitle: newTitle.trim() || undefined }
-        : { keys: selected, galleryId: target };
+    if (!photoEntryApi || !selected.length || !target) return;
+    const body: PublishExportsDto = { keys: selected, galleryId: target };
     setPublishing(true);
     try {
       const { data } = await photoEntryApi.photoEntryExportControllerPublish({ id: entryId, publishExportsDto: body });
@@ -150,11 +145,6 @@ export const EntryPublishPanel = ({ entryId, entryName, onClose }: EntryPublishP
         'success',
       );
       setSelected([]);
-      setTarget(data.galleryId);
-      if (target === 'new' && galleriesApi) {
-        const { data: list } = await galleriesApi.galleriesControllerList();
-        setGalleries(list.galleries);
-      }
       await load();
     } catch (e) {
       toast(getApiErrorMessage(e, 'Could not publish.'), 'error');
@@ -287,17 +277,11 @@ export const EntryPublishPanel = ({ entryId, entryName, onClose }: EntryPublishP
               </button>
             ) : null}
             <div style={styles.actionRight}>
-              <GalleryPicker
-                galleries={galleries}
-                target={target}
-                newTitle={newTitle}
-                onTarget={setTarget}
-                onNewTitle={setNewTitle}
-              />
+              <GalleryPicker galleries={galleries} target={target} onTarget={setTarget} />
               <Button
                 label={selected.length ? `Publish ${selected.length}` : 'Publish'}
                 icon={<FiUploadCloud size={14} />}
-                disabled={!selected.length || (target === 'new' && !newTitle.trim())}
+                disabled={!selected.length || !target}
                 loading={publishing}
                 onClick={publish}
               />
@@ -435,26 +419,25 @@ const Lightbox = ({
 };
 
 /**
- * Where the selection goes: a new draft gallery named after the session, or an
- * existing gallery picked by its cover. Opens upwards from the action bar.
+ * Which gallery the selection goes to, picked by its cover. Galleries are made
+ * in Galleries, not here: publishing only fills one that already exists.
+ * Opens upwards from the action bar.
  */
 const GalleryPicker = ({
   galleries,
   target,
-  newTitle,
   onTarget,
-  onNewTitle,
 }: {
   galleries: GalleryResponse[];
-  target: string;
-  newTitle: string;
+  target?: string;
   onTarget: (target: string) => void;
-  onNewTitle: (title: string) => void;
 }) => {
   const styles = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
+  // Inline styles have no :hover, so the pointer is tracked instead.
+  const [hovered, setHovered] = useState<string>();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -478,53 +461,31 @@ const GalleryPicker = ({
 
   return (
     <div ref={ref} style={styles.pickerWrap}>
-      <button type='button' style={styles.pickerButton} onClick={() => setOpen((v) => !v)}>
+      <button
+        type='button'
+        style={{ ...styles.pickerButton, ...(hovered === 'button' || open ? styles.pickerButtonHover : {}) }}
+        onClick={() => setOpen((v) => !v)}
+        onMouseEnter={() => setHovered('button')}
+        onMouseLeave={() => setHovered(undefined)}
+      >
         <span style={styles.pickerThumb}>
           {selected && imgUrl(selected.coverUrl) ? (
             <img src={imgUrl(selected.coverUrl)} alt='' style={styles.pickerThumbImg} />
-          ) : selected ? (
-            <FiImage size={14} color={theme.colors.dark05} />
           ) : (
-            <FiPlus size={14} color={theme.colors.blue} />
+            <FiImage size={14} color={theme.colors.dark05} />
           )}
         </span>
         <span style={styles.pickerText}>
           <span style={styles.pickerLabel}>Publish to</span>
-          <span style={styles.pickerValue}>
-            {selected ? selected.title : `New gallery · ${newTitle || 'untitled'}`}
-          </span>
+          <span style={styles.pickerValue}>{selected ? selected.title : 'Choose a gallery'}</span>
         </span>
         <FiChevronDown size={16} color={theme.colors.dark05} />
       </button>
 
       {open ? (
         <div style={styles.pickerMenu}>
-          <div
-            style={{ ...styles.newOption, ...(target === 'new' ? styles.optionOn : {}) }}
-            onClick={() => onTarget('new')}
-          >
-            <span style={styles.optionThumb}>
-              <FiPlus size={16} color={theme.colors.blue} />
-            </span>
-            <div style={styles.newOptionBody}>
-              <span style={styles.optionTitle}>New gallery</span>
-              <span style={styles.muted}>Created as a draft — publishing photos does not publish the page.</span>
-              {target === 'new' ? (
-                <input
-                  autoFocus
-                  value={newTitle}
-                  onChange={(e) => onNewTitle(e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
-                  placeholder='Gallery title'
-                  style={styles.menuInput}
-                />
-              ) : null}
-            </div>
-          </div>
-
           {galleries.length ? (
             <>
-              <span style={styles.menuSection}>Existing galleries</span>
               {galleries.length > 6 ? (
                 <label style={styles.menuSearch}>
                   <FiSearch size={13} />
@@ -541,7 +502,12 @@ const GalleryPicker = ({
                   <button
                     key={gallery.id}
                     type='button'
-                    style={{ ...styles.option, ...(gallery.id === target ? styles.optionOn : {}) }}
+                    style={{
+                      ...styles.option,
+                      ...(gallery.id === target ? styles.optionOn : hovered === gallery.id ? styles.optionHover : {}),
+                    }}
+                    onMouseEnter={() => setHovered(gallery.id)}
+                    onMouseLeave={() => setHovered(undefined)}
                     onClick={() => {
                       onTarget(gallery.id);
                       setOpen(false);
@@ -567,7 +533,15 @@ const GalleryPicker = ({
                 {!visible.length ? <span style={styles.muted}>No gallery matches.</span> : null}
               </div>
             </>
-          ) : null}
+          ) : (
+            <span style={styles.menuEmpty}>
+              No galleries yet —{' '}
+              <a href='/galleries' target='_blank' rel='noreferrer' style={styles.menuLink}>
+                create one in Galleries
+              </a>
+              , then pick it here.
+            </span>
+          )}
         </div>
       ) : null}
     </div>
@@ -662,6 +636,8 @@ const useStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
     textAlign: 'left',
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.8),
+
+    transition: 'background-color 0.12s ease',
   },
   pickerThumb: {
     display: 'flex',
@@ -706,16 +682,9 @@ const useStyles = mkUseStyles((t) => ({
     border: `1px solid ${t.colors.white + t.colorOpacity(0.08)}`,
     boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
   },
-  newOption: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: t.spacing.s,
-    padding: t.spacing.s,
-    borderRadius: t.borderRadius.default,
-    cursor: 'pointer',
-  },
-  newOptionBody: { flex: 1, minWidth: 0, gap: 4 },
   optionOn: { backgroundColor: t.colors.blue + t.colorOpacity(0.14) },
+  optionHover: { backgroundColor: t.colors.white + t.colorOpacity(0.06) },
+  pickerButtonHover: { backgroundColor: t.colors.gray01 },
   optionThumb: {
     display: 'flex',
     alignItems: 'center',
@@ -728,25 +697,6 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.8),
   },
   optionTitle: { fontSize: 14, fontWeight: 600, color: t.colors.white },
-  menuInput: {
-    height: 36,
-    marginTop: 4,
-    padding: `0 ${t.spacing.s}px`,
-    border: 'none',
-    outline: 'none',
-    borderRadius: t.borderRadius.default,
-    color: t.colors.white,
-    fontSize: 14,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.8),
-  },
-  menuSection: {
-    padding: `${t.spacing.s}px ${t.spacing.s}px 2px`,
-    fontSize: 10,
-    fontWeight: 700,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    color: t.colors.dark05,
-  },
   menuSearch: {
     display: 'flex',
     flexDirection: 'row',
@@ -769,6 +719,8 @@ const useStyles = mkUseStyles((t) => ({
     fontSize: 13,
   },
   optionList: { gap: 2 },
+  menuEmpty: { padding: t.spacing.s, fontSize: 13, color: t.colors.dark05 },
+  menuLink: { color: t.colors.blue04 },
   option: {
     display: 'flex',
     flexDirection: 'row',
@@ -780,6 +732,8 @@ const useStyles = mkUseStyles((t) => ({
     textAlign: 'left',
     cursor: 'pointer',
     backgroundColor: 'transparent',
+
+    transition: 'background-color 0.12s ease',
   },
   optionText: { display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, gap: 1 },
   grid: {
