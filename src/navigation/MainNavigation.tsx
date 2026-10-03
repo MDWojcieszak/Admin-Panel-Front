@@ -56,14 +56,14 @@ export const mainNavigationRoutes: MainRouteType[] = [
   },
   {
     path: MainNavigationRoute.GALLERIES,
-    label: 'Galleries',
+    label: 'Gallery',
     component: <GalleriesNavigation />,
     nested: true,
     permission: 'gallery.manage',
     subItems: [
-      { path: GalleryNavigationRoute.GALLERIES, label: 'Galleries' },
+      { path: GalleryNavigationRoute.GALLERIES, label: 'Albums' },
       { path: GalleryNavigationRoute.IMAGES, label: 'Images' },
-      { path: GalleryNavigationRoute.HERO, label: 'Home' },
+      { path: GalleryNavigationRoute.HERO, label: 'Settings' },
     ],
   },
   {

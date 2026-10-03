@@ -106,8 +106,8 @@ const HomeSettingsPanel = () => {
             />
             <Input
               name='galleryPreviewCount'
-              label='Gallery preview'
-              description='Thumbnails per gallery on home'
+              label='Album preview'
+              description='Thumbnails per album on home'
               type='number'
               control={form.control}
             />
@@ -121,14 +121,14 @@ const HomeSettingsPanel = () => {
             <Input
               name='homeGalleryLimit'
               label='Galleries on home'
-              description={showAll ? 'Showing all galleries' : 'Max galleries on home'}
+              description={showAll ? 'Showing all albums' : 'Max albums on home'}
               type='number'
               control={form.control}
               style={showAll ? styles.disabledField : undefined}
             />
           </div>
           <div style={styles.settingsFooter}>
-            <Switch checked={showAll} onChange={setShowAll} label='Show all galleries on home' />
+            <Switch checked={showAll} onChange={setShowAll} label='Show all albums on home' />
             <Button label='Save settings' variant='secondary' onClick={form.handleSubmit(save)} loading={saving} />
           </div>
         </>
@@ -203,7 +203,7 @@ export const HeroView = () => {
   return (
     <div style={styles.scroll}>
       <div style={styles.content}>
-        <PageHeader title='Home page' />
+        <PageHeader title='Settings' />
 
         <HomeSettingsPanel />
 

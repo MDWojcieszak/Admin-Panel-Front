@@ -29,7 +29,7 @@ export const GalleriesList = () => {
     return data;
   }, [galleriesApi]);
 
-  const createModal = useModal('gallery-create', CreateGalleryModal, { title: 'New gallery' });
+  const createModal = useModal('gallery-create', CreateGalleryModal, { title: 'New album' });
 
   const openCreate = () => {
     createModal.show({ onCreated: (id: string) => navigate(`/galleries/${id}`) });
@@ -75,9 +75,9 @@ export const GalleriesList = () => {
     <div style={styles.scroll}>
       <div style={styles.content}>
         <PageHeader
-          title='Galleries'
+          title='Albums'
           meta={galleries.length ? `${galleries.length} galler${galleries.length === 1 ? 'y' : 'ies'}` : undefined}
-          actions={<Button label='New gallery' icon={<FiPlus size={14} />} onClick={openCreate} />}
+          actions={<Button label='New album' icon={<FiPlus size={14} />} onClick={openCreate} />}
         />
 
         {/* Galleries grid */}
