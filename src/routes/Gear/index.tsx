@@ -1,4 +1,4 @@
-import { DragEvent, useEffect, useRef, useState } from 'react';
+import { DragEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { FiEye, FiEyeOff, FiImage, FiLayers, FiMove, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import { MdCameraAlt } from 'react-icons/md';
 import {
@@ -27,9 +27,14 @@ import { GearSystemDetailsModal } from '~/routes/Gear/modals/GearSystemDetailsMo
 import { GearSystemModal } from '~/routes/Gear/modals/GearSystemModal';
 import { imgUrl } from '~/routes/Galleries/utils';
 import { formatAmount } from '~/utils/formatAmount';
-import { gearCategoryColor, gearCategoryIcon, gearCategoryLabel } from '~/utils/gearCategory';
+import { GEAR_CATEGORY_GROUPS, gearCategoryColor, gearCategoryIcon, gearCategoryLabel } from '~/utils/gearCategory';
 import { getApiErrorMessage, getApiErrorStatus } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+
+/** Category → its group label, for filtering by kind of gear. */
+const GROUP_OF = new Map<GearCategory, string>(
+  GEAR_CATEGORY_GROUPS.flatMap((group) => group.categories.map((category) => [category, group.label] as const)),
+);
 
 export const GearView = () => {
   const styles = useStyles();
@@ -231,6 +236,27 @@ export const GearView = () => {
     }
   };
 
+  // Filtering by the same groups the category select uses: 39 categories as
+  // chips would be a wall, nine groups read at a glance.
+  const [groupFilter, setGroupFilter] = useState<string | null>(null);
+  const matches = (item: GearItemResponse) => !groupFilter || GROUP_OF.get(item.category) === groupFilter;
+
+  const groupCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    [...systems.flatMap((system) => system.items), ...ungrouped].forEach((item) => {
+      const group = GROUP_OF.get(item.category) ?? 'Other';
+      counts.set(group, (counts.get(group) ?? 0) + 1);
+    });
+    return counts;
+  }, [systems, ungrouped]);
+  const totalItems = Array.from(groupCounts.values()).reduce((sum, n) => sum + n, 0);
+
+  const visibleSystems = groupFilter ? systems.filter((system) => system.items.some(matches)) : systems;
+  const visibleUngrouped = ungrouped.filter(matches);
+  // A reorder sends the ids it can see; with a filter on that would be a
+  // partial list, so dragging waits until the filter is cleared.
+  const canReorder = !groupFilter;
+
   const wishlistCount = details
     ? Array.from(details.values()).filter((item) => item.ownership === GearOwnership.Wishlist).length
     : 0;
@@ -263,6 +289,36 @@ export const GearView = () => {
           </div>
         </div>
 
+        {totalItems ? (
+          <div style={styles.filterRow}>
+            <button
+              type='button'
+              aria-pressed={!groupFilter}
+              onClick={() => setGroupFilter(null)}
+              style={{ ...styles.filterChip, ...(!groupFilter ? styles.filterChipOn : {}) }}
+            >
+              All <span style={styles.filterCount}>{totalItems}</span>
+            </button>
+            {GEAR_CATEGORY_GROUPS.filter((group) => groupCounts.get(group.label)).map((group) => {
+              const Icon = gearCategoryIcon(group.categories[0]);
+              const active = groupFilter === group.label;
+              return (
+                <button
+                  key={group.label}
+                  type='button'
+                  aria-pressed={active}
+                  onClick={() => setGroupFilter(active ? null : group.label)}
+                  style={{ ...styles.filterChip, ...(active ? styles.filterChipOn : {}) }}
+                >
+                  <Icon size={13} color={active ? undefined : theme.colors[group.color]} />
+                  {group.label}
+                  <span style={styles.filterCount}>{groupCounts.get(group.label)}</span>
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+
         {gearQuery.loading && !gearQuery.data ? (
           <Loader />
         ) : isEmpty ? (
@@ -273,7 +329,11 @@ export const GearView = () => {
           />
         ) : (
           <>
-            {systems.map((system, i) => (
+            {groupFilter && !visibleSystems.length && !visibleUngrouped.length ? (
+              <EmptyState title='Nothing here' description={`No ${groupFilter.toLowerCase()} gear yet.`} />
+            ) : null}
+
+            {visibleSystems.map((system, i) => (
               <div
                 key={system.id}
                 style={styles.block}
@@ -288,9 +348,9 @@ export const GearView = () => {
               >
                 <div style={styles.blockHeader}>
                   <div
-                    style={styles.grip}
+                    style={{ ...styles.grip, visibility: canReorder ? 'visible' : 'hidden' }}
                     title='Drag to reorder systems'
-                    draggable
+                    draggable={canReorder}
                     onDragStart={(e: DragEvent) => {
                       // Firefox will not start a drag that carries no data.
                       e.dataTransfer.setData('text/plain', system.id);
@@ -347,7 +407,8 @@ export const GearView = () => {
 
                 <ItemsGrid
                   details={details}
-                  items={system.items}
+                  items={groupFilter ? system.items.filter(matches) : system.items}
+                  reorderable={canReorder}
                   systemHidden={!system.visible}
                   emptyLabel='No items in this system yet.'
                   onOpen={openItemDetails}
@@ -356,14 +417,15 @@ export const GearView = () => {
               </div>
             ))}
 
-            {ungrouped.length ? (
+            {visibleUngrouped.length ? (
               <div style={styles.block}>
                 <div style={styles.blockHeader}>
                   <span style={styles.blockTitle}>Ungrouped</span>
                 </div>
                 <ItemsGrid
                   details={details}
-                  items={ungrouped}
+                  items={visibleUngrouped}
+                  reorderable={canReorder}
                   emptyLabel='No standalone items.'
                   onOpen={openItemDetails}
                   onReorder={persistItemOrder}
@@ -384,11 +446,21 @@ type ItemsGridProps = {
   /** A hidden system takes its items off the public page whatever their own flag says. */
   systemHidden?: boolean;
   emptyLabel: string;
+  /** Off while a filter hides part of the list. */
+  reorderable?: boolean;
   onOpen: (item: GearItemResponse) => void;
   onReorder: (ids: string[]) => void;
 };
 
-const ItemsGrid = ({ items, details, systemHidden, emptyLabel, onOpen, onReorder }: ItemsGridProps) => {
+const ItemsGrid = ({
+  items,
+  details,
+  systemHidden,
+  emptyLabel,
+  reorderable = true,
+  onOpen,
+  onReorder,
+}: ItemsGridProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const [local, setLocal] = useState<GearItemResponse[]>(items);
@@ -482,9 +554,9 @@ const ItemsGrid = ({ items, details, systemHidden, emptyLabel, onOpen, onReorder
               {/* The only draggable part. With the whole tile draggable, a click
                   that moved a pixel became a drag and opening details was a gamble. */}
               <div
-                style={styles.itemGrip}
+                style={{ ...styles.itemGrip, ...(reorderable ? {} : { display: 'none' }) }}
                 title={`Drag to reorder among ${gearCategoryLabel(item.category).toLowerCase()} items`}
-                draggable
+                draggable={reorderable}
                 onClick={(e) => e.stopPropagation()}
                 onDragStart={(e: DragEvent) => {
                   e.stopPropagation();
@@ -595,6 +667,32 @@ const useStyles = mkUseStyles((t) => ({
   heading: { fontSize: 22, fontWeight: 700 },
   subheading: { fontSize: 13, color: t.colors.dark05, maxWidth: 620 },
   headerActions: { flexDirection: 'row', gap: t.spacing.s, flexWrap: 'wrap', justifyContent: 'flex-end' },
+  filterRow: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs },
+  filterChip: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 32,
+    padding: '0 12px',
+    borderRadius: 999,
+    fontSize: 13,
+    fontWeight: 600,
+    whiteSpace: 'nowrap',
+    cursor: 'pointer',
+    color: t.colors.dark05,
+    backgroundColor: 'transparent',
+    // Longhands: the on-state swaps only the colour.
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: t.colors.dark04 + t.colorOpacity(0.5),
+  },
+  filterChipOn: {
+    color: t.colors.white,
+    borderColor: t.colors.blue,
+    backgroundColor: t.colors.blue + t.colorOpacity(0.18),
+  },
+  filterCount: { fontSize: 11, fontWeight: 700, opacity: 0.7 },
   block: {
     gap: t.spacing.m,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
