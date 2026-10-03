@@ -5,7 +5,6 @@ import { PageHeader } from '~/components/PageHeader';
 import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
-import { Switch } from '~/components/Switch';
 import { useApi } from '~/hooks/useApi';
 import { useModal } from '~/hooks/useModal';
 import { ImageProcessingStrip } from '~/routes/Galleries/components/ImageProcessingStrip';
@@ -54,20 +53,39 @@ export const GalleryImagesView = () => {
         <PageHeader
           title='Images'
           actions={
-            <>
-              <Switch checked={unassignedOnly} onChange={setUnassignedOnly} label='Unassigned only' />
-              <Button
-                label='Refresh'
-                variant='secondary'
-                icon={<FiRefreshCw size={14} />}
-                onClick={() => load(0, true)}
-                loading={loading}
-              />
-            </>
+            <Button
+              label='Refresh'
+              variant='secondary'
+              icon={<FiRefreshCw size={14} />}
+              onClick={() => load(0, true)}
+              loading={loading}
+            />
           }
         />
 
         <ImageProcessingStrip onFinished={() => load(0, true)} />
+
+        {/* A filter over the grid, like the gear groups, not a switch in the header. */}
+        <div style={styles.filterRow}>
+          {[
+            { value: false, label: 'All images' },
+            { value: true, label: 'Unassigned' },
+          ].map((option) => {
+            const active = unassignedOnly === option.value;
+            return (
+              <button
+                key={option.label}
+                type='button'
+                aria-pressed={active}
+                onClick={() => setUnassignedOnly(option.value)}
+                style={{ ...styles.filterChip, ...(active ? styles.filterChipOn : {}) }}
+              >
+                {option.label}
+                {active && !loading ? <span style={styles.filterCount}>{total}</span> : null}
+              </button>
+            );
+          })}
+        </div>
 
         {loading && images.length === 0 ? (
           <Loader />
@@ -142,6 +160,32 @@ export const GalleryImagesView = () => {
 };
 
 const useStyles = mkUseStyles((t) => ({
+  filterRow: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs },
+  filterChip: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 32,
+    padding: '0 12px',
+    borderRadius: 999,
+    fontSize: 13,
+    fontWeight: 600,
+    whiteSpace: 'nowrap',
+    cursor: 'pointer',
+    color: t.colors.dark05,
+    backgroundColor: 'transparent',
+    // Longhands: the on-state swaps only the colour.
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: t.colors.dark04 + t.colorOpacity(0.5),
+  },
+  filterChipOn: {
+    color: t.colors.white,
+    borderColor: t.colors.blue,
+    backgroundColor: t.colors.blue + t.colorOpacity(0.18),
+  },
+  filterCount: { fontSize: 11, fontWeight: 700, opacity: 0.7 },
   scroll: {
     height: '100%',
     minHeight: 0,
