@@ -46,7 +46,8 @@ const BOX_STATUS: Record<Box, InquiryStatus | undefined> = {
 const inBox = (box: Box, status: InquiryStatus) =>
   box === 'inbox' ? status !== InquiryStatus.Archived && status !== InquiryStatus.Spam : BOX_STATUS[box] === status;
 
-const PAGE = 30;
+// The backend's PaginationDto caps take at 20; more is a 400.
+const PAGE = 20;
 
 const shortDate = (iso: string) => {
   const date = new Date(iso);
