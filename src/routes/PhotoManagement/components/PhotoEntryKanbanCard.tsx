@@ -10,6 +10,7 @@ import {
   FiEdit3,
   FiFileText,
   FiFolder,
+  FiImage,
   FiMoon,
   FiRadio,
   FiStar,
@@ -35,6 +36,27 @@ type PhotoEntryKanbanCardProps = {
   onDragMove: (x: number, y: number) => void;
   onDragEnd: (entry: PhotoEntryResponse) => void;
   styles: Record<string, CSSProperties>;
+};
+
+type Counter = {
+  key: string;
+  label: string;
+  title: string;
+  icon: IconType;
+  color: string;
+};
+
+// The global stylesheet makes every div a column; the rows here have to say so.
+const ROW: CSSProperties = { display: 'flex', flexDirection: 'row', alignItems: 'center' };
+
+const COUNTERS: CSSProperties = {
+  gap: 12,
+  marginTop: 10,
+  paddingTop: 8,
+  borderTop: '1px solid rgba(146, 164, 177, 0.14)',
+  fontSize: 12,
+  fontWeight: 600,
+  lineHeight: 1,
 };
 
 type Chip = {
@@ -69,8 +91,8 @@ export const PhotoEntryKanbanCard = ({
   const endDate = useMemo(() => parseDate(entry.endDate), [entry.endDate]);
 
   const dateRange = useMemo(() => formatDateRange(startDate, endDate), [startDate, endDate]);
-  const mediaChip = useMemo(() => getMediaChip(entry), [entry]);
-  const signalChips = useMemo(() => getSignalChips(entry), [entry]);
+  const statusChips = useMemo(() => getStatusChips(entry), [entry]);
+  const counters = useMemo(() => getCounters(entry), [entry]);
 
   const TypeIcon = typeMeta.icon;
 
@@ -123,64 +145,40 @@ export const PhotoEntryKanbanCard = ({
         {qualifier ? <span style={{ opacity: 0.55, fontWeight: 400 }}> · {qualifier}</span> : null}
       </div>
 
-      <div
-        style={{
-          display: 'flex',
-          gap: 6,
-          flexWrap: 'wrap',
-          marginTop: 8,
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 8px',
-            borderRadius: 999,
-            fontSize: 14,
-            lineHeight: 1,
-            fontWeight: 500,
-            background: typeMeta.background,
-            border: `1px solid ${typeMeta.border}`,
-            color: typeMeta.color,
-            width: 'fit-content',
-          }}
-        >
-          <TypeIcon size={16} />
-          <span>{typeMeta.label}</span>
-        </div>
-
-        {mediaChip ? <CardChip chip={mediaChip} /> : null}
+      {/* Type and dates share one quiet line: they describe the session rather
+          than ask for attention, so they no longer get pills of their own. */}
+      <div style={{ ...ROW, ...styles.cardMeta, gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
+        <span style={{ ...ROW, gap: 4, color: typeMeta.color, fontWeight: 600 }}>
+          <TypeIcon size={13} />
+          {typeMeta.label}
+        </span>
+        {dateRange ? (
+          <>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span style={{ whiteSpace: 'nowrap' }}>{dateRange}</span>
+          </>
+        ) : null}
       </div>
 
-      {signalChips.length ? (
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
-          {signalChips.map((chip) => (
+      {statusChips.length ? (
+        <div style={{ ...ROW, gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
+          {statusChips.map((chip) => (
             <CardChip key={chip.key} chip={chip} />
           ))}
         </div>
       ) : null}
 
-      {entry.rootPath ? (
-        <div
-          style={{
-            ...styles.cardMeta,
-            marginTop: 8,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-          title={entry.rootPath}
-        >
-          <span style={{ opacity: 0.68 }}>Path:</span> {entry.rootPath}
-        </div>
-      ) : null}
-
-      {dateRange ? (
-        <div style={{ ...styles.cardMeta, marginTop: 6 }}>
-          <span style={{ opacity: 0.68 }}>Dates:</span> {dateRange}
+      {counters.length ? (
+        <div style={{ ...ROW, ...COUNTERS, flexWrap: 'wrap' }}>
+          {counters.map((counter) => {
+            const Icon = counter.icon;
+            return (
+              <span key={counter.key} title={counter.title} style={{ ...ROW, gap: 4, color: counter.color }}>
+                <Icon size={13} />
+                {counter.label}
+              </span>
+            );
+          })}
         </div>
       ) : null}
     </motion.div>
@@ -198,8 +196,8 @@ const CardChip = ({ chip }: { chip: Chip }) => {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 7,
-        padding: '6px 10px',
+        gap: 5,
+        padding: '4px 8px',
         borderRadius: 999,
         fontSize: 12,
         lineHeight: 1,
@@ -210,8 +208,8 @@ const CardChip = ({ chip }: { chip: Chip }) => {
         color: chip.color,
       }}
     >
-      <Icon size={14} />
-      <span>{chip.label}</span>
+      <Icon size={12} />
+      <span style={{ whiteSpace: 'nowrap' }}>{chip.label}</span>
     </motion.div>
   );
 };
@@ -243,7 +241,8 @@ const getMediaChip = (entry: PhotoEntryResponse): Chip | null => {
   return { key: 'unsecured', label: 'Waiting for upload', icon: FiAlertCircle, ...TONES.red, pulse: true };
 };
 
-const getSignalChips = (entry: PhotoEntryResponse): Chip[] => {
+/** States worth a pill: the upload state plus what the stage alone does not tell. */
+const getStatusChips = (entry: PhotoEntryResponse): Chip[] => {
   const chips: Chip[] = [];
 
   // Derived from the dates by the backend, so it needs no lane of its own.
@@ -251,29 +250,60 @@ const getSignalChips = (entry: PhotoEntryResponse): Chip[] => {
     chips.push({ key: 'now', label: 'Happening now', icon: FiRadio, ...TONES.azure, pulse: true });
   }
 
+  const media = getMediaChip(entry);
+  if (media) chips.push(media);
+
   // Only worth saying where the stage no longer implies it — an entry parked back
   // in "After shoot" still carries the fact that it was edited at some point.
   if (entry.wasEdited && entry.postStage === PhotoEntryPostStage.None) {
     chips.push({ key: 'edited', label: 'Was edited', icon: FiEdit3, ...TONES.slate });
   }
 
+  return chips;
+};
+
+/**
+ * Numbers go into a footer as plain icon + count. As pills they each took a full
+ * line and a busy session grew into a tower of badges.
+ */
+const getCounters = (entry: PhotoEntryResponse): Counter[] => {
+  const counters: Counter[] = [];
+
   const progress = formatProgress(entry);
   if (progress) {
-    chips.push({ key: 'progress', label: progress, icon: FiCheckSquare, ...TONES.slate });
+    counters.push({ key: 'progress', label: progress, title: 'Progress', icon: FiImage, color: TONES.slate.color });
   }
 
   const summary = entry.commentSummary;
-  if (summary?.highlights) {
-    chips.push({ key: 'highlights', label: String(summary.highlights), icon: FiStar, ...TONES.amber });
-  }
   if (summary?.openTodos) {
-    chips.push({ key: 'todos', label: `${summary.openTodos} to do`, icon: FiCheckSquare, ...TONES.azure });
+    counters.push({
+      key: 'todos',
+      label: String(summary.openTodos),
+      title: `${summary.openTodos} open to-do${summary.openTodos === 1 ? '' : 's'}`,
+      icon: FiCheckSquare,
+      color: TONES.azure.color,
+    });
+  }
+  if (summary?.highlights) {
+    counters.push({
+      key: 'highlights',
+      label: String(summary.highlights),
+      title: `${summary.highlights} highlight${summary.highlights === 1 ? '' : 's'}`,
+      icon: FiStar,
+      color: TONES.amber.color,
+    });
   }
   if (summary?.problems) {
-    chips.push({ key: 'problems', label: String(summary.problems), icon: FiAlertTriangle, ...TONES.red });
+    counters.push({
+      key: 'problems',
+      label: String(summary.problems),
+      title: `${summary.problems} problem${summary.problems === 1 ? '' : 's'}`,
+      icon: FiAlertTriangle,
+      color: TONES.red.color,
+    });
   }
 
-  return chips;
+  return counters;
 };
 
 /**
@@ -300,18 +330,18 @@ const parseDate = (value?: string | null): Date | null => {
   return date;
 };
 
+/** Says the shared month/year once: "12–13 Aug 2026", "28 Aug – 2 Sep 2026". */
 const formatDateRange = (startDate?: Date | null, endDate?: Date | null) => {
-  const formatValue = (date?: Date | null) => {
-    if (!date) return null;
-    return format(date, 'dd.MM.yyyy');
-  };
-
-  const start = formatValue(startDate);
-  const end = formatValue(endDate);
-
-  if (start && end) return `${start} → ${end}`;
-  if (start) return `${start} → ...`;
-  if (end) return `... → ${end}`;
+  if (startDate && endDate) {
+    const sameYear = startDate.getFullYear() === endDate.getFullYear();
+    const sameMonth = sameYear && startDate.getMonth() === endDate.getMonth();
+    if (sameMonth && startDate.getDate() === endDate.getDate()) return format(startDate, 'd MMM yyyy');
+    if (sameMonth) return `${format(startDate, 'd')}–${format(endDate, 'd MMM yyyy')}`;
+    if (sameYear) return `${format(startDate, 'd MMM')} – ${format(endDate, 'd MMM yyyy')}`;
+    return `${format(startDate, 'd MMM yyyy')} – ${format(endDate, 'd MMM yyyy')}`;
+  }
+  if (startDate) return `from ${format(startDate, 'd MMM yyyy')}`;
+  if (endDate) return `until ${format(endDate, 'd MMM yyyy')}`;
   return null;
 };
 
