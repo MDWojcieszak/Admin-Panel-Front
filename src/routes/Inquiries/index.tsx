@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { format, isThisYear, isToday } from 'date-fns';
+import { differenceInCalendarDays, format, formatDistanceToNow, isThisYear, isToday, isYesterday } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import {
@@ -53,6 +53,125 @@ const shortDate = (iso: string) => {
   const date = new Date(iso);
   if (isToday(date)) return format(date, 'HH:mm');
   return format(date, isThisYear(date) ? 'd MMM' : 'd MMM yyyy');
+};
+
+/** Sections of the list, newest first: Today, Yesterday, This week, then by month. */
+const dayGroup = (iso: string) => {
+  const date = new Date(iso);
+  if (isToday(date)) return 'Today';
+  if (isYesterday(date)) return 'Yesterday';
+  if (differenceInCalendarDays(new Date(), date) < 7) return 'This week';
+  return format(date, isThisYear(date) ? 'MMMM' : 'MMMM yyyy');
+};
+
+const groupByDay = (items: InquiryResponse[]) =>
+  items.reduce<{ label: string; items: InquiryResponse[] }[]>((groups, item) => {
+    const label = dayGroup(item.createdAt);
+    const last = groups[groups.length - 1];
+    if (last?.label === label) last.items.push(item);
+    else groups.push({ label, items: [item] });
+    return groups;
+  }, []);
+
+const initials = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('') || '?';
+
+const AVATAR_COLORS = ['blue', 'purple02', 'lightGreen', 'yellow', 'mainGreen', 'red'] as const;
+
+/** Same sender, same colour: picked from the name, not stored. */
+const avatarColor = (name: string) =>
+  AVATAR_COLORS[[...name].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % AVATAR_COLORS.length];
+
+const Avatar = ({ name, size, unread }: { name: string; size: number; unread?: boolean }) => {
+  const styles = useStyles();
+  const theme = useTheme();
+  const color = theme.colors[avatarColor(name)];
+  return (
+    <span
+      style={{
+        ...styles.avatar,
+        width: size,
+        height: size,
+        fontSize: Math.round(size * 0.38),
+        color,
+        backgroundColor: color + theme.colorOpacity(0.18),
+      }}
+    >
+      {initials(name)}
+      {unread ? <span style={styles.avatarDot} /> : null}
+    </span>
+  );
+};
+
+const StatusPill = ({ status }: { status: InquiryStatus }) => {
+  const styles = useStyles();
+  const theme = useTheme();
+  const color =
+    status === InquiryStatus.New
+      ? theme.colors.blue
+      : status === InquiryStatus.Answered
+        ? theme.colors.lightGreen
+        : status === InquiryStatus.Spam
+          ? theme.colors.red
+          : theme.colors.dark05;
+  return (
+    <span style={{ ...styles.pill, color, backgroundColor: color + theme.colorOpacity(0.14) }}>
+      {STATUS_LABELS[status]}
+    </span>
+  );
+};
+
+const InquiryRow = ({ inquiry, active, onOpen }: { inquiry: InquiryResponse; active: boolean; onOpen: () => void }) => {
+  const styles = useStyles();
+  const theme = useTheme();
+  const [hovered, setHovered] = useState(false);
+  const unread = inquiry.status === InquiryStatus.New;
+  return (
+    <button
+      type='button'
+      onClick={onOpen}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        ...styles.row,
+        ...(hovered && !active ? styles.rowHover : {}),
+        ...(active ? styles.rowActive : {}),
+      }}
+    >
+      <Avatar name={inquiry.name} size={38} unread={unread} />
+      <span style={styles.rowBody}>
+        <span style={styles.rowTop}>
+          <span
+            style={{
+              ...styles.rowName,
+              fontWeight: unread ? 700 : 500,
+              color: unread || active ? theme.colors.white : theme.colors.lightBlue,
+            }}
+          >
+            {inquiry.name}
+          </span>
+          <span style={{ ...styles.rowDate, color: unread ? theme.colors.blue04 : theme.colors.dark05 }}>
+            {shortDate(inquiry.createdAt)}
+          </span>
+        </span>
+        <span style={styles.rowMeta}>
+          <span>{TOPIC_LABELS[inquiry.topic]}</span>
+          <span style={styles.rowLocale}>{inquiry.locale.toUpperCase()}</span>
+          {inquiry.status === InquiryStatus.Answered ? (
+            <FiCornerUpLeft size={12} color={theme.colors.lightGreen} title='Answered' />
+          ) : null}
+        </span>
+        <span style={{ ...styles.rowExcerpt, color: unread ? theme.colors.white : theme.colors.dark05 }}>
+          {inquiry.message}
+        </span>
+      </span>
+    </button>
+  );
 };
 
 const errorMessage = (e: unknown, fallback: string) => {
@@ -290,30 +409,32 @@ export const InquiriesInbox = () => {
       />
 
       <div style={styles.toolbar}>
-        <SegmentedTabs
-          layoutId='inquiry-box'
-          items={[
-            { value: 'inbox', label: 'Inbox' },
-            { value: 'archived', label: 'Archived' },
-            { value: 'spam', label: summary?.spam ? `Spam · ${summary.spam}` : 'Spam' },
-          ]}
-          selected={box}
-          handleSelect={(value) => setParams({ box: value === 'inbox' ? null : value, id: null })}
-        />
-        <label style={styles.searchBox}>
-          <FiSearch size={15} />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder='Search name, email or message…'
-            style={styles.searchInput}
+        <div style={styles.toolbarRow}>
+          <SegmentedTabs
+            layoutId='inquiry-box'
+            items={[
+              { value: 'inbox', label: summary?.new ? `Inbox · ${summary.new}` : 'Inbox' },
+              { value: 'archived', label: 'Archived' },
+              { value: 'spam', label: summary?.spam ? `Spam · ${summary.spam}` : 'Spam' },
+            ]}
+            selected={box}
+            handleSelect={(value) => setParams({ box: value === 'inbox' ? null : value, id: null })}
           />
-          {search ? (
-            <button type='button' style={styles.clearSearch} onClick={() => setSearch('')} aria-label='Clear search'>
-              <FiX size={14} />
-            </button>
-          ) : null}
-        </label>
+          <label style={styles.searchBox}>
+            <FiSearch size={15} />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder='Search name, email or message…'
+              style={styles.searchInput}
+            />
+            {search ? (
+              <button type='button' style={styles.clearSearch} onClick={() => setSearch('')} aria-label='Clear search'>
+                <FiX size={14} />
+              </button>
+            ) : null}
+          </label>
+        </div>
         <div style={styles.chips}>
           <button
             type='button'
@@ -356,36 +477,19 @@ export const InquiriesInbox = () => {
             />
           ) : (
             <>
-              {items.map((inquiry) => {
-                const active = inquiry.id === selectedId;
-                const unread = inquiry.status === InquiryStatus.New;
-                return (
-                  <button
-                    key={inquiry.id}
-                    type='button'
-                    onClick={() => setParams({ id: inquiry.id })}
-                    style={{ ...styles.row, ...(active ? styles.rowActive : {}) }}
-                  >
-                    <div style={styles.rowTop}>
-                      <span style={{ ...styles.dot, opacity: unread ? 1 : 0 }} />
-                      <span style={{ ...styles.rowName, fontWeight: unread ? 700 : 500 }}>{inquiry.name}</span>
-                      <span style={styles.rowDate}>{shortDate(inquiry.createdAt)}</span>
-                    </div>
-                    <div style={styles.rowMeta}>
-                      <span>{TOPIC_LABELS[inquiry.topic]}</span>
-                      <span style={styles.rowLocale}>{inquiry.locale.toUpperCase()}</span>
-                      {inquiry.status === InquiryStatus.Answered ? (
-                        <span style={styles.answeredTag}>
-                          <FiCornerUpLeft size={11} /> Answered
-                        </span>
-                      ) : null}
-                    </div>
-                    <span style={{ ...styles.rowExcerpt, color: unread ? theme.colors.white : theme.colors.dark05 }}>
-                      {inquiry.message}
-                    </span>
-                  </button>
-                );
-              })}
+              {groupByDay(items).map((group) => (
+                <div key={group.label} style={styles.group}>
+                  <span style={styles.groupLabel}>{group.label}</span>
+                  {group.items.map((inquiry) => (
+                    <InquiryRow
+                      key={inquiry.id}
+                      inquiry={inquiry}
+                      active={inquiry.id === selectedId}
+                      onOpen={() => setParams({ id: inquiry.id })}
+                    />
+                  ))}
+                </div>
+              ))}
               {items.length < total ? (
                 <Button label='Load more' variant='secondary' onClick={loadMore} loading={loadingMore} />
               ) : null}
@@ -466,11 +570,17 @@ const InquiryDetail = ({ inquiry, canManage, onReply, onStatus, onSaveNote, onDe
   const noteDirty = note.trim() !== (inquiry.internalNote ?? '').trim();
   const imageSrc = imgUrl(inquiry.image?.thumbUrl ?? inquiry.image?.coverUrl);
 
+  const stamp = (iso: string) => format(new Date(iso), 'd MMM yyyy, HH:mm');
+
   return (
     <div style={styles.detail}>
       <div style={styles.detailHeader}>
+        <Avatar name={inquiry.name} size={52} />
         <div style={styles.detailTitleBlock}>
-          <span style={styles.detailName}>{inquiry.name}</span>
+          <div style={styles.nameRow}>
+            <span style={styles.detailName}>{inquiry.name}</span>
+            <StatusPill status={inquiry.status} />
+          </div>
           <div style={styles.contactLine}>
             <a href={`mailto:${inquiry.email}`} style={styles.contactLink}>
               <FiMail size={13} /> {inquiry.email}
@@ -483,15 +593,16 @@ const InquiryDetail = ({ inquiry, canManage, onReply, onStatus, onSaveNote, onDe
           </div>
         </div>
         <div style={styles.detailSide}>
-          <span style={styles.detailDate}>{format(new Date(inquiry.createdAt), 'd MMM yyyy, HH:mm')}</span>
-          <div style={styles.tags}>
-            <span style={styles.statusTag} title='Form language'>
-              {inquiry.locale.toUpperCase()}
-            </span>
-            <span style={styles.topicTag}>{TOPIC_LABELS[inquiry.topic]}</span>
-            <span style={styles.statusTag}>{STATUS_LABELS[inquiry.status]}</span>
-          </div>
+          <span style={styles.detailDate}>{stamp(inquiry.createdAt)}</span>
+          <span style={styles.detailAgo}>{formatDistanceToNow(new Date(inquiry.createdAt), { addSuffix: true })}</span>
         </div>
+      </div>
+
+      <div style={styles.tags}>
+        <span style={styles.topicTag}>{TOPIC_LABELS[inquiry.topic]}</span>
+        <span style={styles.localeTag} title='Form language'>
+          {inquiry.locale.toUpperCase()}
+        </span>
       </div>
 
       {isSpam && inquiry.internalNote ? (
@@ -577,7 +688,9 @@ const InquiryDetail = ({ inquiry, canManage, onReply, onStatus, onSaveNote, onDe
         </div>
       ) : null}
 
-      <p style={styles.message}>{inquiry.message}</p>
+      <div style={styles.messageCard}>
+        <p style={styles.message}>{inquiry.message}</p>
+      </div>
 
       {canManage && !isSpam ? (
         <div style={styles.noteBlock}>
@@ -615,12 +728,14 @@ const InquiryDetail = ({ inquiry, canManage, onReply, onStatus, onSaveNote, onDe
         </div>
       ) : null}
 
-      <div style={styles.finePrint}>
-        <span>
+      <div style={styles.timeline}>
+        <span style={styles.timelineItem}>Received {stamp(inquiry.createdAt)}</span>
+        {inquiry.readAt ? <span style={styles.timelineItem}>Read {stamp(inquiry.readAt)}</span> : null}
+        {inquiry.answeredAt ? <span style={styles.timelineItem}>Answered {stamp(inquiry.answeredAt)}</span> : null}
+        <span style={styles.timelineItem}>
           Privacy notice {inquiry.privacyNoticeLocale.toUpperCase()} v{inquiry.privacyNoticeVersion} acknowledged{' '}
-          {format(new Date(inquiry.noticeAcknowledgedAt), 'd MMM yyyy, HH:mm')}
+          {stamp(inquiry.noticeAcknowledgedAt)}
         </span>
-        {inquiry.answeredAt ? <span>Answered {format(new Date(inquiry.answeredAt), 'd MMM yyyy, HH:mm')}</span> : null}
       </div>
     </div>
   );
@@ -628,13 +743,8 @@ const InquiryDetail = ({ inquiry, canManage, onReply, onStatus, onSaveNote, onDe
 
 const useStyles = mkUseStyles((t) => ({
   page: { flex: 1, minHeight: 0, height: '100%', gap: t.spacing.m },
-  toolbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: t.spacing.m,
-    flexShrink: 0,
-  },
+  toolbar: { gap: t.spacing.s, flexShrink: 0 },
+  toolbarRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: t.spacing.m },
   searchBox: {
     display: 'flex',
     flexDirection: 'row',
@@ -642,7 +752,8 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.s,
     flex: 1,
     minWidth: 220,
-    maxWidth: 360,
+    maxWidth: 420,
+    marginLeft: 'auto',
     height: 44,
     padding: `0 ${t.spacing.m}px`,
     boxSizing: 'border-box',
@@ -695,12 +806,12 @@ const useStyles = mkUseStyles((t) => ({
   },
   body: { flex: 1, minHeight: 0, flexDirection: 'row', gap: t.spacing.m },
   listColumn: {
-    width: 380,
+    width: 400,
     flexShrink: 0,
     minHeight: 0,
     overflowY: 'auto',
-    gap: 4,
-    padding: t.spacing.xs,
+    gap: t.spacing.s,
+    padding: t.spacing.s,
     boxSizing: 'border-box',
     borderRadius: t.borderRadius.large,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
@@ -714,11 +825,21 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
   },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: t.spacing.xl },
+  group: { gap: 2, flexShrink: 0 },
+  groupLabel: {
+    padding: '6px 10px 4px',
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    color: t.colors.dark05,
+  },
   row: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: 4,
-    padding: '10px 12px',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    padding: '10px 10px',
     border: 'none',
     borderRadius: t.borderRadius.default,
     textAlign: 'left',
@@ -727,38 +848,30 @@ const useStyles = mkUseStyles((t) => ({
     transition: 'background-color 0.12s ease',
     flexShrink: 0,
   },
+  rowHover: { backgroundColor: t.colors.white + t.colorOpacity(0.04) },
   rowActive: { backgroundColor: t.colors.blue + t.colorOpacity(0.16) },
-  rowTop: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  dot: { width: 8, height: 8, borderRadius: '50%', flexShrink: 0, backgroundColor: t.colors.blue },
+  rowBody: { display: 'flex', flexDirection: 'column', gap: 3, flex: 1, minWidth: 0 },
+  rowTop: { display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: 8 },
   rowName: {
     flex: 1,
     minWidth: 0,
     fontSize: 14,
-    color: t.colors.white,
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  rowDate: { fontSize: 12, color: t.colors.dark05, flexShrink: 0 },
+  rowDate: { fontSize: 12, flexShrink: 0 },
   rowMeta: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingLeft: 16,
     fontSize: 12,
     fontWeight: 600,
     color: t.colors.blue04,
   },
   rowLocale: { fontSize: 11, fontWeight: 700, letterSpacing: 0.5, color: t.colors.dark05 },
-  answeredTag: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    color: t.colors.lightGreen,
-  },
   rowExcerpt: {
-    paddingLeft: 16,
     fontSize: 13,
     lineHeight: 1.4,
     display: '-webkit-box',
@@ -766,17 +879,41 @@ const useStyles = mkUseStyles((t) => ({
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
   },
-  detail: { gap: t.spacing.m, padding: t.spacing.l },
-  detailHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: t.spacing.m,
-    flexWrap: 'wrap',
+  avatar: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+    borderRadius: '50%',
+    fontWeight: 700,
+    letterSpacing: 0.5,
   },
-  detailTitleBlock: { gap: 6, minWidth: 0 },
-  detailName: { fontSize: 20, fontWeight: 700, color: t.colors.white },
-  contactLine: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.m },
+  avatarDot: {
+    position: 'absolute',
+    top: -1,
+    right: -1,
+    width: 11,
+    height: 11,
+    borderRadius: '50%',
+    boxSizing: 'border-box',
+    border: `2px solid ${t.colors.gray03}`,
+    backgroundColor: t.colors.blue,
+  },
+  pill: {
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    padding: '3px 9px',
+    borderRadius: 999,
+  },
+  detail: { gap: t.spacing.m, padding: t.spacing.l, maxWidth: 880 },
+  detailHeader: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m },
+  detailTitleBlock: { gap: 4, flex: 1, minWidth: 0 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap' },
+  detailName: { fontSize: 22, fontWeight: 700, color: t.colors.white },
+  contactLine: { flexDirection: 'row', flexWrap: 'wrap', columnGap: t.spacing.m, rowGap: 2 },
   contactLink: {
     display: 'flex',
     flexDirection: 'row',
@@ -786,21 +923,23 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.blue04,
     textDecoration: 'none',
   },
-  detailSide: { alignItems: 'flex-end', gap: 6 },
-  detailDate: { fontSize: 13, color: t.colors.dark05 },
-  tags: { flexDirection: 'row', gap: 6 },
+  detailSide: { alignItems: 'flex-end', gap: 2, flexShrink: 0 },
+  detailDate: { fontSize: 13, color: t.colors.lightBlue },
+  detailAgo: { fontSize: 12, color: t.colors.dark05 },
+  tags: { flexDirection: 'row', gap: 6, marginTop: -4 },
   topicTag: {
     fontSize: 12,
     fontWeight: 600,
-    padding: '3px 10px',
+    padding: '4px 10px',
     borderRadius: 999,
     color: t.colors.blue04,
     backgroundColor: t.colors.blue04 + t.colorOpacity(0.14),
   },
-  statusTag: {
+  localeTag: {
     fontSize: 12,
-    fontWeight: 600,
-    padding: '3px 10px',
+    fontWeight: 700,
+    letterSpacing: 0.5,
+    padding: '4px 10px',
     borderRadius: 999,
     color: t.colors.dark05,
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
@@ -815,7 +954,15 @@ const useStyles = mkUseStyles((t) => ({
     color: t.colors.red,
     backgroundColor: t.colors.red + t.colorOpacity(0.12),
   },
-  actions: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.s },
+  actions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: t.spacing.s,
+    paddingTop: t.spacing.m,
+    paddingBottom: t.spacing.m,
+    borderTop: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
+    borderBottom: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
+  },
   deleteButton: { marginLeft: 'auto' },
   context: {
     flexDirection: 'row',
@@ -836,7 +983,13 @@ const useStyles = mkUseStyles((t) => ({
   },
   contextLink: { fontSize: 14, fontWeight: 600, color: t.colors.blue04, textDecoration: 'none' },
   contextValue: { fontSize: 14, color: t.colors.white },
-  message: { margin: 0, fontSize: 15, lineHeight: 1.6, color: t.colors.white, whiteSpace: 'pre-wrap' },
+  messageCard: {
+    padding: `${t.spacing.m}px ${t.spacing.l}px`,
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.35),
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
+  },
+  message: { margin: 0, fontSize: 15, lineHeight: 1.65, color: t.colors.white, whiteSpace: 'pre-wrap' },
   noteBlock: { gap: t.spacing.s },
   noteLabel: {
     fontSize: 11,
@@ -847,5 +1000,14 @@ const useStyles = mkUseStyles((t) => ({
   },
   noteField: { marginBottom: 0 },
   noteActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: t.spacing.s },
-  finePrint: { gap: 2, fontSize: 11, color: t.colors.dark05, paddingTop: t.spacing.s },
+  timeline: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    columnGap: t.spacing.m,
+    rowGap: 2,
+    paddingTop: t.spacing.s,
+    fontSize: 11,
+    color: t.colors.dark05,
+  },
+  timelineItem: { whiteSpace: 'nowrap' },
 }));
