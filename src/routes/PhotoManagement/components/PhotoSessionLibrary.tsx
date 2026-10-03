@@ -1,4 +1,5 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
+import { HiOutlineSparkles } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import {
   AstroObjectListResponse,
@@ -9,12 +10,14 @@ import {
   PhotoEntryStatus,
   PhotoEntryType,
 } from '~/api/api';
+import { Button } from '~/components/Button';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
 import { PhotoEntryCalendarView } from '~/routes/PhotoManagement/components/PhotoEntryCalendarView';
 import { PhotoEntryKanban } from '~/routes/PhotoManagement/components/PhotoEntryKanban';
+import { MoonSummary } from '~/routes/PhotoManagement/components/MoonSummary';
 import { PhotoEntryListView } from '~/routes/PhotoManagement/components/PhotoEntryListView';
 import { PhotoLibraryToolbar, PhotoLibraryView } from '~/routes/PhotoManagement/components/PhotoLibraryToolbar';
 import { CreateAstroObjectModal } from '~/routes/PhotoManagement/modals/CreateAstroObjectModal';
@@ -22,7 +25,7 @@ import { CreatePhotoEntryModal } from '~/routes/PhotoManagement/modals/CreatePho
 import { PhotoEntryDetailsModal } from '~/routes/PhotoManagement/modals/PhotoEntryDetailsModal';
 import { KanbanColumn, planColumnMove } from '~/routes/PhotoManagement/utils/kanban';
 import { getApiErrorMessage } from '~/utils/apiError';
-import { mkUseStyles } from '~/utils/theme';
+import { mkUseStyles, useTheme } from '~/utils/theme';
 
 /** The chosen view is a per-browser convenience; storage may be unavailable. */
 const readStoredView = (key: string): PhotoLibraryView => {
@@ -35,32 +38,27 @@ const readStoredView = (key: string): PhotoLibraryView => {
   return 'board';
 };
 
-type PhotoSessionLibraryProps = {
-  /** Astro mode: only ASTRO sessions, filtered by target. */
-  astro?: boolean;
-  /** Shown above the toolbar; as a function it can offer the page's own actions. */
-  header?: ReactNode | ((actions: { openNewTarget: () => void }) => ReactNode);
-};
+const VIEW_STORAGE_KEY = 'photo-library-view';
 
 /**
  * The session library — board, list and calendar over one filtered query,
- * all opening the same session card. The Library and Astro pages are both
- * this, the latter locked to ASTRO with a target filter in place of the type.
+ * all opening the same session card. Astro is a filter here rather than a page
+ * of its own: picking the Astro type brings up the target filter, and the moon
+ * sits on top for every kind of night shoot.
  */
-export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps) => {
+export const PhotoSessionLibrary = () => {
   const styles = useStyles();
-  const viewStorageKey = astro ? 'astro-library-view' : 'photo-library-view';
-  const modalPrefix = astro ? 'astro-' : '';
+  const theme = useTheme();
   const navigate = useNavigate();
   const { photoEntryApi, astroObjectApi } = useApi();
   const toast = useToast();
 
-  const [view, setView] = useState<PhotoLibraryView>(() => readStoredView(viewStorageKey));
+  const [view, setView] = useState<PhotoLibraryView>(() => readStoredView(VIEW_STORAGE_KEY));
 
   const changeView = (next: PhotoLibraryView) => {
     setView(next);
     try {
-      localStorage.setItem(viewStorageKey, next);
+      localStorage.setItem(VIEW_STORAGE_KEY, next);
     } catch {
       // Not remembered, but the switch itself still works.
     }
@@ -83,20 +81,12 @@ export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps)
       search: filters.search || undefined,
       status: filters.status,
       postStage: filters.postStage,
-      type: astro ? PhotoEntryType.Astro : filters.type,
+      type: filters.type,
       astroObjectId: filters.astroObjectId,
     });
 
     return response.data;
-  }, [
-    photoEntryApi,
-    filters.search,
-    filters.status,
-    filters.postStage,
-    filters.type,
-    filters.astroObjectId,
-    astro,
-  ]);
+  }, [photoEntryApi, filters.search, filters.status, filters.postStage, filters.type, filters.astroObjectId]);
 
   const astroObjectsQuery = useAsync<AstroObjectListResponse>(async () => {
     if (!astroObjectApi) return undefined;
@@ -121,7 +111,7 @@ export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps)
   };
 
   const createPhotoEntryModal = useModal(
-    `${modalPrefix}create-photo-entry`,
+    'create-photo-entry',
     CreatePhotoEntryModal,
     { title: 'New Session' },
     {
@@ -133,9 +123,9 @@ export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps)
   );
 
   const photoEntryDetailsModal = useModal(
-    `${modalPrefix}photo-entry-details`,
+    'photo-entry-details',
     PhotoEntryDetailsModal,
-    { title: astro ? 'Astro Session' : 'Session', type: 'side' },
+    { title: 'Session', type: 'side' },
     {
       handleClose: async () => {
         await refreshAll();
@@ -156,7 +146,7 @@ export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps)
   );
 
   const createAstroObjectModal = useModal(
-    `${modalPrefix}create-astro-object`,
+    'create-astro-object',
     CreateAstroObjectModal,
     { title: 'New Astro Target' },
     {
@@ -239,10 +229,27 @@ export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps)
 
   return (
     <div style={styles.container}>
-      {typeof header === 'function' ? header({ openNewTarget: () => createAstroObjectModal.show() }) : header}
+      <div style={styles.header}>
+        <div style={styles.titleBlock}>
+          <span style={styles.title}>Library</span>
+          <span style={styles.subtitle}>
+            {entries.length} session{entries.length === 1 ? '' : 's'} · {astroObjects.length} astro target
+            {astroObjects.length === 1 ? '' : 's'}
+          </span>
+        </div>
+        <div style={styles.headerRight}>
+          <MoonSummary />
+          <Button
+            variant='secondary'
+            label='New target'
+            icon={<HiOutlineSparkles color={theme.colors.purple02} size={18} />}
+            onClick={() => createAstroObjectModal.show()}
+          />
+        </div>
+      </div>
 
       <PhotoLibraryToolbar
-        astroTargets={astro ? astroObjects : undefined}
+        astroTargets={astroObjects}
         astroObjectId={filters.astroObjectId}
         onAstroObjectChange={(astroObjectId) => setFilters((prev) => ({ ...prev, astroObjectId }))}
         view={view}
@@ -252,9 +259,25 @@ export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps)
         postStage={filters.postStage}
         type={filters.type}
         onSearchChange={(search) => setFilters((prev) => ({ ...prev, search }))}
-        onStatusChange={(status) => setFilters((prev) => ({ ...prev, status }))}
+        // A stage only exists once a session is shot, so leaving for Planned or
+        // Cancelled drops it rather than filter down to nothing.
+        onStatusChange={(status) =>
+          setFilters((prev) => ({
+            ...prev,
+            status,
+            postStage:
+              status === PhotoEntryStatus.Planned || status === PhotoEntryStatus.Cancelled ? undefined : prev.postStage,
+          }))
+        }
         onPostStageChange={(postStage) => setFilters((prev) => ({ ...prev, postStage }))}
-        onTypeChange={(type) => setFilters((prev) => ({ ...prev, type }))}
+        // Targets belong to astro sessions only; another type clears the pick.
+        onTypeChange={(type) =>
+          setFilters((prev) => ({
+            ...prev,
+            type,
+            astroObjectId: type === PhotoEntryType.Astro ? prev.astroObjectId : undefined,
+          }))
+        }
         onResetFilters={() =>
           setFilters({
             search: '',
@@ -267,7 +290,8 @@ export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps)
         onAddEntry={() =>
           createPhotoEntryModal.show({
             astroObjects,
-            defaultType: astro ? PhotoEntryType.Astro : undefined,
+            // Filtering by a type makes it the likely one for the next session too.
+            defaultType: filters.type,
           })
         }
       />
@@ -290,7 +314,7 @@ export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps)
   );
 };
 
-const useStyles = mkUseStyles(() => ({
+const useStyles = mkUseStyles((t) => ({
   container: {
     height: '100%',
     minHeight: 0,
@@ -299,6 +323,21 @@ const useStyles = mkUseStyles(() => ({
     gap: 16,
     boxSizing: 'border-box',
   },
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: t.spacing.m,
+    padding: `${t.spacing.sm}px ${t.spacing.m}px`,
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.7),
+  },
+  titleBlock: { gap: 2 },
+  title: { fontSize: 22, fontWeight: 700, color: t.colors.white },
+  subtitle: { fontSize: 13, color: t.colors.dark05 },
+  headerRight: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: t.spacing.l },
 
   kanbanCard: {
     flex: 1,

@@ -49,7 +49,6 @@ export const mainNavigationRoutes: MainRouteType[] = [
     permission: ['photoEntry.read', 'gallery.manage'],
     subItems: [
       { path: PhotoNavigationRoute.LIBRARY, label: 'Library', permission: 'photoEntry.read' },
-      { path: PhotoNavigationRoute.ASTRO, label: 'Astro', permission: 'photoEntry.read' },
       { path: PhotoNavigationRoute.GEAR, label: 'Gear', permission: 'gallery.manage' },
       { path: PhotoNavigationRoute.ALBUMS, label: 'Immich Albums', permission: 'photoEntry.read' },
     ],

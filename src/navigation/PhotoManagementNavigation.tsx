@@ -3,13 +3,12 @@ import { useCan } from '~/hooks/usePermissions';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { PhotoNavigationRoute } from '~/navigation/types';
 import { ImmichAlbums } from '~/routes/PhotoManagement/Albums';
-import { Astro } from '~/routes/PhotoManagement/Astro';
 import { GearView } from '~/routes/Gear';
 import { PhotoManagement } from '~/routes/PhotoManagement';
 import { mkUseStyles } from '~/utils/theme';
 
 /**
- * Photo Library section. The sub-navigation (Library / Astro / Gear / Albums) is
+ * Photo Library section. The sub-navigation (Library / Gear / Albums) is
  * rendered in the sidebar beneath the active item, so here we only route to the
  * active sub-page.
  *
@@ -39,14 +38,6 @@ export const PhotoManagementNavigation = () => {
                 <PhotoManagement />
               </ProtectedRoute>
             )
-          }
-        />
-        <Route
-          path={PhotoNavigationRoute.ASTRO}
-          element={
-            <ProtectedRoute permission='photoEntry.read'>
-              <Astro />
-            </ProtectedRoute>
           }
         />
         <Route
