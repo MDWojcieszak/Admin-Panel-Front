@@ -36,7 +36,7 @@ const readStoredView = (key: string): PhotoLibraryView => {
 };
 
 type PhotoSessionLibraryProps = {
-  /** Astro mode: only ASTRO sessions, filtered by target, moon on the calendar. */
+  /** Astro mode: only ASTRO sessions, filtered by target. */
   astro?: boolean;
   /** Shown above the toolbar; as a function it can offer the page's own actions. */
   header?: ReactNode | ((actions: { openNewTarget: () => void }) => ReactNode);
@@ -276,7 +276,7 @@ export const PhotoSessionLibrary = ({ astro, header }: PhotoSessionLibraryProps)
         {view === 'list' ? (
           <PhotoEntryListView entries={entries} onRowClick={handleOpenEntryDetails} />
         ) : view === 'calendar' ? (
-          <PhotoEntryCalendarView entries={entries} onEntryClick={handleOpenEntryDetails} showMoon={astro} />
+          <PhotoEntryCalendarView entries={entries} onEntryClick={handleOpenEntryDetails} />
         ) : (
           <PhotoEntryKanban
             entries={entries}

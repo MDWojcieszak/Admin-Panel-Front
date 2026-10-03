@@ -24,8 +24,6 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 type PhotoEntryCalendarViewProps = {
   entries: PhotoEntryResponse[];
   onEntryClick: (entry: PhotoEntryResponse) => void;
-  /** Moon phase on every day and a tint on dark-sky nights — for astro planning. */
-  showMoon?: boolean;
 };
 
 type Span = { entry: PhotoEntryResponse; start: Date; end: Date };
@@ -35,6 +33,8 @@ type Placed = Span & { lane: number; fromCol: number; toCol: number; clippedStar
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const TILE_HEIGHT = 46;
 const DAY_HEADER = 30;
+const ROW_GAP = 4;
+const WEEK_MIN_HEIGHT = 120;
 
 /** YYYY-MM-DD read as a local day, so a trip never slides a day in another time zone. */
 const toLocalDay = (value?: string | null): Date | null => {
@@ -85,7 +85,7 @@ const placeWeek = (spans: Span[], weekStart: Date): Placed[] => {
  * the board's cards stretched over the calendar. Planned trips are hollow with a
  * dashed edge, shot ones filled in their stage colour, as everywhere else.
  */
-export const PhotoEntryCalendarView = ({ entries, onEntryClick, showMoon }: PhotoEntryCalendarViewProps) => {
+export const PhotoEntryCalendarView = ({ entries, onEntryClick }: PhotoEntryCalendarViewProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
@@ -161,15 +161,19 @@ export const PhotoEntryCalendarView = ({ entries, onEntryClick, showMoon }: Phot
               key={week.start.toISOString()}
               style={{
                 ...styles.week,
-                gridTemplateRows: `${DAY_HEADER}px repeat(${week.lanes}, ${TILE_HEIGHT}px) minmax(10px, 1fr)`,
+                gridTemplateRows: `${DAY_HEADER}px repeat(${week.lanes}, ${TILE_HEIGHT}px) minmax(16px, 1fr)`,
+                // Weeks share the height, but never below what their lanes need:
+                // a fixed minimum let a busy week spill over the next one.
+                minHeight: Math.max(WEEK_MIN_HEIGHT, DAY_HEADER + week.lanes * (TILE_HEIGHT + ROW_GAP) + 24),
               }}
             >
               {Array.from({ length: 7 }, (_, i) => {
                 const day = addDays(week.start, i);
                 const isToday = isSameDay(day, today);
                 const outside = !isSameMonth(day, month);
-                const moon = showMoon ? getMoonInfo(day) : null;
-                const darkSky = Boolean(moon && moon.illumination < DARK_SKY_ILLUMINATION);
+                // Every calendar shows the moon: night shots outside astro care about it too.
+                const moon = getMoonInfo(day);
+                const darkSky = moon.illumination < DARK_SKY_ILLUMINATION;
                 return (
                   <div
                     key={i}
@@ -186,16 +190,14 @@ export const PhotoEntryCalendarView = ({ entries, onEntryClick, showMoon }: Phot
                   >
                     <div style={{ ...styles.dayHead, opacity: outside ? 0.35 : 1 }}>
                       <span style={{ ...styles.dayNumber, ...(isToday ? styles.today : {}) }}>{format(day, 'd')}</span>
-                      {moon ? (
-                        <span style={styles.moon}>
-                          {darkSky ? <span style={styles.darkSky}>Dark sky</span> : null}
-                          <MoonIcon
-                            phase={moon.phase}
-                            size={16}
-                            title={`${moon.name} · ${Math.round(moon.illumination * 100)}% lit`}
-                          />
-                        </span>
-                      ) : null}
+                      <span style={styles.moon}>
+                        {darkSky ? <span style={styles.darkSky}>Dark sky</span> : null}
+                        <MoonIcon
+                          phase={moon.phase}
+                          size={16}
+                          title={`${moon.name} · ${Math.round(moon.illumination * 100)}% lit`}
+                        />
+                      </span>
                     </div>
                   </div>
                 );
@@ -343,10 +345,8 @@ const useStyles = mkUseStyles((t) => ({
   week: {
     display: 'grid',
     gridTemplateColumns: 'repeat(7, minmax(0, 1fr))',
-    rowGap: 4,
+    rowGap: ROW_GAP,
     flex: 1,
-    minHeight: 120,
-    paddingBottom: 6,
     borderTopWidth: 1,
     borderTopStyle: 'solid',
     borderTopColor: t.colors.white + t.colorOpacity(0.06),
