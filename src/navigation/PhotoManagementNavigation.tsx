@@ -8,7 +8,7 @@ import { PhotoManagement } from '~/routes/PhotoManagement';
 import { mkUseStyles } from '~/utils/theme';
 
 /**
- * Photo Library section. The sub-navigation (Library / Gear / Albums) is
+ * Photography section. The sub-navigation (Library / Gear / Albums) is
  * rendered in the sidebar beneath the active item, so here we only route to the
  * active sub-page.
  *

@@ -182,7 +182,7 @@ export const Settings = () => {
       ],
     },
     {
-      title: 'Photo library',
+      title: 'Photography',
       rows: [
         {
           key: 'photoMediaEmailNotifications',

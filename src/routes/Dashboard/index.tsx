@@ -171,14 +171,14 @@ export const Dashboard = () => {
 
       <div style={styles.panels}>
         <BreakdownCard
-          title='Photo Library · by type'
+          title='Sessions · by type'
           icon={<MdCategory size={15} />}
           total={data.photoEntries.total}
           items={byType}
           colorFor={(key) => typeColor(theme, key)}
         />
         <BreakdownCard
-          title='Photo Library · by status'
+          title='Sessions · by status'
           icon={<MdFlag size={15} />}
           total={data.photoEntries.total}
           items={byStatus}

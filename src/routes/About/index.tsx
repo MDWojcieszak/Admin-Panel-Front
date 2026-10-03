@@ -7,7 +7,7 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 
 const FEATURES: { icon: ReactNode; title: string; text: string }[] = [
   { icon: <FaServer size={18} />, title: 'Servers', text: 'Power, live process terminals, commands, settings & transfers.' },
-  { icon: <BsImages size={18} />, title: 'Photo Library', text: 'Plan astro, work and general photo sessions and folders.' },
+  { icon: <BsImages size={18} />, title: 'Photography', text: 'Plan astro, work and general photo sessions and folders.' },
   { icon: <MdGroup size={20} />, title: 'Users & Access', text: 'Permission groups, sessions and fine-grained gating.' },
   { icon: <MdSpaceDashboard size={20} />, title: 'Dashboard', text: 'Overview, gallery insights and 7/30-day trends.' },
 ];
