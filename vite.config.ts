@@ -15,4 +15,8 @@ export default defineConfig({
   // grabbed 5173 (the Electron app defaults to it too), and the resulting page
   // looks broken with nothing to explain why.
   server: { host: true, port: 5173, strictPort: true, proxy: {} },
+  // Served from node_modules as-is, MapLibre finds its worker file beside its
+  // own; pre-bundled into .vite/deps it looks in the wrong folder. The
+  // production build points it at a Vite-built worker instead.
+  optimizeDeps: { exclude: ['maplibre-gl'] },
 });
