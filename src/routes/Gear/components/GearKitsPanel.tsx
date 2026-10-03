@@ -409,7 +409,9 @@ const useStyles = mkUseStyles((t) => ({
     borderRadius: '50%',
     color: t.colors.white,
     backgroundColor: t.colors.gray05 + t.colorOpacity(0.72),
-    border: `1px solid ${t.colors.dark04}`,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: t.colors.dark04,
   },
   pickCheckOn: { backgroundColor: t.colors.blue, borderColor: t.colors.blue },
   pickState: {

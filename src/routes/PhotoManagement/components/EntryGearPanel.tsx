@@ -697,7 +697,12 @@ const useStyles = mkUseStyles((t) => ({
     fontWeight: 600,
     color: t.colors.dark05,
     backgroundColor: 'transparent',
-    border: `1px solid ${t.colors.dark04 + t.colorOpacity(0.5)}`,
+    // Longhands, not the `border` shorthand: the on-state swaps only the colour,
+    // and removing that key afterwards would otherwise clear the colour of the
+    // shorthand and leave the border in the text colour.
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: t.colors.dark04 + t.colorOpacity(0.5),
   },
   toggleOn: {
     color: t.colors.white,
@@ -711,7 +716,9 @@ const useStyles = mkUseStyles((t) => ({
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    border: `1px solid ${t.colors.dark04}`,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: t.colors.dark04,
     color: t.colors.white,
   },
   checkboxOn: {

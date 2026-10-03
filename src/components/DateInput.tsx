@@ -358,7 +358,9 @@ const useStyles = mkUseStyles((t) => ({
   day: {
     height: 34,
     padding: 0,
-    border: '1px solid transparent',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'transparent',
     borderRadius: t.borderRadius.default,
     cursor: 'pointer',
     font: 'inherit',

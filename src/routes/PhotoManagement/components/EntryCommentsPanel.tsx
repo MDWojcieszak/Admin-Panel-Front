@@ -369,7 +369,9 @@ const useStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
     color: t.colors.dark05,
     backgroundColor: 'transparent',
-    border: `1px solid ${t.colors.dark04 + t.colorOpacity(0.5)}`,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: t.colors.dark04 + t.colorOpacity(0.5),
   },
   kindChipOn: {
     color: t.colors.white,
