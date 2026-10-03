@@ -378,19 +378,12 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
     </Section>
   );
 
-  // The card follows the session's phase instead of one fixed order. Before the
-  // shoot there is nothing to count, so progress is not shown at all and the
-  // gear list leads; straight after it, securing the material comes first; once
-  // post-production has started, the numbers do.
-  // Where and under what sky leads while planning; once shot it is history.
+  // Location and sky always lead; then progress (only once shot, before that
+  // there is nothing to count) and the material.
   const mainSections =
-    entry.status === PhotoEntryStatus.Planned
-      ? [skySection, gearSection]
-      : entry.status !== PhotoEntryStatus.Shot
-        ? [gearSection, skySection]
-        : entry.postStage === PhotoEntryPostStage.None
-          ? [gearSection, progressSection, skySection]
-          : [progressSection, gearSection, skySection];
+    entry.status === PhotoEntryStatus.Shot
+      ? [skySection, progressSection, gearSection]
+      : [skySection, gearSection];
 
   const status = STATUS_META[entry.status];
 
