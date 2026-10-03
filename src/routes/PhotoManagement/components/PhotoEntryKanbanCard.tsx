@@ -10,6 +10,7 @@ import {
   FiEdit3,
   FiFileText,
   FiFolder,
+  FiHelpCircle,
   FiImage,
   FiMoon,
   FiRadio,
@@ -23,6 +24,7 @@ import {
   PhotoEntryStatus,
   PhotoEntryType,
 } from '~/api/api';
+import { isOverduePlan } from '~/routes/PhotoManagement/utils/kanban';
 
 type PhotoEntryKanbanCardProps = {
   entry: PhotoEntryResponse;
@@ -248,6 +250,11 @@ const getStatusChips = (entry: PhotoEntryResponse): Chip[] => {
   // Derived from the dates by the backend, so it needs no lane of its own.
   if (entry.isHappeningNow) {
     chips.push({ key: 'now', label: 'Happening now', icon: FiRadio, ...TONES.azure, pulse: true });
+  }
+
+  // The dates have passed but nobody said how it went; the session card asks.
+  if (isOverduePlan(entry)) {
+    chips.push({ key: 'overdue', label: 'Did it happen?', icon: FiHelpCircle, ...TONES.amber, pulse: true });
   }
 
   const media = getMediaChip(entry);

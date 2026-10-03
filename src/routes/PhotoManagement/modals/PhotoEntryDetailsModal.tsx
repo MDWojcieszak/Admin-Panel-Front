@@ -3,7 +3,7 @@ import { useViewportSize } from '@mantine/hooks';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FiAlertTriangle, FiCheck, FiCheckCircle, FiEdit2, FiFolder, FiLock } from 'react-icons/fi';
+import { FiAlertTriangle, FiCheck, FiCheckCircle, FiEdit2, FiFolder, FiHelpCircle, FiLock, FiRotateCcw, FiSlash } from 'react-icons/fi';
 
 import { Badge, BadgeTone } from '~/components/Badge';
 import { Button } from '~/components/Button';
@@ -16,6 +16,9 @@ import { EntryProgressPanel } from '~/routes/PhotoManagement/components/EntryPro
 import { ImmichAlbumsSection } from '~/routes/PhotoManagement/components/ImmichAlbumsSection';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
+import { useToast } from '~/hooks/useToast';
+import { isOverduePlan } from '~/routes/PhotoManagement/utils/kanban';
+import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles } from '~/utils/theme';
 import {
   MediaStatus,
@@ -105,6 +108,8 @@ const describeFocus = (entry: PhotoEntryDetailsResponse): string => {
 export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const styles = useStyles();
   const { photoEntryApi } = useApi();
+  const toast = useToast();
+  const [resolvingPlan, setResolvingPlan] = useState<PhotoEntryStatus | null>(null);
 
   // Local copy: re-showing an already-visible modal does not refresh its props,
   // so after a save the card would keep rendering the name it was opened with.
@@ -236,6 +241,27 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
       console.log((error as Error)?.message);
     } finally {
       setFoldersLoading(false);
+    }
+  };
+
+  /**
+   * Status changes the card offers itself: cancelling or restoring a plan, and
+   * answering "did it happen?" once its dates have passed. The board has no lane
+   * for CANCELLED, so this is the only place a session can be cancelled.
+   */
+  const changeStatus = async (status: PhotoEntryStatus) => {
+    if (!photoEntryApi) return;
+    setResolvingPlan(status);
+    try {
+      await photoEntryApi.photoEntryControllerPatchStatus({
+        id: entry.id,
+        patchPhotoEntryStatusDto: { status },
+      });
+      await refresh();
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'Could not update the session.'), 'error');
+    } finally {
+      setResolvingPlan(null);
     }
   };
 
@@ -414,6 +440,26 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                         icon={<FiFolder size={14} />}
                       />
                     ) : null}
+                    {entry.status === PhotoEntryStatus.Planned && !isOverduePlan(entry) ? (
+                      <Button
+                        label='Cancel plan'
+                        variant='secondary'
+                        style={NO_WRAP}
+                        icon={<FiSlash size={14} />}
+                        loading={resolvingPlan === PhotoEntryStatus.Cancelled}
+                        onClick={() => changeStatus(PhotoEntryStatus.Cancelled)}
+                      />
+                    ) : null}
+                    {entry.status === PhotoEntryStatus.Cancelled ? (
+                      <Button
+                        label='Restore plan'
+                        variant='secondary'
+                        style={NO_WRAP}
+                        icon={<FiRotateCcw size={14} />}
+                        loading={resolvingPlan === PhotoEntryStatus.Planned}
+                        onClick={() => changeStatus(PhotoEntryStatus.Planned)}
+                      />
+                    ) : null}
                     {isLocked ? null : (
                       <Button
                         label='Edit'
@@ -454,6 +500,34 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
                 ) : null}
               </>
             )}
+
+            {!editing && isOverduePlan(entry) ? (
+              <div style={styles.overdueBanner}>
+                <FiHelpCircle size={16} />
+                <div style={styles.bannerText}>
+                  <span style={styles.bannerTitle}>Did it happen?</span>
+                  <span>The planned dates have passed. If it was moved instead, change the dates with Edit.</span>
+                </div>
+                <div style={{ ...styles.bannerAction, flexDirection: 'row', gap: 8 }}>
+                  <Button
+                    label='It was cancelled'
+                    variant='secondary'
+                    style={NO_WRAP}
+                    loading={resolvingPlan === PhotoEntryStatus.Cancelled}
+                    disabled={Boolean(resolvingPlan)}
+                    onClick={() => changeStatus(PhotoEntryStatus.Cancelled)}
+                  />
+                  <Button
+                    label='It happened'
+                    style={NO_WRAP}
+                    icon={<FiCheck size={14} />}
+                    loading={resolvingPlan === PhotoEntryStatus.Shot}
+                    disabled={Boolean(resolvingPlan)}
+                    onClick={() => changeStatus(PhotoEntryStatus.Shot)}
+                  />
+                </div>
+              </div>
+            ) : null}
 
             {isLocked && uploadStatus === MediaStatus.NotUploaded ? (
               <div style={styles.uploadWarningBanner}>
@@ -701,6 +775,19 @@ const useStyles = mkUseStyles((t) => ({
     color: '#F08A80',
     backgroundColor: 'rgba(220, 68, 55, 0.08)',
     border: '1px solid rgba(220, 68, 55, 0.18)',
+  },
+  overdueBanner: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: t.spacing.m,
+    padding: t.spacing.sm,
+    borderRadius: t.borderRadius.large,
+    fontSize: 13,
+    color: '#E7BE63',
+    backgroundColor: 'rgba(232, 179, 72, 0.08)',
+    border: '1px solid rgba(232, 179, 72, 0.22)',
   },
   uploadSuccessBanner: {
     display: 'flex',
