@@ -6,14 +6,13 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **enabled** | **boolean** |  | [default to undefined]
+**defaultLocale** | **string** |  | [default to undefined]
 **missingForEnable** | **Array&lt;string&gt;** |  | [default to undefined]
+**localesWithoutNotice** | **Array&lt;string&gt;** |  | [default to undefined]
 **administratorName** | **string** |  | [optional] [default to undefined]
 **administratorEmail** | **string** |  | [optional] [default to undefined]
 **administratorAddress** | **string** |  | [optional] [default to undefined]
-**privacyNotice** | **string** |  | [optional] [default to undefined]
-**privacyNoticeVersion** | **number** |  | [default to undefined]
-**privacyNoticeUpdatedAt** | **string** |  | [optional] [default to undefined]
-**intro** | **string** |  | [optional] [default to undefined]
+**translations** | [**Array&lt;ContactTextResponse&gt;**](ContactTextResponse.md) |  | [default to undefined]
 **topics** | [**Array&lt;InquiryTopic&gt;**](InquiryTopic.md) |  | [default to undefined]
 **retentionDays** | **number** |  | [default to undefined]
 **spamRetentionDays** | **number** |  | [default to undefined]
@@ -26,14 +25,13 @@ import { ContactSettingsResponse } from './api';
 
 const instance: ContactSettingsResponse = {
     enabled,
+    defaultLocale,
     missingForEnable,
+    localesWithoutNotice,
     administratorName,
     administratorEmail,
     administratorAddress,
-    privacyNotice,
-    privacyNoticeVersion,
-    privacyNoticeUpdatedAt,
-    intro,
+    translations,
     topics,
     retentionDays,
     spamRetentionDays,

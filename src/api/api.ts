@@ -2237,10 +2237,22 @@ export interface ContactSettingsResponse {
     'enabled': boolean;
     /**
      * 
+     * @type {string}
+     * @memberof ContactSettingsResponse
+     */
+    'defaultLocale': string;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof ContactSettingsResponse
      */
     'missingForEnable': Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ContactSettingsResponse
+     */
+    'localesWithoutNotice': Array<string>;
     /**
      * 
      * @type {string}
@@ -2261,28 +2273,10 @@ export interface ContactSettingsResponse {
     'administratorAddress'?: string | null;
     /**
      * 
-     * @type {string}
+     * @type {Array<ContactTextResponse>}
      * @memberof ContactSettingsResponse
      */
-    'privacyNotice'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof ContactSettingsResponse
-     */
-    'privacyNoticeVersion': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ContactSettingsResponse
-     */
-    'privacyNoticeUpdatedAt'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof ContactSettingsResponse
-     */
-    'intro'?: string | null;
+    'translations': Array<ContactTextResponse>;
     /**
      * 
      * @type {Array<InquiryTopic>}
@@ -2307,6 +2301,68 @@ export interface ContactSettingsResponse {
      * @memberof ContactSettingsResponse
      */
     'updatedAt': string;
+}
+/**
+ * 
+ * @export
+ * @interface ContactTextDto
+ */
+export interface ContactTextDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactTextDto
+     */
+    'locale': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactTextDto
+     */
+    'intro'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactTextDto
+     */
+    'privacyNotice'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface ContactTextResponse
+ */
+export interface ContactTextResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactTextResponse
+     */
+    'locale': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactTextResponse
+     */
+    'intro'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactTextResponse
+     */
+    'privacyNotice'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ContactTextResponse
+     */
+    'privacyNoticeVersion': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactTextResponse
+     */
+    'privacyNoticeUpdatedAt'?: string | null;
 }
 /**
  * 
@@ -3116,6 +3172,12 @@ export interface CreateInquiryDto {
      * @memberof CreateInquiryDto
      */
     'acknowledgedPrivacyNotice': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateInquiryDto
+     */
+    'locale'?: string;
     /**
      * 
      * @type {string}
@@ -8010,10 +8072,22 @@ export interface InquiryResponse {
     'noticeAcknowledgedAt': string;
     /**
      * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'privacyNoticeLocale': string;
+    /**
+     * 
      * @type {number}
      * @memberof InquiryResponse
      */
     'privacyNoticeVersion': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'locale': string;
     /**
      * 
      * @type {string}
@@ -14289,6 +14363,12 @@ export interface PublicContactResponse {
      * @type {string}
      * @memberof PublicContactResponse
      */
+    'locale': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicContactResponse
+     */
     'intro'?: string | null;
     /**
      * 
@@ -14304,10 +14384,22 @@ export interface PublicContactResponse {
     'privacyNotice'?: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof PublicContactResponse
+     */
+    'privacyNoticeLocale'?: string | null;
+    /**
+     * 
      * @type {number}
      * @memberof PublicContactResponse
      */
     'privacyNoticeVersion'?: number | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PublicContactResponse
+     */
+    'privacyNoticeFallback': boolean;
     /**
      * 
      * @type {ContactAdministratorResponse}
@@ -18034,16 +18126,10 @@ export interface UpdateContactSettingsDto {
     'administratorAddress'?: string | null;
     /**
      * 
-     * @type {string}
+     * @type {Array<ContactTextDto>}
      * @memberof UpdateContactSettingsDto
      */
-    'privacyNotice'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateContactSettingsDto
-     */
-    'intro'?: string | null;
+    'translations'?: Array<ContactTextDto>;
     /**
      * 
      * @type {Array<InquiryTopic>}
@@ -51239,12 +51325,15 @@ export const PortfolioApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
-         * enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+         * ?locale=en picks the language (default one when missing). enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
          * @summary Contact form configuration
+         * @param {string} locale 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        publicContactControllerGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        publicContactControllerGet: async (locale: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'locale' is not null or undefined
+            assertParamExists('publicContactControllerGet', 'locale', locale)
             const localVarPath = `/portfolio/contact`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -51256,6 +51345,10 @@ export const PortfolioApiAxiosParamCreator = function (configuration?: Configura
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (locale !== undefined) {
+                localVarQueryParameter['locale'] = locale;
+            }
 
 
     
@@ -51386,13 +51479,14 @@ export const PortfolioApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+         * ?locale=en picks the language (default one when missing). enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
          * @summary Contact form configuration
+         * @param {string} locale 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async publicContactControllerGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicContactResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.publicContactControllerGet(options);
+        async publicContactControllerGet(locale: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicContactResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.publicContactControllerGet(locale, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PortfolioApi.publicContactControllerGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -51471,13 +51565,14 @@ export const PortfolioApiFactory = function (configuration?: Configuration, base
             return localVarFp.portfolioControllerSettings(options).then((request) => request(axios, basePath));
         },
         /**
-         * enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+         * ?locale=en picks the language (default one when missing). enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
          * @summary Contact form configuration
+         * @param {PortfolioApiPublicContactControllerGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        publicContactControllerGet(options?: RawAxiosRequestConfig): AxiosPromise<PublicContactResponse> {
-            return localVarFp.publicContactControllerGet(options).then((request) => request(axios, basePath));
+        publicContactControllerGet(requestParameters: PortfolioApiPublicContactControllerGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<PublicContactResponse> {
+            return localVarFp.publicContactControllerGet(requestParameters.locale, options).then((request) => request(axios, basePath));
         },
         /**
          * No account needed. Optional galleryId / imageId say what it is about (must be public). acknowledgedPrivacyNotice must be true; 403 while the form is disabled in the panel. Keep the honeypot `website` field hidden and empty. The answer is the same for every accepted submission.
@@ -51539,6 +51634,20 @@ export interface PortfolioApiPortfolioControllerHeroRequest {
      * @memberof PortfolioApiPortfolioControllerHero
      */
     readonly limit?: number
+}
+
+/**
+ * Request parameters for publicContactControllerGet operation in PortfolioApi.
+ * @export
+ * @interface PortfolioApiPublicContactControllerGetRequest
+ */
+export interface PortfolioApiPublicContactControllerGetRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioApiPublicContactControllerGet
+     */
+    readonly locale: string
 }
 
 /**
@@ -51625,14 +51734,15 @@ export class PortfolioApi extends BaseAPI {
     }
 
     /**
-     * enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+     * ?locale=en picks the language (default one when missing). enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
      * @summary Contact form configuration
+     * @param {PortfolioApiPublicContactControllerGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PortfolioApi
      */
-    public publicContactControllerGet(options?: RawAxiosRequestConfig) {
-        return PortfolioApiFp(this.configuration).publicContactControllerGet(options).then((request) => request(this.axios, this.basePath));
+    public publicContactControllerGet(requestParameters: PortfolioApiPublicContactControllerGetRequest, options?: RawAxiosRequestConfig) {
+        return PortfolioApiFp(this.configuration).publicContactControllerGet(requestParameters.locale, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

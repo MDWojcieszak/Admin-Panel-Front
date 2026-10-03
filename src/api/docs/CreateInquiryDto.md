@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **galleryId** | **string** |  | [optional] [default to undefined]
 **imageId** | **string** |  | [optional] [default to undefined]
 **acknowledgedPrivacyNotice** | **boolean** |  | [default to undefined]
+**locale** | **string** |  | [optional] [default to undefined]
 **website** | **string** |  | [optional] [default to undefined]
 
 ## Example
@@ -29,6 +30,7 @@ const instance: CreateInquiryDto = {
     galleryId,
     imageId,
     acknowledgedPrivacyNotice,
+    locale,
     website,
 };
 ```

@@ -19,7 +19,9 @@ Name | Type | Description | Notes
 **readAt** | **string** |  | [optional] [default to undefined]
 **answeredAt** | **string** |  | [optional] [default to undefined]
 **noticeAcknowledgedAt** | **string** |  | [default to undefined]
+**privacyNoticeLocale** | **string** |  | [default to undefined]
 **privacyNoticeVersion** | **number** |  | [default to undefined]
+**locale** | **string** |  | [default to undefined]
 **createdAt** | **string** |  | [default to undefined]
 
 ## Example
@@ -42,7 +44,9 @@ const instance: InquiryResponse = {
     readAt,
     answeredAt,
     noticeAcknowledgedAt,
+    privacyNoticeLocale,
     privacyNoticeVersion,
+    locale,
     createdAt,
 };
 ```

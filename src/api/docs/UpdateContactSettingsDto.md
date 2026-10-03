@@ -9,8 +9,7 @@ Name | Type | Description | Notes
 **administratorName** | **string** |  | [optional] [default to undefined]
 **administratorEmail** | **string** |  | [optional] [default to undefined]
 **administratorAddress** | **string** |  | [optional] [default to undefined]
-**privacyNotice** | **string** |  | [optional] [default to undefined]
-**intro** | **string** |  | [optional] [default to undefined]
+**translations** | [**Array&lt;ContactTextDto&gt;**](ContactTextDto.md) |  | [optional] [default to undefined]
 **topics** | [**Array&lt;InquiryTopic&gt;**](InquiryTopic.md) |  | [optional] [default to undefined]
 **retentionDays** | **number** |  | [optional] [default to undefined]
 **spamRetentionDays** | **number** |  | [optional] [default to undefined]
@@ -25,8 +24,7 @@ const instance: UpdateContactSettingsDto = {
     administratorName,
     administratorEmail,
     administratorAddress,
-    privacyNotice,
-    intro,
+    translations,
     topics,
     retentionDays,
     spamRetentionDays,

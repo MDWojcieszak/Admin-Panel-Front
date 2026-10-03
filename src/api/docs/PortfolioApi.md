@@ -297,7 +297,7 @@ No authorization required
 # **publicContactControllerGet**
 > PublicContactResponse publicContactControllerGet()
 
-enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+?locale=en picks the language (default one when missing). enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
 
 ### Example
 
@@ -310,11 +310,18 @@ import {
 const configuration = new Configuration();
 const apiInstance = new PortfolioApi(configuration);
 
-const { status, data } = await apiInstance.publicContactControllerGet();
+let locale: string; // (default to undefined)
+
+const { status, data } = await apiInstance.publicContactControllerGet(
+    locale
+);
 ```
 
 ### Parameters
-This endpoint does not have any parameters.
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **locale** | [**string**] |  | defaults to undefined|
 
 
 ### Return type
