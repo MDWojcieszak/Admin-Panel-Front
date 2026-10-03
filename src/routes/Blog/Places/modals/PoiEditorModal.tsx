@@ -145,7 +145,6 @@ export const PoiEditorModal = (p: PoiEditorModalProps) => {
           <div style={styles.searchWrap}>
             <span style={styles.searchLabel}>Find on Google</span>
             <PlaceAutocomplete
-              style={styles.searchInput}
               placeholder='Search a place…'
               onPlace={(place) => {
                 if (place.name) formMethods.setValue('name', place.name);
@@ -242,18 +241,6 @@ const useStyles = mkUseStyles((t) => ({
   searchLabel: {
     fontSize: 12,
     color: t.colors.blue04,
-  },
-  searchInput: {
-    width: '100%',
-    height: 44,
-    boxSizing: 'border-box',
-    padding: `0 ${t.spacing.m}px`,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.blue + t.colorOpacity(0.12),
-    color: t.colors.white,
-    border: `1px solid ${t.colors.blue + t.colorOpacity(0.3)}`,
-    outline: 'none',
-    fontSize: 15,
   },
   noKey: {
     fontSize: 12,
