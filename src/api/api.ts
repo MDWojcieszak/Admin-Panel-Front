@@ -5602,6 +5602,115 @@ export interface GearEntryRefResponse {
 /**
  * 
  * @export
+ * @interface GearImageListResponse
+ */
+export interface GearImageListResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof GearImageListResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<GearImageResponse>}
+     * @memberof GearImageListResponse
+     */
+    'images': Array<GearImageResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface GearImageResponse
+ */
+export interface GearImageResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GearImageResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearImageResponse
+     */
+    'coverUrl': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearImageResponse
+     */
+    'lowResUrl': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GearImageResponse
+     */
+    'width'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof GearImageResponse
+     */
+    'height'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearImageResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {Array<GearImageUserResponse>}
+     * @memberof GearImageResponse
+     */
+    'usedBy': Array<GearImageUserResponse>;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const GearImageUserKind = {
+    Item: 'ITEM',
+    System: 'SYSTEM'
+} as const;
+
+export type GearImageUserKind = typeof GearImageUserKind[keyof typeof GearImageUserKind];
+
+
+/**
+ * 
+ * @export
+ * @interface GearImageUserResponse
+ */
+export interface GearImageUserResponse {
+    /**
+     * 
+     * @type {GearImageUserKind}
+     * @memberof GearImageUserResponse
+     */
+    'kind': GearImageUserKind;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearImageUserResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GearImageUserResponse
+     */
+    'name': string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface GearItemAdminResponse
  */
 export interface GearItemAdminResponse {
@@ -39269,6 +39378,60 @@ export const GearApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
+         * Reuse one photo for identical items. `usedBy` shows which gear already shows it; `search` matches that gear by brand/model; `unusedOnly` lists uploads not attached yet. Gallery photos appear only if gear uses them.
+         * @summary Gear photos to pick from
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {string} [search] 
+         * @param {boolean} [unusedOnly] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerListImages: async (take?: number, skip?: number, search?: string, unusedOnly?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/gear/images`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (take !== undefined) {
+                localVarQueryParameter['take'] = take;
+            }
+
+            if (skip !== undefined) {
+                localVarQueryParameter['skip'] = skip;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (unusedOnly !== undefined) {
+                localVarQueryParameter['unusedOnly'] = unusedOnly;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {GearOwnership} [ownership] 
          * @param {GearCategory} [category] 
@@ -39672,6 +39835,51 @@ export const GearApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Stored with scope GEAR, so it never appears in the gallery or among unassigned gallery photos. Pass the returned id as imageId on a gear item or system.
+         * @summary Upload a gear photo
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerUploadImage: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gearControllerUploadImage', 'id', id)
+            const localVarPath = `/gear/images`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (id !== undefined) { 
+                localVarFormParams.append('id', id as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -39762,6 +39970,22 @@ export const GearApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerListCategories(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerListCategories']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Reuse one photo for identical items. `usedBy` shows which gear already shows it; `search` matches that gear by brand/model; `unusedOnly` lists uploads not attached yet. Gallery photos appear only if gear uses them.
+         * @summary Gear photos to pick from
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {string} [search] 
+         * @param {boolean} [unusedOnly] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerListImages(take?: number, skip?: number, search?: string, unusedOnly?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GearImageListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerListImages(take, skip, search, unusedOnly, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerListImages']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -39889,6 +40113,19 @@ export const GearApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerUpdateSystem']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Stored with scope GEAR, so it never appears in the gallery or among unassigned gallery photos. Pass the returned id as imageId on a gear item or system.
+         * @summary Upload a gear photo
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gearControllerUploadImage(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadResponseDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gearControllerUploadImage(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GearApi.gearControllerUploadImage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -39959,6 +40196,16 @@ export const GearApiFactory = function (configuration?: Configuration, basePath?
          */
         gearControllerListCategories(options?: RawAxiosRequestConfig): AxiosPromise<Array<GearCategoryResponse>> {
             return localVarFp.gearControllerListCategories(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Reuse one photo for identical items. `usedBy` shows which gear already shows it; `search` matches that gear by brand/model; `unusedOnly` lists uploads not attached yet. Gallery photos appear only if gear uses them.
+         * @summary Gear photos to pick from
+         * @param {GearApiGearControllerListImagesRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerListImages(requestParameters: GearApiGearControllerListImagesRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<GearImageListResponse> {
+            return localVarFp.gearControllerListImages(requestParameters.take, requestParameters.skip, requestParameters.search, requestParameters.unusedOnly, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -40049,6 +40296,16 @@ export const GearApiFactory = function (configuration?: Configuration, basePath?
         gearControllerUpdateSystem(requestParameters: GearApiGearControllerUpdateSystemRequest, options?: RawAxiosRequestConfig): AxiosPromise<GearSystemResponse> {
             return localVarFp.gearControllerUpdateSystem(requestParameters.id, requestParameters.updateGearSystemDto, options).then((request) => request(axios, basePath));
         },
+        /**
+         * Stored with scope GEAR, so it never appears in the gallery or among unassigned gallery photos. Pass the returned id as imageId on a gear item or system.
+         * @summary Upload a gear photo
+         * @param {GearApiGearControllerUploadImageRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gearControllerUploadImage(requestParameters: GearApiGearControllerUploadImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadResponseDto> {
+            return localVarFp.gearControllerUploadImage(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -40120,6 +40377,41 @@ export interface GearApiGearControllerGetKitRequest {
      * @memberof GearApiGearControllerGetKit
      */
     readonly id: string
+}
+
+/**
+ * Request parameters for gearControllerListImages operation in GearApi.
+ * @export
+ * @interface GearApiGearControllerListImagesRequest
+ */
+export interface GearApiGearControllerListImagesRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof GearApiGearControllerListImages
+     */
+    readonly take?: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof GearApiGearControllerListImages
+     */
+    readonly skip?: number
+
+    /**
+     * 
+     * @type {string}
+     * @memberof GearApiGearControllerListImages
+     */
+    readonly search?: string
+
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GearApiGearControllerListImages
+     */
+    readonly unusedOnly?: boolean
 }
 
 /**
@@ -40291,6 +40583,20 @@ export interface GearApiGearControllerUpdateSystemRequest {
 }
 
 /**
+ * Request parameters for gearControllerUploadImage operation in GearApi.
+ * @export
+ * @interface GearApiGearControllerUploadImageRequest
+ */
+export interface GearApiGearControllerUploadImageRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof GearApiGearControllerUploadImage
+     */
+    readonly id: string
+}
+
+/**
  * GearApi - object-oriented interface
  * @export
  * @class GearApi
@@ -40370,6 +40676,18 @@ export class GearApi extends BaseAPI {
      */
     public gearControllerListCategories(options?: RawAxiosRequestConfig) {
         return GearApiFp(this.configuration).gearControllerListCategories(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Reuse one photo for identical items. `usedBy` shows which gear already shows it; `search` matches that gear by brand/model; `unusedOnly` lists uploads not attached yet. Gallery photos appear only if gear uses them.
+     * @summary Gear photos to pick from
+     * @param {GearApiGearControllerListImagesRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerListImages(requestParameters: GearApiGearControllerListImagesRequest = {}, options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerListImages(requestParameters.take, requestParameters.skip, requestParameters.search, requestParameters.unusedOnly, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -40479,6 +40797,18 @@ export class GearApi extends BaseAPI {
      */
     public gearControllerUpdateSystem(requestParameters: GearApiGearControllerUpdateSystemRequest, options?: RawAxiosRequestConfig) {
         return GearApiFp(this.configuration).gearControllerUpdateSystem(requestParameters.id, requestParameters.updateGearSystemDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Stored with scope GEAR, so it never appears in the gallery or among unassigned gallery photos. Pass the returned id as imageId on a gear item or system.
+     * @summary Upload a gear photo
+     * @param {GearApiGearControllerUploadImageRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GearApi
+     */
+    public gearControllerUploadImage(requestParameters: GearApiGearControllerUploadImageRequest, options?: RawAxiosRequestConfig) {
+        return GearApiFp(this.configuration).gearControllerUploadImage(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

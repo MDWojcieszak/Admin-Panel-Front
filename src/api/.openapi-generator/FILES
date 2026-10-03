@@ -204,6 +204,10 @@ docs/GearApi.md
 docs/GearCategory.md
 docs/GearCategoryResponse.md
 docs/GearEntryRefResponse.md
+docs/GearImageListResponse.md
+docs/GearImageResponse.md
+docs/GearImageUserKind.md
+docs/GearImageUserResponse.md
 docs/GearItemAdminResponse.md
 docs/GearItemListResponse.md
 docs/GearItemResponse.md

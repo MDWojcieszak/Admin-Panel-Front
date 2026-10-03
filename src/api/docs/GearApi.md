@@ -11,6 +11,7 @@ All URIs are relative to *http://localhost*
 |[**gearControllerGetKit**](#gearcontrollergetkit) | **GET** /gear/kits/{id} | |
 |[**gearControllerList**](#gearcontrollerlist) | **GET** /gear | |
 |[**gearControllerListCategories**](#gearcontrollerlistcategories) | **GET** /gear/categories | |
+|[**gearControllerListImages**](#gearcontrollerlistimages) | **GET** /gear/images | Gear photos to pick from|
 |[**gearControllerListItems**](#gearcontrollerlistitems) | **GET** /gear/items | |
 |[**gearControllerListKits**](#gearcontrollerlistkits) | **GET** /gear/kits | |
 |[**gearControllerRemove**](#gearcontrollerremove) | **DELETE** /gear/{id} | |
@@ -21,6 +22,7 @@ All URIs are relative to *http://localhost*
 |[**gearControllerUpdate**](#gearcontrollerupdate) | **PATCH** /gear/{id} | |
 |[**gearControllerUpdateKit**](#gearcontrollerupdatekit) | **PATCH** /gear/kits/{id} | |
 |[**gearControllerUpdateSystem**](#gearcontrollerupdatesystem) | **PATCH** /gear/systems/{id} | |
+|[**gearControllerUploadImage**](#gearcontrolleruploadimage) | **POST** /gear/images | Upload a gear photo|
 
 # **gearControllerCreate**
 > GearItemAdminResponse gearControllerCreate(createGearDto)
@@ -358,6 +360,66 @@ This endpoint does not have any parameters.
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Gear categories with their media source |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **gearControllerListImages**
+> GearImageListResponse gearControllerListImages()
+
+Reuse one photo for identical items. `usedBy` shows which gear already shows it; `search` matches that gear by brand/model; `unusedOnly` lists uploads not attached yet. Gallery photos appear only if gear uses them.
+
+### Example
+
+```typescript
+import {
+    GearApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new GearApi(configuration);
+
+let take: number; // (optional) (default to undefined)
+let skip: number; // (optional) (default to 0)
+let search: string; // (optional) (default to undefined)
+let unusedOnly: boolean; // (optional) (default to undefined)
+
+const { status, data } = await apiInstance.gearControllerListImages(
+    take,
+    skip,
+    search,
+    unusedOnly
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **take** | [**number**] |  | (optional) defaults to undefined|
+| **skip** | [**number**] |  | (optional) defaults to 0|
+| **search** | [**string**] |  | (optional) defaults to undefined|
+| **unusedOnly** | [**boolean**] |  | (optional) defaults to undefined|
+
+
+### Return type
+
+**GearImageListResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -874,6 +936,57 @@ const { status, data } = await apiInstance.gearControllerUpdateSystem(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Update a camera system |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **gearControllerUploadImage**
+> UploadResponseDto gearControllerUploadImage()
+
+Stored with scope GEAR, so it never appears in the gallery or among unassigned gallery photos. Pass the returned id as imageId on a gear item or system.
+
+### Example
+
+```typescript
+import {
+    GearApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new GearApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.gearControllerUploadImage(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**UploadResponseDto**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** | Uploaded a GEAR-scoped image |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
