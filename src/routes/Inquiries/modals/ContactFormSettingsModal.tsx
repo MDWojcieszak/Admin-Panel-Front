@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { format } from 'date-fns';
+import MDEditor from '@uiw/react-md-editor';
 import { Controller, useForm } from 'react-hook-form';
 import { FiSave } from 'react-icons/fi';
 import {
@@ -14,6 +15,7 @@ import { Input } from '~/components/Input';
 import { Loader } from '~/components/Loader';
 import { MarkdownEditor } from '~/components/MarkdownEditor';
 import { useSidePanelReady } from '~/components/Modal';
+import { SegmentedTabs } from '~/components/SegmentedTabs';
 import { Switch } from '~/components/Switch';
 import { TextArea } from '~/components/TextArea';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
@@ -107,15 +109,33 @@ const NOTICE_VARIABLES = [
 
 const PLACEHOLDER = /\{\{\s*([^{}]*?)\s*\}\}/g;
 
-/** Gaps that would show in the published notice: unknown placeholders, or known ones left empty. */
-const noticeProblems = (text: string, values: FormValues) => {
-  const problems = new Set<string>();
-  for (const [, name] of text.matchAll(PLACEHOLDER)) {
+/**
+ * The notice as visitors read it — the backend's renderNotice, run on the
+ * draft so the preview shows unsaved edits. Unknown placeholders stay visible.
+ */
+const renderNotice = (text: string, values: FormValues) =>
+  text.replace(PLACEHOLDER, (whole, name: string) => {
     const variable = NOTICE_VARIABLES.find((v) => v.name === name);
-    if (!variable) problems.add(`unfilled {{${name}}}`);
-    else if (!variable.value(values)?.trim()) problems.add(`{{${name}}} is empty`);
+    return variable ? variable.value(values) ?? '' : whole;
+  });
+
+type NoticeGap = {
+  /** The placeholder exactly as written, to find it in the text. */
+  raw: string;
+  name: string;
+  /** A known variable whose setting is empty, rather than a template part left to fill. */
+  empty: boolean;
+};
+
+/** Gaps that would show in the published notice: unknown placeholders, or known ones left empty. */
+const noticeGaps = (text: string, values: FormValues): NoticeGap[] => {
+  const gaps = new Map<string, NoticeGap>();
+  for (const [raw, name] of text.matchAll(PLACEHOLDER)) {
+    const variable = NOTICE_VARIABLES.find((v) => v.name === name);
+    if (!variable) gaps.set(raw, { raw, name, empty: false });
+    else if (!variable.value(values)?.trim()) gaps.set(raw, { raw, name, empty: true });
   }
-  return [...problems];
+  return [...gaps.values()];
 };
 
 /**
@@ -128,11 +148,10 @@ const missingIn = (values: FormValues, defaultLocale: string) => {
     !values.administratorEmail.trim() && 'administrator email',
     !textOf(values, defaultLocale).privacyNotice.trim() && `privacy notice (${defaultLocale.toUpperCase()})`,
   ].filter(Boolean) as string[];
-  Object.keys(values.texts ?? {}).forEach((locale) =>
-    noticeProblems(textOf(values, locale).privacyNotice, values).forEach((problem) =>
-      missing.push(`${locale.toUpperCase()} notice: ${problem}`),
-    ),
+  const withGaps = Object.keys(values.texts ?? {}).filter(
+    (locale) => noticeGaps(textOf(values, locale).privacyNotice, values).length,
   );
+  if (withGaps.length) missing.push(`gaps in the ${withGaps.map((l) => l.toUpperCase()).join(', ')} notice`);
   return missing;
 };
 
@@ -155,6 +174,7 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
   const [saving, setSaving] = useState(false);
   const noticeRef = useRef<HTMLDivElement>(null);
   const caretLocaleRef = useRef<string>();
+  const [noticeMode, setNoticeMode] = useState<'write' | 'preview'>('write');
 
   const { control, reset, watch, setValue, getValues } = useForm<FormValues>();
   const values = watch();
@@ -210,6 +230,7 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
       }));
   const locale = activeLocale && locales.some((l) => l.code === activeLocale) ? activeLocale : defaultLocale;
   const text = textOf(values, locale);
+  const gaps = noticeGaps(text.privacyNotice, values);
   const savedText = settings.translations.find((t) => t.locale === locale);
 
   const save = async () => {
@@ -249,6 +270,21 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
       el.focus();
       el.setSelectionRange(at + token.length, at + token.length);
     });
+  };
+
+  /** Selects a template gap in the editor, so typing replaces it. */
+  const selectInNotice = (raw: string) => {
+    const textarea = noticeRef.current?.querySelector('textarea');
+    if (!textarea) return;
+    const at = textarea.value.indexOf(raw);
+    if (at < 0) return;
+    textarea.focus();
+    textarea.setSelectionRange(at, at + raw.length);
+    // Bring the selection into view: a long notice scrolls inside the editor.
+    const line = textarea.value.slice(0, at).split('\n').length;
+    const lineHeight = parseFloat(getComputedStyle(textarea).lineHeight) || 20;
+    const scroller = textarea.closest('.w-md-editor-area') as HTMLElement | null;
+    if (scroller) scroller.scrollTop = Math.max(0, (line - 3) * lineHeight);
   };
 
   const toggleTopic = (topic: InquiryTopic) =>
@@ -386,7 +422,9 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
               <div style={styles.langTabs}>
                 {locales.map((l) => {
                   const active = l.code === locale;
-                  const hasNotice = Boolean(textOf(values, l.code).privacyNotice.trim());
+                  const notice = textOf(values, l.code).privacyNotice;
+                  const hasNotice = Boolean(notice.trim());
+                  const hasGaps = noticeGaps(notice, values).length > 0;
                   return (
                     <button
                       key={l.code}
@@ -399,11 +437,13 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
                       <span
                         style={{
                           ...styles.langDot,
-                          backgroundColor: hasNotice
-                            ? theme.colors.lightGreen
-                            : l.code === defaultLocale
-                              ? theme.colors.red
-                              : theme.colors.yellow,
+                          backgroundColor: hasGaps
+                            ? theme.colors.red
+                            : hasNotice
+                              ? theme.colors.lightGreen
+                              : l.code === defaultLocale
+                                ? theme.colors.red
+                                : theme.colors.yellow,
                         }}
                       />
                     </button>
@@ -422,12 +462,25 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
             />
 
             <div style={styles.noticeHeader}>
-              <span style={styles.noticeLabel}>Privacy notice ({locale.toUpperCase()})</span>
-              {locale !== defaultLocale && !text.privacyNotice.trim() ? (
-                <span style={styles.fallback}>Visitors see the {defaultLocale.toUpperCase()} notice</span>
+              <div style={styles.noticeTitle}>
+                <span style={styles.noticeLabel}>Privacy notice ({locale.toUpperCase()})</span>
+                {locale !== defaultLocale && !text.privacyNotice.trim() ? (
+                  <span style={styles.fallback}>Visitors see the {defaultLocale.toUpperCase()} notice</span>
+                ) : null}
+              </div>
+              {canManage ? (
+                <SegmentedTabs
+                  layoutId='notice-mode'
+                  items={[
+                    { value: 'write', label: 'Write' },
+                    { value: 'preview', label: 'Preview' },
+                  ]}
+                  selected={noticeMode}
+                  handleSelect={(value) => setNoticeMode(value as 'write' | 'preview')}
+                />
               ) : null}
             </div>
-            {canManage ? (
+            {canManage && noticeMode === 'write' ? (
               <div style={styles.variables}>
                 {NOTICE_VARIABLES.map((v) => (
                   <button
@@ -444,7 +497,33 @@ export const ContactFormSettingsModal = (_p: ContactFormSettingsModalProps) => {
                 ))}
               </div>
             ) : null}
-            <div ref={noticeRef} onFocus={() => (caretLocaleRef.current = locale)}>
+            {gaps.length && noticeMode === 'write' ? (
+              <div style={styles.gaps}>
+                <span style={styles.gapsLabel}>Fill in before going live</span>
+                {gaps.map((gap) => (
+                  <button
+                    key={gap.raw}
+                    type='button'
+                    title={gap.empty ? 'Its setting is empty' : 'Select it in the text'}
+                    style={styles.gap}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => (gap.empty ? undefined : selectInNotice(gap.raw))}
+                  >
+                    {gap.empty ? `{{${gap.name}}} is empty` : gap.name}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            {canManage && noticeMode === 'preview' ? (
+              <div data-color-mode='dark' style={styles.preview}>
+                <MDEditor.Markdown source={renderNotice(text.privacyNotice, values)} style={styles.previewBody} />
+              </div>
+            ) : null}
+            <div
+              ref={noticeRef}
+              onFocus={() => (caretLocaleRef.current = locale)}
+              style={canManage && noticeMode === 'preview' ? styles.hidden : undefined}
+            >
               <Controller
                 key={`notice-${locale}`}
                 control={control}
@@ -580,9 +659,41 @@ const useStyles = mkUseStyles((t) => ({
   },
   langTabOn: { color: t.colors.white, backgroundColor: t.colors.blue + t.colorOpacity(0.25) },
   langDot: { width: 6, height: 6, borderRadius: '50%' },
-  noticeHeader: { flexDirection: 'row', alignItems: 'baseline', gap: t.spacing.s, flexWrap: 'wrap' },
+  noticeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: t.spacing.s,
+    flexWrap: 'wrap',
+  },
+  noticeTitle: { flexDirection: 'row', alignItems: 'baseline', gap: t.spacing.s, flexWrap: 'wrap' },
+  hidden: { display: 'none' },
+  preview: {
+    minHeight: 460,
+    maxHeight: 640,
+    overflowY: 'auto',
+    padding: t.spacing.l,
+    boxSizing: 'border-box',
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.4),
+  },
+  previewBody: { background: 'transparent', fontSize: 15 },
   noticeLabel: { fontSize: 12, fontWeight: 700, color: t.colors.blue04 },
   fallback: { fontSize: 12, color: t.colors.yellow },
+  gaps: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6 },
+  gapsLabel: { fontSize: 12, fontWeight: 700, color: t.colors.red, marginRight: 2 },
+  gap: {
+    maxWidth: '100%',
+    minHeight: 26,
+    padding: '3px 10px',
+    border: 'none',
+    borderRadius: 999,
+    fontSize: 12,
+    textAlign: 'left',
+    cursor: 'pointer',
+    color: t.colors.red,
+    backgroundColor: t.colors.red + t.colorOpacity(0.12),
+  },
   variables: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: -t.spacing.s },
   variable: {
     height: 26,
