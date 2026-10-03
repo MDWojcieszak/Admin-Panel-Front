@@ -116,3 +116,37 @@ export const planColumnMove = (entry: PhotoEntryResponse, target: KanbanColumn):
 
 export const canMoveToColumn = (entry: PhotoEntryResponse, target: KanbanColumn): boolean =>
   planColumnMove(entry, target).kind === 'allowed';
+
+/** Dates come as YYYY-MM-DD (or ISO); compare by local day, like the calendar does. */
+const dayKey = (value?: string | null): string | null => (value ? value.slice(0, 10) : null);
+
+const todayKey = () => {
+  const now = new Date();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+};
+
+/**
+ * A plan whose last day is behind us. The backend never moves an entry out of
+ * PLANNED by itself, so the board asks instead: did it happen or not?
+ */
+export const isOverduePlan = (entry: PhotoEntryResponse): boolean => {
+  if (entry.status !== PhotoEntryStatus.Planned) return false;
+  const lastDay = dayKey(entry.endDate) ?? dayKey(entry.startDate);
+  return Boolean(lastDay && lastDay < todayKey());
+};
+
+/**
+ * Newest session on top, oldest at the bottom. Undated plans have nothing to
+ * place them by and are usually fresh ideas, so they lead.
+ */
+export const compareEntriesByDate = (a: PhotoEntryResponse, b: PhotoEntryResponse): number => {
+  const aKey = dayKey(a.startDate) ?? dayKey(a.endDate);
+  const bKey = dayKey(b.startDate) ?? dayKey(b.endDate);
+  if (aKey !== bKey) {
+    if (!aKey) return -1;
+    if (!bKey) return 1;
+    return aKey < bKey ? 1 : -1;
+  }
+  return (b.createdAt ?? '').localeCompare(a.createdAt ?? '');
+};

@@ -11,6 +11,7 @@ import {
   KanbanColumn,
   KanbanColumnId,
   canMoveToColumn,
+  compareEntriesByDate,
   getEntryColumn,
   planColumnMove,
 } from '~/routes/PhotoManagement/utils/kanban';
@@ -59,7 +60,8 @@ export const PhotoEntryKanban = ({
     const grouped = new Map<KanbanColumnId, PhotoEntryResponse[]>();
     KANBAN_COLUMNS.forEach((column) => grouped.set(column.id, []));
 
-    optimisticEntries.forEach((entry) => {
+    // Sorted once here so every lane (and the cancelled strip) reads newest first.
+    [...optimisticEntries].sort(compareEntriesByDate).forEach((entry) => {
       const column = getEntryColumn(entry);
       if (column) grouped.get(column)?.push(entry);
     });
@@ -74,7 +76,7 @@ export const PhotoEntryKanban = ({
   // Cancelled entries have no lane, so without this strip filtering by
   // "Cancelled" would render an empty board and look broken.
   const cancelledEntries = useMemo(
-    () => optimisticEntries.filter((entry) => getEntryColumn(entry) === null),
+    () => optimisticEntries.filter((entry) => getEntryColumn(entry) === null).sort(compareEntriesByDate),
     [optimisticEntries],
   );
 
