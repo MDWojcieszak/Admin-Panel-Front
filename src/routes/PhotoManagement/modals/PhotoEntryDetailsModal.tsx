@@ -575,10 +575,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
             </div>
 
             <div style={styles.bodyColumn}>
-              <Section
-                title='Notes'
-                hint='Notes, to-dos, highlights and problems, pinned to the stage they were written in.'
-              >
+              <Section title='Notes'>
                 <EntryCommentsPanel entryId={entry.id} onChanged={refresh} />
               </Section>
             </div>
