@@ -12,6 +12,7 @@ import {
   ImmichStatusResponse,
   PhotoEntryListResponse,
 } from '~/api/api';
+import { PageHeader } from '~/components/PageHeader';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
@@ -39,7 +40,9 @@ const SOURCE_LABELS: Record<ImmichAlbumSource, string> = {
 };
 
 const immichError = (e: unknown, fallback: string): string =>
-  getApiErrorStatus(e) === 502 ? 'Immich is unreachable — check the integration configuration.' : getApiErrorMessage(e, fallback);
+  getApiErrorStatus(e) === 502
+    ? 'Immich is unreachable — check the integration configuration.'
+    : getApiErrorMessage(e, fallback);
 
 const formatDateTime = (value?: string | null): string => {
   if (!value) return '—';
@@ -139,7 +142,8 @@ export const ImmichAlbums = () => {
   const deleteAlbum = (album: ImmichBrowseAlbumResponse) => {
     deleteAlbumModal.show({
       message: `Delete album “${album.albumName}” in Immich?`,
-      description: 'The album is deleted on the Immich server (the photos stay in your library) and all tracking links are removed.',
+      description:
+        'The album is deleted on the Immich server (the photos stay in your library) and all tracking links are removed.',
       danger: true,
       confirmLabel: 'Delete album',
       onConfirm: async () => {
@@ -254,16 +258,28 @@ export const ImmichAlbums = () => {
       <div style={styles.scroll}>
         <div style={styles.content}>
           <div style={styles.detailHeader}>
-            <Button label='Back' variant='secondary' icon={<FiArrowLeft size={14} />} onClick={() => setSelectedId(undefined)} />
+            <Button
+              label='Back'
+              variant='secondary'
+              icon={<FiArrowLeft size={14} />}
+              onClick={() => setSelectedId(undefined)}
+            />
             <div style={styles.detailTitleWrap}>
               <span style={styles.detailTitle}>{selected.albumName}</span>
-              <span style={styles.detailMeta}>{selected.assetCount} photos · {selected.entries.length} linked entries</span>
+              <span style={styles.detailMeta}>
+                {selected.assetCount} photos · {selected.entries.length} linked entries
+              </span>
             </div>
             <a href={selected.albumUrl} target='_blank' rel='noreferrer' style={styles.openLink}>
               Open in Immich <FiExternalLink size={13} />
             </a>
             {canManage ? (
-              <Button label='Delete album' variant='danger' icon={<FiTrash2 size={14} />} onClick={() => deleteAlbum(selected)} />
+              <Button
+                label='Delete album'
+                variant='danger'
+                icon={<FiTrash2 size={14} />}
+                onClick={() => deleteAlbum(selected)}
+              />
             ) : null}
           </div>
 
@@ -348,24 +364,37 @@ export const ImmichAlbums = () => {
   return (
     <div style={styles.scroll}>
       <div style={styles.content}>
-        <div style={styles.header}>
-          <div style={styles.titleWrap}>
-            <h2 style={styles.heading}>Immich Albums</h2>
-          </div>
-          <div style={styles.headerActions}>
-            <Button
-              label='Refresh'
-              variant='secondary'
-              icon={<FiRefreshCw size={14} />}
-              onClick={() => browseQuery.reload()}
-              loading={browseQuery.loading}
-            />
-            {canManage ? (
-              <Button label='Empty album' variant='secondary' icon={<FiPlus size={14} />} onClick={openEmpty} disabled={!connected} />
-            ) : null}
-            {canManage ? <Button label='Create album' icon={<FiPlus size={14} />} onClick={() => openCreate()} disabled={!connected} /> : null}
-          </div>
-        </div>
+        <PageHeader
+          title='Immich Albums'
+          actions={
+            <>
+              <Button
+                label='Refresh'
+                variant='secondary'
+                icon={<FiRefreshCw size={14} />}
+                onClick={() => browseQuery.reload()}
+                loading={browseQuery.loading}
+              />
+              {canManage ? (
+                <Button
+                  label='Empty album'
+                  variant='secondary'
+                  icon={<FiPlus size={14} />}
+                  onClick={openEmpty}
+                  disabled={!connected}
+                />
+              ) : null}
+              {canManage ? (
+                <Button
+                  label='Create album'
+                  icon={<FiPlus size={14} />}
+                  onClick={() => openCreate()}
+                  disabled={!connected}
+                />
+              ) : null}
+            </>
+          }
+        />
 
         {statusQuery.data && !connected ? (
           <div style={styles.warning}>Connect Immich first (Integrations) to browse and manage albums.</div>
@@ -377,7 +406,9 @@ export const ImmichAlbums = () => {
           <EmptyState
             icon={<MdPhotoLibrary size={26} color={theme.colors.blue04} />}
             title='No albums yet'
-            description={connected ? 'Create an album from a photo entry folder to get started.' : 'Connect Immich to see albums.'}
+            description={
+              connected ? 'Create an album from a photo entry folder to get started.' : 'Connect Immich to see albums.'
+            }
           />
         ) : (
           <div style={styles.albumGrid}>
@@ -413,25 +444,6 @@ const useStyles = mkUseStyles((t) => ({
   content: {
     gap: t.spacing.l,
     paddingBottom: t.spacing.m,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: t.spacing.m,
-  },
-  titleWrap: {
-    gap: 2,
-    minWidth: 0,
-  },
-  heading: {
-    fontSize: 22,
-    fontWeight: 700,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    gap: t.spacing.s,
-    flexWrap: 'wrap',
   },
   warning: {
     fontSize: 13,

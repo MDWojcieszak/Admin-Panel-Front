@@ -9,6 +9,7 @@ import {
   GearOwnership,
   GearSystemResponse,
 } from '~/api/api';
+import { PageHeader } from '~/components/PageHeader';
 import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
 import { EmptyState } from '~/components/EmptyState';
@@ -268,22 +269,29 @@ export const GearView = () => {
       {/* Padded on the right so the blocks stop short of the scrollbar track
           instead of running underneath it. */}
       <div style={styles.content}>
-        <div style={styles.header}>
-          <div style={styles.titleWrap}>
-            <h2 style={styles.heading}>Gear</h2>
-          </div>
-          <div style={styles.headerActions}>
-            <Button
-              label={wishlistCount ? `To buy · ${wishlistCount}` : 'To buy'}
-              variant='secondary'
-              icon={<FiShoppingCart size={14} />}
-              onClick={() => shoppingModal.show()}
-            />
-            <Button label='Kits' variant='secondary' icon={<FiLayers size={14} />} onClick={() => kitsModal.show()} />
-            <Button label='Add system' variant='secondary' icon={<FiPlus size={14} />} onClick={openCreateSystem} />
-            <Button label='Add gear' icon={<FiPlus size={14} />} onClick={() => openCreateItem()} />
-          </div>
-        </div>
+        <PageHeader
+          title='Gear'
+          meta={
+            totalItems
+              ? `${totalItems} item${totalItems === 1 ? '' : 's'} · ${systems.length} system${
+                  systems.length === 1 ? '' : 's'
+                }`
+              : undefined
+          }
+          actions={
+            <>
+              <Button
+                label={wishlistCount ? `To buy · ${wishlistCount}` : 'To buy'}
+                variant='secondary'
+                icon={<FiShoppingCart size={14} />}
+                onClick={() => shoppingModal.show()}
+              />
+              <Button label='Kits' variant='secondary' icon={<FiLayers size={14} />} onClick={() => kitsModal.show()} />
+              <Button label='Add system' variant='secondary' icon={<FiPlus size={14} />} onClick={openCreateSystem} />
+              <Button label='Add gear' icon={<FiPlus size={14} />} onClick={() => openCreateItem()} />
+            </>
+          }
+        />
 
         {totalItems ? (
           <div style={styles.filterRow}>
@@ -658,10 +666,6 @@ const eye = {
 const useStyles = mkUseStyles((t) => ({
   scroll: { height: '100%', width: '100%' },
   content: { gap: t.spacing.l, paddingRight: t.spacing.l, paddingBottom: t.spacing.m },
-  header: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: t.spacing.m },
-  titleWrap: { gap: 2, minWidth: 0 },
-  heading: { fontSize: 22, fontWeight: 700 },
-  headerActions: { flexDirection: 'row', gap: t.spacing.s, flexWrap: 'wrap', justifyContent: 'flex-end' },
   filterRow: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs },
   filterChip: {
     display: 'flex',

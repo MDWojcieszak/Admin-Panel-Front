@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiEyeOff, FiImage, FiPlus } from 'react-icons/fi';
 import { MdCollections } from 'react-icons/md';
 import { GalleryListResponse, GalleryResponse } from '~/api/api';
+import { PageHeader } from '~/components/PageHeader';
 import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
@@ -73,15 +74,11 @@ export const GalleriesList = () => {
   return (
     <div style={styles.scroll}>
       <div style={styles.content}>
-        <div style={styles.header}>
-          <div style={styles.titleWrap}>
-            <h2 style={styles.heading}>Galleries</h2>
-            <span style={styles.subheading}>Portfolio galleries — upload, arrange, set roles and publish.</span>
-          </div>
-          <div style={styles.headerActions}>
-            <Button label='New gallery' icon={<FiPlus size={14} />} onClick={openCreate} />
-          </div>
-        </div>
+        <PageHeader
+          title='Galleries'
+          meta={galleries.length ? `${galleries.length} galler${galleries.length === 1 ? 'y' : 'ies'}` : undefined}
+          actions={<Button label='New gallery' icon={<FiPlus size={14} />} onClick={openCreate} />}
+        />
 
         {/* Galleries grid */}
         {galleriesQuery.loading && !galleriesQuery.data ? (
@@ -188,29 +185,6 @@ const useStyles = mkUseStyles((t) => ({
   content: {
     gap: t.spacing.l,
     paddingBottom: t.spacing.m,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: t.spacing.m,
-  },
-  titleWrap: {
-    gap: 2,
-    minWidth: 0,
-  },
-  heading: {
-    fontSize: 22,
-    fontWeight: 700,
-  },
-  subheading: {
-    fontSize: 13,
-    color: t.colors.dark05,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    gap: t.spacing.s,
-    flexWrap: 'wrap',
   },
   block: {
     gap: t.spacing.m,

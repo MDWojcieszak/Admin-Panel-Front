@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FiImage, FiInfo, FiMapPin, FiRefreshCw } from 'react-icons/fi';
 import { GalleryLibraryItemResponse } from '~/api/api';
+import { PageHeader } from '~/components/PageHeader';
 import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
@@ -50,22 +51,21 @@ export const GalleryImagesView = () => {
   return (
     <div style={styles.scroll}>
       <div style={styles.content}>
-        <div style={styles.header}>
-          <div style={styles.titleWrap}>
-            <h2 style={styles.heading}>Images</h2>
-            <span style={styles.subheading}>Every gallery image and whether it’s used in a gallery.</span>
-          </div>
-          <div style={styles.headerActions}>
-            <Switch checked={unassignedOnly} onChange={setUnassignedOnly} label='Unassigned only' />
-            <Button
-              label='Refresh'
-              variant='secondary'
-              icon={<FiRefreshCw size={14} />}
-              onClick={() => load(0, true)}
-              loading={loading}
-            />
-          </div>
-        </div>
+        <PageHeader
+          title='Images'
+          actions={
+            <>
+              <Switch checked={unassignedOnly} onChange={setUnassignedOnly} label='Unassigned only' />
+              <Button
+                label='Refresh'
+                variant='secondary'
+                icon={<FiRefreshCw size={14} />}
+                onClick={() => load(0, true)}
+                loading={loading}
+              />
+            </>
+          }
+        />
 
         <ImageProcessingStrip onFinished={() => load(0, true)} />
 
@@ -151,30 +151,6 @@ const useStyles = mkUseStyles((t) => ({
   content: {
     gap: t.spacing.l,
     paddingBottom: t.spacing.m,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: t.spacing.m,
-  },
-  titleWrap: {
-    gap: 2,
-    minWidth: 0,
-  },
-  heading: {
-    fontSize: 22,
-    fontWeight: 700,
-  },
-  subheading: {
-    fontSize: 13,
-    color: t.colors.dark05,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.m,
-    flexWrap: 'wrap',
   },
   grid: {
     display: 'grid',

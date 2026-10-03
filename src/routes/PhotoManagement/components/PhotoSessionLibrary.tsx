@@ -10,6 +10,7 @@ import {
   PhotoEntryStatus,
   PhotoEntryType,
 } from '~/api/api';
+import { PageHeader } from '~/components/PageHeader';
 import { Button } from '~/components/Button';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
@@ -217,24 +218,21 @@ export const PhotoSessionLibrary = () => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={styles.titleBlock}>
-          <span style={styles.title}>Library</span>
-          <span style={styles.subtitle}>
-            {entries.length} session{entries.length === 1 ? '' : 's'} · {astroObjects.length} astro target
-            {astroObjects.length === 1 ? '' : 's'}
-          </span>
-        </div>
-        <div style={styles.headerRight}>
-          <MoonSummary />
+      <PageHeader
+        title='Library'
+        meta={`${entries.length} session${entries.length === 1 ? '' : 's'} · ${astroObjects.length} astro target${
+          astroObjects.length === 1 ? '' : 's'
+        }`}
+        aside={<MoonSummary />}
+        actions={
           <Button
             variant='secondary'
             label='New target'
             icon={<HiOutlineSparkles color={theme.colors.purple02} size={18} />}
             onClick={() => createAstroObjectModal.show()}
           />
-        </div>
-      </div>
+        }
+      />
 
       <PhotoLibraryToolbar
         astroTargets={astroObjects}
@@ -302,7 +300,7 @@ export const PhotoSessionLibrary = () => {
   );
 };
 
-const useStyles = mkUseStyles((t) => ({
+const useStyles = mkUseStyles(() => ({
   container: {
     height: '100%',
     minHeight: 0,
@@ -311,21 +309,6 @@ const useStyles = mkUseStyles((t) => ({
     gap: 16,
     boxSizing: 'border-box',
   },
-
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: t.spacing.m,
-    padding: `${t.spacing.sm}px ${t.spacing.m}px`,
-    borderRadius: t.borderRadius.large,
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.7),
-  },
-  titleBlock: { gap: 2 },
-  title: { fontSize: 22, fontWeight: 700, color: t.colors.white },
-  subtitle: { fontSize: 13, color: t.colors.dark05 },
-  headerRight: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: t.spacing.l },
 
   kanbanCard: {
     flex: 1,

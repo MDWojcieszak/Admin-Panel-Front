@@ -3,13 +3,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FiArrowLeft, FiEdit2, FiExternalLink, FiImage, FiInfo, FiMapPin, FiPlus, FiStar, FiTrash2 } from 'react-icons/fi';
 import {
-  GalleryDetailResponse,
-  GalleryImageItemResponse,
-  GalleryImageRole,
-  GalleryStatus,
-} from '~/api/api';
+  FiArrowLeft,
+  FiEdit2,
+  FiExternalLink,
+  FiImage,
+  FiInfo,
+  FiMapPin,
+  FiPlus,
+  FiStar,
+  FiTrash2,
+} from 'react-icons/fi';
+import { GalleryDetailResponse, GalleryImageItemResponse, GalleryImageRole, GalleryStatus } from '~/api/api';
+import { PageHeader } from '~/components/PageHeader';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
@@ -71,16 +77,16 @@ export const GalleryEditor = () => {
   const [showOnHome, setShowOnHome] = useState(true);
   const dragIndex = useRef<number | null>(null);
 
-  const galleryQuery = useAsync<GalleryDetailResponse>(
-    async () => {
-      if (!galleriesApi || !id) return undefined;
-      const { data } = await galleriesApi.galleriesControllerGetById({ id });
-      return data;
-    },
-    [galleriesApi, id],
-  );
+  const galleryQuery = useAsync<GalleryDetailResponse>(async () => {
+    if (!galleriesApi || !id) return undefined;
+    const { data } = await galleriesApi.galleriesControllerGetById({ id });
+    return data;
+  }, [galleriesApi, id]);
 
-  const detailsForm = useForm<DetailsValues>({ resolver: zodResolver(detailsSchema), defaultValues: { title: '', slug: '', description: '', homePreviewCount: '' } });
+  const detailsForm = useForm<DetailsValues>({
+    resolver: zodResolver(detailsSchema),
+    defaultValues: { title: '', slug: '', description: '', homePreviewCount: '' },
+  });
   // Backs the themed Select for status + per-image role (name `role_<imageId>`).
   const controlsForm = useForm<Record<string, string>>({ defaultValues: { status: 'DRAFT' } });
 
@@ -148,7 +154,9 @@ export const GalleryEditor = () => {
     if (!galleriesApi || !imageIds.length) return;
     const existing = itemsRef.current.map((it) => ({ imageId: it.imageId, role: it.role }));
     const have = new Set(existing.map((e) => e.imageId));
-    const added = imageIds.filter((imgId) => !have.has(imgId)).map((imgId) => ({ imageId: imgId, role: 'NORMAL' as GalleryImageRole }));
+    const added = imageIds
+      .filter((imgId) => !have.has(imgId))
+      .map((imgId) => ({ imageId: imgId, role: 'NORMAL' as GalleryImageRole }));
     if (!added.length) {
       toast('Those images are already in this gallery', 'info');
       return;
@@ -156,7 +164,9 @@ export const GalleryEditor = () => {
     try {
       const { data } = await galleriesApi.galleriesControllerSetItems({
         id,
-        setGalleryItemsDto: { items: [...existing, ...added].map((e, i) => ({ imageId: e.imageId, order: i, role: e.role })) },
+        setGalleryItemsDto: {
+          items: [...existing, ...added].map((e, i) => ({ imageId: e.imageId, order: i, role: e.role })),
+        },
       });
       applyGallery(data);
       toast(`Added ${added.length} image${added.length === 1 ? '' : 's'}`, 'success');
@@ -167,14 +177,21 @@ export const GalleryEditor = () => {
   };
 
   const mediaModal = useModal('gallery-media', MediaSelectorModal, { title: 'Add images' });
-  const openMedia = () => mediaModal.show({ currentImageIds: itemsRef.current.map((it) => it.imageId), onAdd: addImages });
+  const openMedia = () =>
+    mediaModal.show({ currentImageIds: itemsRef.current.map((it) => it.imageId), onAdd: addImages });
 
   const imageMetaModal = useModal('gallery-image-meta', EditImageModal, { title: 'Image details' });
   const openImageDetails = (imageId: string) => imageMetaModal.show({ imageId });
 
   const previewModal = useModal('gallery-image-preview', ImagePreviewModal, { title: 'Preview' });
   const openPreview = (item: GalleryImageItemResponse, initialInfo?: boolean) =>
-    previewModal.show({ imageId: item.imageId, coverUrl: item.coverUrl, initialInfo, localization: item.localization, exif: item.exif });
+    previewModal.show({
+      imageId: item.imageId,
+      coverUrl: item.coverUrl,
+      initialInfo,
+      localization: item.localization,
+      exif: item.exif,
+    });
 
   const saveDetails = async (data: DetailsValues) => {
     if (!galleriesApi) return;
@@ -210,7 +227,10 @@ export const GalleryEditor = () => {
   const setCover = async (imageId: string) => {
     if (!galleriesApi || !gallery) return;
     try {
-      const { data: g } = await galleriesApi.galleriesControllerUpdate({ id, updateGalleryDto: { coverImageId: imageId } });
+      const { data: g } = await galleriesApi.galleriesControllerUpdate({
+        id,
+        updateGalleryDto: { coverImageId: imageId },
+      });
       galleryQuery.setData({ ...gallery, ...g, items: gallery.items });
       toast('Cover updated', 'success');
     } catch (e) {
@@ -251,7 +271,12 @@ export const GalleryEditor = () => {
     return (
       <div style={styles.scroll}>
         <div style={styles.content}>
-          <Button label='Back' variant='secondary' icon={<FiArrowLeft size={14} />} onClick={() => navigate('/galleries')} />
+          <Button
+            label='Back'
+            variant='secondary'
+            icon={<FiArrowLeft size={14} />}
+            onClick={() => navigate('/galleries')}
+          />
           <EmptyState title='Gallery not found' description='It may have been deleted.' />
         </div>
       </div>
@@ -262,27 +287,40 @@ export const GalleryEditor = () => {
     <div style={styles.scroll}>
       <div style={styles.content}>
         {/* Header */}
-        <div style={styles.header}>
-          <Button label='Back' variant='secondary' icon={<FiArrowLeft size={14} />} onClick={() => navigate('/galleries')} />
-          <div style={styles.headerTitle}>
-            <span style={styles.title}>{gallery.title}</span>
-            <Badge label={STATUS_LABEL[gallery.status]} tone={STATUS_TONE[gallery.status]} />
-            {saving ? <span style={styles.savingHint}>Saving…</span> : null}
-          </div>
-          <div style={styles.headerActions}>
-            <Select
-              name='status'
-              label='Status'
+        <PageHeader
+          leading={
+            <Button
+              label='Back'
               variant='secondary'
-              options={STATUS_OPTIONS}
-              control={controlsForm.control}
-              onValueChange={(v) => setStatus(v as GalleryStatus)}
-              style={styles.statusSelect}
+              icon={<FiArrowLeft size={14} />}
+              onClick={() => navigate('/galleries')}
             />
-            {gallery.status !== 'PUBLISHED' ? <Button label='Publish' onClick={() => setStatus('PUBLISHED')} /> : null}
-            <Button label='Delete' variant='danger' icon={<FiTrash2 size={14} />} onClick={confirmDelete} />
-          </div>
-        </div>
+          }
+          title={gallery.title}
+          badges={
+            <>
+              <Badge label={STATUS_LABEL[gallery.status]} tone={STATUS_TONE[gallery.status]} />
+              {saving ? <span style={styles.savingHint}>Saving…</span> : null}
+            </>
+          }
+          actions={
+            <>
+              <Select
+                name='status'
+                label='Status'
+                variant='secondary'
+                options={STATUS_OPTIONS}
+                control={controlsForm.control}
+                onValueChange={(v) => setStatus(v as GalleryStatus)}
+                style={styles.statusSelect}
+              />
+              {gallery.status !== 'PUBLISHED' ? (
+                <Button label='Publish' onClick={() => setStatus('PUBLISHED')} />
+              ) : null}
+              <Button label='Delete' variant='danger' icon={<FiTrash2 size={14} />} onClick={confirmDelete} />
+            </>
+          }
+        />
 
         {/* Details */}
         <div style={styles.block}>
@@ -291,7 +329,13 @@ export const GalleryEditor = () => {
             <Input name='title' label='Title' description='Gallery title' type='text' control={detailsForm.control} />
             <Input name='slug' label='Slug' description='URL slug' type='text' control={detailsForm.control} />
           </div>
-          <TextArea name='description' label='Description' description='Optional description' control={detailsForm.control} rows={4} />
+          <TextArea
+            name='description'
+            label='Description'
+            description='Optional description'
+            control={detailsForm.control}
+            rows={4}
+          />
           <div style={styles.homeRow}>
             <Switch checked={showOnHome} onChange={setShowOnHome} label='Show this gallery on the home page' />
             <div style={styles.homeCountWrap}>
@@ -400,7 +444,11 @@ export const GalleryEditor = () => {
                         <div style={styles.editBtn} onClick={() => openImageDetails(it.imageId)} title='Edit details'>
                           <FiEdit2 size={13} />
                         </div>
-                        <div style={styles.removeBtn} onClick={() => removeItem(it.imageId)} title='Remove from gallery'>
+                        <div
+                          style={styles.removeBtn}
+                          onClick={() => removeItem(it.imageId)}
+                          title='Remove from gallery'
+                        >
                           <FiTrash2 size={13} />
                         </div>
                       </div>
@@ -436,35 +484,9 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.l,
     paddingBottom: t.spacing.xl,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.m,
-    flexWrap: 'wrap',
-  },
-  headerTitle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.s,
-    flex: 1,
-    minWidth: 0,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 700,
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
   savingHint: {
     fontSize: 12,
     color: t.colors.dark05,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.s,
-    flexWrap: 'wrap',
   },
   block: {
     gap: t.spacing.m,

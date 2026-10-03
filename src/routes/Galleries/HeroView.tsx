@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiImage, FiInfo, FiMapPin, FiPlus, FiX } from 'react-icons/fi';
-import {
-  PortfolioHeroResponse,
-  PortfolioImageResponse,
-  PortfolioSettingsResponse,
-} from '~/api/api';
+import { PortfolioHeroResponse, PortfolioImageResponse, PortfolioSettingsResponse } from '~/api/api';
+import { PageHeader } from '~/components/PageHeader';
 import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
 import { Input } from '~/components/Input';
@@ -206,21 +203,14 @@ export const HeroView = () => {
   return (
     <div style={styles.scroll}>
       <div style={styles.content}>
-        <div style={styles.titleWrap}>
-          <h2 style={styles.heading}>Home page</h2>
-          <span style={styles.subheading}>
-            Global display limits and the hand-picked “Selected Work” shown on the public home page.
-          </span>
-        </div>
+        <PageHeader title='Home page' />
 
         <HomeSettingsPanel />
 
         <div style={styles.sectionHeader}>
           <div style={styles.titleWrap}>
             <h3 style={styles.sectionTitle}>Selected Work</h3>
-            <span style={styles.subheading}>
-              Hand-picked, in order. Separate from the HERO role inside galleries.
-            </span>
+            <span style={styles.subheading}>Hand-picked, in order. Separate from the HERO role inside galleries.</span>
           </div>
           <div style={styles.headerActions}>
             {saving ? <span style={styles.savingHint}>Saving…</span> : null}
@@ -256,7 +246,12 @@ export const HeroView = () => {
                     style={styles.imageWrap}
                     draggable
                     onClick={() =>
-                      previewModal.show({ imageId: it.imageId, coverUrl: it.coverUrl, localization: it.localization, exif: it.exif })
+                      previewModal.show({
+                        imageId: it.imageId,
+                        coverUrl: it.coverUrl,
+                        localization: it.localization,
+                        exif: it.exif,
+                      })
                     }
                     onDragStart={() => (dragIndex.current = i)}
                     onDragEnd={() => {
@@ -276,7 +271,13 @@ export const HeroView = () => {
                       title='Details'
                       onClick={(e) => {
                         e.stopPropagation();
-                        previewModal.show({ imageId: it.imageId, coverUrl: it.coverUrl, initialInfo: true, localization: it.localization, exif: it.exif });
+                        previewModal.show({
+                          imageId: it.imageId,
+                          coverUrl: it.coverUrl,
+                          initialInfo: true,
+                          localization: it.localization,
+                          exif: it.exif,
+                        });
                       }}
                     >
                       <FiInfo size={13} />
@@ -306,7 +307,6 @@ const useStyles = mkUseStyles((t) => ({
   scroll: { height: '100%', minHeight: 0, width: '100%', overflowY: 'auto' },
   content: { gap: t.spacing.l, paddingBottom: t.spacing.m },
   titleWrap: { gap: 2, minWidth: 0 },
-  heading: { fontSize: 22, fontWeight: 700 },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
