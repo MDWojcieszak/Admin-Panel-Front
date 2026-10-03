@@ -235,12 +235,12 @@ const getMediaChip = (entry: PhotoEntryResponse): Chip | null => {
   }
 
   if (entry.uploadStatus === MediaStatus.Uploaded) {
-    return { key: 'uploaded', label: 'Material secured', icon: FiCheckCircle, ...TONES.green };
+    return { key: 'uploaded', label: 'Upload confirmed', icon: FiCheckCircle, ...TONES.green };
   }
 
   if (entry.status !== PhotoEntryStatus.Shot) return null;
 
-  return { key: 'unsecured', label: 'Material not secured', icon: FiAlertCircle, ...TONES.red, pulse: true };
+  return { key: 'unsecured', label: 'Waiting for upload', icon: FiAlertCircle, ...TONES.red, pulse: true };
 };
 
 const getSignalChips = (entry: PhotoEntryResponse): Chip[] => {

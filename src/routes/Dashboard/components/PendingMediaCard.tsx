@@ -77,7 +77,7 @@ export const PendingMediaCard = () => {
   return (
     <div style={styles.card}>
       <div style={styles.cardTitle}>
-        <MdSdCard size={16} /> Material still on the gear
+        <MdSdCard size={16} /> Waiting for upload
       </div>
 
       {unsecured.map((entry) => (

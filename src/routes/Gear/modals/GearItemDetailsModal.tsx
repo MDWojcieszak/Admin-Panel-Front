@@ -109,8 +109,8 @@ export const GearItemDetailsModal = (p: GearItemDetailsModalProps) => {
           label='Material'
           value={
             item.mediaSource === GearMediaSource.None
-              ? 'Holds nothing to secure'
-              : `Has to be secured · ${item.mediaSource}`
+              ? 'Holds nothing to upload'
+              : `Has to be uploaded · ${item.mediaSource}`
           }
         />
         {detail?.estimatedPrice != null ? <Fact label='Estimated price' value={formatAmount(detail.estimatedPrice)} /> : null}

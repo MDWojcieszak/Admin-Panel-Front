@@ -195,7 +195,7 @@ export const GearItemModal = (p: GearItemModalProps) => {
       {categoryMeta ? (
         <div style={styles.metaRow}>
           {categoryMeta.mediaSource === GearMediaSource.None ? (
-            <span style={styles.hint}>Holds no material to secure after a shoot.</span>
+            <span style={styles.hint}>Holds no material to upload after a shoot.</span>
           ) : (
             <>
               <Badge label={`Holds material · ${categoryMeta.mediaSource}`} tone='yellow' />

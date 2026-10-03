@@ -314,14 +314,14 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
             {phase === EntryGearPhase.Pack
               ? 'Packing list'
               : phase === EntryGearPhase.Secure
-                ? 'Secure the material'
+                ? 'Upload the material'
                 : 'Gear used'}
           </span>
           <span style={styles.headerHint}>
             {phase === EntryGearPhase.Pack
               ? 'Tick things off as they go in the bag.'
               : phase === EntryGearPhase.Secure
-                ? 'Only gear that was used and holds material needs securing.'
+                ? 'Only gear that was used and holds material needs uploading.'
                 : 'This session is closed — the list is read-only.'}
           </span>
         </div>
@@ -504,7 +504,7 @@ const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps)
           <span style={styles.itemName}>{gearItemLabel(item.gear)}</span>
           {item.warning === EntryGearWarning.Retired ? <Badge label='You sold this' tone='red' /> : null}
           {item.warning === EntryGearWarning.NotOwned ? <Badge label='Still on wishlist' tone='yellow' /> : null}
-          {item.needsSecuring ? <Badge label='Material waiting' tone='red' /> : null}
+          {item.needsSecuring ? <Badge label='Not uploaded yet' tone='red' /> : null}
         </div>
         <span style={styles.itemCategory}>
           {gearCategoryLabel(item.gear.category)}
@@ -529,7 +529,7 @@ const GearRow = ({ item, phase, isShot, busy, onPatch, onRemove }: GearRowProps)
                 no control at all rather than one that is permanently greyed out. */}
             {phase === EntryGearPhase.Secure && holdsMedia(item.gear.mediaSource) ? (
               <Toggle
-                label='Secured'
+                label='Uploaded'
                 checked={item.secured}
                 disabled={!canSecure}
                 onChange={(v) => onPatch(item.gear.id, { secured: v })}

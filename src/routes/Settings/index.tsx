@@ -186,7 +186,7 @@ export const Settings = () => {
       rows: [
         {
           key: 'photoMediaEmailNotifications',
-          label: 'Unsecured material (email)',
+          label: 'Waiting for upload (email)',
           description: 'Daily email while a card or roll from a shoot still has not been offloaded.',
         },
       ],
