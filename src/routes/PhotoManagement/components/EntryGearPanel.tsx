@@ -48,8 +48,9 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
   const [catalog, setCatalog] = useState<GearItemResponse[]>([]);
   const [kits, setKits] = useState<GearKitResponse[]>([]);
   const [search, setSearch] = useState('');
-  // After the shoot the list is a record, so its ticks and bins wait behind
-  // Edit. While packing they are the whole point and stay out in the open.
+  // Removing gear always waits behind Edit. While packing the Packed switch
+  // stays out in the open (ticking things off is the point); after the shoot
+  // the list is a record, so Used/Uploaded wait behind Edit too.
   const [editing, setEditing] = useState(false);
 
   // Declaration flow for an entry added after the fact: pick what was used, then confirm.
@@ -232,7 +233,8 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
   const isShot = gear.status === PhotoEntryStatus.Shot;
   const phase = gear.phase;
 
-  const interactive = phase === EntryGearPhase.Pack || (phase === EntryGearPhase.Secure && editing);
+  const canEdit = phase !== EntryGearPhase.None;
+  const canAdd = phase === EntryGearPhase.Pack || (phase === EntryGearPhase.Secure && editing);
 
   const listedItems = gear.items.filter((item) => item.listed);
   const otherItems = gear.items.filter((item) => !item.listed);
@@ -331,7 +333,7 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
         </div>
 
         <div style={styles.headerActions}>
-          {interactive ? (
+          {canAdd ? (
             <Button
               label={adding ? 'Done adding' : 'Add gear'}
               style={NO_WRAP}
@@ -340,7 +342,7 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
               onClick={openCatalog}
             />
           ) : null}
-          {phase === EntryGearPhase.Secure ? (
+          {canEdit ? (
             <Button
               label={editing ? 'Done' : 'Edit'}
               style={NO_WRAP}
@@ -359,7 +361,7 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
         <span style={styles.confirmedNote}>Gear confirmed {new Date(gear.gearConfirmedAt).toLocaleString()}</span>
       ) : null}
 
-      {adding && interactive ? (
+      {adding && canAdd ? (
         <div style={styles.addPanel}>
           {kits.length ? (
             <div style={styles.kitRow}>
@@ -432,7 +434,7 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
               key={item.gear.id}
               item={item}
               phase={phase}
-              interactive={interactive}
+              editing={editing}
               isShot={isShot}
               busy={busyId === item.gear.id}
               onPatch={patchItem}
@@ -448,7 +450,7 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
                   key={item.gear.id}
                   item={item}
                   phase={phase}
-                  interactive={interactive}
+                  editing={editing}
                   isShot={isShot}
                   busy={busyId === item.gear.id}
                   onPatch={patchItem}
@@ -500,15 +502,15 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
 type GearRowProps = {
   item: PhotoEntryGearItemResponse;
   phase: EntryGearPhase;
-  /** Ticks and the bin: always while packing, behind Edit after the shoot. */
-  interactive: boolean;
+  /** Shows the bin, and after the shoot the Used/Uploaded switches. */
+  editing: boolean;
   isShot: boolean;
   busy: boolean;
   onPatch: (gearItemId: string, dto: { packed?: boolean; used?: boolean; secured?: boolean }) => void;
   onRemove: (gearItemId: string) => void;
 };
 
-const GearRow = ({ item, phase, interactive, isShot, busy, onPatch, onRemove }: GearRowProps) => {
+const GearRow = ({ item, phase, editing, isShot, busy, onPatch, onRemove }: GearRowProps) => {
   const styles = useStyles();
   const theme = useTheme();
 
@@ -516,6 +518,7 @@ const GearRow = ({ item, phase, interactive, isShot, busy, onPatch, onRemove }: 
   // Mirrors the backend's own rules so a disabled box replaces a 400 round trip.
   const canMarkUsed = isShot && !isWishlist;
   const canSecure = canMarkUsed && holdsMedia(item.gear.mediaSource);
+  const isSecure = phase === EntryGearPhase.Secure;
 
   return (
     <div style={{ ...styles.row, opacity: busy ? 0.6 : 1 }}>
@@ -532,45 +535,41 @@ const GearRow = ({ item, phase, interactive, isShot, busy, onPatch, onRemove }: 
           {gearCategoryLabel(item.gear.category)}
           {item.secureAction ? ` · ${item.secureAction}` : ''}
         </span>
+      </div>
 
-        {/* Under the name rather than beside it: in a column this narrow the
-            toggles otherwise squeeze the name into three lines. */}
-        {interactive ? (
-          <div style={styles.toggleRow}>
-            {phase === EntryGearPhase.Pack ? (
-              <Switch label='Packed' checked={item.packed} onChange={(v) => onPatch(item.gear.id, { packed: v })} />
-            ) : null}
+      {/* State sits on the right in every mode — a switch where it can be set,
+          a badge where the list is only being read — so the name keeps its line. */}
+      <div style={styles.rowSide}>
+        {phase === EntryGearPhase.Pack ? (
+          <Switch label='Packed' checked={item.packed} onChange={(v) => onPatch(item.gear.id, { packed: v })} />
+        ) : null}
 
-            {/* Shown only where it can be set: before the shoot, or for something
-                still on the wishlist, a dead control just adds noise. */}
-            {canMarkUsed ? (
-              <Switch label='Used' checked={item.used} onChange={(v) => onPatch(item.gear.id, { used: v })} />
-            ) : null}
+        {/* Shown only where it can be set: before the shoot, or for something
+            still on the wishlist, a dead control just adds noise. */}
+        {isSecure && editing && canMarkUsed ? (
+          <Switch label='Used' checked={item.used} onChange={(v) => onPatch(item.gear.id, { used: v })} />
+        ) : null}
 
-            {/* Only gear that holds material has anything to secure. A lens gets
-                no control at all rather than one that is permanently greyed out. */}
-            {phase === EntryGearPhase.Secure && holdsMedia(item.gear.mediaSource) ? (
-              <Switch
-                label='Uploaded'
-                checked={item.secured}
-                disabled={!canSecure}
-                onChange={(v) => onPatch(item.gear.id, { secured: v })}
-              />
-            ) : null}
+        {/* Only gear that holds material has anything to upload. A lens gets
+            no control at all rather than one that is permanently greyed out. */}
+        {isSecure && editing && holdsMedia(item.gear.mediaSource) ? (
+          <Switch
+            label='Uploaded'
+            checked={item.secured}
+            disabled={!canSecure}
+            onChange={(v) => onPatch(item.gear.id, { secured: v })}
+          />
+        ) : null}
+
+        {isSecure && !editing ? (
+          <div style={styles.rowBadges}>
+            {item.used ? <Badge label='Used' tone='blue' /> : null}
+            {item.secured && holdsMedia(item.gear.mediaSource) ? <Badge label='Uploaded' tone='green' /> : null}
           </div>
         ) : null}
       </div>
 
-      {/* Read mode states what the ticks would say, so nothing is hidden by Edit;
-          on the right, where the bin sits in edit mode, the name keeps its line. */}
-      {!interactive && phase === EntryGearPhase.Secure && (item.used || item.secured) ? (
-        <div style={styles.stateBadges}>
-          {item.used ? <Badge label='Used' tone='blue' /> : null}
-          {item.secured && holdsMedia(item.gear.mediaSource) ? <Badge label='Uploaded' tone='green' /> : null}
-        </div>
-      ) : null}
-
-      {interactive ? (
+      {editing && phase !== EntryGearPhase.None ? (
         <div
           role='button'
           tabIndex={0}
@@ -601,7 +600,6 @@ const useStyles = mkUseStyles((t) => ({
     justifyContent: 'space-between',
     gap: t.spacing.m,
   },
-  stateBadges: { flexShrink: 0, alignItems: 'flex-end', gap: t.spacing.xs },
   headerActions: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap', justifyContent: 'flex-end' },
   headerText: {
     gap: 2,
@@ -665,13 +663,14 @@ const useStyles = mkUseStyles((t) => ({
     minWidth: 120,
     gap: 2,
   },
-  toggleRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    columnGap: t.spacing.m,
-    rowGap: t.spacing.xs,
-    marginTop: t.spacing.s,
+  // Fixed width, so the switch tracks line up from row to row whatever the label.
+  rowSide: {
+    flexShrink: 0,
+    width: 112,
+    alignItems: 'flex-start',
+    gap: t.spacing.s,
   },
+  rowBadges: { alignSelf: 'stretch', alignItems: 'flex-end', gap: t.spacing.xs },
   rowTitleLine: {
     flexDirection: 'row',
     alignItems: 'center',
