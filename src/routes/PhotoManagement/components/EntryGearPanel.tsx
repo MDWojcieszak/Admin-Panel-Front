@@ -523,7 +523,7 @@ const GearRow = ({ item, phase, interactive, isShot, busy, onPatch, onRemove }: 
       <div style={styles.rowText}>
         <div style={styles.rowTitleLine}>
           <span style={styles.itemName}>{gearItemLabel(item.gear)}</span>
-          {item.warning === EntryGearWarning.Retired ? <Badge label='You sold this' tone='red' /> : null}
+          {item.warning === EntryGearWarning.Retired ? <Badge label='No longer owned' tone='red' /> : null}
           {item.warning === EntryGearWarning.NotOwned ? <Badge label='Still on wishlist' tone='yellow' /> : null}
           {item.needsSecuring ? <Badge label='Not uploaded yet' tone='red' /> : null}
         </div>
