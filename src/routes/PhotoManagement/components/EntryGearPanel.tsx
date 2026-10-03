@@ -29,9 +29,6 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 /** Keeps a button's label on one line when its column is narrow. */
 const NO_WRAP = { flexShrink: 0, whiteSpace: 'nowrap' } as const;
 
-/** Icon-only state badge: square-ish padding instead of room for a label. */
-const ICON_BADGE = { padding: '4px 6px' } as const;
-
 type EntryGearPanelProps = {
   entryId: string;
   /** Lets the parent refresh the entry, whose gearConfirmedAt and uploadStatus are derived from this list. */
@@ -590,15 +587,11 @@ const GearRow = ({ item, phase, editing, isShot, busy, onPatch, onRemove }: Gear
 
         {isSecure && !editing ? (
           <div style={styles.rowBadges}>
-            {item.used ? (
-              <span title='Used' aria-label='Used'>
-                <Badge label={null} tone='blue' icon={<TbCameraCheck size={14} />} style={ICON_BADGE} />
-              </span>
-            ) : null}
+            {/* Badges keep the word next to the icon: reading the list is where
+                the icons are learnt, so the switches can go without it. */}
+            {item.used ? <Badge label='Used' tone='blue' icon={<TbCameraCheck size={13} />} /> : null}
             {item.secured && holdsMedia(item.gear.mediaSource) ? (
-              <span title='Uploaded' aria-label='Uploaded'>
-                <Badge label={null} tone='green' icon={<TbCloudUpload size={14} />} style={ICON_BADGE} />
-              </span>
+              <Badge label='Uploaded' tone='green' icon={<TbCloudUpload size={13} />} />
             ) : null}
           </div>
         ) : null}
@@ -701,11 +694,11 @@ const useStyles = mkUseStyles((t) => ({
   // Fixed width, so the switch tracks line up from row to row whatever the label.
   rowSide: {
     flexShrink: 0,
-    width: 72,
+    minWidth: 72,
     alignItems: 'flex-start',
     gap: t.spacing.s,
   },
-  rowBadges: { alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'flex-end', gap: t.spacing.xs },
+  rowBadges: { alignSelf: 'stretch', alignItems: 'flex-end', gap: t.spacing.xs },
   rowTitleLine: {
     flexDirection: 'row',
     alignItems: 'center',
