@@ -12,9 +12,11 @@ type TableProps<T> = {
   table: ReactTable<T>;
   hidePagination?: boolean;
   emptyState?: { icon?: ReactNode; title?: string; description?: string };
+  /** Makes every row clickable (pointer cursor) and reports the row's data. */
+  onRowClick?: (row: T) => void;
 };
 
-export const Table = <T extends object>({ table, hidePagination, emptyState }: TableProps<T>) => {
+export const Table = <T extends object>({ table, hidePagination, emptyState, onRowClick }: TableProps<T>) => {
   const styles = useStyles();
   const theme = useTheme();
 
@@ -60,10 +62,12 @@ export const Table = <T extends object>({ table, hidePagination, emptyState }: T
                   key={row.id}
                   style={{
                     ...styles.row,
+                    cursor: onRowClick ? 'pointer' : undefined,
                     backgroundColor:
                       rowIndex % 2 ? theme.colors.white + theme.colorOpacity(0.03) : theme.colors.white + theme.colorOpacity(0.012),
                   }}
                   whileHover={{ backgroundColor: theme.colors.blue + theme.colorOpacity(0.13) }}
+                  onClick={onRowClick ? () => onRowClick(row.original) : undefined}
                 >
                   {cells.map((cell, i) => (
                     <div key={cell.id} style={cellStyle(cell.column.getSize(), i === cells.length - 1)}>
