@@ -1,5 +1,6 @@
 import { motion, useMotionValue } from 'framer-motion';
 import { CSSProperties, useMemo, useRef } from 'react';
+import { FiMapPin } from 'react-icons/fi';
 import { PhotoEntryResponse } from '~/api/api';
 import {
   EntryChip,
@@ -127,6 +128,20 @@ export const PhotoEntryKanbanCard = ({
           </>
         ) : null}
       </div>
+
+      {entry.location ? (
+        <div
+          style={{ ...ROW, ...styles.cardMeta, gap: 4, marginTop: 2, minWidth: 0 }}
+          title={`${entry.location.latitude.toFixed(4)}, ${entry.location.longitude.toFixed(4)} · ${
+            entry.location.timezone
+          }`}
+        >
+          <FiMapPin size={12} style={{ flexShrink: 0 }} />
+          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {entry.location.name || `${entry.location.latitude.toFixed(3)}, ${entry.location.longitude.toFixed(3)}`}
+          </span>
+        </div>
+      ) : null}
 
       {statusChips.length ? (
         <div style={{ ...ROW, gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
