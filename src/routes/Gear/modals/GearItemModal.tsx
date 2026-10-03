@@ -21,7 +21,7 @@ import { TextArea } from '~/components/TextArea';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
-import { InlineImagePicker } from '~/routes/Galleries/components/InlineImagePicker';
+import { GearImagePicker } from '~/routes/Gear/components/GearImagePicker';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { GEAR_CATEGORY_GROUPS, OWNERSHIP_LABELS, gearCategoryIcon, gearCategoryLabel } from '~/utils/gearCategory';
 import { mkUseStyles } from '~/utils/theme';
@@ -279,7 +279,7 @@ export const GearItemModal = (p: GearItemModalProps) => {
         control={form.control}
       />
 
-      <InlineImagePicker
+      <GearImagePicker
         label='Image (optional)'
         coverUrl={coverUrl}
         onChange={(id, url) => {

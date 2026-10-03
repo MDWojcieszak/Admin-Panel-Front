@@ -10,7 +10,7 @@ import { TextArea } from '~/components/TextArea';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
-import { InlineImagePicker } from '~/routes/Galleries/components/InlineImagePicker';
+import { GearImagePicker } from '~/routes/Gear/components/GearImagePicker';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles } from '~/utils/theme';
 
@@ -80,7 +80,7 @@ export const GearSystemModal = (p: GearSystemModalProps) => {
       <Input name='name' label='Name' description='e.g. Fujifilm X' type='text' control={form.control} />
       <Input name='label' label='Label' description='e.g. APS-C (optional)' type='text' control={form.control} />
       <TextArea name='description' label='Description' description='Why this system (optional)' control={form.control} rows={3} />
-      <InlineImagePicker
+      <GearImagePicker
         label='System image (optional)'
         coverUrl={coverUrl}
         onChange={(id, url) => {

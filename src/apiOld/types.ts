@@ -7,6 +7,7 @@ export enum ApiTag {
   GALLERIES = 'galleries',
   SESSION = 'session',
   FILE = 'file',
+  GEAR = 'gear',
   SERVER = 'server',
   SERVER_COMMANDS = 'server/commands',
 }
