@@ -20,6 +20,7 @@ import { Badge, BadgeTone } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { DateInput } from '~/components/DateInput';
 import { Input } from '~/components/Input';
+import { useSidePanelReady } from '~/components/Modal';
 import { Scrollbar } from '~/components/Scrollbar';
 import { EntryCommentsPanel } from '~/routes/PhotoManagement/components/EntryCommentsPanel';
 import { EntryGearPanel } from '~/routes/PhotoManagement/components/EntryGearPanel';
@@ -152,6 +153,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   // Publishing takes the card's body over rather than opening a modal: only one
   // modal shows at a time, and this card already is one.
   const [publishing, setPublishing] = useState(false);
+  const panelReady = useSidePanelReady();
   const canPublish =
     entry.foldersCreated && (entry.type === PhotoEntryType.General || entry.type === PhotoEntryType.Work);
   const uploadStatus = entry.uploadStatus;
@@ -627,7 +629,19 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
             ) : null}
           </div>
 
-          {publishing ? (
+          {/* The body waits for the slide-in to finish: its panels fetch and its
+              map starts WebGL, and doing that mid-slide made it stutter. */}
+          {!panelReady ? (
+            <div style={stacked ? styles.bodyStacked : styles.body}>
+              <div style={styles.bodyColumn}>
+                <div style={{ ...styles.skeleton, height: 220 }} />
+                <div style={{ ...styles.skeleton, height: 160 }} />
+              </div>
+              <div style={styles.bodyColumn}>
+                <div style={{ ...styles.skeleton, height: 300 }} />
+              </div>
+            </div>
+          ) : publishing ? (
             <EntryPublishPanel entryId={entry.id} onClose={() => setPublishing(false)} />
           ) : (
             <div style={stacked ? styles.bodyStacked : styles.body}>
@@ -877,6 +891,11 @@ const useStyles = mkUseStyles((t) => ({
     alignItems: 'start',
   },
   bodyStacked: { gap: t.spacing.m },
+  skeleton: {
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
+    border: `1px solid ${t.colors.gray01 + t.colorOpacity(0.5)}`,
+  },
   bodyColumn: { gap: t.spacing.m, minWidth: 0 },
   section: {
     gap: t.spacing.m,
