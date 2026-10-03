@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import { FiImage } from 'react-icons/fi';
+import { useRef, useState } from 'react';
+import { FiImage, FiUpload } from 'react-icons/fi';
 import { GalleryLibraryResponse } from '~/api/api';
+import { FileService } from '~/apiOld/File';
 import { Button } from '~/components/Button';
 import { Loader } from '~/components/Loader';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
+import { useToast } from '~/hooks/useToast';
 import { imgUrl } from '~/routes/Galleries/utils';
+import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type InlineImagePickerProps = {
@@ -14,12 +17,20 @@ type InlineImagePickerProps = {
   onChange: (imageId: string | null, coverUrl: string | null) => void;
 };
 
-/** Compact single-image picker (from the gallery library) — inline so it works inside a modal. */
+/**
+ * Compact single-image picker — inline so it works inside a modal. Images come
+ * from the gallery library, or are uploaded straight into it from here: gear
+ * and systems may only point at gallery images, so without the upload a photo
+ * of a lens meant a detour through Galleries first.
+ */
 export const InlineImagePicker = ({ label = 'Image', coverUrl, onChange }: InlineImagePickerProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const { galleriesApi } = useApi();
+  const toast = useToast();
   const [open, setOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const libraryQuery = useAsync<GalleryLibraryResponse>(
     async () => {
@@ -37,6 +48,28 @@ export const InlineImagePicker = ({ label = 'Image', coverUrl, onChange }: Inlin
     if (next && !libraryQuery.data) libraryQuery.reload();
   };
 
+  const upload = async (files: FileList | null) => {
+    const file = files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      // The multi-file endpoint is the one that reports the new image ids; one
+      // file through it is the simplest way to get the id back.
+      const result = await FileService.uploadImages([file]);
+      const image = result.images[0];
+      if (!image) throw new Error('Upload failed');
+      onChange(image.id, `/image/cover?id=${image.id}`);
+      setOpen(false);
+      // Keep the library fresh for the next time the grid opens.
+      if (libraryQuery.data) libraryQuery.reload();
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'Could not upload the image.'), 'error');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const current = imgUrl(coverUrl);
   const images = libraryQuery.data?.images ?? [];
 
@@ -47,7 +80,21 @@ export const InlineImagePicker = ({ label = 'Image', coverUrl, onChange }: Inlin
         <div style={styles.thumb}>
           {current ? <img src={current} alt='' style={styles.thumbImg} /> : <FiImage size={18} color={theme.colors.dark05} />}
         </div>
-        <Button label={coverUrl ? 'Change' : 'Choose image'} variant='secondary' onClick={toggle} />
+        <Button label={coverUrl ? 'Change' : 'From library'} variant='secondary' onClick={toggle} />
+        <Button
+          label='Upload'
+          variant='secondary'
+          icon={<FiUpload size={14} />}
+          loading={uploading}
+          onClick={() => fileInputRef.current?.click()}
+        />
+        <input
+          ref={fileInputRef}
+          type='file'
+          accept='image/*'
+          style={{ display: 'none' }}
+          onChange={(e) => upload(e.target.files)}
+        />
         {coverUrl ? <Button label='Remove' variant='secondary' onClick={() => onChange(null, null)} /> : null}
       </div>
 
@@ -59,7 +106,7 @@ export const InlineImagePicker = ({ label = 'Image', coverUrl, onChange }: Inlin
             </div>
           ) : images.length === 0 ? (
             <div style={styles.stateBox}>
-              <span style={styles.muted}>No images in the library.</span>
+              <span style={styles.muted}>No images in the library yet — use Upload to add one.</span>
             </div>
           ) : (
             <div style={styles.grid}>
@@ -89,7 +136,7 @@ export const InlineImagePicker = ({ label = 'Image', coverUrl, onChange }: Inlin
 const useStyles = mkUseStyles((t) => ({
   container: { gap: t.spacing.xs },
   label: { fontSize: 12, color: t.colors.blue04 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
+  row: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap', whiteSpace: 'nowrap' },
   thumb: {
     width: 48,
     height: 48,
