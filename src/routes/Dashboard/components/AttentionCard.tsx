@@ -3,7 +3,6 @@ import { ReactNode, useState } from 'react';
 import { IconType } from 'react-icons';
 import {
   FiAlertTriangle,
-  FiCheckCircle,
   FiCheckSquare,
   FiChevronRight,
   FiExternalLink,
@@ -169,7 +168,6 @@ export const AttentionCard = () => {
   };
 
   const withItems = CATEGORIES.filter((category) => counts[category.key]);
-  const clear = CATEGORIES.filter((category) => !counts[category.key]);
 
   return (
     <div style={styles.card}>
@@ -258,13 +256,6 @@ export const AttentionCard = () => {
           );
         })}
       </div>
-
-      {clear.length ? (
-        <div style={styles.clear}>
-          <FiCheckCircle size={14} color={theme.colors.lightGreen} />
-          All clear: {clear.map((category) => category.label).join(', ')}
-        </div>
-      ) : null}
     </div>
   );
 };
@@ -362,13 +353,5 @@ const useStyles = mkUseStyles((t) => ({
     fontSize: 12,
     fontWeight: 600,
     color: t.colors.blue04,
-  },
-  clear: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    fontSize: 12,
-    color: t.colors.dark05,
   },
 }));
