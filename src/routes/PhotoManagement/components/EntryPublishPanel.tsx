@@ -2,10 +2,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FiAlertTriangle,
   FiCheck,
+  FiChevronDown,
   FiChevronLeft,
   FiChevronRight,
   FiExternalLink,
+  FiImage,
+  FiPlus,
   FiRefreshCw,
+  FiSearch,
+  FiUploadCloud,
   FiX,
 } from 'react-icons/fi';
 import {
@@ -15,11 +20,13 @@ import {
   GalleryResponse,
   PublishExportsDto,
 } from '~/api/api';
+import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
+import { STATUS_TONE, imgUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -34,6 +41,17 @@ const API_BASE = import.meta.env.VITE_API_URL as string;
 const signed = (path?: string | null) => (path ? `${API_BASE}${path}` : undefined);
 
 const POLL_MS = 2500;
+
+type FilterKey = 'all' | 'new' | 'changed' | 'failed' | 'published' | 'unpublishable';
+
+const FILTERS: { key: FilterKey; label: string; match: (file: ExportFileResponse) => boolean }[] = [
+  { key: 'all', label: 'All', match: () => true },
+  { key: 'new', label: 'New', match: (f) => f.publishable && f.status === ExportFileStatus.New },
+  { key: 'changed', label: 'Changed', match: (f) => f.status === ExportFileStatus.Changed },
+  { key: 'failed', label: 'Failed', match: (f) => f.status === ExportFileStatus.Failed },
+  { key: 'published', label: 'In a gallery', match: (f) => f.status === ExportFileStatus.Published },
+  { key: 'unpublishable', label: 'Cannot publish', match: (f) => !f.publishable },
+];
 
 /** Selectable: rendered files that are not already in a gallery unchanged, nor in flight. */
 const isSelectable = (file: ExportFileResponse) =>
@@ -105,7 +123,13 @@ export const EntryPublishPanel = ({ entryId, entryName, onClose }: EntryPublishP
   }, [scan, load]);
 
   const files = scan?.files ?? [];
-  const selectableKeys = useMemo(() => files.filter(isSelectable).map((f) => f.key), [files]);
+  const [filter, setFilter] = useState<FilterKey>('all');
+  const visibleFiles = useMemo(
+    () => files.filter(FILTERS.find((item) => item.key === filter)?.match ?? (() => true)),
+    [files, filter],
+  );
+  const visibleSelectable = useMemo(() => visibleFiles.filter(isSelectable).map((f) => f.key), [visibleFiles]);
+  const allVisibleSelected = visibleSelectable.length > 0 && visibleSelectable.every((key) => selected.includes(key));
 
   const toggle = (key: string) =>
     setSelected((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
@@ -173,46 +197,41 @@ export const EntryPublishPanel = ({ entryId, entryName, onClose }: EntryPublishP
       ) : (
         <>
           <div style={styles.toolbar}>
-            <Button
-              label={selected.length === selectableKeys.length && selected.length ? 'Clear selection' : 'Select all'}
-              variant='secondary'
-              disabled={!selectableKeys.length}
-              onClick={() => setSelected(selected.length === selectableKeys.length ? [] : selectableKeys)}
-            />
-            <span style={styles.muted}>
-              {selected.length
-                ? `${selected.length} selected — gallery order follows the numbers`
-                : 'Pick photos to publish'}
-            </span>
-
-            <div style={styles.target}>
-              <select value={target} onChange={(e) => setTarget(e.target.value)} style={styles.select}>
-                <option value='new'>New gallery (draft)…</option>
-                {galleries.map((gallery) => (
-                  <option key={gallery.id} value={gallery.id}>
-                    {gallery.title}
-                  </option>
-                ))}
-              </select>
-              {target === 'new' ? (
-                <input
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder='Gallery title'
-                  style={styles.titleInput}
-                />
-              ) : null}
-              <Button
-                label={selected.length ? `Publish ${selected.length}` : 'Publish'}
-                disabled={!selected.length}
-                loading={publishing}
-                onClick={publish}
-              />
+            <div style={styles.filters}>
+              {FILTERS.map((item) => {
+                const count = files.filter(item.match).length;
+                if (item.key !== 'all' && !count) return null;
+                return (
+                  <button
+                    key={item.key}
+                    type='button'
+                    aria-pressed={filter === item.key}
+                    onClick={() => setFilter(item.key)}
+                    style={{ ...styles.chip, ...(filter === item.key ? styles.chipOn : {}) }}
+                  >
+                    {item.label} <span style={styles.chipCount}>{count}</span>
+                  </button>
+                );
+              })}
             </div>
+            <button
+              type='button'
+              style={styles.linkButton}
+              disabled={!visibleSelectable.length}
+              onClick={() =>
+                setSelected((prev) =>
+                  allVisibleSelected
+                    ? prev.filter((key) => !visibleSelectable.includes(key))
+                    : [...prev, ...visibleSelectable.filter((key) => !prev.includes(key))],
+                )
+              }
+            >
+              {allVisibleSelected ? 'Deselect these' : 'Select all shown'}
+            </button>
           </div>
 
           <div style={styles.grid}>
-            {files.map((file, index) => {
+            {visibleFiles.map((file, index) => {
               const order = selected.indexOf(file.key);
               const selectable = isSelectable(file);
               return (
@@ -251,12 +270,45 @@ export const EntryPublishPanel = ({ entryId, entryName, onClose }: EntryPublishP
               );
             })}
           </div>
+
+          {/* Stays in reach at the bottom of the card while scrolling the grid. */}
+          <div style={styles.actionBar}>
+            <div style={styles.selectionInfo}>
+              <span style={styles.selectionCount}>
+                {selected.length ? `${selected.length} selected` : 'Nothing selected'}
+              </span>
+              <span style={styles.muted}>
+                {selected.length ? 'Gallery order follows the numbers' : 'Tick photos to publish them'}
+              </span>
+            </div>
+            {selected.length ? (
+              <button type='button' style={styles.linkButton} onClick={() => setSelected([])}>
+                Clear
+              </button>
+            ) : null}
+            <div style={styles.actionRight}>
+              <GalleryPicker
+                galleries={galleries}
+                target={target}
+                newTitle={newTitle}
+                onTarget={setTarget}
+                onNewTitle={setNewTitle}
+              />
+              <Button
+                label={selected.length ? `Publish ${selected.length}` : 'Publish'}
+                icon={<FiUploadCloud size={14} />}
+                disabled={!selected.length || (target === 'new' && !newTitle.trim())}
+                loading={publishing}
+                onClick={publish}
+              />
+            </div>
+          </div>
         </>
       )}
 
-      {lightbox !== null && files[lightbox] ? (
+      {lightbox !== null && visibleFiles[lightbox] ? (
         <Lightbox
-          files={files}
+          files={visibleFiles}
           index={lightbox}
           onIndex={setLightbox}
           onClose={() => setLightbox(null)}
@@ -382,6 +434,146 @@ const Lightbox = ({
   );
 };
 
+/**
+ * Where the selection goes: a new draft gallery named after the session, or an
+ * existing gallery picked by its cover. Opens upwards from the action bar.
+ */
+const GalleryPicker = ({
+  galleries,
+  target,
+  newTitle,
+  onTarget,
+  onNewTitle,
+}: {
+  galleries: GalleryResponse[];
+  target: string;
+  newTitle: string;
+  onTarget: (target: string) => void;
+  onNewTitle: (title: string) => void;
+}) => {
+  const styles = useStyles();
+  const theme = useTheme();
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: MouseEvent) => {
+      if (!ref.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', escape);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', escape);
+    };
+  }, [open]);
+
+  const selected = galleries.find((gallery) => gallery.id === target);
+  const visible = galleries.filter((gallery) => gallery.title.toLowerCase().includes(query.trim().toLowerCase()));
+
+  return (
+    <div ref={ref} style={styles.pickerWrap}>
+      <button type='button' style={styles.pickerButton} onClick={() => setOpen((v) => !v)}>
+        <span style={styles.pickerThumb}>
+          {selected && imgUrl(selected.coverUrl) ? (
+            <img src={imgUrl(selected.coverUrl)} alt='' style={styles.pickerThumbImg} />
+          ) : selected ? (
+            <FiImage size={14} color={theme.colors.dark05} />
+          ) : (
+            <FiPlus size={14} color={theme.colors.blue} />
+          )}
+        </span>
+        <span style={styles.pickerText}>
+          <span style={styles.pickerLabel}>Publish to</span>
+          <span style={styles.pickerValue}>
+            {selected ? selected.title : `New gallery · ${newTitle || 'untitled'}`}
+          </span>
+        </span>
+        <FiChevronDown size={16} color={theme.colors.dark05} />
+      </button>
+
+      {open ? (
+        <div style={styles.pickerMenu}>
+          <div
+            style={{ ...styles.newOption, ...(target === 'new' ? styles.optionOn : {}) }}
+            onClick={() => onTarget('new')}
+          >
+            <span style={styles.optionThumb}>
+              <FiPlus size={16} color={theme.colors.blue} />
+            </span>
+            <div style={styles.newOptionBody}>
+              <span style={styles.optionTitle}>New gallery</span>
+              <span style={styles.muted}>Created as a draft — publishing photos does not publish the page.</span>
+              {target === 'new' ? (
+                <input
+                  autoFocus
+                  value={newTitle}
+                  onChange={(e) => onNewTitle(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  placeholder='Gallery title'
+                  style={styles.menuInput}
+                />
+              ) : null}
+            </div>
+          </div>
+
+          {galleries.length ? (
+            <>
+              <span style={styles.menuSection}>Existing galleries</span>
+              {galleries.length > 6 ? (
+                <label style={styles.menuSearch}>
+                  <FiSearch size={13} />
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder='Search galleries…'
+                    style={styles.menuSearchInput}
+                  />
+                </label>
+              ) : null}
+              <div style={styles.optionList}>
+                {visible.map((gallery) => (
+                  <button
+                    key={gallery.id}
+                    type='button'
+                    style={{ ...styles.option, ...(gallery.id === target ? styles.optionOn : {}) }}
+                    onClick={() => {
+                      onTarget(gallery.id);
+                      setOpen(false);
+                    }}
+                  >
+                    <span style={styles.optionThumb}>
+                      {imgUrl(gallery.coverUrl) ? (
+                        <img src={imgUrl(gallery.coverUrl)} alt='' style={styles.pickerThumbImg} />
+                      ) : (
+                        <FiImage size={14} color={theme.colors.dark05} />
+                      )}
+                    </span>
+                    <span style={styles.optionText}>
+                      <span style={styles.optionTitle}>{gallery.title}</span>
+                      <span style={styles.muted}>
+                        {gallery.imageCount} photo{gallery.imageCount === 1 ? '' : 's'}
+                      </span>
+                    </span>
+                    <Badge label={gallery.status.toLowerCase()} tone={STATUS_TONE[gallery.status]} />
+                    {gallery.id === target ? <FiCheck size={14} color={theme.colors.blue} /> : null}
+                  </button>
+                ))}
+                {!visible.length ? <span style={styles.muted}>No gallery matches.</span> : null}
+              </div>
+            </>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
 const useStyles = mkUseStyles((t) => ({
   container: {
     gap: t.spacing.m,
@@ -401,28 +593,195 @@ const useStyles = mkUseStyles((t) => ({
   headerActions: { flexDirection: 'row', gap: t.spacing.s },
   muted: { fontSize: 12, color: t.colors.dark05 },
   error: { fontSize: 13, color: t.colors.red },
-  toolbar: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m, flexWrap: 'wrap' },
-  target: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, marginLeft: 'auto', flexWrap: 'wrap' },
-  select: {
-    height: 44,
-    padding: `0 ${t.spacing.s}px`,
-    borderRadius: t.borderRadius.default,
-    border: 'none',
-    color: t.colors.white,
-    fontSize: 14,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.7),
+  toolbar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: t.spacing.m,
+    flexWrap: 'wrap',
   },
-  titleInput: {
-    height: 44,
-    width: 220,
+  filters: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs },
+  chip: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 30,
+    padding: '0 12px',
+    borderRadius: 999,
+    fontSize: 13,
+    fontWeight: 600,
+    whiteSpace: 'nowrap',
+    cursor: 'pointer',
+    color: t.colors.dark05,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: t.colors.dark04 + t.colorOpacity(0.5),
+  },
+  chipOn: { color: t.colors.white, borderColor: t.colors.blue, backgroundColor: t.colors.blue + t.colorOpacity(0.18) },
+  chipCount: { fontSize: 11, fontWeight: 700, opacity: 0.7 },
+  linkButton: {
+    padding: 0,
+    border: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
+    fontSize: 13,
+    fontWeight: 600,
+    color: t.colors.blue04,
+  },
+  actionBar: {
+    position: 'sticky',
+    bottom: 0,
+    zIndex: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.m,
+    flexWrap: 'wrap',
+    padding: `${t.spacing.s}px ${t.spacing.m}px`,
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray03,
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.08)}`,
+    boxShadow: '0 -8px 24px rgba(0, 0, 0, 0.35)',
+  },
+  selectionInfo: { gap: 2 },
+  selectionCount: { fontSize: 14, fontWeight: 700, color: t.colors.white },
+  actionRight: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, marginLeft: 'auto', flexWrap: 'wrap' },
+  pickerWrap: { position: 'relative' },
+  pickerButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    minWidth: 260,
+    maxWidth: 360,
+    height: 48,
     padding: `0 ${t.spacing.s}px`,
+    border: 'none',
     borderRadius: t.borderRadius.default,
+    cursor: 'pointer',
+    textAlign: 'left',
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.8),
+  },
+  pickerThumb: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 32,
+    height: 32,
+    flexShrink: 0,
+    borderRadius: 6,
+    overflow: 'hidden',
+    backgroundColor: t.colors.gray01 + t.colorOpacity(0.6),
+  },
+  pickerThumbImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  pickerText: { display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, gap: 1 },
+  pickerLabel: {
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    color: t.colors.dark05,
+  },
+  pickerValue: {
+    fontSize: 14,
+    fontWeight: 600,
+    color: t.colors.white,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  pickerMenu: {
+    position: 'absolute',
+    bottom: 56,
+    right: 0,
+    zIndex: 30,
+    width: 380,
+    maxHeight: 420,
+    overflowY: 'auto',
+    gap: t.spacing.xs,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray04,
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.08)}`,
+    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
+  },
+  newOption: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: t.spacing.s,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    cursor: 'pointer',
+  },
+  newOptionBody: { flex: 1, minWidth: 0, gap: 4 },
+  optionOn: { backgroundColor: t.colors.blue + t.colorOpacity(0.14) },
+  optionThumb: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    flexShrink: 0,
+    borderRadius: 6,
+    overflow: 'hidden',
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.8),
+  },
+  optionTitle: { fontSize: 14, fontWeight: 600, color: t.colors.white },
+  menuInput: {
+    height: 36,
+    marginTop: 4,
+    padding: `0 ${t.spacing.s}px`,
     border: 'none',
     outline: 'none',
+    borderRadius: t.borderRadius.default,
     color: t.colors.white,
     fontSize: 14,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.7),
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.8),
   },
+  menuSection: {
+    padding: `${t.spacing.s}px ${t.spacing.s}px 2px`,
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    color: t.colors.dark05,
+  },
+  menuSearch: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    height: 34,
+    margin: `0 ${t.spacing.xs}px`,
+    padding: `0 ${t.spacing.s}px`,
+    borderRadius: t.borderRadius.default,
+    color: t.colors.dark05,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+  },
+  menuSearchInput: {
+    flex: 1,
+    minWidth: 0,
+    border: 'none',
+    outline: 'none',
+    background: 'transparent',
+    color: t.colors.white,
+    fontSize: 13,
+  },
+  optionList: { gap: 2 },
+  option: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    padding: 6,
+    border: 'none',
+    borderRadius: t.borderRadius.default,
+    textAlign: 'left',
+    cursor: 'pointer',
+    backgroundColor: 'transparent',
+  },
+  optionText: { display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, gap: 1 },
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
