@@ -3,13 +3,25 @@ import { useForm } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
 import { HiOutlineCamera, HiOutlineMagnifyingGlass } from 'react-icons/hi2';
 import { PhotoEntryPostStage, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
+import { FiCalendar, FiColumns, FiList } from 'react-icons/fi';
 import { Button } from '~/components/Button';
+import { SegmentedTabs } from '~/components/SegmentedTabs';
 import { Select } from '~/components/Select';
 import { mkUseStyles } from '~/utils/theme';
 import { colors } from '~/utils/theme/colors';
 import { IoMdClose } from 'react-icons/io';
 
+export type PhotoLibraryView = 'board' | 'list' | 'calendar';
+
+const VIEW_ITEMS = [
+  { label: 'Board', value: 'board', icon: <FiColumns size={14} /> },
+  { label: 'List', value: 'list', icon: <FiList size={14} /> },
+  { label: 'Calendar', value: 'calendar', icon: <FiCalendar size={14} /> },
+];
+
 type PhotoLibraryToolbarProps = {
+  view: PhotoLibraryView;
+  onViewChange: (view: PhotoLibraryView) => void;
   search: string;
   status?: PhotoEntryStatus;
   postStage?: PhotoEntryPostStage;
@@ -59,6 +71,8 @@ const getPostStageLabel = (postStage: PhotoEntryPostStage) => {
 const getTypeLabel = (type: PhotoEntryType) => type;
 
 export const PhotoLibraryToolbar = ({
+  view,
+  onViewChange,
   search,
   status,
   postStage,
@@ -215,6 +229,12 @@ export const PhotoLibraryToolbar = ({
       </div>
 
       <div style={styles.actions}>
+        <SegmentedTabs
+          items={VIEW_ITEMS}
+          selected={view}
+          handleSelect={(value) => onViewChange(value as PhotoLibraryView)}
+          layoutId='photo-library-view'
+        />
         <Button
           variant='secondary'
           label='New Session'

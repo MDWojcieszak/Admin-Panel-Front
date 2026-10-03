@@ -13,19 +13,45 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
+import { PhotoEntryCalendarView } from '~/routes/PhotoManagement/components/PhotoEntryCalendarView';
 import { PhotoEntryKanban } from '~/routes/PhotoManagement/components/PhotoEntryKanban';
-import { PhotoLibraryToolbar } from '~/routes/PhotoManagement/components/PhotoLibraryToolbar';
+import { PhotoEntryListView } from '~/routes/PhotoManagement/components/PhotoEntryListView';
+import { PhotoLibraryToolbar, PhotoLibraryView } from '~/routes/PhotoManagement/components/PhotoLibraryToolbar';
 import { CreatePhotoEntryModal } from '~/routes/PhotoManagement/modals/CreatePhotoEntryModal';
 import { PhotoEntryDetailsModal } from '~/routes/PhotoManagement/modals/PhotoEntryDetailsModal';
 import { KanbanColumn, planColumnMove } from '~/routes/PhotoManagement/utils/kanban';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles } from '~/utils/theme';
 
+const VIEW_STORAGE_KEY = 'photo-library-view';
+
+/** The chosen view is a per-browser convenience; storage may be unavailable. */
+const readStoredView = (): PhotoLibraryView => {
+  try {
+    const stored = localStorage.getItem(VIEW_STORAGE_KEY);
+    if (stored === 'list' || stored === 'calendar' || stored === 'board') return stored;
+  } catch {
+    // Private window or blocked storage — fall back to the board.
+  }
+  return 'board';
+};
+
 export const PhotoManagement = () => {
   const styles = useStyles();
   const navigate = useNavigate();
   const { photoEntryApi, astroObjectApi } = useApi();
   const toast = useToast();
+
+  const [view, setView] = useState<PhotoLibraryView>(readStoredView);
+
+  const changeView = (next: PhotoLibraryView) => {
+    setView(next);
+    try {
+      localStorage.setItem(VIEW_STORAGE_KEY, next);
+    } catch {
+      // Not remembered, but the switch itself still works.
+    }
+  };
 
   const [filters, setFilters] = useState<{
     search: string;
@@ -180,10 +206,13 @@ export const PhotoManagement = () => {
   };
 
   const astroObjects = astroObjectsQuery.data?.astroObjects || [];
+  const entries = photoEntriesQuery.data?.photoEntries || [];
 
   return (
     <div style={styles.container}>
       <PhotoLibraryToolbar
+        view={view}
+        onViewChange={changeView}
         search={filters.search}
         status={filters.status}
         postStage={filters.postStage}
@@ -210,12 +239,18 @@ export const PhotoManagement = () => {
       {/* Astro targets moved to their own tab — they never competed well for
           attention next to sessions of every other type. */}
       <div style={styles.kanbanCard}>
-        <PhotoEntryKanban
-          entries={photoEntriesQuery.data?.photoEntries || []}
-          onRequestColumnChange={handleRequestColumnChange}
-          onForbiddenMove={(reason) => toast(reason, 'error')}
-          onCardClick={handleOpenEntryDetails}
-        />
+        {view === 'list' ? (
+          <PhotoEntryListView entries={entries} onRowClick={handleOpenEntryDetails} />
+        ) : view === 'calendar' ? (
+          <PhotoEntryCalendarView entries={entries} onEntryClick={handleOpenEntryDetails} />
+        ) : (
+          <PhotoEntryKanban
+            entries={entries}
+            onRequestColumnChange={handleRequestColumnChange}
+            onForbiddenMove={(reason) => toast(reason, 'error')}
+            onCardClick={handleOpenEntryDetails}
+          />
+        )}
       </div>
     </div>
   );
