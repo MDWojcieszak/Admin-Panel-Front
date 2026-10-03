@@ -31,7 +31,6 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type EntryPublishPanelProps = {
   entryId: string;
-  onClose: () => void;
 };
 
 const API_BASE = import.meta.env.VITE_API_URL as string;
@@ -61,7 +60,7 @@ const isSelectable = (file: ExportFileResponse) =>
  * in the gallery. A changed file replaces its published copy in place; RAW and
  * HEIC files cannot go and say why.
  */
-export const EntryPublishPanel = ({ entryId, onClose }: EntryPublishPanelProps) => {
+export const EntryPublishPanel = ({ entryId }: EntryPublishPanelProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const toast = useToast();
@@ -172,7 +171,6 @@ export const EntryPublishPanel = ({ entryId, onClose }: EntryPublishPanelProps) 
         </div>
         <div style={styles.headerActions}>
           <Button label='Rescan' variant='secondary' icon={<FiRefreshCw size={14} />} onClick={load} />
-          <Button label='Close' variant='secondary' icon={<FiX size={14} />} onClick={onClose} />
         </div>
       </div>
 
@@ -279,7 +277,7 @@ export const EntryPublishPanel = ({ entryId, onClose }: EntryPublishPanelProps) 
             <div style={styles.actionRight}>
               <GalleryPicker galleries={galleries} target={target} onTarget={setTarget} />
               <Button
-                label={selected.length ? `Publish ${selected.length}` : 'Publish'}
+                label='Publish'
                 icon={<FiUploadCloud size={14} />}
                 disabled={!selected.length || !target}
                 loading={publishing}
@@ -553,7 +551,8 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.m,
     padding: t.spacing.m,
     borderRadius: t.borderRadius.large,
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.5),
+    backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
+    border: `1px solid ${t.colors.gray01 + t.colorOpacity(0.5)}`,
   },
   header: {
     flexDirection: 'row',
