@@ -1,6 +1,8 @@
 import { ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useMemo } from 'react';
-import { PhotoEntryResponse } from '~/api/api';
+import { IconType } from 'react-icons';
+import { FiCalendar, FiCamera, FiSlash } from 'react-icons/fi';
+import { PhotoEntryResponse, PhotoEntryStatus } from '~/api/api';
 import { Table } from '~/components/Table';
 import {
   EntryChip,
@@ -21,6 +23,13 @@ type PhotoEntryListViewProps = {
   onRowClick: (entry: PhotoEntryResponse) => void;
 };
 
+/** Planned first — what is coming — then what was shot, cancelled last. */
+const GROUPS: Record<PhotoEntryStatus, { order: number; label: string; icon: IconType }> = {
+  [PhotoEntryStatus.Planned]: { order: 0, label: 'Planned', icon: FiCalendar },
+  [PhotoEntryStatus.Shot]: { order: 1, label: 'Shot', icon: FiCamera },
+  [PhotoEntryStatus.Cancelled]: { order: 2, label: 'Cancelled', icon: FiSlash },
+};
+
 const dayCount = (entry: PhotoEntryResponse): number | null => {
   const start = parseDate(entry.startDate);
   const end = parseDate(entry.endDate);
@@ -29,14 +38,17 @@ const dayCount = (entry: PhotoEntryResponse): number | null => {
 };
 
 /**
- * Every session on one compact line, newest first. The state column carries the
- * planned/shot split (hollow vs filled pill) and the row's left edge repeats it,
- * so the two read apart even when scanning down the names.
+ * Every session on one compact line, grouped Planned / Shot / Cancelled and
+ * newest first within each group. The state pill (hollow vs filled) and the
+ * row's left edge repeat the planned/shot split inside the groups too.
  */
 export const PhotoEntryListView = ({ entries, onRowClick }: PhotoEntryListViewProps) => {
   const styles = useStyles();
 
-  const sorted = useMemo(() => [...entries].sort(compareEntriesByDate), [entries]);
+  const sorted = useMemo(
+    () => [...entries].sort((a, b) => GROUPS[a.status].order - GROUPS[b.status].order || compareEntriesByDate(a, b)),
+    [entries],
+  );
   const qualifiers = useMemo(() => buildNameQualifiers(entries), [entries]);
 
   const columns = useMemo<ColumnDef<PhotoEntryResponse>[]>(
@@ -141,6 +153,19 @@ export const PhotoEntryListView = ({ entries, onRowClick }: PhotoEntryListViewPr
         table={table}
         hidePagination
         onRowClick={onRowClick}
+        getGroup={(entry) => {
+          const group = GROUPS[entry.status];
+          const Icon = group.icon;
+          return {
+            key: entry.status,
+            label: (
+              <span style={styles.groupLabel}>
+                <Icon size={14} />
+                {group.label}
+              </span>
+            ),
+          };
+        }}
         emptyState={{ title: 'No sessions', description: 'Nothing matches the current filters.' }}
       />
     </div>
@@ -176,6 +201,7 @@ const useStyles = mkUseStyles((t) => ({
     minWidth: 0,
   },
   muted: { color: t.colors.dark05, fontWeight: 400 },
+  groupLabel: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 6 },
   nowrap: { whiteSpace: 'nowrap', fontSize: 13 },
   counters: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   counter: {
