@@ -107,6 +107,8 @@ docs/CommandType.md
 docs/CommentListResponse.md
 docs/CommentStage.md
 docs/ConnectedServiceType.md
+docs/ContactAdministratorResponse.md
+docs/ContactSettingsResponse.md
 docs/ContainerChangedDto.md
 docs/ContainerSnapshotDto.md
 docs/CountByDto.md
@@ -127,6 +129,7 @@ docs/CreateGearKitDto.md
 docs/CreateGearSystemDto.md
 docs/CreateGrantDto.md
 docs/CreateImmichAlbumDto.md
+docs/CreateInquiryDto.md
 docs/CreateIntegrationTokenDto.md
 docs/CreatePermissionGroupDto.md
 docs/CreatePhotoEntryCommentDto.md
@@ -261,6 +264,15 @@ docs/ImmichBrowseAlbumResponse.md
 docs/ImmichLibraryListResponse.md
 docs/ImmichLibraryResponse.md
 docs/ImmichStatusResponse.md
+docs/InquiriesApi.md
+docs/InquiryGalleryRefResponse.md
+docs/InquiryImageRefResponse.md
+docs/InquiryListResponse.md
+docs/InquiryReceivedResponse.md
+docs/InquiryResponse.md
+docs/InquiryStatus.md
+docs/InquirySummaryResponse.md
+docs/InquiryTopic.md
 docs/InsightsResponse.md
 docs/IntegrationPlatform.md
 docs/IntegrationTokenCreatedResponse.md
@@ -309,6 +321,7 @@ docs/PatchCommentDto.md
 docs/PatchDiskDto.md
 docs/PatchGalleryStatusDto.md
 docs/PatchHomeConfigDto.md
+docs/PatchInquiryDto.md
 docs/PatchPhotoEntryCommentDto.md
 docs/PatchPhotoEntryDto.md
 docs/PatchPhotoEntryGearDto.md
@@ -431,6 +444,7 @@ docs/PublicCollectionItemResponse.md
 docs/PublicCollectionListResponse.md
 docs/PublicCollectionResponse.md
 docs/PublicCollectionSummaryResponse.md
+docs/PublicContactResponse.md
 docs/PublicHomeResponse.md
 docs/PublicKeyResponse.md
 docs/PublicPostCardResponse.md
@@ -549,6 +563,7 @@ docs/TrendsSeriesDto.md
 docs/UndeclaredEntryResponse.md
 docs/UpdateApplicationDto.md
 docs/UpdateCommandProgressMarkerDto.md
+docs/UpdateContactSettingsDto.md
 docs/UpdateGalleryDto.md
 docs/UpdateGearDto.md
 docs/UpdateGearKitDto.md

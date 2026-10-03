@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **processPushNotifications** | **boolean** |  | [optional] [default to undefined]
 **photoMediaEmailNotifications** | **boolean** |  | [optional] [default to undefined]
 **tripEmailNotifications** | **boolean** |  | [optional] [default to undefined]
+**inquiryEmailNotifications** | **boolean** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -26,6 +27,7 @@ const instance: PatchUserSettingsDto = {
     processPushNotifications,
     photoMediaEmailNotifications,
     tripEmailNotifications,
+    inquiryEmailNotifications,
 };
 ```
 

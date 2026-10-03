@@ -2201,6 +2201,116 @@ export type ConnectedServiceType = typeof ConnectedServiceType[keyof typeof Conn
 /**
  * 
  * @export
+ * @interface ContactAdministratorResponse
+ */
+export interface ContactAdministratorResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactAdministratorResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactAdministratorResponse
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactAdministratorResponse
+     */
+    'address'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface ContactSettingsResponse
+ */
+export interface ContactSettingsResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ContactSettingsResponse
+     */
+    'enabled': boolean;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ContactSettingsResponse
+     */
+    'missingForEnable': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactSettingsResponse
+     */
+    'administratorName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactSettingsResponse
+     */
+    'administratorEmail'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactSettingsResponse
+     */
+    'administratorAddress'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactSettingsResponse
+     */
+    'privacyNotice'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ContactSettingsResponse
+     */
+    'privacyNoticeVersion': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactSettingsResponse
+     */
+    'privacyNoticeUpdatedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactSettingsResponse
+     */
+    'intro'?: string | null;
+    /**
+     * 
+     * @type {Array<InquiryTopic>}
+     * @memberof ContactSettingsResponse
+     */
+    'topics': Array<InquiryTopic>;
+    /**
+     * 
+     * @type {number}
+     * @memberof ContactSettingsResponse
+     */
+    'retentionDays': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ContactSettingsResponse
+     */
+    'spamRetentionDays': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactSettingsResponse
+     */
+    'updatedAt': string;
+}
+/**
+ * 
+ * @export
  * @interface ContainerChangedDto
  */
 export interface ContainerChangedDto {
@@ -2949,6 +3059,69 @@ export interface CreateImmichAlbumDto {
      * @memberof CreateImmichAlbumDto
      */
     'albumName'?: string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface CreateInquiryDto
+ */
+export interface CreateInquiryDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateInquiryDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateInquiryDto
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateInquiryDto
+     */
+    'phone'?: string;
+    /**
+     * 
+     * @type {InquiryTopic}
+     * @memberof CreateInquiryDto
+     */
+    'topic': InquiryTopic;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateInquiryDto
+     */
+    'message': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateInquiryDto
+     */
+    'galleryId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateInquiryDto
+     */
+    'imageId'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CreateInquiryDto
+     */
+    'acknowledgedPrivacyNotice': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateInquiryDto
+     */
+    'website'?: string;
 }
 
 
@@ -7666,6 +7839,252 @@ export interface ImmichStatusResponse {
 /**
  * 
  * @export
+ * @interface InquiryGalleryRefResponse
+ */
+export interface InquiryGalleryRefResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryGalleryRefResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryGalleryRefResponse
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryGalleryRefResponse
+     */
+    'slug': string;
+}
+/**
+ * 
+ * @export
+ * @interface InquiryImageRefResponse
+ */
+export interface InquiryImageRefResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryImageRefResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryImageRefResponse
+     */
+    'thumbUrl': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryImageRefResponse
+     */
+    'coverUrl': string;
+}
+/**
+ * 
+ * @export
+ * @interface InquiryListResponse
+ */
+export interface InquiryListResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof InquiryListResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {Array<InquiryResponse>}
+     * @memberof InquiryListResponse
+     */
+    'inquiries': Array<InquiryResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface InquiryReceivedResponse
+ */
+export interface InquiryReceivedResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof InquiryReceivedResponse
+     */
+    'received': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface InquiryResponse
+ */
+export interface InquiryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'phone'?: string | null;
+    /**
+     * 
+     * @type {InquiryTopic}
+     * @memberof InquiryResponse
+     */
+    'topic': InquiryTopic;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'message': string;
+    /**
+     * 
+     * @type {InquiryStatus}
+     * @memberof InquiryResponse
+     */
+    'status': InquiryStatus;
+    /**
+     * 
+     * @type {InquiryGalleryRefResponse}
+     * @memberof InquiryResponse
+     */
+    'gallery'?: InquiryGalleryRefResponse | null;
+    /**
+     * 
+     * @type {InquiryImageRefResponse}
+     * @memberof InquiryResponse
+     */
+    'image'?: InquiryImageRefResponse | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'internalNote'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'replyMailto': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'readAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'answeredAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'noticeAcknowledgedAt': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof InquiryResponse
+     */
+    'privacyNoticeVersion': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiryResponse
+     */
+    'createdAt': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const InquiryStatus = {
+    New: 'NEW',
+    Read: 'READ',
+    Answered: 'ANSWERED',
+    Archived: 'ARCHIVED',
+    Spam: 'SPAM'
+} as const;
+
+export type InquiryStatus = typeof InquiryStatus[keyof typeof InquiryStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface InquirySummaryResponse
+ */
+export interface InquirySummaryResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof InquirySummaryResponse
+     */
+    'new': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InquirySummaryResponse
+     */
+    'open': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InquirySummaryResponse
+     */
+    'spam': number;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const InquiryTopic = {
+    Session: 'SESSION',
+    Print: 'PRINT',
+    License: 'LICENSE',
+    Collaboration: 'COLLABORATION',
+    Other: 'OTHER'
+} as const;
+
+export type InquiryTopic = typeof InquiryTopic[keyof typeof InquiryTopic];
+
+
+/**
+ * 
+ * @export
  * @interface InsightsResponse
  */
 export interface InsightsResponse {
@@ -9035,6 +9454,27 @@ export interface PatchHomeConfigDto {
 /**
  * 
  * @export
+ * @interface PatchInquiryDto
+ */
+export interface PatchInquiryDto {
+    /**
+     * 
+     * @type {InquiryStatus}
+     * @memberof PatchInquiryDto
+     */
+    'status'?: InquiryStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchInquiryDto
+     */
+    'internalNote'?: string | null;
+}
+
+
+/**
+ * 
+ * @export
  * @interface PatchPhotoEntryCommentDto
  */
 export interface PatchPhotoEntryCommentDto {
@@ -9748,6 +10188,12 @@ export interface PatchUserSettingsDto {
      * @memberof PatchUserSettingsDto
      */
     'tripEmailNotifications'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'inquiryEmailNotifications'?: boolean;
 }
 /**
  * 
@@ -13829,6 +14275,49 @@ export interface PublicCollectionSummaryResponse {
 /**
  * 
  * @export
+ * @interface PublicContactResponse
+ */
+export interface PublicContactResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PublicContactResponse
+     */
+    'enabled': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicContactResponse
+     */
+    'intro'?: string | null;
+    /**
+     * 
+     * @type {Array<InquiryTopic>}
+     * @memberof PublicContactResponse
+     */
+    'topics': Array<InquiryTopic>;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublicContactResponse
+     */
+    'privacyNotice'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublicContactResponse
+     */
+    'privacyNoticeVersion'?: number | null;
+    /**
+     * 
+     * @type {ContactAdministratorResponse}
+     * @memberof PublicContactResponse
+     */
+    'administrator'?: ContactAdministratorResponse | null;
+}
+/**
+ * 
+ * @export
  * @interface PublicHomeResponse
  */
 export interface PublicHomeResponse {
@@ -17516,6 +18005,67 @@ export interface UpdateCommandProgressMarkerDto {
 /**
  * 
  * @export
+ * @interface UpdateContactSettingsDto
+ */
+export interface UpdateContactSettingsDto {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UpdateContactSettingsDto
+     */
+    'enabled'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateContactSettingsDto
+     */
+    'administratorName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateContactSettingsDto
+     */
+    'administratorEmail'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateContactSettingsDto
+     */
+    'administratorAddress'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateContactSettingsDto
+     */
+    'privacyNotice'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateContactSettingsDto
+     */
+    'intro'?: string | null;
+    /**
+     * 
+     * @type {Array<InquiryTopic>}
+     * @memberof UpdateContactSettingsDto
+     */
+    'topics'?: Array<InquiryTopic>;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateContactSettingsDto
+     */
+    'retentionDays'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateContactSettingsDto
+     */
+    'spamRetentionDays'?: number;
+}
+/**
+ * 
+ * @export
  * @interface UpdateGalleryDto
  */
 export interface UpdateGalleryDto {
@@ -18307,6 +18857,12 @@ export interface UserSettingsResponseDto {
      * @memberof UserSettingsResponseDto
      */
     'tripEmailNotifications': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'inquiryEmailNotifications': boolean;
 }
 /**
  * 
@@ -44290,6 +44846,665 @@ export class ImmichApi extends BaseAPI {
 
 
 /**
+ * InquiriesApi - axios parameter creator
+ * @export
+ */
+export const InquiriesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerGet: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('inquiryControllerGet', 'id', id)
+            const localVarPath = `/inquiries/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerGetSettings: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/inquiries/settings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Newest first. Without `status` it is the inbox: everything except ARCHIVED and SPAM.
+         * @summary List inquiries
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {InquiryStatus} [status] 
+         * @param {InquiryTopic} [topic] 
+         * @param {string} [search] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerList: async (take?: number, skip?: number, status?: InquiryStatus, topic?: InquiryTopic, search?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/inquiries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (take !== undefined) {
+                localVarQueryParameter['take'] = take;
+            }
+
+            if (skip !== undefined) {
+                localVarQueryParameter['skip'] = skip;
+            }
+
+            if (status !== undefined) {
+                localVarQueryParameter['status'] = status;
+            }
+
+            if (topic !== undefined) {
+                localVarQueryParameter['topic'] = topic;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Leaving NEW stamps readAt; ANSWERED stamps answeredAt; NEW again = mark as unread.
+         * @summary Change status or the internal note
+         * @param {string} id 
+         * @param {PatchInquiryDto} patchInquiryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerPatch: async (id: string, patchInquiryDto: PatchInquiryDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('inquiryControllerPatch', 'id', id)
+            // verify required parameter 'patchInquiryDto' is not null or undefined
+            assertParamExists('inquiryControllerPatch', 'patchInquiryDto', patchInquiryDto)
+            const localVarPath = `/inquiries/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchInquiryDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerRemove: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('inquiryControllerRemove', 'id', id)
+            const localVarPath = `/inquiries/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerSummary: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/inquiries/summary`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Enabling is refused (400) until administratorName, administratorEmail and privacyNotice are filled in. A real change of privacyNotice bumps its version; each inquiry records the version its sender confirmed.
+         * @summary Update the contact form configuration
+         * @param {UpdateContactSettingsDto} updateContactSettingsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerUpdateSettings: async (updateContactSettingsDto: UpdateContactSettingsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updateContactSettingsDto' is not null or undefined
+            assertParamExists('inquiryControllerUpdateSettings', 'updateContactSettingsDto', updateContactSettingsDto)
+            const localVarPath = `/inquiries/settings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateContactSettingsDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * InquiriesApi - functional programming interface
+ * @export
+ */
+export const InquiriesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = InquiriesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async inquiryControllerGet(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InquiryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.inquiryControllerGet(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InquiriesApi.inquiryControllerGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async inquiryControllerGetSettings(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactSettingsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.inquiryControllerGetSettings(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InquiriesApi.inquiryControllerGetSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Newest first. Without `status` it is the inbox: everything except ARCHIVED and SPAM.
+         * @summary List inquiries
+         * @param {number} [take] 
+         * @param {number} [skip] 
+         * @param {InquiryStatus} [status] 
+         * @param {InquiryTopic} [topic] 
+         * @param {string} [search] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async inquiryControllerList(take?: number, skip?: number, status?: InquiryStatus, topic?: InquiryTopic, search?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InquiryListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.inquiryControllerList(take, skip, status, topic, search, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InquiriesApi.inquiryControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Leaving NEW stamps readAt; ANSWERED stamps answeredAt; NEW again = mark as unread.
+         * @summary Change status or the internal note
+         * @param {string} id 
+         * @param {PatchInquiryDto} patchInquiryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async inquiryControllerPatch(id: string, patchInquiryDto: PatchInquiryDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InquiryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.inquiryControllerPatch(id, patchInquiryDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InquiriesApi.inquiryControllerPatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async inquiryControllerRemove(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.inquiryControllerRemove(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InquiriesApi.inquiryControllerRemove']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async inquiryControllerSummary(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InquirySummaryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.inquiryControllerSummary(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InquiriesApi.inquiryControllerSummary']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Enabling is refused (400) until administratorName, administratorEmail and privacyNotice are filled in. A real change of privacyNotice bumps its version; each inquiry records the version its sender confirmed.
+         * @summary Update the contact form configuration
+         * @param {UpdateContactSettingsDto} updateContactSettingsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async inquiryControllerUpdateSettings(updateContactSettingsDto: UpdateContactSettingsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContactSettingsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.inquiryControllerUpdateSettings(updateContactSettingsDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InquiriesApi.inquiryControllerUpdateSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * InquiriesApi - factory interface
+ * @export
+ */
+export const InquiriesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = InquiriesApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {InquiriesApiInquiryControllerGetRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerGet(requestParameters: InquiriesApiInquiryControllerGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<InquiryResponse> {
+            return localVarFp.inquiryControllerGet(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerGetSettings(options?: RawAxiosRequestConfig): AxiosPromise<ContactSettingsResponse> {
+            return localVarFp.inquiryControllerGetSettings(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Newest first. Without `status` it is the inbox: everything except ARCHIVED and SPAM.
+         * @summary List inquiries
+         * @param {InquiriesApiInquiryControllerListRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerList(requestParameters: InquiriesApiInquiryControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<InquiryListResponse> {
+            return localVarFp.inquiryControllerList(requestParameters.take, requestParameters.skip, requestParameters.status, requestParameters.topic, requestParameters.search, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Leaving NEW stamps readAt; ANSWERED stamps answeredAt; NEW again = mark as unread.
+         * @summary Change status or the internal note
+         * @param {InquiriesApiInquiryControllerPatchRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerPatch(requestParameters: InquiriesApiInquiryControllerPatchRequest, options?: RawAxiosRequestConfig): AxiosPromise<InquiryResponse> {
+            return localVarFp.inquiryControllerPatch(requestParameters.id, requestParameters.patchInquiryDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {InquiriesApiInquiryControllerRemoveRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerRemove(requestParameters: InquiriesApiInquiryControllerRemoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.inquiryControllerRemove(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerSummary(options?: RawAxiosRequestConfig): AxiosPromise<InquirySummaryResponse> {
+            return localVarFp.inquiryControllerSummary(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Enabling is refused (400) until administratorName, administratorEmail and privacyNotice are filled in. A real change of privacyNotice bumps its version; each inquiry records the version its sender confirmed.
+         * @summary Update the contact form configuration
+         * @param {InquiriesApiInquiryControllerUpdateSettingsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        inquiryControllerUpdateSettings(requestParameters: InquiriesApiInquiryControllerUpdateSettingsRequest, options?: RawAxiosRequestConfig): AxiosPromise<ContactSettingsResponse> {
+            return localVarFp.inquiryControllerUpdateSettings(requestParameters.updateContactSettingsDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for inquiryControllerGet operation in InquiriesApi.
+ * @export
+ * @interface InquiriesApiInquiryControllerGetRequest
+ */
+export interface InquiriesApiInquiryControllerGetRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiriesApiInquiryControllerGet
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for inquiryControllerList operation in InquiriesApi.
+ * @export
+ * @interface InquiriesApiInquiryControllerListRequest
+ */
+export interface InquiriesApiInquiryControllerListRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof InquiriesApiInquiryControllerList
+     */
+    readonly take?: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof InquiriesApiInquiryControllerList
+     */
+    readonly skip?: number
+
+    /**
+     * 
+     * @type {InquiryStatus}
+     * @memberof InquiriesApiInquiryControllerList
+     */
+    readonly status?: InquiryStatus
+
+    /**
+     * 
+     * @type {InquiryTopic}
+     * @memberof InquiriesApiInquiryControllerList
+     */
+    readonly topic?: InquiryTopic
+
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiriesApiInquiryControllerList
+     */
+    readonly search?: string
+}
+
+/**
+ * Request parameters for inquiryControllerPatch operation in InquiriesApi.
+ * @export
+ * @interface InquiriesApiInquiryControllerPatchRequest
+ */
+export interface InquiriesApiInquiryControllerPatchRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiriesApiInquiryControllerPatch
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {PatchInquiryDto}
+     * @memberof InquiriesApiInquiryControllerPatch
+     */
+    readonly patchInquiryDto: PatchInquiryDto
+}
+
+/**
+ * Request parameters for inquiryControllerRemove operation in InquiriesApi.
+ * @export
+ * @interface InquiriesApiInquiryControllerRemoveRequest
+ */
+export interface InquiriesApiInquiryControllerRemoveRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof InquiriesApiInquiryControllerRemove
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for inquiryControllerUpdateSettings operation in InquiriesApi.
+ * @export
+ * @interface InquiriesApiInquiryControllerUpdateSettingsRequest
+ */
+export interface InquiriesApiInquiryControllerUpdateSettingsRequest {
+    /**
+     * 
+     * @type {UpdateContactSettingsDto}
+     * @memberof InquiriesApiInquiryControllerUpdateSettings
+     */
+    readonly updateContactSettingsDto: UpdateContactSettingsDto
+}
+
+/**
+ * InquiriesApi - object-oriented interface
+ * @export
+ * @class InquiriesApi
+ * @extends {BaseAPI}
+ */
+export class InquiriesApi extends BaseAPI {
+    /**
+     * 
+     * @param {InquiriesApiInquiryControllerGetRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InquiriesApi
+     */
+    public inquiryControllerGet(requestParameters: InquiriesApiInquiryControllerGetRequest, options?: RawAxiosRequestConfig) {
+        return InquiriesApiFp(this.configuration).inquiryControllerGet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InquiriesApi
+     */
+    public inquiryControllerGetSettings(options?: RawAxiosRequestConfig) {
+        return InquiriesApiFp(this.configuration).inquiryControllerGetSettings(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Newest first. Without `status` it is the inbox: everything except ARCHIVED and SPAM.
+     * @summary List inquiries
+     * @param {InquiriesApiInquiryControllerListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InquiriesApi
+     */
+    public inquiryControllerList(requestParameters: InquiriesApiInquiryControllerListRequest = {}, options?: RawAxiosRequestConfig) {
+        return InquiriesApiFp(this.configuration).inquiryControllerList(requestParameters.take, requestParameters.skip, requestParameters.status, requestParameters.topic, requestParameters.search, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Leaving NEW stamps readAt; ANSWERED stamps answeredAt; NEW again = mark as unread.
+     * @summary Change status or the internal note
+     * @param {InquiriesApiInquiryControllerPatchRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InquiriesApi
+     */
+    public inquiryControllerPatch(requestParameters: InquiriesApiInquiryControllerPatchRequest, options?: RawAxiosRequestConfig) {
+        return InquiriesApiFp(this.configuration).inquiryControllerPatch(requestParameters.id, requestParameters.patchInquiryDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {InquiriesApiInquiryControllerRemoveRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InquiriesApi
+     */
+    public inquiryControllerRemove(requestParameters: InquiriesApiInquiryControllerRemoveRequest, options?: RawAxiosRequestConfig) {
+        return InquiriesApiFp(this.configuration).inquiryControllerRemove(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InquiriesApi
+     */
+    public inquiryControllerSummary(options?: RawAxiosRequestConfig) {
+        return InquiriesApiFp(this.configuration).inquiryControllerSummary(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Enabling is refused (400) until administratorName, administratorEmail and privacyNotice are filled in. A real change of privacyNotice bumps its version; each inquiry records the version its sender confirmed.
+     * @summary Update the contact form configuration
+     * @param {InquiriesApiInquiryControllerUpdateSettingsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InquiriesApi
+     */
+    public inquiryControllerUpdateSettings(requestParameters: InquiriesApiInquiryControllerUpdateSettingsRequest, options?: RawAxiosRequestConfig) {
+        return InquiriesApiFp(this.configuration).inquiryControllerUpdateSettings(requestParameters.updateContactSettingsDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * IntegrationsApi - axios parameter creator
  * @export
  */
@@ -50023,6 +51238,72 @@ export const PortfolioApiAxiosParamCreator = function (configuration?: Configura
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+         * @summary Contact form configuration
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        publicContactControllerGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/portfolio/contact`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * No account needed. Optional galleryId / imageId say what it is about (must be public). acknowledgedPrivacyNotice must be true; 403 while the form is disabled in the panel. Keep the honeypot `website` field hidden and empty. The answer is the same for every accepted submission.
+         * @summary Send an inquiry from the contact form
+         * @param {CreateInquiryDto} createInquiryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        publicInquiryControllerCreate: async (createInquiryDto: CreateInquiryDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createInquiryDto' is not null or undefined
+            assertParamExists('publicInquiryControllerCreate', 'createInquiryDto', createInquiryDto)
+            const localVarPath = `/portfolio/inquiries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createInquiryDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -50104,6 +51385,31 @@ export const PortfolioApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['PortfolioApi.portfolioControllerSettings']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+         * @summary Contact form configuration
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async publicContactControllerGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicContactResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.publicContactControllerGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PortfolioApi.publicContactControllerGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * No account needed. Optional galleryId / imageId say what it is about (must be public). acknowledgedPrivacyNotice must be true; 403 while the form is disabled in the panel. Keep the honeypot `website` field hidden and empty. The answer is the same for every accepted submission.
+         * @summary Send an inquiry from the contact form
+         * @param {CreateInquiryDto} createInquiryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async publicInquiryControllerCreate(createInquiryDto: CreateInquiryDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InquiryReceivedResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.publicInquiryControllerCreate(createInquiryDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PortfolioApi.publicInquiryControllerCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -50164,6 +51470,25 @@ export const PortfolioApiFactory = function (configuration?: Configuration, base
         portfolioControllerSettings(options?: RawAxiosRequestConfig): AxiosPromise<PortfolioSettingsResponse> {
             return localVarFp.portfolioControllerSettings(options).then((request) => request(axios, basePath));
         },
+        /**
+         * enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+         * @summary Contact form configuration
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        publicContactControllerGet(options?: RawAxiosRequestConfig): AxiosPromise<PublicContactResponse> {
+            return localVarFp.publicContactControllerGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * No account needed. Optional galleryId / imageId say what it is about (must be public). acknowledgedPrivacyNotice must be true; 403 while the form is disabled in the panel. Keep the honeypot `website` field hidden and empty. The answer is the same for every accepted submission.
+         * @summary Send an inquiry from the contact form
+         * @param {PortfolioApiPublicInquiryControllerCreateRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        publicInquiryControllerCreate(requestParameters: PortfolioApiPublicInquiryControllerCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<InquiryReceivedResponse> {
+            return localVarFp.publicInquiryControllerCreate(requestParameters.createInquiryDto, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -50214,6 +51539,20 @@ export interface PortfolioApiPortfolioControllerHeroRequest {
      * @memberof PortfolioApiPortfolioControllerHero
      */
     readonly limit?: number
+}
+
+/**
+ * Request parameters for publicInquiryControllerCreate operation in PortfolioApi.
+ * @export
+ * @interface PortfolioApiPublicInquiryControllerCreateRequest
+ */
+export interface PortfolioApiPublicInquiryControllerCreateRequest {
+    /**
+     * 
+     * @type {CreateInquiryDto}
+     * @memberof PortfolioApiPublicInquiryControllerCreate
+     */
+    readonly createInquiryDto: CreateInquiryDto
 }
 
 /**
@@ -50283,6 +51622,29 @@ export class PortfolioApi extends BaseAPI {
      */
     public portfolioControllerSettings(options?: RawAxiosRequestConfig) {
         return PortfolioApiFp(this.configuration).portfolioControllerSettings(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+     * @summary Contact form configuration
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PortfolioApi
+     */
+    public publicContactControllerGet(options?: RawAxiosRequestConfig) {
+        return PortfolioApiFp(this.configuration).publicContactControllerGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * No account needed. Optional galleryId / imageId say what it is about (must be public). acknowledgedPrivacyNotice must be true; 403 while the form is disabled in the panel. Keep the honeypot `website` field hidden and empty. The answer is the same for every accepted submission.
+     * @summary Send an inquiry from the contact form
+     * @param {PortfolioApiPublicInquiryControllerCreateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PortfolioApi
+     */
+    public publicInquiryControllerCreate(requestParameters: PortfolioApiPublicInquiryControllerCreateRequest, options?: RawAxiosRequestConfig) {
+        return PortfolioApiFp(this.configuration).publicInquiryControllerCreate(requestParameters.createInquiryDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -10,6 +10,8 @@ All URIs are relative to *http://localhost*
 |[**portfolioControllerHome**](#portfoliocontrollerhome) | **GET** /portfolio/home | |
 |[**portfolioControllerListGalleries**](#portfoliocontrollerlistgalleries) | **GET** /portfolio/galleries | |
 |[**portfolioControllerSettings**](#portfoliocontrollersettings) | **GET** /portfolio/settings | |
+|[**publicContactControllerGet**](#publiccontactcontrollerget) | **GET** /portfolio/contact | Contact form configuration|
+|[**publicInquiryControllerCreate**](#publicinquirycontrollercreate) | **POST** /portfolio/inquiries | Send an inquiry from the contact form|
 
 # **portfolioControllerBySlug**
 > PortfolioGalleryDetailResponse portfolioControllerBySlug()
@@ -289,6 +291,102 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Public portfolio home settings (display limits) |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **publicContactControllerGet**
+> PublicContactResponse publicContactControllerGet()
+
+enabled=false → hide the form. Otherwise: intro, offered topics, the privacy notice (markdown) with its version, and the data controller.
+
+### Example
+
+```typescript
+import {
+    PortfolioApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PortfolioApi(configuration);
+
+const { status, data } = await apiInstance.publicContactControllerGet();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**PublicContactResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **publicInquiryControllerCreate**
+> InquiryReceivedResponse publicInquiryControllerCreate(createInquiryDto)
+
+No account needed. Optional galleryId / imageId say what it is about (must be public). acknowledgedPrivacyNotice must be true; 403 while the form is disabled in the panel. Keep the honeypot `website` field hidden and empty. The answer is the same for every accepted submission.
+
+### Example
+
+```typescript
+import {
+    PortfolioApi,
+    Configuration,
+    CreateInquiryDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PortfolioApi(configuration);
+
+let createInquiryDto: CreateInquiryDto; //
+
+const { status, data } = await apiInstance.publicInquiryControllerCreate(
+    createInquiryDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **createInquiryDto** | **CreateInquiryDto**|  | |
+
+
+### Return type
+
+**InquiryReceivedResponse**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
