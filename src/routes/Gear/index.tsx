@@ -21,7 +21,7 @@ import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
 import { useUrlParams } from '~/hooks/useUrlParam';
 import { GearCategoryChip } from '~/routes/Gear/components/GearCategoryChip';
-import { gearTileImage } from '~/routes/Gear/components/GearThumb';
+import { imgUrl } from '~/routes/Galleries/utils';
 import { GearItemDetailsModal } from '~/routes/Gear/modals/GearItemDetailsModal';
 import { GearItemModal } from '~/routes/Gear/modals/GearItemModal';
 import { GearKitsModal } from '~/routes/Gear/modals/GearKitsModal';
@@ -426,8 +426,8 @@ export const GearView = () => {
                     }}
                   >
                     <div style={styles.systemThumb}>
-                      {gearTileImage(system).src ? (
-                        <img src={gearTileImage(system).src} alt='' style={styles.systemThumbImg} loading='lazy' />
+                      {imgUrl(system.coverUrl) ? (
+                        <img src={imgUrl(system.coverUrl)} alt='' style={styles.systemThumbImg} loading='lazy' />
                       ) : (
                         <FiImage size={16} color={theme.colors.dark05} />
                       )}
@@ -588,21 +588,11 @@ const ItemsGrid = ({
               drag.current = i;
             }}
           >
+            {/* The full cover here: these tiles are large enough that the 640 px
+                thumb looked soft. */}
             <div style={styles.itemThumb}>
-              {gearTileImage(item).src ? (
-                <img
-                  src={gearTileImage(item).src}
-                  alt=''
-                  style={{
-                    ...styles.itemThumbImg,
-                    backgroundImage: gearTileImage(item).placeholder
-                      ? `url(${gearTileImage(item).placeholder})`
-                      : undefined,
-                    backgroundSize: 'cover',
-                  }}
-                  loading='lazy'
-                  draggable={false}
-                />
+              {imgUrl(item.coverUrl) ? (
+                <img src={imgUrl(item.coverUrl)} alt='' style={styles.itemThumbImg} loading='lazy' draggable={false} />
               ) : (
                 // No photo of this copy: show what kind of thing it is rather than a
                 // generic picture placeholder, which said nothing about the item.
