@@ -54,14 +54,19 @@ export const GearSystemDetailsModal = (p: GearSystemDetailsModalProps) => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.top}>
-        <div style={styles.cover}>
-          {cover ? (
-            <img src={cover} alt='' style={styles.coverImg} />
-          ) : (
-            <FiImage size={28} color={theme.colors.dark05} />
-          )}
+      {cover ? (
+        // The detail is where the photo is shown large, from the full cover.
+        <div style={{ ...styles.hero, opacity: 1 }}>
+          <img src={cover} alt='' style={styles.heroImg} />
         </div>
+      ) : null}
+
+      <div style={styles.top}>
+        {cover ? null : (
+          <div style={styles.cover}>
+            <FiImage size={28} color={theme.colors.dark05} />
+          </div>
+        )}
 
         <div style={styles.titleBlock}>
           <span style={styles.name}>{system.name}</span>
@@ -114,7 +119,16 @@ const useStyles = mkUseStyles((t) => ({
     justifyContent: 'center',
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
   },
-  coverImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  hero: {
+    width: '100%',
+    height: 320,
+    borderRadius: t.borderRadius.large,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+  },
+  heroImg: { width: '100%', height: '100%', objectFit: 'contain', display: 'block' },
   titleBlock: { gap: 4, minWidth: 0, flex: 1 },
   name: { fontSize: 20, fontWeight: 700, wordBreak: 'break-word' },
   chips: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexWrap: 'wrap' },

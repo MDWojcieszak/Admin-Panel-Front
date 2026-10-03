@@ -21,7 +21,7 @@ import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
 import { useUrlParams } from '~/hooks/useUrlParam';
 import { GearCategoryChip } from '~/routes/Gear/components/GearCategoryChip';
-import { imgUrl } from '~/routes/Galleries/utils';
+import { gearTileImage } from '~/routes/Gear/components/GearThumb';
 import { GearItemDetailsModal } from '~/routes/Gear/modals/GearItemDetailsModal';
 import { GearItemModal } from '~/routes/Gear/modals/GearItemModal';
 import { GearKitsModal } from '~/routes/Gear/modals/GearKitsModal';
@@ -426,8 +426,8 @@ export const GearView = () => {
                     }}
                   >
                     <div style={styles.systemThumb}>
-                      {imgUrl(system.coverUrl) ? (
-                        <img src={imgUrl(system.coverUrl)} alt='' style={styles.systemThumbImg} loading='lazy' />
+                      {gearTileImage(system).src ? (
+                        <img src={gearTileImage(system).src} alt='' style={styles.systemThumbImg} loading='lazy' />
                       ) : (
                         <FiImage size={16} color={theme.colors.dark05} />
                       )}
@@ -588,11 +588,15 @@ const ItemsGrid = ({
               drag.current = i;
             }}
           >
-            {/* The full cover here: these tiles are large enough that the 640 px
-                thumb looked soft. */}
             <div style={styles.itemThumb}>
-              {imgUrl(item.coverUrl) ? (
-                <img src={imgUrl(item.coverUrl)} alt='' style={styles.itemThumbImg} loading='lazy' draggable={false} />
+              {gearTileImage(item).src ? (
+                <img
+                  src={gearTileImage(item).src}
+                  alt=''
+                  style={styles.itemThumbImg}
+                  loading='lazy'
+                  draggable={false}
+                />
               ) : (
                 // No photo of this copy: show what kind of thing it is rather than a
                 // generic picture placeholder, which said nothing about the item.
@@ -823,7 +827,7 @@ const useStyles = mkUseStyles((t) => ({
   emptyLabel: { fontSize: 13, color: t.colors.dark05 },
   itemsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
     gap: t.spacing.sm,
   },
   itemTile: {
@@ -837,12 +841,21 @@ const useStyles = mkUseStyles((t) => ({
   itemThumb: {
     position: 'relative',
     width: '100%',
-    aspectRatio: '16 / 10',
+    aspectRatio: '1 / 1',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
   },
-  itemThumbImg: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  // Whole photo, not cropped: gear shots are mostly the object on a plain
+  // ground, and cropping cut the lens or body in half.
+  itemThumbImg: {
+    position: 'absolute',
+    inset: '8%',
+    width: '84%',
+    height: '84%',
+    objectFit: 'contain',
+    display: 'block',
+  },
   categoryChip: { position: 'absolute', top: 6, left: 6 },
   itemGrip: {
     position: 'absolute',
@@ -885,7 +898,8 @@ const useStyles = mkUseStyles((t) => ({
     border: `1px solid ${t.colors.dark04 + t.colorOpacity(0.45)}`,
   },
   itemInfo: { gap: 1, padding: t.spacing.s, minWidth: 0 },
-  itemBrand: { fontSize: 12, color: t.colors.dark05 },
+  // The brand is how gear is recognised at a glance; it reads as a label now.
+  itemBrand: { fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: t.colors.blue04 },
   itemModel: { fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
   itemMeta: {
     fontSize: 11,

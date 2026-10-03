@@ -79,14 +79,19 @@ export const GearItemDetailsModal = (p: GearItemDetailsModalProps) => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.top}>
-        <div style={{ ...styles.cover, opacity: owned ? 1 : 0.6 }}>
-          {cover ? (
-            <img src={cover} alt='' style={styles.coverImg} />
-          ) : (
-            <Icon size={40} color={theme.colors[gearCategoryColor(item.category)]} />
-          )}
+      {cover ? (
+        // The detail is where the photo is shown large, from the full cover.
+        <div style={{ ...styles.hero, opacity: owned ? 1 : 0.6 }}>
+          <img src={cover} alt='' style={styles.heroImg} />
         </div>
+      ) : null}
+
+      <div style={styles.top}>
+        {cover ? null : (
+          <div style={{ ...styles.cover, opacity: owned ? 1 : 0.6 }}>
+            <Icon size={40} color={theme.colors[gearCategoryColor(item.category)]} />
+          </div>
+        )}
 
         <div style={styles.titleBlock}>
           <span style={styles.brand}>{item.brand}</span>
@@ -113,7 +118,9 @@ export const GearItemDetailsModal = (p: GearItemDetailsModalProps) => {
               : `Has to be uploaded · ${item.mediaSource}`
           }
         />
-        {detail?.estimatedPrice != null ? <Fact label='Estimated price' value={formatAmount(detail.estimatedPrice)} /> : null}
+        {detail?.estimatedPrice != null ? (
+          <Fact label='Estimated price' value={formatAmount(detail.estimatedPrice)} />
+        ) : null}
         {formatDate(detail?.acquiredAt) ? <Fact label='Acquired' value={formatDate(detail?.acquiredAt)} /> : null}
         {formatDate(detail?.retiredAt) ? <Fact label='Retired' value={formatDate(detail?.retiredAt)} /> : null}
         {formatDate(detail?.neededBy) ? (
@@ -180,9 +187,18 @@ const useStyles = mkUseStyles((t) => ({
     justifyContent: 'center',
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
   },
-  coverImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
+  hero: {
+    width: '100%',
+    height: 320,
+    borderRadius: t.borderRadius.large,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+  },
+  heroImg: { width: '100%', height: '100%', objectFit: 'contain', display: 'block' },
   titleBlock: { gap: 4, minWidth: 0, flex: 1 },
-  brand: { fontSize: 13, color: t.colors.dark05 },
+  brand: { fontSize: 12, fontWeight: 700, letterSpacing: 0.8, textTransform: 'uppercase', color: t.colors.blue04 },
   model: { fontSize: 20, fontWeight: 700, wordBreak: 'break-word' },
   chips: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexWrap: 'wrap', marginTop: 2 },
   description: { fontSize: 13, color: t.colors.blue04, marginTop: t.spacing.xs, whiteSpace: 'pre-wrap' },
