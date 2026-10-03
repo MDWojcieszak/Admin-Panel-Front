@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **startDate** | **string** |  | [optional] [default to undefined]
 **endDate** | **string** |  | [optional] [default to undefined]
 **astroObjectIds** | **Array&lt;string&gt;** | ASTRO entries only. Replaces the linked objects; send an empty array to clear them (general astro session). Omit to leave links unchanged. Cannot be changed after folders are created. | [optional] [default to undefined]
+**location** | [**PhotoEntryLocationDto**](PhotoEntryLocationDto.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -22,6 +23,7 @@ const instance: PatchPhotoEntryDto = {
     startDate,
     endDate,
     astroObjectIds,
+    location,
 };
 ```
 

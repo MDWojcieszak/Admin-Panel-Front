@@ -697,6 +697,86 @@ export interface AttachEntryDto {
 /**
  * 
  * @export
+ * @interface AttentionCountsResponse
+ */
+export interface AttentionCountsResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof AttentionCountsResponse
+     */
+    'pastPlanned': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AttentionCountsResponse
+     */
+    'unsecuredOverdue': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AttentionCountsResponse
+     */
+    'undeclared': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AttentionCountsResponse
+     */
+    'wishlistDueSoon': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AttentionCountsResponse
+     */
+    'openTodos': number;
+}
+/**
+ * 
+ * @export
+ * @interface AttentionResponse
+ */
+export interface AttentionResponse {
+    /**
+     * 
+     * @type {Array<PastPlannedEntryResponse>}
+     * @memberof AttentionResponse
+     */
+    'pastPlanned': Array<PastPlannedEntryResponse>;
+    /**
+     * 
+     * @type {Array<PendingMediaEntryResponse>}
+     * @memberof AttentionResponse
+     */
+    'unsecuredOverdue': Array<PendingMediaEntryResponse>;
+    /**
+     * 
+     * @type {Array<UndeclaredEntryResponse>}
+     * @memberof AttentionResponse
+     */
+    'undeclared': Array<UndeclaredEntryResponse>;
+    /**
+     * 
+     * @type {Array<GearItemAdminResponse>}
+     * @memberof AttentionResponse
+     */
+    'wishlistDueSoon': Array<GearItemAdminResponse>;
+    /**
+     * 
+     * @type {Array<OpenTodoResponse>}
+     * @memberof AttentionResponse
+     */
+    'openTodos': Array<OpenTodoResponse>;
+    /**
+     * 
+     * @type {AttentionCountsResponse}
+     * @memberof AttentionResponse
+     */
+    'counts': AttentionCountsResponse;
+}
+/**
+ * 
+ * @export
  * @interface AuthControllerCheckRegister200Response
  */
 export interface AuthControllerCheckRegister200Response {
@@ -2999,6 +3079,12 @@ export interface CreatePhotoEntryDto {
      * @memberof CreatePhotoEntryDto
      */
     'astroObjectIds'?: Array<string>;
+    /**
+     * 
+     * @type {PhotoEntryLocationDto}
+     * @memberof CreatePhotoEntryDto
+     */
+    'location'?: PhotoEntryLocationDto | null;
 }
 
 
@@ -3780,6 +3866,25 @@ export interface DashboardUsersDto {
      * @memberof DashboardUsersDto
      */
     'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface DayWindowsResponse
+ */
+export interface DayWindowsResponse {
+    /**
+     * 
+     * @type {TimeWindowResponse}
+     * @memberof DayWindowsResponse
+     */
+    'morning'?: TimeWindowResponse | null;
+    /**
+     * 
+     * @type {TimeWindowResponse}
+     * @memberof DayWindowsResponse
+     */
+    'evening'?: TimeWindowResponse | null;
 }
 /**
  * 
@@ -4643,6 +4748,37 @@ export interface DocumentListItemInputDto {
 /**
  * 
  * @export
+ * @interface EclipseContactsResponse
+ */
+export interface EclipseContactsResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof EclipseContactsResponse
+     */
+    'partialBegin'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof EclipseContactsResponse
+     */
+    'totalBegin'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof EclipseContactsResponse
+     */
+    'totalEnd'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof EclipseContactsResponse
+     */
+    'partialEnd'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface EditorialCommentAuthorResponse
  */
 export interface EditorialCommentAuthorResponse {
@@ -4793,6 +4929,239 @@ export type EntryGearWarning = typeof EntryGearWarning[keyof typeof EntryGearWar
 /**
  * 
  * @export
+ * @interface ExportFileResponse
+ */
+export interface ExportFileResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportFileResponse
+     */
+    'key': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportFileResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportFileResponse
+     */
+    'relativePath': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ExportFileResponse
+     */
+    'size': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportFileResponse
+     */
+    'modifiedAt': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ExportFileResponse
+     */
+    'width'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ExportFileResponse
+     */
+    'height'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportFileResponse
+     */
+    'format': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ExportFileResponse
+     */
+    'publishable': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportFileResponse
+     */
+    'reason'?: string | null;
+    /**
+     * 
+     * @type {ExportFileStatus}
+     * @memberof ExportFileResponse
+     */
+    'status': ExportFileStatus;
+    /**
+     * 
+     * @type {ExportPublicationResponse}
+     * @memberof ExportFileResponse
+     */
+    'publication'?: ExportPublicationResponse | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportFileResponse
+     */
+    'thumbUrl'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportFileResponse
+     */
+    'previewUrl'?: string | null;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ExportFileStatus = {
+    New: 'NEW',
+    Pending: 'PENDING',
+    Published: 'PUBLISHED',
+    Changed: 'CHANGED',
+    Failed: 'FAILED'
+} as const;
+
+export type ExportFileStatus = typeof ExportFileStatus[keyof typeof ExportFileStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface ExportPublicationResponse
+ */
+export interface ExportPublicationResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportPublicationResponse
+     */
+    'imageId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportPublicationResponse
+     */
+    'galleryId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportPublicationResponse
+     */
+    'publishedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportPublicationResponse
+     */
+    'error'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface ExportScanResponse
+ */
+export interface ExportScanResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportScanResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportScanResponse
+     */
+    'folder': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ExportScanResponse
+     */
+    'folderExists': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportScanResponse
+     */
+    'scannedAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExportScanResponse
+     */
+    'urlsExpireAt': string;
+    /**
+     * 
+     * @type {Array<ExportFileResponse>}
+     * @memberof ExportScanResponse
+     */
+    'files': Array<ExportFileResponse>;
+    /**
+     * 
+     * @type {ExportSummaryResponse}
+     * @memberof ExportScanResponse
+     */
+    'summary': ExportSummaryResponse;
+}
+/**
+ * 
+ * @export
+ * @interface ExportSummaryResponse
+ */
+export interface ExportSummaryResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ExportSummaryResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ExportSummaryResponse
+     */
+    'new': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ExportSummaryResponse
+     */
+    'pending': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ExportSummaryResponse
+     */
+    'published': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ExportSummaryResponse
+     */
+    'changed': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ExportSummaryResponse
+     */
+    'failed': number;
+}
+/**
+ * 
+ * @export
  * @interface FeedbackResponse
  */
 export interface FeedbackResponse {
@@ -4823,6 +5192,159 @@ export interface FeedbackResponse {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface ForecastDayResponse
+ */
+export interface ForecastDayResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ForecastDayResponse
+     */
+    'date': string;
+    /**
+     * 
+     * @type {ForecastDaySummaryResponse}
+     * @memberof ForecastDayResponse
+     */
+    'summary': ForecastDaySummaryResponse;
+    /**
+     * 
+     * @type {Array<ForecastHourResponse>}
+     * @memberof ForecastDayResponse
+     */
+    'hourly': Array<ForecastHourResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface ForecastDaySummaryResponse
+ */
+export interface ForecastDaySummaryResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastDaySummaryResponse
+     */
+    'cloudDay'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastDaySummaryResponse
+     */
+    'cloudGoldenEvening'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastDaySummaryResponse
+     */
+    'cloudNight'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastDaySummaryResponse
+     */
+    'precipitationProbabilityMax'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastDaySummaryResponse
+     */
+    'precipitationSum'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastDaySummaryResponse
+     */
+    'windGustMax'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastDaySummaryResponse
+     */
+    'temperatureMin'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastDaySummaryResponse
+     */
+    'temperatureMax'?: number | null;
+}
+/**
+ * 
+ * @export
+ * @interface ForecastHourResponse
+ */
+export interface ForecastHourResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ForecastHourResponse
+     */
+    'time': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'temperature'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'cloudCover'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'cloudLow'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'cloudMid'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'cloudHigh'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'precipitationProbability'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'precipitation'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'windSpeed'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'windGusts'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ForecastHourResponse
+     */
+    'visibility'?: number | null;
+}
 /**
  * 
  * @export
@@ -7544,6 +8066,31 @@ export interface MemoryDto {
 /**
  * 
  * @export
+ * @interface MilkyWayCoreResponse
+ */
+export interface MilkyWayCoreResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof MilkyWayCoreResponse
+     */
+    'start': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MilkyWayCoreResponse
+     */
+    'end': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof MilkyWayCoreResponse
+     */
+    'minutes': number;
+}
+/**
+ * 
+ * @export
  * @interface MonthlyPointDto
  */
 export interface MonthlyPointDto {
@@ -7559,6 +8106,37 @@ export interface MonthlyPointDto {
      * @memberof MonthlyPointDto
      */
     'count': number;
+}
+/**
+ * 
+ * @export
+ * @interface MoonResponse
+ */
+export interface MoonResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof MoonResponse
+     */
+    'rise'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof MoonResponse
+     */
+    'set'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof MoonResponse
+     */
+    'illumination': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof MoonResponse
+     */
+    'phase': string;
 }
 /**
  * 
@@ -7612,6 +8190,37 @@ export interface MyPermissionsResponseDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface NightResponse
+ */
+export interface NightResponse {
+    /**
+     * 
+     * @type {TimeWindowResponse}
+     * @memberof NightResponse
+     */
+    'darkness': TimeWindowResponse;
+    /**
+     * 
+     * @type {number}
+     * @memberof NightResponse
+     */
+    'darkSkyMinutes': number;
+    /**
+     * 
+     * @type {Array<TimeWindowResponse>}
+     * @memberof NightResponse
+     */
+    'darkSkyWindows': Array<TimeWindowResponse>;
+    /**
+     * 
+     * @type {MilkyWayCoreResponse}
+     * @memberof NightResponse
+     */
+    'milkyWayCore'?: MilkyWayCoreResponse | null;
+}
 /**
  * 
  * @export
@@ -8058,6 +8667,51 @@ export interface OllamaPullModelResponseDto {
 /**
  * 
  * @export
+ * @interface OpenTodoResponse
+ */
+export interface OpenTodoResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenTodoResponse
+     */
+    'commentId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenTodoResponse
+     */
+    'body': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenTodoResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenTodoResponse
+     */
+    'entryName': string;
+    /**
+     * 
+     * @type {CommentStage}
+     * @memberof OpenTodoResponse
+     */
+    'stage': CommentStage;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenTodoResponse
+     */
+    'createdAt': string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface OrderItemDto
  */
 export interface OrderItemDto {
@@ -8092,6 +8746,43 @@ export interface PaginationDto {
      * @memberof PaginationDto
      */
     'skip'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface PastPlannedEntryResponse
+ */
+export interface PastPlannedEntryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PastPlannedEntryResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PastPlannedEntryResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PastPlannedEntryResponse
+     */
+    'startDate'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PastPlannedEntryResponse
+     */
+    'endDate'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PastPlannedEntryResponse
+     */
+    'daysOver': number;
 }
 /**
  * 
@@ -8374,6 +9065,12 @@ export interface PatchPhotoEntryDto {
      * @memberof PatchPhotoEntryDto
      */
     'astroObjectIds'?: Array<string>;
+    /**
+     * 
+     * @type {PhotoEntryLocationDto}
+     * @memberof PatchPhotoEntryDto
+     */
+    'location'?: PhotoEntryLocationDto | null;
 }
 
 
@@ -9021,6 +9718,12 @@ export interface PatchUserSettingsDto {
      * @memberof PatchUserSettingsDto
      */
     'photoMediaEmailNotifications'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'tripEmailNotifications'?: boolean;
 }
 /**
  * 
@@ -10082,6 +10785,12 @@ export interface PhotoEntryDetailsResponse {
     'commentSummary'?: PhotoEntryCommentSummaryResponse;
     /**
      * 
+     * @type {PhotoEntryLocationResponse}
+     * @memberof PhotoEntryDetailsResponse
+     */
+    'location'?: PhotoEntryLocationResponse | null;
+    /**
+     * 
      * @type {Array<PhotoEntryAstroObjectResponse>}
      * @memberof PhotoEntryDetailsResponse
      */
@@ -10194,6 +10903,67 @@ export interface PhotoEntryFolderStructureResponse {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface PhotoEntryForecastResponse
+ */
+export interface PhotoEntryForecastResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryForecastResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {PhotoEntryLocationResponse}
+     * @memberof PhotoEntryForecastResponse
+     */
+    'location': PhotoEntryLocationResponse;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryForecastResponse
+     */
+    'timezone': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntryForecastResponse
+     */
+    'available': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryForecastResponse
+     */
+    'reason'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryForecastResponse
+     */
+    'availableFrom'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryForecastResponse
+     */
+    'fetchedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryForecastResponse
+     */
+    'source': string;
+    /**
+     * 
+     * @type {Array<ForecastDayResponse>}
+     * @memberof PhotoEntryForecastResponse
+     */
+    'days': Array<ForecastDayResponse>;
+}
 /**
  * 
  * @export
@@ -10367,6 +11137,68 @@ export interface PhotoEntryListResponse {
 /**
  * 
  * @export
+ * @interface PhotoEntryLocationDto
+ */
+export interface PhotoEntryLocationDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryLocationDto
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryLocationDto
+     */
+    'latitude': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryLocationDto
+     */
+    'longitude': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryLocationDto
+     */
+    'timezone'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface PhotoEntryLocationResponse
+ */
+export interface PhotoEntryLocationResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryLocationResponse
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryLocationResponse
+     */
+    'latitude': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryLocationResponse
+     */
+    'longitude': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryLocationResponse
+     */
+    'timezone': string;
+}
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
@@ -10530,6 +11362,12 @@ export interface PhotoEntryResponse {
      * @memberof PhotoEntryResponse
      */
     'commentSummary'?: PhotoEntryCommentSummaryResponse;
+    /**
+     * 
+     * @type {PhotoEntryLocationResponse}
+     * @memberof PhotoEntryResponse
+     */
+    'location'?: PhotoEntryLocationResponse | null;
 }
 
 
@@ -10563,6 +11401,49 @@ export interface PhotoEntryShoppingListResponse {
      * @memberof PhotoEntryShoppingListResponse
      */
     'total': number;
+}
+/**
+ * 
+ * @export
+ * @interface PhotoEntrySkyResponse
+ */
+export interface PhotoEntrySkyResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntrySkyResponse
+     */
+    'photoEntryId': string;
+    /**
+     * 
+     * @type {PhotoEntryLocationResponse}
+     * @memberof PhotoEntrySkyResponse
+     */
+    'location': PhotoEntryLocationResponse;
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntrySkyResponse
+     */
+    'timezone': string;
+    /**
+     * 
+     * @type {Array<SkyDayResponse>}
+     * @memberof PhotoEntrySkyResponse
+     */
+    'days': Array<SkyDayResponse>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PhotoEntrySkyResponse
+     */
+    'truncated': boolean;
+    /**
+     * 
+     * @type {Array<SkyEclipseResponse>}
+     * @memberof PhotoEntrySkyResponse
+     */
+    'eclipses': Array<SkyEclipseResponse>;
 }
 /**
  * 
@@ -12510,6 +13391,20 @@ export interface PreviewImmichAlbumDto {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const PreviewSize = {
+    Thumb: 'thumb',
+    Preview: 'preview'
+} as const;
+
+export type PreviewSize = typeof PreviewSize[keyof typeof PreviewSize];
+
+
+/**
+ * 
+ * @export
  * @interface ProcessListResponseDto
  */
 export interface ProcessListResponseDto {
@@ -13186,6 +14081,62 @@ export interface PublicPostResponse {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface PublishExportsDto
+ */
+export interface PublishExportsDto {
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PublishExportsDto
+     */
+    'keys': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishExportsDto
+     */
+    'galleryId'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PublishExportsDto
+     */
+    'newGallery'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishExportsDto
+     */
+    'newGalleryTitle'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface PublishExportsResponse
+ */
+export interface PublishExportsResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishExportsResponse
+     */
+    'galleryId': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PublishExportsResponse
+     */
+    'queued': number;
+    /**
+     * 
+     * @type {Array<SkippedExportResponse>}
+     * @memberof PublishExportsResponse
+     */
+    'skipped': Array<SkippedExportResponse>;
+}
 /**
  * 
  * @export
@@ -15756,6 +16707,125 @@ export interface SignInDto {
 /**
  * 
  * @export
+ * @interface SkippedExportResponse
+ */
+export interface SkippedExportResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SkippedExportResponse
+     */
+    'key': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SkippedExportResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {ExportFileStatus}
+     * @memberof SkippedExportResponse
+     */
+    'status': ExportFileStatus;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface SkyDayResponse
+ */
+export interface SkyDayResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SkyDayResponse
+     */
+    'date': string;
+    /**
+     * 
+     * @type {SunTimesResponse}
+     * @memberof SkyDayResponse
+     */
+    'sun': SunTimesResponse;
+    /**
+     * 
+     * @type {DayWindowsResponse}
+     * @memberof SkyDayResponse
+     */
+    'goldenHour': DayWindowsResponse;
+    /**
+     * 
+     * @type {DayWindowsResponse}
+     * @memberof SkyDayResponse
+     */
+    'blueHour': DayWindowsResponse;
+    /**
+     * 
+     * @type {MoonResponse}
+     * @memberof SkyDayResponse
+     */
+    'moon': MoonResponse;
+    /**
+     * 
+     * @type {NightResponse}
+     * @memberof SkyDayResponse
+     */
+    'night'?: NightResponse | null;
+}
+/**
+ * 
+ * @export
+ * @interface SkyEclipseResponse
+ */
+export interface SkyEclipseResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SkyEclipseResponse
+     */
+    'body': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SkyEclipseResponse
+     */
+    'kind': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SkyEclipseResponse
+     */
+    'peak': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof SkyEclipseResponse
+     */
+    'obscuration'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof SkyEclipseResponse
+     */
+    'altitudeAtPeak': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SkyEclipseResponse
+     */
+    'visible': boolean;
+    /**
+     * 
+     * @type {EclipseContactsResponse}
+     * @memberof SkyEclipseResponse
+     */
+    'contacts'?: EclipseContactsResponse | null;
+}
+/**
+ * 
+ * @export
  * @interface SubsystemCheckResponse
  */
 export interface SubsystemCheckResponse {
@@ -15783,6 +16853,61 @@ export interface SubsystemCheckResponse {
      * @memberof SubsystemCheckResponse
      */
     'detail'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface SunTimesResponse
+ */
+export interface SunTimesResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SunTimesResponse
+     */
+    'rise'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SunTimesResponse
+     */
+    'set'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SunTimesResponse
+     */
+    'civilDawn'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SunTimesResponse
+     */
+    'civilDusk'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SunTimesResponse
+     */
+    'nauticalDawn'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SunTimesResponse
+     */
+    'nauticalDusk'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SunTimesResponse
+     */
+    'astronomicalDawn'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SunTimesResponse
+     */
+    'astronomicalDusk'?: string | null;
 }
 /**
  * 
@@ -16060,6 +17185,25 @@ export const ThumbnailSize = {
 export type ThumbnailSize = typeof ThumbnailSize[keyof typeof ThumbnailSize];
 
 
+/**
+ * 
+ * @export
+ * @interface TimeWindowResponse
+ */
+export interface TimeWindowResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof TimeWindowResponse
+     */
+    'start': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TimeWindowResponse
+     */
+    'end': string;
+}
 /**
  * 
  * @export
@@ -17133,6 +18277,12 @@ export interface UserSettingsResponseDto {
      * @memberof UserSettingsResponseDto
      */
     'photoMediaEmailNotifications': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'tripEmailNotifications': boolean;
 }
 /**
  * 
@@ -45301,6 +46451,150 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
             };
         },
         /**
+         * Do not build this URL — take thumbUrl / previewUrl from the scan.
+         * @summary Preview of an export file (signed URL)
+         * @param {string} id 
+         * @param {string} key 
+         * @param {PreviewSize} size 
+         * @param {number} exp 
+         * @param {string} sig 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryExportControllerPreview: async (id: string, key: string, size: PreviewSize, exp: number, sig: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryExportControllerPreview', 'id', id)
+            // verify required parameter 'key' is not null or undefined
+            assertParamExists('photoEntryExportControllerPreview', 'key', key)
+            // verify required parameter 'size' is not null or undefined
+            assertParamExists('photoEntryExportControllerPreview', 'size', size)
+            // verify required parameter 'exp' is not null or undefined
+            assertParamExists('photoEntryExportControllerPreview', 'exp', exp)
+            // verify required parameter 'sig' is not null or undefined
+            assertParamExists('photoEntryExportControllerPreview', 'sig', sig)
+            const localVarPath = `/photo-entry/{id}/exports/preview`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (key !== undefined) {
+                localVarQueryParameter['key'] = key;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+            if (exp !== undefined) {
+                localVarQueryParameter['exp'] = exp;
+            }
+
+            if (sig !== undefined) {
+                localVarQueryParameter['sig'] = sig;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Queues the files and returns at once; progress shows in the next scan. NEW files are uploaded, CHANGED (re-exported) ones replace their image in place, PUBLISHED ones are skipped. A new gallery is created as DRAFT.
+         * @summary Publish selected export files to a gallery
+         * @param {string} id 
+         * @param {PublishExportsDto} publishExportsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryExportControllerPublish: async (id: string, publishExportsDto: PublishExportsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryExportControllerPublish', 'id', id)
+            // verify required parameter 'publishExportsDto' is not null or undefined
+            assertParamExists('photoEntryExportControllerPublish', 'publishExportsDto', publishExportsDto)
+            const localVarPath = `/photo-entry/{id}/exports/publish`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(publishExportsDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lists 04_EXPORT on demand with each file’s publication status (NEW, PENDING, PUBLISHED, CHANGED, FAILED) and signed preview URLs valid ~1 h — use them directly in <img loading=\"lazy\">. GENERAL and WORK entries with created folders only.
+         * @summary Scan the export folder
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryExportControllerScan: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryExportControllerScan', 'id', id)
+            const localVarPath = `/photo-entry/{id}/exports`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {string} id 
          * @param {string} gearItemId 
@@ -45669,6 +46963,116 @@ export const PhotoEntryApiAxiosParamCreator = function (configuration?: Configur
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Planned entries whose dates are over (did it happen?), media past its threshold, undeclared gear, wishlist gear needed within 30 days and open TODOs. All derived on read.
+         * @summary What needs a decision
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryPlanningControllerGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/photo-entry/attention`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Hourly cloud (total/low/mid/high), rain, wind, visibility and a daily summary for the day, the evening golden hour and the astronomical night. Only within ~16 days of the start: otherwise available=false with reason TOO_EARLY (and availableFrom) or PAST. Sends the entry coordinates to Open-Meteo; cached for an hour.
+         * @summary Weather forecast for the entry (Open-Meteo)
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryPlanningControllerGetForecast: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryPlanningControllerGetForecast', 'id', id)
+            const localVarPath = `/photo-entry/{id}/forecast`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Per local day at the entry location: sunrise/sunset, golden and blue hour, twilights, moon phase and rise/set, astronomical darkness with the moonless part and Milky Way core visibility; plus eclipses peaking during the entry. Needs a location and a start date. All times are UTC — display them in `timezone`.
+         * @summary Sun, moon, darkness and eclipses for the entry
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryPlanningControllerGetSky: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('photoEntryPlanningControllerGetSky', 'id', id)
+            const localVarPath = `/photo-entry/{id}/sky`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -45918,6 +47322,50 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Do not build this URL — take thumbUrl / previewUrl from the scan.
+         * @summary Preview of an export file (signed URL)
+         * @param {string} id 
+         * @param {string} key 
+         * @param {PreviewSize} size 
+         * @param {number} exp 
+         * @param {string} sig 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryExportControllerPreview(id: string, key: string, size: PreviewSize, exp: number, sig: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryExportControllerPreview(id, key, size, exp, sig, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryExportControllerPreview']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Queues the files and returns at once; progress shows in the next scan. NEW files are uploaded, CHANGED (re-exported) ones replace their image in place, PUBLISHED ones are skipped. A new gallery is created as DRAFT.
+         * @summary Publish selected export files to a gallery
+         * @param {string} id 
+         * @param {PublishExportsDto} publishExportsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryExportControllerPublish(id: string, publishExportsDto: PublishExportsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublishExportsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryExportControllerPublish(id, publishExportsDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryExportControllerPublish']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Lists 04_EXPORT on demand with each file’s publication status (NEW, PENDING, PUBLISHED, CHANGED, FAILED) and signed preview URLs valid ~1 h — use them directly in <img loading=\"lazy\">. GENERAL and WORK entries with created folders only.
+         * @summary Scan the export folder
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryExportControllerScan(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExportScanResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryExportControllerScan(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryExportControllerScan']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 
          * @param {string} id 
          * @param {string} gearItemId 
@@ -46035,6 +47483,44 @@ export const PhotoEntryApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryGearControllerShoppingList(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryGearControllerShoppingList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Planned entries whose dates are over (did it happen?), media past its threshold, undeclared gear, wishlist gear needed within 30 days and open TODOs. All derived on read.
+         * @summary What needs a decision
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryPlanningControllerGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AttentionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryPlanningControllerGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryPlanningControllerGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Hourly cloud (total/low/mid/high), rain, wind, visibility and a daily summary for the day, the evening golden hour and the astronomical night. Only within ~16 days of the start: otherwise available=false with reason TOO_EARLY (and availableFrom) or PAST. Sends the entry coordinates to Open-Meteo; cached for an hour.
+         * @summary Weather forecast for the entry (Open-Meteo)
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryPlanningControllerGetForecast(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntryForecastResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryPlanningControllerGetForecast(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryPlanningControllerGetForecast']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Per local day at the entry location: sunrise/sunset, golden and blue hour, twilights, moon phase and rise/set, astronomical darkness with the moonless part and Milky Way core visibility; plus eclipses peaking during the entry. Needs a location and a start date. All times are UTC — display them in `timezone`.
+         * @summary Sun, moon, darkness and eclipses for the entry
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async photoEntryPlanningControllerGetSky(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PhotoEntrySkyResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.photoEntryPlanningControllerGetSky(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoEntryApi.photoEntryPlanningControllerGetSky']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -46218,6 +47704,36 @@ export const PhotoEntryApiFactory = function (configuration?: Configuration, bas
             return localVarFp.photoEntryControllerRefreshCounts(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
+         * Do not build this URL — take thumbUrl / previewUrl from the scan.
+         * @summary Preview of an export file (signed URL)
+         * @param {PhotoEntryApiPhotoEntryExportControllerPreviewRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryExportControllerPreview(requestParameters: PhotoEntryApiPhotoEntryExportControllerPreviewRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.photoEntryExportControllerPreview(requestParameters.id, requestParameters.key, requestParameters.size, requestParameters.exp, requestParameters.sig, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Queues the files and returns at once; progress shows in the next scan. NEW files are uploaded, CHANGED (re-exported) ones replace their image in place, PUBLISHED ones are skipped. A new gallery is created as DRAFT.
+         * @summary Publish selected export files to a gallery
+         * @param {PhotoEntryApiPhotoEntryExportControllerPublishRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryExportControllerPublish(requestParameters: PhotoEntryApiPhotoEntryExportControllerPublishRequest, options?: RawAxiosRequestConfig): AxiosPromise<PublishExportsResponse> {
+            return localVarFp.photoEntryExportControllerPublish(requestParameters.id, requestParameters.publishExportsDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lists 04_EXPORT on demand with each file’s publication status (NEW, PENDING, PUBLISHED, CHANGED, FAILED) and signed preview URLs valid ~1 h — use them directly in <img loading=\"lazy\">. GENERAL and WORK entries with created folders only.
+         * @summary Scan the export folder
+         * @param {PhotoEntryApiPhotoEntryExportControllerScanRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryExportControllerScan(requestParameters: PhotoEntryApiPhotoEntryExportControllerScanRequest, options?: RawAxiosRequestConfig): AxiosPromise<ExportScanResponse> {
+            return localVarFp.photoEntryExportControllerScan(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @param {PhotoEntryApiPhotoEntryGearControllerAddRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
@@ -46302,6 +47818,35 @@ export const PhotoEntryApiFactory = function (configuration?: Configuration, bas
          */
         photoEntryGearControllerShoppingList(requestParameters: PhotoEntryApiPhotoEntryGearControllerShoppingListRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryShoppingListResponse> {
             return localVarFp.photoEntryGearControllerShoppingList(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Planned entries whose dates are over (did it happen?), media past its threshold, undeclared gear, wishlist gear needed within 30 days and open TODOs. All derived on read.
+         * @summary What needs a decision
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryPlanningControllerGet(options?: RawAxiosRequestConfig): AxiosPromise<AttentionResponse> {
+            return localVarFp.photoEntryPlanningControllerGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Hourly cloud (total/low/mid/high), rain, wind, visibility and a daily summary for the day, the evening golden hour and the astronomical night. Only within ~16 days of the start: otherwise available=false with reason TOO_EARLY (and availableFrom) or PAST. Sends the entry coordinates to Open-Meteo; cached for an hour.
+         * @summary Weather forecast for the entry (Open-Meteo)
+         * @param {PhotoEntryApiPhotoEntryPlanningControllerGetForecastRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryPlanningControllerGetForecast(requestParameters: PhotoEntryApiPhotoEntryPlanningControllerGetForecastRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntryForecastResponse> {
+            return localVarFp.photoEntryPlanningControllerGetForecast(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Per local day at the entry location: sunrise/sunset, golden and blue hour, twilights, moon phase and rise/set, astronomical darkness with the moonless part and Milky Way core visibility; plus eclipses peaking during the entry. Needs a location and a start date. All times are UTC — display them in `timezone`.
+         * @summary Sun, moon, darkness and eclipses for the entry
+         * @param {PhotoEntryApiPhotoEntryPlanningControllerGetSkyRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        photoEntryPlanningControllerGetSky(requestParameters: PhotoEntryApiPhotoEntryPlanningControllerGetSkyRequest, options?: RawAxiosRequestConfig): AxiosPromise<PhotoEntrySkyResponse> {
+            return localVarFp.photoEntryPlanningControllerGetSky(requestParameters.id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -46657,6 +48202,83 @@ export interface PhotoEntryApiPhotoEntryControllerRefreshCountsRequest {
 }
 
 /**
+ * Request parameters for photoEntryExportControllerPreview operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryExportControllerPreviewRequest
+ */
+export interface PhotoEntryApiPhotoEntryExportControllerPreviewRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryExportControllerPreview
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryExportControllerPreview
+     */
+    readonly key: string
+
+    /**
+     * 
+     * @type {PreviewSize}
+     * @memberof PhotoEntryApiPhotoEntryExportControllerPreview
+     */
+    readonly size: PreviewSize
+
+    /**
+     * 
+     * @type {number}
+     * @memberof PhotoEntryApiPhotoEntryExportControllerPreview
+     */
+    readonly exp: number
+
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryExportControllerPreview
+     */
+    readonly sig: string
+}
+
+/**
+ * Request parameters for photoEntryExportControllerPublish operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryExportControllerPublishRequest
+ */
+export interface PhotoEntryApiPhotoEntryExportControllerPublishRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryExportControllerPublish
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {PublishExportsDto}
+     * @memberof PhotoEntryApiPhotoEntryExportControllerPublish
+     */
+    readonly publishExportsDto: PublishExportsDto
+}
+
+/**
+ * Request parameters for photoEntryExportControllerScan operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryExportControllerScanRequest
+ */
+export interface PhotoEntryApiPhotoEntryExportControllerScanRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryExportControllerScan
+     */
+    readonly id: string
+}
+
+/**
  * Request parameters for photoEntryGearControllerAdd operation in PhotoEntryApi.
  * @export
  * @interface PhotoEntryApiPhotoEntryGearControllerAddRequest
@@ -46813,6 +48435,34 @@ export interface PhotoEntryApiPhotoEntryGearControllerShoppingListRequest {
      * 
      * @type {string}
      * @memberof PhotoEntryApiPhotoEntryGearControllerShoppingList
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for photoEntryPlanningControllerGetForecast operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryPlanningControllerGetForecastRequest
+ */
+export interface PhotoEntryApiPhotoEntryPlanningControllerGetForecastRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryPlanningControllerGetForecast
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for photoEntryPlanningControllerGetSky operation in PhotoEntryApi.
+ * @export
+ * @interface PhotoEntryApiPhotoEntryPlanningControllerGetSkyRequest
+ */
+export interface PhotoEntryApiPhotoEntryPlanningControllerGetSkyRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PhotoEntryApiPhotoEntryPlanningControllerGetSky
      */
     readonly id: string
 }
@@ -47031,6 +48681,42 @@ export class PhotoEntryApi extends BaseAPI {
     }
 
     /**
+     * Do not build this URL — take thumbUrl / previewUrl from the scan.
+     * @summary Preview of an export file (signed URL)
+     * @param {PhotoEntryApiPhotoEntryExportControllerPreviewRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryExportControllerPreview(requestParameters: PhotoEntryApiPhotoEntryExportControllerPreviewRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryExportControllerPreview(requestParameters.id, requestParameters.key, requestParameters.size, requestParameters.exp, requestParameters.sig, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Queues the files and returns at once; progress shows in the next scan. NEW files are uploaded, CHANGED (re-exported) ones replace their image in place, PUBLISHED ones are skipped. A new gallery is created as DRAFT.
+     * @summary Publish selected export files to a gallery
+     * @param {PhotoEntryApiPhotoEntryExportControllerPublishRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryExportControllerPublish(requestParameters: PhotoEntryApiPhotoEntryExportControllerPublishRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryExportControllerPublish(requestParameters.id, requestParameters.publishExportsDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lists 04_EXPORT on demand with each file’s publication status (NEW, PENDING, PUBLISHED, CHANGED, FAILED) and signed preview URLs valid ~1 h — use them directly in <img loading=\"lazy\">. GENERAL and WORK entries with created folders only.
+     * @summary Scan the export folder
+     * @param {PhotoEntryApiPhotoEntryExportControllerScanRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryExportControllerScan(requestParameters: PhotoEntryApiPhotoEntryExportControllerScanRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryExportControllerScan(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * 
      * @param {PhotoEntryApiPhotoEntryGearControllerAddRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
@@ -47132,6 +48818,41 @@ export class PhotoEntryApi extends BaseAPI {
      */
     public photoEntryGearControllerShoppingList(requestParameters: PhotoEntryApiPhotoEntryGearControllerShoppingListRequest, options?: RawAxiosRequestConfig) {
         return PhotoEntryApiFp(this.configuration).photoEntryGearControllerShoppingList(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Planned entries whose dates are over (did it happen?), media past its threshold, undeclared gear, wishlist gear needed within 30 days and open TODOs. All derived on read.
+     * @summary What needs a decision
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryPlanningControllerGet(options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryPlanningControllerGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Hourly cloud (total/low/mid/high), rain, wind, visibility and a daily summary for the day, the evening golden hour and the astronomical night. Only within ~16 days of the start: otherwise available=false with reason TOO_EARLY (and availableFrom) or PAST. Sends the entry coordinates to Open-Meteo; cached for an hour.
+     * @summary Weather forecast for the entry (Open-Meteo)
+     * @param {PhotoEntryApiPhotoEntryPlanningControllerGetForecastRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryPlanningControllerGetForecast(requestParameters: PhotoEntryApiPhotoEntryPlanningControllerGetForecastRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryPlanningControllerGetForecast(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Per local day at the entry location: sunrise/sunset, golden and blue hour, twilights, moon phase and rise/set, astronomical darkness with the moonless part and Milky Way core visibility; plus eclipses peaking during the entry. Needs a location and a start date. All times are UTC — display them in `timezone`.
+     * @summary Sun, moon, darkness and eclipses for the entry
+     * @param {PhotoEntryApiPhotoEntryPlanningControllerGetSkyRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoEntryApi
+     */
+    public photoEntryPlanningControllerGetSky(requestParameters: PhotoEntryApiPhotoEntryPlanningControllerGetSkyRequest, options?: RawAxiosRequestConfig) {
+        return PhotoEntryApiFp(this.configuration).photoEntryPlanningControllerGetSky(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

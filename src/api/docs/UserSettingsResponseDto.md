@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **processEmailNotifications** | **boolean** |  | [default to undefined]
 **processPushNotifications** | **boolean** |  | [default to undefined]
 **photoMediaEmailNotifications** | **boolean** |  | [default to undefined]
+**tripEmailNotifications** | **boolean** |  | [default to undefined]
 
 ## Example
 
@@ -26,6 +27,7 @@ const instance: UserSettingsResponseDto = {
     processEmailNotifications,
     processPushNotifications,
     photoMediaEmailNotifications,
+    tripEmailNotifications,
 };
 ```
 

@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **startDate** | **string** |  | [optional] [default to undefined]
 **endDate** | **string** |  | [optional] [default to undefined]
 **astroObjectIds** | **Array&lt;string&gt;** | Only for ASTRO entries, and optional even then: omit or send an empty array for a general sky / Milky Way / timelapse session not tied to catalogued objects. Must be omitted for GENERAL and WORK entries. | [optional] [default to undefined]
+**location** | [**PhotoEntryLocationDto**](PhotoEntryLocationDto.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -24,6 +25,7 @@ const instance: CreatePhotoEntryDto = {
     startDate,
     endDate,
     astroObjectIds,
+    location,
 };
 ```
 

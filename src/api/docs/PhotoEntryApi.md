@@ -22,6 +22,9 @@ All URIs are relative to *http://localhost*
 |[**photoEntryControllerPatchProgress**](#photoentrycontrollerpatchprogress) | **PATCH** /photo-entry/{id}/progress | |
 |[**photoEntryControllerPatchStatus**](#photoentrycontrollerpatchstatus) | **PATCH** /photo-entry/{id}/status | |
 |[**photoEntryControllerRefreshCounts**](#photoentrycontrollerrefreshcounts) | **POST** /photo-entry/{id}/refresh-counts | Count photos from the entry folders|
+|[**photoEntryExportControllerPreview**](#photoentryexportcontrollerpreview) | **GET** /photo-entry/{id}/exports/preview | Preview of an export file (signed URL)|
+|[**photoEntryExportControllerPublish**](#photoentryexportcontrollerpublish) | **POST** /photo-entry/{id}/exports/publish | Publish selected export files to a gallery|
+|[**photoEntryExportControllerScan**](#photoentryexportcontrollerscan) | **GET** /photo-entry/{id}/exports | Scan the export folder|
 |[**photoEntryGearControllerAdd**](#photoentrygearcontrolleradd) | **POST** /photo-entry/{id}/gear/{gearItemId} | |
 |[**photoEntryGearControllerAddFromKit**](#photoentrygearcontrolleraddfromkit) | **POST** /photo-entry/{id}/gear/from-kit/{kitId} | Expand a kit into the list|
 |[**photoEntryGearControllerConfirm**](#photoentrygearcontrollerconfirm) | **POST** /photo-entry/{id}/gear/confirm | Declare the gear as complete|
@@ -31,6 +34,9 @@ All URIs are relative to *http://localhost*
 |[**photoEntryGearControllerRemove**](#photoentrygearcontrollerremove) | **DELETE** /photo-entry/{id}/gear/{gearItemId} | |
 |[**photoEntryGearControllerReplace**](#photoentrygearcontrollerreplace) | **PUT** /photo-entry/{id}/gear | Replace the gear list|
 |[**photoEntryGearControllerShoppingList**](#photoentrygearcontrollershoppinglist) | **GET** /photo-entry/{id}/shopping-list | |
+|[**photoEntryPlanningControllerGet**](#photoentryplanningcontrollerget) | **GET** /photo-entry/attention | What needs a decision|
+|[**photoEntryPlanningControllerGetForecast**](#photoentryplanningcontrollergetforecast) | **GET** /photo-entry/{id}/forecast | Weather forecast for the entry (Open-Meteo)|
+|[**photoEntryPlanningControllerGetSky**](#photoentryplanningcontrollergetsky) | **GET** /photo-entry/{id}/sky | Sun, moon, darkness and eclipses for the entry|
 
 # **photoEntryCommentControllerCreate**
 > PhotoEntryCommentResponse photoEntryCommentControllerCreate(createPhotoEntryCommentDto)
@@ -987,6 +993,175 @@ const { status, data } = await apiInstance.photoEntryControllerRefreshCounts(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **photoEntryExportControllerPreview**
+> photoEntryExportControllerPreview()
+
+Do not build this URL — take thumbUrl / previewUrl from the scan.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let key: string; // (default to undefined)
+let size: PreviewSize; // (default to undefined)
+let exp: number; // (default to undefined)
+let sig: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryExportControllerPreview(
+    id,
+    key,
+    size,
+    exp,
+    sig
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+| **key** | [**string**] |  | defaults to undefined|
+| **size** | **PreviewSize** |  | defaults to undefined|
+| **exp** | [**number**] |  | defaults to undefined|
+| **sig** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryExportControllerPublish**
+> PublishExportsResponse photoEntryExportControllerPublish(publishExportsDto)
+
+Queues the files and returns at once; progress shows in the next scan. NEW files are uploaded, CHANGED (re-exported) ones replace their image in place, PUBLISHED ones are skipped. A new gallery is created as DRAFT.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration,
+    PublishExportsDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+let publishExportsDto: PublishExportsDto; //
+
+const { status, data } = await apiInstance.photoEntryExportControllerPublish(
+    id,
+    publishExportsDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **publishExportsDto** | **PublishExportsDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PublishExportsResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryExportControllerScan**
+> ExportScanResponse photoEntryExportControllerScan()
+
+Lists 04_EXPORT on demand with each file’s publication status (NEW, PENDING, PUBLISHED, CHANGED, FAILED) and signed preview URLs valid ~1 h — use them directly in <img loading=\"lazy\">. GENERAL and WORK entries with created folders only.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryExportControllerScan(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**ExportScanResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **photoEntryGearControllerAdd**
 > PhotoEntryGearListResponse photoEntryGearControllerAdd(addPhotoEntryGearDto)
 
@@ -1457,6 +1632,152 @@ const { status, data } = await apiInstance.photoEntryGearControllerShoppingList(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** | Wishlist gear attached to the entry, with the total |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryPlanningControllerGet**
+> AttentionResponse photoEntryPlanningControllerGet()
+
+Planned entries whose dates are over (did it happen?), media past its threshold, undeclared gear, wishlist gear needed within 30 days and open TODOs. All derived on read.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+const { status, data } = await apiInstance.photoEntryPlanningControllerGet();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**AttentionResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryPlanningControllerGetForecast**
+> PhotoEntryForecastResponse photoEntryPlanningControllerGetForecast()
+
+Hourly cloud (total/low/mid/high), rain, wind, visibility and a daily summary for the day, the evening golden hour and the astronomical night. Only within ~16 days of the start: otherwise available=false with reason TOO_EARLY (and availableFrom) or PAST. Sends the entry coordinates to Open-Meteo; cached for an hour.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryPlanningControllerGetForecast(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntryForecastResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **photoEntryPlanningControllerGetSky**
+> PhotoEntrySkyResponse photoEntryPlanningControllerGetSky()
+
+Per local day at the entry location: sunrise/sunset, golden and blue hour, twilights, moon phase and rise/set, astronomical darkness with the moonless part and Milky Way core visibility; plus eclipses peaking during the entry. Needs a location and a start date. All times are UTC — display them in `timezone`.
+
+### Example
+
+```typescript
+import {
+    PhotoEntryApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new PhotoEntryApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.photoEntryPlanningControllerGetSky(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**PhotoEntrySkyResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

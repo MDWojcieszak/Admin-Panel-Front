@@ -29,6 +29,7 @@ Name | Type | Description | Notes
 **createdAt** | **string** |  | [default to undefined]
 **updatedAt** | **string** |  | [default to undefined]
 **commentSummary** | [**PhotoEntryCommentSummaryResponse**](PhotoEntryCommentSummaryResponse.md) |  | [optional] [default to undefined]
+**location** | [**PhotoEntryLocationResponse**](PhotoEntryLocationResponse.md) |  | [optional] [default to undefined]
 
 ## Example
 
@@ -60,6 +61,7 @@ const instance: PhotoEntryResponse = {
     createdAt,
     updatedAt,
     commentSummary,
+    location,
 };
 ```
 
