@@ -23,11 +23,6 @@ export enum PhotoNavigationRoute {
   ALBUMS = 'albums',
 }
 
-export enum InquiryNavigationRoute {
-  INBOX = '',
-  SETTINGS = 'settings',
-}
-
 export enum GalleryNavigationRoute {
   GALLERIES = '',
   IMAGES = 'images',

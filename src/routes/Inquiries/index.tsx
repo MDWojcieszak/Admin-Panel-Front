@@ -1,21 +1,36 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { format, isThisYear, isToday } from 'date-fns';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import { FiArchive, FiCornerUpLeft, FiInbox, FiMail, FiPhone, FiSearch, FiSlash, FiTrash2, FiX } from 'react-icons/fi';
+import {
+  FiArchive,
+  FiCornerUpLeft,
+  FiInbox,
+  FiMail,
+  FiPhone,
+  FiSearch,
+  FiSettings,
+  FiSlash,
+  FiTrash2,
+  FiX,
+} from 'react-icons/fi';
 import { InquiryResponse, InquiryStatus, InquirySummaryResponse, InquiryTopic } from '~/api/api';
 import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
 import { PageHeader } from '~/components/PageHeader';
 import { SegmentedTabs } from '~/components/SegmentedTabs';
+import { TextArea } from '~/components/TextArea';
 import { useApi } from '~/hooks/useApi';
 import { notifyInquiriesChanged } from '~/hooks/useInquiryUnread';
+import { useModal } from '~/hooks/useModal';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { useUrlParams } from '~/hooks/useUrlParam';
 import { MainNavigationRoute } from '~/navigation/types';
 import { imgUrl } from '~/routes/Galleries/utils';
 import { ALL_TOPICS, STATUS_LABELS, TOPIC_LABELS } from '~/routes/Inquiries/labels';
+import { ContactFormSettingsModal } from '~/routes/Inquiries/modals/ContactFormSettingsModal';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type Box = 'inbox' | 'archived' | 'spam';
@@ -52,7 +67,7 @@ export const InquiriesInbox = () => {
   const canManage = can('inquiry.manage');
   const toast = useToast();
 
-  const [params, setParams] = useUrlParams(['box', 'id'] as const);
+  const [params, setParams] = useUrlParams(['box', 'id', 'panel'] as const);
   const box: Box = params.box === 'archived' || params.box === 'spam' ? params.box : 'inbox';
   const selectedId = params.id;
 
@@ -106,6 +121,37 @@ export const InquiriesInbox = () => {
   }, [inquiriesApi, fetchPage]);
 
   useEffect(loadSummary, [loadSummary]);
+
+  const settingsModal = useModal(
+    'contact-form-settings',
+    ContactFormSettingsModal,
+    { title: 'Contact form', type: 'side' },
+    {
+      handleClose: async () => {
+        setParams({ panel: null });
+        settingsModal.hide();
+      },
+    },
+  );
+  const settingsOpenRef = useRef(false);
+
+  const openSettings = () => {
+    settingsOpenRef.current = true;
+    setParams({ panel: 'form' });
+    settingsModal.show({
+      handleClose: async () => {
+        settingsOpenRef.current = false;
+        setParams({ panel: null });
+        settingsModal.hide();
+      },
+    });
+  };
+
+  // Opening from a link: ?panel=form shows the form settings.
+  useEffect(() => {
+    if (params.panel === 'form' && !settingsOpenRef.current) openSettings();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.panel]);
 
   const loadMore = async () => {
     setLoadingMore(true);
@@ -231,7 +277,13 @@ export const InquiriesInbox = () => {
 
   return (
     <div style={styles.page}>
-      <PageHeader title='Inbox' meta={metaParts.join(' · ') || undefined} />
+      <PageHeader
+        title='Inbox'
+        meta={metaParts.join(' · ') || undefined}
+        actions={
+          <Button label='Contact form' variant='secondary' icon={<FiSettings size={15} />} onClick={openSettings} />
+        }
+      />
 
       <div style={styles.toolbar}>
         <SegmentedTabs
@@ -317,6 +369,7 @@ export const InquiriesInbox = () => {
                     </div>
                     <div style={styles.rowMeta}>
                       <span>{TOPIC_LABELS[inquiry.topic]}</span>
+                      <span style={styles.rowLocale}>{inquiry.locale.toUpperCase()}</span>
                       {inquiry.status === InquiryStatus.Answered ? (
                         <span style={styles.answeredTag}>
                           <FiCornerUpLeft size={11} /> Answered
@@ -372,12 +425,21 @@ type InquiryDetailProps = {
 const InquiryDetail = ({ inquiry, canManage, onReply, onStatus, onSaveNote, onDelete }: InquiryDetailProps) => {
   const styles = useStyles();
   const theme = useTheme();
-  const [note, setNote] = useState(inquiry.internalNote ?? '');
+  const { control, watch, reset } = useForm<{ note: string }>({
+    defaultValues: { note: inquiry.internalNote ?? '' },
+  });
+  const note = watch('note') ?? '';
+  // Remounts the field on reset, so its floating label follows the new value.
+  const [noteKey, setNoteKey] = useState(0);
+  const resetNote = () => {
+    reset({ note: inquiry.internalNote ?? '' });
+    setNoteKey((k) => k + 1);
+  };
   const [savingNote, setSavingNote] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => setNote(inquiry.internalNote ?? ''), [inquiry.internalNote]);
+  useEffect(resetNote, [inquiry.internalNote]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // A second click deletes; the armed state lapses if it does not come.
   useEffect(() => {
@@ -419,6 +481,9 @@ const InquiryDetail = ({ inquiry, canManage, onReply, onStatus, onSaveNote, onDe
         <div style={styles.detailSide}>
           <span style={styles.detailDate}>{format(new Date(inquiry.createdAt), 'd MMM yyyy, HH:mm')}</span>
           <div style={styles.tags}>
+            <span style={styles.statusTag} title='Form language'>
+              {inquiry.locale.toUpperCase()}
+            </span>
             <span style={styles.topicTag}>{TOPIC_LABELS[inquiry.topic]}</span>
             <span style={styles.statusTag}>{STATUS_LABELS[inquiry.status]}</span>
           </div>
@@ -512,18 +577,18 @@ const InquiryDetail = ({ inquiry, canManage, onReply, onStatus, onSaveNote, onDe
 
       {canManage && !isSpam ? (
         <div style={styles.noteBlock}>
-          <span style={styles.noteLabel}>Internal note</span>
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
+          <TextArea
+            key={noteKey}
+            control={control}
+            name='note'
+            label='Internal note'
+            description='Only visible here'
             rows={3}
-            maxLength={2000}
-            placeholder='Only visible here'
-            style={styles.noteInput}
+            style={styles.noteField}
           />
           {noteDirty ? (
             <div style={styles.noteActions}>
-              <Button label='Cancel' variant='secondary' onClick={() => setNote(inquiry.internalNote ?? '')} />
+              <Button label='Cancel' variant='secondary' onClick={resetNote} />
               <Button
                 label='Save note'
                 loading={savingNote}
@@ -548,7 +613,7 @@ const InquiryDetail = ({ inquiry, canManage, onReply, onStatus, onSaveNote, onDe
 
       <div style={styles.finePrint}>
         <span>
-          Privacy notice v{inquiry.privacyNoticeVersion} acknowledged{' '}
+          Privacy notice {inquiry.privacyNoticeLocale.toUpperCase()} v{inquiry.privacyNoticeVersion} acknowledged{' '}
           {format(new Date(inquiry.noticeAcknowledgedAt), 'd MMM yyyy, HH:mm')}
         </span>
         {inquiry.answeredAt ? <span>Answered {format(new Date(inquiry.answeredAt), 'd MMM yyyy, HH:mm')}</span> : null}
@@ -680,6 +745,7 @@ const useStyles = mkUseStyles((t) => ({
     fontWeight: 600,
     color: t.colors.blue04,
   },
+  rowLocale: { fontSize: 11, fontWeight: 700, letterSpacing: 0.5, color: t.colors.dark05 },
   answeredTag: {
     display: 'flex',
     flexDirection: 'row',
@@ -775,17 +841,7 @@ const useStyles = mkUseStyles((t) => ({
     textTransform: 'uppercase',
     color: t.colors.dark05,
   },
-  noteInput: {
-    resize: 'vertical',
-    padding: t.spacing.m,
-    fontSize: 14,
-    fontFamily: 'inherit',
-    color: t.colors.white,
-    border: 'none',
-    outline: 'none',
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.5),
-  },
+  noteField: { marginBottom: 0 },
   noteActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: t.spacing.s },
   finePrint: { gap: 2, fontSize: 11, color: t.colors.dark05, paddingTop: t.spacing.s },
 }));
