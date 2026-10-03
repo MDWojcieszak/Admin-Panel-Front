@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { TbBackpack, TbCameraCheck, TbCloudUpload } from 'react-icons/tb';
 import { FiAlertTriangle, FiCheck, FiEdit2, FiPlus, FiShoppingCart, FiTrash2, FiX } from 'react-icons/fi';
 import {
   EntryGearPhase,
@@ -27,6 +28,9 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 
 /** Keeps a button's label on one line when its column is narrow. */
 const NO_WRAP = { flexShrink: 0, whiteSpace: 'nowrap' } as const;
+
+/** Icon-only state badge: square-ish padding instead of room for a label. */
+const ICON_BADGE = { padding: '4px 6px' } as const;
 
 type EntryGearPanelProps = {
   entryId: string;
@@ -553,20 +557,31 @@ const GearRow = ({ item, phase, editing, isShot, busy, onPatch, onRemove }: Gear
           a badge where the list is only being read — so the name keeps its line. */}
       <div style={styles.rowSide}>
         {phase === EntryGearPhase.Pack ? (
-          <Switch label='Packed' checked={item.packed} onChange={(v) => onPatch(item.gear.id, { packed: v })} />
+          <Switch
+            title='Packed'
+            icon={<TbBackpack size={16} />}
+            checked={item.packed}
+            onChange={(v) => onPatch(item.gear.id, { packed: v })}
+          />
         ) : null}
 
         {/* Shown only where it can be set: before the shoot, or for something
             still on the wishlist, a dead control just adds noise. */}
         {isSecure && editing && canMarkUsed ? (
-          <Switch label='Used' checked={item.used} onChange={(v) => onPatch(item.gear.id, { used: v })} />
+          <Switch
+            title='Used'
+            icon={<TbCameraCheck size={16} />}
+            checked={item.used}
+            onChange={(v) => onPatch(item.gear.id, { used: v })}
+          />
         ) : null}
 
         {/* Only gear that holds material has anything to upload. A lens gets
             no control at all rather than one that is permanently greyed out. */}
         {isSecure && editing && holdsMedia(item.gear.mediaSource) ? (
           <Switch
-            label='Uploaded'
+            title='Uploaded'
+            icon={<TbCloudUpload size={16} />}
             checked={item.secured}
             disabled={!canSecure}
             onChange={(v) => onPatch(item.gear.id, { secured: v })}
@@ -575,8 +590,16 @@ const GearRow = ({ item, phase, editing, isShot, busy, onPatch, onRemove }: Gear
 
         {isSecure && !editing ? (
           <div style={styles.rowBadges}>
-            {item.used ? <Badge label='Used' tone='blue' /> : null}
-            {item.secured && holdsMedia(item.gear.mediaSource) ? <Badge label='Uploaded' tone='green' /> : null}
+            {item.used ? (
+              <span title='Used' aria-label='Used'>
+                <Badge label={null} tone='blue' icon={<TbCameraCheck size={14} />} style={ICON_BADGE} />
+              </span>
+            ) : null}
+            {item.secured && holdsMedia(item.gear.mediaSource) ? (
+              <span title='Uploaded' aria-label='Uploaded'>
+                <Badge label={null} tone='green' icon={<TbCloudUpload size={14} />} style={ICON_BADGE} />
+              </span>
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -678,11 +701,11 @@ const useStyles = mkUseStyles((t) => ({
   // Fixed width, so the switch tracks line up from row to row whatever the label.
   rowSide: {
     flexShrink: 0,
-    width: 112,
+    width: 72,
     alignItems: 'flex-start',
     gap: t.spacing.s,
   },
-  rowBadges: { alignSelf: 'stretch', alignItems: 'flex-end', gap: t.spacing.xs },
+  rowBadges: { alignSelf: 'stretch', flexDirection: 'row', justifyContent: 'flex-end', gap: t.spacing.xs },
   rowTitleLine: {
     flexDirection: 'row',
     alignItems: 'center',
