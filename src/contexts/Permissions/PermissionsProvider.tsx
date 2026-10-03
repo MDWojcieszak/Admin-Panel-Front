@@ -17,13 +17,18 @@ export const PermissionsProvider = ({ children }: PermissionsProviderProps) => {
   const [role, setRole] = useState<Role>();
   const [isOwner, setIsOwner] = useState(false);
   const [permissions, setPermissions] = useState<string[]>([]);
-  // Start "loading" so permission-gated routes wait for /acl/me instead of
-  // redirecting on the first render before effective permissions arrive.
-  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(false);
+  // Whether /acl/me has answered for the current session. Loading is derived
+  // from it rather than kept in state: on the render where the session turns
+  // LOGGED_IN the effect below has not run yet, and a stored "not loading"
+  // let permission-gated routes see no permissions and bounce to the
+  // dashboard — which is why a refreshed deep link never stayed put.
+  const [fetched, setFetched] = useState(false);
+  const loading = userState === UserState.UNKNOWN || (userState === UserState.LOGGED_IN && !fetched) || fetching;
 
   const refresh = useCallback(async () => {
     if (!aclApi || userState !== UserState.LOGGED_IN) return;
-    setLoading(true);
+    setFetching(true);
     try {
       const { data } = await aclApi.aclControllerGetMyPermissions();
       setRole(data.role);
@@ -34,7 +39,8 @@ export const PermissionsProvider = ({ children }: PermissionsProviderProps) => {
       setIsOwner(false);
       setPermissions([]);
     } finally {
-      setLoading(false);
+      setFetched(true);
+      setFetching(false);
     }
   }, [aclApi, userState]);
 
@@ -45,7 +51,7 @@ export const PermissionsProvider = ({ children }: PermissionsProviderProps) => {
       setRole(undefined);
       setIsOwner(false);
       setPermissions([]);
-      setLoading(false);
+      setFetched(false);
     }
   }, [userState, refresh]);
 
