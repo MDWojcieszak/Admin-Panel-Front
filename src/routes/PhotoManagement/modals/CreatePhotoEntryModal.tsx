@@ -22,6 +22,8 @@ type AstroObjectListItem = {
 
 type CreatePhotoEntryModalProps = Partial<InternalModalProps> & {
   astroObjects?: AstroObjectListItem[];
+  /** Preselected type — the Astro page opens the form already set to ASTRO. */
+  defaultType?: PhotoEntryType;
 };
 
 const PhotoEntrySchema = z.object({
@@ -44,7 +46,7 @@ export const CreatePhotoEntryModal = (p: CreatePhotoEntryModalProps) => {
     resolver: zodResolver(PhotoEntrySchema),
     defaultValues: {
       name: '',
-      type: PhotoEntryType.General,
+      type: p.defaultType ?? PhotoEntryType.General,
       status: PhotoEntryStatus.Planned,
       startDate: '',
       endDate: '',

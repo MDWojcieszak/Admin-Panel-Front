@@ -1,8 +1,9 @@
-import { ChangeEvent, useEffect, useMemo } from 'react';
+import { ChangeEvent, ReactNode, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
 import { HiOutlineCamera, HiOutlineMagnifyingGlass } from 'react-icons/hi2';
-import { PhotoEntryPostStage, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
+import { TbGalaxy } from 'react-icons/tb';
+import { AstroObjectResponse, PhotoEntryPostStage, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
 import { FiCalendar, FiColumns, FiList } from 'react-icons/fi';
 import { Button } from '~/components/Button';
 import { SegmentedTabs } from '~/components/SegmentedTabs';
@@ -32,12 +33,22 @@ type PhotoLibraryToolbarProps = {
   onTypeChange: (value?: PhotoEntryType) => void;
   onResetFilters: () => void;
   onAddEntry: () => void;
+  /**
+   * Astro mode: the type is fixed, so its select gives way to one for the
+   * target. Passing the targets switches it on.
+   */
+  astroTargets?: AstroObjectResponse[];
+  astroObjectId?: string;
+  onAstroObjectChange?: (value?: string) => void;
+  /** Extra buttons before New Session (the Astro page adds New target). */
+  extraActions?: ReactNode;
 };
 
 type ToolbarFormValues = {
   status: string;
   postStage: string;
   type: string;
+  astroObjectId: string;
 };
 
 const getStatusLabel = (status: PhotoEntryStatus) => {
@@ -83,6 +94,10 @@ export const PhotoLibraryToolbar = ({
   onTypeChange,
   onResetFilters,
   onAddEntry,
+  astroTargets,
+  astroObjectId,
+  onAstroObjectChange,
+  extraActions,
 }: PhotoLibraryToolbarProps) => {
   const styles = useStyles();
 
@@ -121,13 +136,30 @@ export const PhotoLibraryToolbar = ({
     [],
   );
 
+  const targetOptions = useMemo(
+    () => [
+      { label: 'All targets', value: '' },
+      ...(astroTargets ?? []).map((item) => ({
+        label: item.code ? `${item.code} · ${item.name}` : item.name,
+        value: item.id,
+        icon: TbGalaxy,
+      })),
+    ],
+    [astroTargets],
+  );
+
   const { control, setValue } = useForm<ToolbarFormValues>({
     defaultValues: {
       status: status || '',
       postStage: postStage || '',
       type: type || '',
+      astroObjectId: astroObjectId || '',
     },
   });
+
+  useEffect(() => {
+    setValue('astroObjectId', astroObjectId || '');
+  }, [astroObjectId, setValue]);
 
   useEffect(() => {
     setValue('status', status || '');
@@ -141,12 +173,13 @@ export const PhotoLibraryToolbar = ({
     setValue('type', type || '');
   }, [type, setValue]);
 
-  const hasActiveFilters = Boolean(search.trim() || status || postStage || type);
+  const hasActiveFilters = Boolean(search.trim() || status || postStage || type || astroObjectId);
 
   const handleResetFilters = () => {
     setValue('status', '');
     setValue('postStage', '');
     setValue('type', '');
+    setValue('astroObjectId', '');
     onResetFilters();
   };
 
@@ -192,17 +225,31 @@ export const PhotoLibraryToolbar = ({
           />
         </div>
 
-        <div style={styles.selectWrap}>
-          <Select<ToolbarFormValues>
-            name='type'
-            label='Type'
-            control={control}
-            variant='secondary'
-            options={typeOptions}
-            style={styles.select}
-            onValueChange={(value) => onTypeChange(value ? (value as PhotoEntryType) : undefined)}
-          />
-        </div>
+        {astroTargets ? (
+          <div style={styles.targetWrap}>
+            <Select<ToolbarFormValues>
+              name='astroObjectId'
+              label='Target'
+              control={control}
+              variant='secondary'
+              options={targetOptions}
+              style={styles.select}
+              onValueChange={(value) => onAstroObjectChange?.(value || undefined)}
+            />
+          </div>
+        ) : (
+          <div style={styles.selectWrap}>
+            <Select<ToolbarFormValues>
+              name='type'
+              label='Type'
+              control={control}
+              variant='secondary'
+              options={typeOptions}
+              style={styles.select}
+              onValueChange={(value) => onTypeChange(value ? (value as PhotoEntryType) : undefined)}
+            />
+          </div>
+        )}
 
         <AnimatePresence>
           {hasActiveFilters ? (
@@ -235,6 +282,7 @@ export const PhotoLibraryToolbar = ({
           handleSelect={(value) => onViewChange(value as PhotoLibraryView)}
           layoutId='photo-library-view'
         />
+        {extraActions}
         <Button
           variant='secondary'
           label='New Session'
@@ -312,6 +360,11 @@ const useStyles = mkUseStyles((t) => ({
   selectWrap: {
     width: 170,
     minWidth: 170,
+    flexShrink: 0,
+  },
+  targetWrap: {
+    width: 230,
+    minWidth: 230,
     flexShrink: 0,
   },
   select: {
