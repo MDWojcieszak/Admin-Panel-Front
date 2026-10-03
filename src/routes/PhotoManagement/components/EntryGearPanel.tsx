@@ -332,11 +332,7 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
       <div style={styles.headerRow}>
         <div style={styles.headerText}>
           <span style={styles.headerTitle}>
-            {phase === EntryGearPhase.Pack
-              ? 'Packing list'
-              : phase === EntryGearPhase.Secure
-                ? 'Upload the material'
-                : 'Gear used'}
+            {phase === EntryGearPhase.Pack ? 'Packing list' : 'Gear used'}
           </span>
           {phase === EntryGearPhase.Pack ? (
             <span style={styles.headerHint}>Tick things off as they go in the bag.</span>
