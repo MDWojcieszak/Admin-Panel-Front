@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
-import { FiFileText, FiSave } from 'react-icons/fi';
+import { FiSave } from 'react-icons/fi';
 import { ContactSettingsResponse, InquiryTopic, UpdateContactSettingsDto } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Loader } from '~/components/Loader';
@@ -11,7 +11,6 @@ import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { ALL_TOPICS, TOPIC_LABELS } from '~/routes/Inquiries/labels';
-import { privacyNoticeFromTemplate } from '~/routes/Inquiries/privacyTemplate';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 const LIMITS = {
@@ -86,7 +85,6 @@ export const ContactFormSettings = () => {
   const [settings, setSettings] = useState<ContactSettingsResponse>();
   const [draft, setDraft] = useState<Draft>();
   const [saving, setSaving] = useState(false);
-  const [confirmTemplate, setConfirmTemplate] = useState(false);
 
   useEffect(() => {
     if (!inquiriesApi) return;
@@ -98,12 +96,6 @@ export const ContactFormSettings = () => {
       })
       .catch((e) => console.error('Error loading contact settings:', e));
   }, [inquiriesApi]);
-
-  useEffect(() => {
-    if (!confirmTemplate) return;
-    const timer = window.setTimeout(() => setConfirmTemplate(false), 4000);
-    return () => window.clearTimeout(timer);
-  }, [confirmTemplate]);
 
   const saved = useMemo(() => settings && toDraft(settings), [settings]);
   const patch = draft && saved ? toPatch(draft, saved) : {};
@@ -133,24 +125,6 @@ export const ContactFormSettings = () => {
 
   const retentionInvalid = rangeError(draft.retentionDays, LIMITS.retentionDays);
   const spamRetentionInvalid = rangeError(draft.spamRetentionDays, LIMITS.spamRetentionDays);
-
-  const insertTemplate = () => {
-    if (draft.privacyNotice.trim() && !confirmTemplate) {
-      setConfirmTemplate(true);
-      return;
-    }
-    setConfirmTemplate(false);
-    set(
-      'privacyNotice',
-      privacyNoticeFromTemplate({
-        administratorName: draft.administratorName,
-        administratorEmail: draft.administratorEmail,
-        administratorAddress: draft.administratorAddress,
-        retentionDays: retentionInvalid ? settings.retentionDays : Number(draft.retentionDays),
-        spamRetentionDays: spamRetentionInvalid ? settings.spamRetentionDays : Number(draft.spamRetentionDays),
-      }),
-    );
-  };
 
   const save = async () => {
     if (!inquiriesApi || !dirty) return;
@@ -294,16 +268,6 @@ export const ContactFormSettings = () => {
                 }`
               : undefined
           }
-          action={
-            canManage ? (
-              <Button
-                label={confirmTemplate ? 'Replace the current text?' : 'Insert template'}
-                variant={confirmTemplate ? 'danger' : 'secondary'}
-                icon={<FiFileText size={15} />}
-                onClick={insertTemplate}
-              />
-            ) : null
-          }
         >
           {canManage ? (
             <MarkdownEditor
@@ -355,26 +319,13 @@ export const ContactFormSettings = () => {
 const missingIn = (draft: Draft) =>
   !draft.administratorName.trim() || !draft.administratorEmail.trim() || !draft.privacyNotice.trim();
 
-const Card = ({
-  title,
-  meta,
-  action,
-  children,
-}: {
-  title: string;
-  meta?: string;
-  action?: ReactNode;
-  children: ReactNode;
-}) => {
+const Card = ({ title, meta, children }: { title: string; meta?: string; children: ReactNode }) => {
   const styles = useStyles();
   return (
     <div style={styles.card}>
-      <div style={styles.cardHeader}>
-        <div style={styles.cardTitleRow}>
-          <span style={styles.cardTitle}>{title}</span>
-          {meta ? <span style={styles.cardMeta}>{meta}</span> : null}
-        </div>
-        {action}
+      <div style={styles.cardTitleRow}>
+        <span style={styles.cardTitle}>{title}</span>
+        {meta ? <span style={styles.cardMeta}>{meta}</span> : null}
       </div>
       {children}
     </div>
@@ -469,13 +420,6 @@ const useStyles = mkUseStyles((t) => ({
     padding: t.spacing.l,
     borderRadius: t.borderRadius.large,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: t.spacing.m,
-    minHeight: 36,
   },
   cardTitleRow: { flexDirection: 'row', alignItems: 'baseline', gap: t.spacing.s },
   cardTitle: { fontSize: 16, fontWeight: 700, color: t.colors.white },
