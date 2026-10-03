@@ -2353,6 +2353,12 @@ export interface ContactTextResponse {
     'privacyNotice'?: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof ContactTextResponse
+     */
+    'privacyNoticeRendered'?: string | null;
+    /**
+     * 
      * @type {number}
      * @memberof ContactTextResponse
      */
@@ -13178,55 +13184,6 @@ export type PoiVerdict = typeof PoiVerdict[keyof typeof PoiVerdict];
 /**
  * 
  * @export
- * @interface PortfolioGalleryDetailResponse
- */
-export interface PortfolioGalleryDetailResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof PortfolioGalleryDetailResponse
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PortfolioGalleryDetailResponse
-     */
-    'title': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PortfolioGalleryDetailResponse
-     */
-    'slug': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PortfolioGalleryDetailResponse
-     */
-    'description'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PortfolioGalleryDetailResponse
-     */
-    'coverUrl'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof PortfolioGalleryDetailResponse
-     */
-    'imageCount': number;
-    /**
-     * 
-     * @type {Array<PortfolioImageResponse>}
-     * @memberof PortfolioGalleryDetailResponse
-     */
-    'items': Array<PortfolioImageResponse>;
-}
-/**
- * 
- * @export
  * @interface PortfolioGalleryListResponse
  */
 export interface PortfolioGalleryListResponse {
@@ -13242,6 +13199,61 @@ export interface PortfolioGalleryListResponse {
      * @memberof PortfolioGalleryListResponse
      */
     'galleries': Array<PortfolioGalleryResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface PortfolioGalleryPageResponse
+ */
+export interface PortfolioGalleryPageResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioGalleryPageResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioGalleryPageResponse
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioGalleryPageResponse
+     */
+    'slug': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioGalleryPageResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PortfolioGalleryPageResponse
+     */
+    'coverUrl'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PortfolioGalleryPageResponse
+     */
+    'imageCount': number;
+    /**
+     * 
+     * @type {Array<PortfolioImageResponse>}
+     * @memberof PortfolioGalleryPageResponse
+     */
+    'items': Array<PortfolioImageResponse>;
+    /**
+     * 
+     * @type {PublicContactResponse}
+     * @memberof PortfolioGalleryPageResponse
+     */
+    'contact': PublicContactResponse;
 }
 /**
  * 
@@ -51130,12 +51142,13 @@ export const PortfolioApiAxiosParamCreator = function (configuration?: Configura
          * 
          * @param {string} slug 
          * @param {ImageOrientation} [orientation] 
+         * @param {string} [locale] 
          * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        portfolioControllerBySlug: async (slug: string, orientation?: ImageOrientation, take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        portfolioControllerBySlug: async (slug: string, orientation?: ImageOrientation, locale?: string, take?: number, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'slug' is not null or undefined
             assertParamExists('portfolioControllerBySlug', 'slug', slug)
             const localVarPath = `/portfolio/galleries/{slug}`
@@ -51153,6 +51166,10 @@ export const PortfolioApiAxiosParamCreator = function (configuration?: Configura
 
             if (orientation !== undefined) {
                 localVarQueryParameter['orientation'] = orientation;
+            }
+
+            if (locale !== undefined) {
+                localVarQueryParameter['locale'] = locale;
             }
 
             if (take !== undefined) {
@@ -51411,13 +51428,14 @@ export const PortfolioApiFp = function(configuration?: Configuration) {
          * 
          * @param {string} slug 
          * @param {ImageOrientation} [orientation] 
+         * @param {string} [locale] 
          * @param {number} [take] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async portfolioControllerBySlug(slug: string, orientation?: ImageOrientation, take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PortfolioGalleryDetailResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.portfolioControllerBySlug(slug, orientation, take, skip, options);
+        async portfolioControllerBySlug(slug: string, orientation?: ImageOrientation, locale?: string, take?: number, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PortfolioGalleryPageResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.portfolioControllerBySlug(slug, orientation, locale, take, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PortfolioApi.portfolioControllerBySlug']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -51520,8 +51538,8 @@ export const PortfolioApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        portfolioControllerBySlug(requestParameters: PortfolioApiPortfolioControllerBySlugRequest, options?: RawAxiosRequestConfig): AxiosPromise<PortfolioGalleryDetailResponse> {
-            return localVarFp.portfolioControllerBySlug(requestParameters.slug, requestParameters.orientation, requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
+        portfolioControllerBySlug(requestParameters: PortfolioApiPortfolioControllerBySlugRequest, options?: RawAxiosRequestConfig): AxiosPromise<PortfolioGalleryPageResponse> {
+            return localVarFp.portfolioControllerBySlug(requestParameters.slug, requestParameters.orientation, requestParameters.locale, requestParameters.take, requestParameters.skip, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -51609,6 +51627,13 @@ export interface PortfolioApiPortfolioControllerBySlugRequest {
 
     /**
      * 
+     * @type {string}
+     * @memberof PortfolioApiPortfolioControllerBySlug
+     */
+    readonly locale?: string
+
+    /**
+     * 
      * @type {number}
      * @memberof PortfolioApiPortfolioControllerBySlug
      */
@@ -51679,7 +51704,7 @@ export class PortfolioApi extends BaseAPI {
      * @memberof PortfolioApi
      */
     public portfolioControllerBySlug(requestParameters: PortfolioApiPortfolioControllerBySlugRequest, options?: RawAxiosRequestConfig) {
-        return PortfolioApiFp(this.configuration).portfolioControllerBySlug(requestParameters.slug, requestParameters.orientation, requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
+        return PortfolioApiFp(this.configuration).portfolioControllerBySlug(requestParameters.slug, requestParameters.orientation, requestParameters.locale, requestParameters.take, requestParameters.skip, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

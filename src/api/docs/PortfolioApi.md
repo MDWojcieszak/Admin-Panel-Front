@@ -14,7 +14,7 @@ All URIs are relative to *http://localhost*
 |[**publicInquiryControllerCreate**](#publicinquirycontrollercreate) | **POST** /portfolio/inquiries | Send an inquiry from the contact form|
 
 # **portfolioControllerBySlug**
-> PortfolioGalleryDetailResponse portfolioControllerBySlug()
+> PortfolioGalleryPageResponse portfolioControllerBySlug()
 
 
 ### Example
@@ -30,12 +30,14 @@ const apiInstance = new PortfolioApi(configuration);
 
 let slug: string; // (default to undefined)
 let orientation: ImageOrientation; // (optional) (default to undefined)
+let locale: string; // (optional) (default to undefined)
 let take: number; // (optional) (default to undefined)
 let skip: number; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.portfolioControllerBySlug(
     slug,
     orientation,
+    locale,
     take,
     skip
 );
@@ -47,13 +49,14 @@ const { status, data } = await apiInstance.portfolioControllerBySlug(
 |------------- | ------------- | ------------- | -------------|
 | **slug** | [**string**] |  | defaults to undefined|
 | **orientation** | **ImageOrientation** |  | (optional) defaults to undefined|
+| **locale** | [**string**] |  | (optional) defaults to undefined|
 | **take** | [**number**] |  | (optional) defaults to undefined|
 | **skip** | [**number**] |  | (optional) defaults to undefined|
 
 
 ### Return type
 
-**PortfolioGalleryDetailResponse**
+**PortfolioGalleryPageResponse**
 
 ### Authorization
 
@@ -68,7 +71,7 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-|**200** | A published gallery with its ordered, visible images |  -  |
+|**200** | A published gallery with its ordered, visible images and the contact form (privacy notice included) in the language given by ?locale&#x3D; |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

@@ -1973,6 +1973,12 @@ paths:
           in: query
           schema:
             $ref: '#/components/schemas/ImageOrientation'
+        - name: locale
+          required: false
+          in: query
+          schema:
+            maxLength: 16
+            type: string
         - name: take
           required: false
           in: query
@@ -1985,11 +1991,13 @@ paths:
             type: number
       responses:
         '200':
-          description: A published gallery with its ordered, visible images
+          description: >-
+            A published gallery with its ordered, visible images and the contact
+            form (privacy notice included) in the language given by ?locale=
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PortfolioGalleryDetailResponse'
+                $ref: '#/components/schemas/PortfolioGalleryPageResponse'
       tags: *ref_22
   /gear:
     get:
@@ -9614,6 +9622,9 @@ components:
         privacyNotice:
           type: string
           nullable: true
+        privacyNoticeRendered:
+          type: string
+          nullable: true
         privacyNoticeVersion:
           type: integer
         privacyNoticeUpdatedAt:
@@ -10488,7 +10499,7 @@ components:
       required:
         - systems
         - ungrouped
-    PortfolioGalleryDetailResponse:
+    PortfolioGalleryPageResponse:
       type: object
       properties:
         id:
@@ -10509,12 +10520,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PortfolioImageResponse'
+        contact:
+          $ref: '#/components/schemas/PublicContactResponse'
       required:
         - id
         - title
         - slug
         - imageCount
         - items
+        - contact
     GearImageUserKind:
       type: string
       enum:

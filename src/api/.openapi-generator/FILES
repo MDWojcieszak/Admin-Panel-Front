@@ -415,8 +415,8 @@ docs/PoiStatus.md
 docs/PoiTranslationResponse.md
 docs/PoiVerdict.md
 docs/PortfolioApi.md
-docs/PortfolioGalleryDetailResponse.md
 docs/PortfolioGalleryListResponse.md
+docs/PortfolioGalleryPageResponse.md
 docs/PortfolioGalleryResponse.md
 docs/PortfolioHeroResponse.md
 docs/PortfolioHomeResponse.md
