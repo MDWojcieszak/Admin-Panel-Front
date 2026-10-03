@@ -134,10 +134,11 @@ const useStyles = mkUseStyles((t) => ({
     bottom: 0,
     right: 0,
     zIndex: 10,
-
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.15),
-    backdropFilter: 'blur(40px) saturate(135%)',
-    webkitBackdropFilter: 'blur(40px) saturate(135%)',
+    // Same light backdrop as the side card: the page stays readable behind
+    // the dialog instead of dissolving into a 40px smear.
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.45),
+    backdropFilter: 'blur(3px)',
+    webkitBackdropFilter: 'blur(3px)',
   },
   sideMask: {
     position: 'fixed',
