@@ -565,6 +565,7 @@ const GearRow = ({ item, phase, editing, isShot, busy, onPatch, onRemove }: Gear
           <Switch
             title='Used'
             icon={<TbCameraCheck size={16} />}
+            color={theme.colors.blue}
             checked={item.used}
             onChange={(v) => onPatch(item.gear.id, { used: v })}
           />
@@ -576,6 +577,8 @@ const GearRow = ({ item, phase, editing, isShot, busy, onPatch, onRemove }: Gear
           <Switch
             title='Uploaded'
             icon={<TbCloudUpload size={16} />}
+            // Same colours as the read-mode badges, so a state looks alike in both modes.
+            color={theme.colors.lightGreen}
             checked={item.secured}
             disabled={!canSecure}
             onChange={(v) => onPatch(item.gear.id, { secured: v })}
