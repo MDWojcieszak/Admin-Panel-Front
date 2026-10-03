@@ -526,11 +526,6 @@ const GearRow = ({ item, phase, interactive, isShot, busy, onPatch, onRemove }: 
           {item.warning === EntryGearWarning.Retired ? <Badge label='You sold this' tone='red' /> : null}
           {item.warning === EntryGearWarning.NotOwned ? <Badge label='Still on wishlist' tone='yellow' /> : null}
           {item.needsSecuring ? <Badge label='Not uploaded yet' tone='red' /> : null}
-          {/* Read mode states what the ticks would say, so nothing is hidden by Edit. */}
-          {!interactive && phase === EntryGearPhase.Secure && item.used ? <Badge label='Used' tone='blue' /> : null}
-          {!interactive && phase === EntryGearPhase.Secure && item.secured && holdsMedia(item.gear.mediaSource) ? (
-            <Badge label='Uploaded' tone='green' />
-          ) : null}
         </div>
         <span style={styles.itemCategory}>
           {gearCategoryLabel(item.gear.category)}
@@ -564,6 +559,15 @@ const GearRow = ({ item, phase, interactive, isShot, busy, onPatch, onRemove }: 
           </div>
         ) : null}
       </div>
+
+      {/* Read mode states what the ticks would say, so nothing is hidden by Edit;
+          on the right, where the bin sits in edit mode, the name keeps its line. */}
+      {!interactive && phase === EntryGearPhase.Secure && (item.used || item.secured) ? (
+        <div style={styles.stateBadges}>
+          {item.used ? <Badge label='Used' tone='blue' /> : null}
+          {item.secured && holdsMedia(item.gear.mediaSource) ? <Badge label='Uploaded' tone='green' /> : null}
+        </div>
+      ) : null}
 
       {interactive ? (
         <div
@@ -630,6 +634,7 @@ const useStyles = mkUseStyles((t) => ({
     justifyContent: 'space-between',
     gap: t.spacing.m,
   },
+  stateBadges: { flexShrink: 0, alignItems: 'flex-end', gap: t.spacing.xs },
   headerActions: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap', justifyContent: 'flex-end' },
   headerText: {
     gap: 2,
