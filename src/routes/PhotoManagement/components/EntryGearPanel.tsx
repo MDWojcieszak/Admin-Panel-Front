@@ -117,20 +117,32 @@ export const EntryGearPanel = ({ entryId, onChanged }: EntryGearPanelProps) => {
     }
   };
 
-  const patchItem = (gearItemId: string, dto: { packed?: boolean; used?: boolean; secured?: boolean }) => {
+  /**
+   * Switches flip at once and the row is not dimmed while saving: waiting for
+   * the round trip made the switch lag and the whole row, photo included,
+   * blink on every tap. The server's list still replaces the guess.
+   */
+  const patchItem = async (gearItemId: string, dto: { packed?: boolean; used?: boolean; secured?: boolean }) => {
     if (!photoEntryApi) return;
-    return run(
-      gearItemId,
-      async () => {
-        const { data } = await photoEntryApi.photoEntryGearControllerPatch({
-          id: entryId,
-          gearItemId,
-          patchPhotoEntryGearDto: dto,
-        });
-        return data;
-      },
-      'Could not update this item.',
+    setGear((prev) =>
+      prev
+        ? {
+            ...prev,
+            items: prev.items.map((item) => (item.gear.id === gearItemId ? { ...item, ...dto } : item)),
+          }
+        : prev,
     );
+    try {
+      const { data } = await photoEntryApi.photoEntryGearControllerPatch({
+        id: entryId,
+        gearItemId,
+        patchPhotoEntryGearDto: dto,
+      });
+      await absorb(data);
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'Could not update this item.'), 'error');
+      await load();
+    }
   };
 
   const removeItem = (gearItemId: string) => {
