@@ -22,7 +22,7 @@ type EntryCommentsPanelProps = {
   onChanged?: () => void | Promise<void>;
 };
 
-const STAGE_LABELS: Record<CommentStage, string> = {
+export const STAGE_LABELS: Record<CommentStage, string> = {
   [CommentStage.Planning]: 'Planning',
   [CommentStage.AfterShoot]: 'After shoot',
   [CommentStage.Selecting]: 'Selecting',

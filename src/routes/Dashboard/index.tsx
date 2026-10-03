@@ -13,7 +13,7 @@ import { Loader } from '~/components/Loader';
 import { Scrollbar } from '~/components/Scrollbar';
 import { StatCard } from '~/components/StatCard';
 import { GallerySection } from '~/routes/Dashboard/components/GallerySection';
-import { PendingMediaCard } from '~/routes/Dashboard/components/PendingMediaCard';
+import { AttentionCard } from '~/routes/Dashboard/components/AttentionCard';
 import { TrendsSection } from '~/routes/Dashboard/components/TrendsSection';
 import { useDashboard } from '~/routes/Dashboard/hooks/useDashboard';
 import { getPhotoEntryStatusColors } from '~/routes/PhotoManagement/utils/colors';
@@ -167,7 +167,7 @@ export const Dashboard = () => {
         />
       </div>
 
-      <PendingMediaCard />
+      <AttentionCard />
 
       <div style={styles.panels}>
         <BreakdownCard
