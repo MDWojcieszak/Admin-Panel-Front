@@ -24,6 +24,7 @@ import { EntryCommentsPanel } from '~/routes/PhotoManagement/components/EntryCom
 import { EntryGearPanel } from '~/routes/PhotoManagement/components/EntryGearPanel';
 import { EntryLocationEditor } from '~/routes/PhotoManagement/components/EntryLocationEditor';
 import { EntryProgressPanel } from '~/routes/PhotoManagement/components/EntryProgressPanel';
+import { EntrySkyPanel } from '~/routes/PhotoManagement/components/EntrySkyPanel';
 import { ImmichAlbumsSection } from '~/routes/PhotoManagement/components/ImmichAlbumsSection';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
@@ -343,6 +344,14 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const skySection = (
     <Section key='sky' title='Location & sky'>
       <EntryLocationEditor location={entry.location} saving={savingLocation} onSave={saveLocation} />
+      {entry.location && entry.startDate ? (
+        <EntrySkyPanel
+          entryId={entry.id}
+          reloadKey={[entry.location.latitude, entry.location.longitude, entry.startDate, entry.endDate].join('|')}
+        />
+      ) : entry.location ? (
+        <span style={styles.muted}>Set the dates to see the sky for this trip.</span>
+      ) : null}
     </Section>
   );
 
