@@ -4,6 +4,7 @@ import { PhotoEntrySkyResponse, SkyDayResponse, SkyEclipseResponse, TimeWindowRe
 import { Loader } from '~/components/Loader';
 import { MoonIcon } from '~/components/MoonIcon';
 import { useApi } from '~/hooks/useApi';
+import { formatPlaceDay, formatPlaceTime, zoned } from '~/routes/PhotoManagement/utils/placeTime';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -47,37 +48,12 @@ const moonCyclePosition = (phase: string, illuminationPercent: number) => {
   return PHASE_BASE[phase]?.waxing === false ? 1 - half : half;
 };
 
-/** The date and minute of day of an instant, in the place's time zone. */
-const zoned = (iso: string, timeZone: string) => {
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: 'h23',
-  }).formatToParts(new Date(iso));
-  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '00';
-  return {
-    date: `${get('year')}-${get('month')}-${get('day')}`,
-    minutes: Number(get('hour')) * 60 + Number(get('minute')),
-  };
-};
-
-/** All times arrive in UTC and are shown in the place's own zone, not the browser's. */
-const formatTime = (iso: string | null | undefined, timeZone: string) =>
-  iso ? new Date(iso).toLocaleTimeString('pl-PL', { timeZone, hour: '2-digit', minute: '2-digit' }) : '—';
-
 const formatDuration = (minutes: number) => {
   if (minutes <= 0) return 'none';
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
   return h ? `${h}h ${m.toString().padStart(2, '0')}m` : `${m}m`;
 };
-
-const formatDay = (date: string) =>
-  new Date(`${date}T12:00:00Z`).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 
 /**
  * Every window of every day as segments on the local days they cover. A night
@@ -197,25 +173,26 @@ const DayRow = ({ day, timeZone, segments }: { day: SkyDayResponse; timeZone: st
   return (
     <div style={styles.day}>
       <div style={styles.dayHead}>
-        <span style={styles.dayLabel}>{formatDay(day.date)}</span>
+        <span style={styles.dayLabel}>{formatPlaceDay(day.date)}</span>
         <span style={styles.fact} title='Sunrise · sunset'>
           <FiSunrise size={13} color={theme.colors.yellow} />
-          {formatTime(day.sun.rise, timeZone)}
+          {formatPlaceTime(day.sun.rise, timeZone)}
           <FiSunset size={13} color={theme.colors.yellow} />
-          {formatTime(day.sun.set, timeZone)}
+          {formatPlaceTime(day.sun.set, timeZone)}
         </span>
         {day.goldenHour.evening ? (
           <span style={styles.fact} title='Evening golden hour'>
             <FiSun size={13} color='#E8B348' />
-            {formatTime(day.goldenHour.evening.start, timeZone)}–{formatTime(day.goldenHour.evening.end, timeZone)}
+            {formatPlaceTime(day.goldenHour.evening.start, timeZone)}–
+            {formatPlaceTime(day.goldenHour.evening.end, timeZone)}
           </span>
         ) : null}
         <span
           style={styles.fact}
-          title={`${phase?.label ?? day.moon.phase} · rises ${formatTime(day.moon.rise, timeZone)}, sets ${formatTime(
-            day.moon.set,
+          title={`${phase?.label ?? day.moon.phase} · rises ${formatPlaceTime(
+            day.moon.rise,
             timeZone,
-          )}`}
+          )}, sets ${formatPlaceTime(day.moon.set, timeZone)}`}
         >
           <MoonIcon phase={moonCyclePosition(day.moon.phase, day.moon.illumination)} size={15} />
           {Math.round(day.moon.illumination)}%
@@ -225,8 +202,8 @@ const DayRow = ({ day, timeZone, segments }: { day: SkyDayResponse; timeZone: st
         </span>
         {day.night?.milkyWayCore ? (
           <span style={styles.fact} title='Galactic core above 10° in dark sky'>
-            Milky Way {formatTime(day.night.milkyWayCore.start, timeZone)}–
-            {formatTime(day.night.milkyWayCore.end, timeZone)}
+            Milky Way {formatPlaceTime(day.night.milkyWayCore.start, timeZone)}–
+            {formatPlaceTime(day.night.milkyWayCore.end, timeZone)}
           </span>
         ) : null}
       </div>
@@ -270,7 +247,7 @@ const EclipseBanner = ({ eclipse, timeZone }: { eclipse: SkyEclipseResponse; tim
       <FiAlertTriangle size={16} />
       <div style={styles.eclipseText}>
         <span style={styles.eclipseTitle}>
-          {what} · peak {formatTime(eclipse.peak, timeZone)}
+          {what} · peak {formatPlaceTime(eclipse.peak, timeZone)}
           {eclipse.obscuration != null ? ` · ${Math.round(eclipse.obscuration * 100)}% covered` : ''}
         </span>
         <span>
@@ -278,10 +255,16 @@ const EclipseBanner = ({ eclipse, timeZone }: { eclipse: SkyEclipseResponse; tim
             ? `Visible from here, ${Math.round(eclipse.altitudeAtPeak)}° above the horizon at peak`
             : 'Below the horizon from here at peak'}
           {contacts?.partialBegin
-            ? ` · partial ${formatTime(contacts.partialBegin, timeZone)}–${formatTime(contacts.partialEnd, timeZone)}`
+            ? ` · partial ${formatPlaceTime(contacts.partialBegin, timeZone)}–${formatPlaceTime(
+                contacts.partialEnd,
+                timeZone,
+              )}`
             : ''}
           {contacts?.totalBegin
-            ? ` · total ${formatTime(contacts.totalBegin, timeZone)}–${formatTime(contacts.totalEnd, timeZone)}`
+            ? ` · total ${formatPlaceTime(contacts.totalBegin, timeZone)}–${formatPlaceTime(
+                contacts.totalEnd,
+                timeZone,
+              )}`
             : ''}
         </span>
       </div>
