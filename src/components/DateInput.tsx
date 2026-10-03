@@ -16,6 +16,8 @@ type DateInputProps<T extends FieldValues> = {
   max?: string;
 } & UseControllerProps<T>;
 
+/** Height of the description/error line under the field. */
+const DESCRIPTION_LINE = 20;
 const POPOVER_WIDTH = 296;
 const POPOVER_HEIGHT = 372;
 const WEEKDAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
@@ -72,7 +74,11 @@ export const DateInput = <T extends FieldValues>(p: DateInputProps<T>) => {
     const left = Math.max(8, Math.min(r.left, window.innerWidth - POPOVER_WIDTH - 8));
     setCoords({
       left,
-      ...(openUp ? { bottom: window.innerHeight - r.top + theme.spacing.s } : { top: r.bottom + theme.spacing.s }),
+      // Opening down, it clears the description line shown under the field
+      // while the calendar is open, instead of covering it.
+      ...(openUp
+        ? { bottom: window.innerHeight - r.top + theme.spacing.s }
+        : { top: r.bottom + theme.spacing.s + (hasBottomSpace ? DESCRIPTION_LINE : 0) }),
     });
   };
 
