@@ -7,8 +7,10 @@ import { AnimatedRoute } from '~/navigation/AnimatedRoute';
 import { PhotoManagementNavigation } from '~/navigation/PhotoManagementNavigation';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { ServerNavigation } from '~/navigation/ServerNavigation';
+import { DeployNavigation } from '~/navigation/DeployNavigation';
 import {
   BlogNavigationRoute,
+  DeployNavigationRoute,
   GalleryNavigationRoute,
   MainNavigationRoute,
   MainRouteType,
@@ -38,6 +40,19 @@ export const mainNavigationRoutes: MainRouteType[] = [
     component: <ServerNavigation />,
     nested: true,
     permission: 'server.read',
+  },
+  {
+    path: MainNavigationRoute.DEPLOY,
+    label: 'Deployments',
+    component: <DeployNavigation />,
+    nested: true,
+    permission: 'deploy.read',
+    subItems: [
+      { path: DeployNavigationRoute.CONTAINERS, label: 'Containers' },
+      { path: DeployNavigationRoute.APPLICATIONS, label: 'Applications' },
+      { path: DeployNavigationRoute.VARIABLES, label: 'Variables' },
+      { path: DeployNavigationRoute.GIT, label: 'Git', permission: 'deploy.git' },
+    ],
   },
   {
     path: MainNavigationRoute.PHOTO_MANAGEMENT,

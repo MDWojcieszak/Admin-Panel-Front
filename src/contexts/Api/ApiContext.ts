@@ -18,6 +18,7 @@ import {
   BlogVersioningApi,
   DashboardApi,
   DefaultApi,
+  DeployApi,
   FileApi,
   GalleriesApi,
   InquiriesApi,
@@ -53,6 +54,7 @@ type ApiContextType = {
   astroObjectApi: AstroObjectApi | false;
   aclApi: ACLApi | false;
   defaultApi: DefaultApi | false;
+  deployApi: DeployApi | false;
   dashboardApi: DashboardApi | false;
   blogPostsApi: BlogPostsApi | false;
   blogVersioningApi: BlogVersioningApi | false;

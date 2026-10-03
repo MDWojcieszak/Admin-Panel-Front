@@ -15,6 +15,7 @@ export enum MainNavigationRoute {
   ACCOUNT = 'account',
   ABOUT = 'about',
   BLOG = 'blog',
+  DEPLOY = 'deploy',
 }
 
 export enum PhotoNavigationRoute {
@@ -38,6 +39,13 @@ export enum BlogNavigationRoute {
   HOME = 'home',
   TEMPLATES = 'templates',
   INSIGHTS = 'insights',
+}
+
+export enum DeployNavigationRoute {
+  CONTAINERS = '',
+  APPLICATIONS = 'applications',
+  VARIABLES = 'variables',
+  GIT = 'git',
 }
 
 export enum CommonNavigationRoute {
