@@ -16,6 +16,7 @@ import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
 import { Scrollbar } from '~/components/Scrollbar';
+import { Switch } from '~/components/Switch';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
 import { getApiErrorMessage } from '~/utils/apiError';
@@ -537,19 +538,19 @@ const GearRow = ({ item, phase, interactive, isShot, busy, onPatch, onRemove }: 
         {interactive ? (
           <div style={styles.toggleRow}>
             {phase === EntryGearPhase.Pack ? (
-              <Toggle label='Packed' checked={item.packed} onChange={(v) => onPatch(item.gear.id, { packed: v })} />
+              <Switch label='Packed' checked={item.packed} onChange={(v) => onPatch(item.gear.id, { packed: v })} />
             ) : null}
 
             {/* Shown only where it can be set: before the shoot, or for something
                 still on the wishlist, a dead control just adds noise. */}
             {canMarkUsed ? (
-              <Toggle label='Used' checked={item.used} onChange={(v) => onPatch(item.gear.id, { used: v })} />
+              <Switch label='Used' checked={item.used} onChange={(v) => onPatch(item.gear.id, { used: v })} />
             ) : null}
 
             {/* Only gear that holds material has anything to secure. A lens gets
                 no control at all rather than one that is permanently greyed out. */}
             {phase === EntryGearPhase.Secure && holdsMedia(item.gear.mediaSource) ? (
-              <Toggle
+              <Switch
                 label='Uploaded'
                 checked={item.secured}
                 disabled={!canSecure}
@@ -586,40 +587,6 @@ const GearRow = ({ item, phase, interactive, isShot, busy, onPatch, onRemove }: 
         </div>
       ) : null}
     </div>
-  );
-};
-
-const Toggle = ({
-  label,
-  checked,
-  disabled,
-  onChange,
-}: {
-  label: string;
-  checked: boolean;
-  disabled?: boolean;
-  onChange: (value: boolean) => void;
-}) => {
-  const styles = useStyles();
-
-  return (
-    <button
-      type='button'
-      disabled={disabled}
-      onClick={() => onChange(!checked)}
-      style={{
-        ...styles.toggle,
-        ...(checked ? styles.toggleOn : {}),
-        opacity: disabled ? 0.35 : 1,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-      }}
-      title={disabled ? 'Not available for this item' : undefined}
-    >
-      <div style={{ ...styles.checkbox, ...(checked ? styles.checkboxOn : {}) }}>
-        {checked ? <FiCheck size={11} /> : null}
-      </div>
-      {label}
-    </button>
   );
 };
 
@@ -701,8 +668,9 @@ const useStyles = mkUseStyles((t) => ({
   toggleRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: t.spacing.xs,
-    marginTop: t.spacing.xs,
+    columnGap: t.spacing.m,
+    rowGap: t.spacing.xs,
+    marginTop: t.spacing.s,
   },
   rowTitleLine: {
     flexDirection: 'row',
@@ -717,29 +685,6 @@ const useStyles = mkUseStyles((t) => ({
   itemCategory: {
     fontSize: 12,
     color: t.colors.dark05,
-  },
-  toggle: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.xs,
-    padding: `${t.spacing.xs}px ${t.spacing.s}px`,
-    borderRadius: 999,
-    fontSize: 12,
-    fontWeight: 600,
-    color: t.colors.dark05,
-    backgroundColor: 'transparent',
-    // Longhands, not the `border` shorthand: the on-state swaps only the colour,
-    // and removing that key afterwards would otherwise clear the colour of the
-    // shorthand and leave the border in the text colour.
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: t.colors.dark04 + t.colorOpacity(0.5),
-  },
-  toggleOn: {
-    color: t.colors.white,
-    borderColor: t.colors.blue,
-    backgroundColor: t.colors.blue + t.colorOpacity(0.16),
   },
   checkbox: {
     width: 16,
