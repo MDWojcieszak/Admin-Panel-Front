@@ -20,6 +20,7 @@ import {
   DefaultApi,
   FileApi,
   GalleriesApi,
+  InquiriesApi,
   GearApi,
   ImageApi,
   ImmichApi,
@@ -63,6 +64,7 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const integrationsApi = useMemo(() => config && new IntegrationsApi(config), [config]);
   const tokenApi = useMemo(() => config && new TokenApi(config), [config]);
   const galleriesApi = useMemo(() => config && new GalleriesApi(config), [config]);
+  const inquiriesApi = useMemo(() => config && new InquiriesApi(config), [config]);
   const gearApi = useMemo(() => config && new GearApi(config), [config]);
   const astroObjectApi = useMemo(() => config && new AstroObjectApi(config), [config]);
   const aclApi = useMemo(() => config && new ACLApi(config), [config]);
@@ -98,6 +100,7 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         integrationsApi,
         tokenApi,
         galleriesApi,
+        inquiriesApi,
         gearApi,
         astroObjectApi,
         aclApi,

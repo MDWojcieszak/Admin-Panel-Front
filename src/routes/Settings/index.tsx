@@ -2,16 +2,12 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import { MdLogout, MdOutlineMail } from 'react-icons/md';
-import {
-  PatchUserSettingsDto,
-  SessionResponseDto,
-  TestNotificationType,
-  UserSettingsResponseDto,
-} from '~/api/api';
+import { PatchUserSettingsDto, SessionResponseDto, TestNotificationType, UserSettingsResponseDto } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Loader } from '~/components/Loader';
 import { useApi } from '~/hooks/useApi';
 import { useAuth } from '~/hooks/useAuth';
+import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -52,6 +48,7 @@ export const Settings = () => {
   const { userApi, sessionApi, notificationsApi } = useApi();
   const auth = useAuth();
   const toast = useToast();
+  const can = useCan();
 
   const [settings, setSettings] = useState<UserSettingsResponseDto>();
   const [loading, setLoading] = useState(true);
@@ -153,7 +150,7 @@ export const Settings = () => {
     }
   };
 
-  const groups: { title: string; rows: { key: SettingKey; label: string; description: string }[] }[] = [
+  const allGroups: { title: string; rows: { key: SettingKey; label: string; description: string }[] }[] = [
     {
       title: 'Servers',
       rows: [
@@ -197,101 +194,112 @@ export const Settings = () => {
         },
       ],
     },
+    {
+      title: 'Inbox',
+      rows: [
+        {
+          key: 'inquiryEmailNotifications',
+          label: 'New inquiry (email)',
+          description: 'Email me when someone writes through the contact form.',
+        },
+      ],
+    },
   ];
+  const groups = allGroups.filter((group) => group.title !== 'Inbox' || can('inquiry.read'));
 
   return (
     <div style={styles.scroll}>
       <div style={styles.content}>
         <h2 style={styles.heading}>User Settings</h2>
 
-      <div style={styles.block}>
-        <span style={styles.blockTitle}>Notifications</span>
-        {loading || !settings ? (
-          <Loader />
-        ) : (
-          groups.map((group) => (
-            <div key={group.title} style={styles.section}>
-              <span style={styles.sectionTitle}>{group.title}</span>
-              {group.rows.map((row) => {
-                const comingSoon = COMING_SOON.includes(row.key);
-                return (
-                  <div key={row.key} style={{ ...styles.row, opacity: comingSoon ? 0.55 : 1 }}>
-                    <div style={styles.rowText}>
-                      <span style={styles.rowLabel}>{row.label}</span>
-                      <span style={styles.rowDescription}>{row.description}</span>
+        <div style={styles.block}>
+          <span style={styles.blockTitle}>Notifications</span>
+          {loading || !settings ? (
+            <Loader />
+          ) : (
+            groups.map((group) => (
+              <div key={group.title} style={styles.section}>
+                <span style={styles.sectionTitle}>{group.title}</span>
+                {group.rows.map((row) => {
+                  const comingSoon = COMING_SOON.includes(row.key);
+                  return (
+                    <div key={row.key} style={{ ...styles.row, opacity: comingSoon ? 0.55 : 1 }}>
+                      <div style={styles.rowText}>
+                        <span style={styles.rowLabel}>{row.label}</span>
+                        <span style={styles.rowDescription}>{row.description}</span>
+                      </div>
+                      {comingSoon ? (
+                        <span style={styles.soonTag}>Soon</span>
+                      ) : (
+                        <Toggle value={!!settings[row.key]} onChange={(v) => update(row.key, v)} />
+                      )}
                     </div>
-                    {comingSoon ? (
-                      <span style={styles.soonTag}>Soon</span>
+                  );
+                })}
+              </div>
+            ))
+          )}
+        </div>
+
+        <div style={styles.block}>
+          <span style={styles.blockTitle}>Send a test email</span>
+          <span style={styles.rowDescription}>
+            Sends a sample email of each type to your own address — ignores the toggles above, so it always arrives. Use
+            it to confirm the mail server works.
+          </span>
+          <div style={styles.testButtons}>
+            {TEST_EMAILS.map((t) => (
+              <Button
+                key={t.type}
+                label={t.label}
+                icon={<MdOutlineMail size={16} />}
+                variant='secondary'
+                onClick={() => sendTest(t.type)}
+                loading={sendingTest === t.type}
+                disabled={!!sendingTest || !notificationsApi}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div style={styles.block}>
+          <div style={styles.blockHeader}>
+            <span style={styles.blockTitle}>Active sessions · {sessions.length}</span>
+            {sessions.length > 1 ? (
+              <Button label='Sign out other devices' variant='secondary' onClick={signOutOthers} />
+            ) : null}
+          </div>
+          {sessionsLoading ? (
+            <Loader />
+          ) : (
+            <div style={styles.sessionList}>
+              {sessions.map((s) => {
+                const current = !!s.isCurrent || s.id === currentSessionId;
+                return (
+                  <div key={s.id} style={styles.sessionRow}>
+                    <div style={styles.sessionInfo}>
+                      <span>
+                        {[s.browser, s.os].filter(Boolean).join(' · ') || 'Unknown device'}
+                        {current ? <span style={styles.thisDevice}> · this device</span> : null}
+                      </span>
+                      <span style={styles.sessionMeta}>
+                        {[s.platform, format(new Date(s.updatedAt), 'd MMM HH:mm')].filter(Boolean).join(' · ')}
+                      </span>
+                    </div>
+                    {current ? (
+                      <span style={styles.thisDeviceTag}>current</span>
                     ) : (
-                      <Toggle value={!!settings[row.key]} onChange={(v) => update(row.key, v)} />
+                      <div style={styles.signOut} onClick={() => signOutSession(s.id, false)}>
+                        <MdLogout size={15} color={theme.colors.red} />
+                        <span>Sign out</span>
+                      </div>
                     )}
                   </div>
                 );
               })}
+              {sessions.length === 0 ? <span style={styles.muted}>No active sessions.</span> : null}
             </div>
-          ))
-        )}
-      </div>
-
-      <div style={styles.block}>
-        <span style={styles.blockTitle}>Send a test email</span>
-        <span style={styles.rowDescription}>
-          Sends a sample email of each type to your own address — ignores the toggles above, so it always
-          arrives. Use it to confirm the mail server works.
-        </span>
-        <div style={styles.testButtons}>
-          {TEST_EMAILS.map((t) => (
-            <Button
-              key={t.type}
-              label={t.label}
-              icon={<MdOutlineMail size={16} />}
-              variant='secondary'
-              onClick={() => sendTest(t.type)}
-              loading={sendingTest === t.type}
-              disabled={!!sendingTest || !notificationsApi}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div style={styles.block}>
-        <div style={styles.blockHeader}>
-          <span style={styles.blockTitle}>Active sessions · {sessions.length}</span>
-          {sessions.length > 1 ? (
-            <Button label='Sign out other devices' variant='secondary' onClick={signOutOthers} />
-          ) : null}
-        </div>
-        {sessionsLoading ? (
-          <Loader />
-        ) : (
-          <div style={styles.sessionList}>
-            {sessions.map((s) => {
-              const current = !!s.isCurrent || s.id === currentSessionId;
-              return (
-                <div key={s.id} style={styles.sessionRow}>
-                  <div style={styles.sessionInfo}>
-                    <span>
-                      {[s.browser, s.os].filter(Boolean).join(' · ') || 'Unknown device'}
-                      {current ? <span style={styles.thisDevice}> · this device</span> : null}
-                    </span>
-                    <span style={styles.sessionMeta}>
-                      {[s.platform, format(new Date(s.updatedAt), 'd MMM HH:mm')].filter(Boolean).join(' · ')}
-                    </span>
-                  </div>
-                  {current ? (
-                    <span style={styles.thisDeviceTag}>current</span>
-                  ) : (
-                    <div style={styles.signOut} onClick={() => signOutSession(s.id, false)}>
-                      <MdLogout size={15} color={theme.colors.red} />
-                      <span>Sign out</span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-            {sessions.length === 0 ? <span style={styles.muted}>No active sessions.</span> : null}
-          </div>
-        )}
+          )}
         </div>
       </div>
     </div>

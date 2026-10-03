@@ -10,6 +10,7 @@ import { ServerNavigation } from '~/navigation/ServerNavigation';
 import {
   BlogNavigationRoute,
   GalleryNavigationRoute,
+  InquiryNavigationRoute,
   MainNavigationRoute,
   MainRouteType,
   PhotoNavigationRoute,
@@ -19,6 +20,7 @@ import { AccessControl } from '~/routes/AccessControl';
 import { Account } from '~/routes/Account';
 import { About } from '~/routes/About';
 import { Dashboard } from '~/routes/Dashboard';
+import { InquiriesNavigation } from '~/navigation/InquiriesNavigation';
 import { GalleriesNavigation } from '~/navigation/GalleriesNavigation';
 import { Integrations } from '~/routes/Integrations';
 import { Settings } from '~/routes/Settings';
@@ -62,6 +64,17 @@ export const mainNavigationRoutes: MainRouteType[] = [
       { path: GalleryNavigationRoute.GALLERIES, label: 'Galleries' },
       { path: GalleryNavigationRoute.IMAGES, label: 'Images' },
       { path: GalleryNavigationRoute.HERO, label: 'Home' },
+    ],
+  },
+  {
+    path: MainNavigationRoute.INQUIRIES,
+    label: 'Inbox',
+    component: <InquiriesNavigation />,
+    nested: true,
+    permission: 'inquiry.read',
+    subItems: [
+      { path: InquiryNavigationRoute.INBOX, label: 'Inbox' },
+      { path: InquiryNavigationRoute.SETTINGS, label: 'Contact form' },
     ],
   },
   {

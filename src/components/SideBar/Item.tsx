@@ -5,6 +5,7 @@ import {
   MdArticle,
   MdCollections,
   MdGroup,
+  MdInbox,
   MdPhotoCamera,
   MdSettings,
   MdShield,
@@ -22,6 +23,8 @@ export type SideBarItem = {
   path: MainNavigationRoute;
   isActive: boolean;
   permission?: Permission | Permission[];
+  /** A count shown beside the label, e.g. unread inquiries. Hidden at 0. */
+  badge?: number;
 };
 
 export const Item = (p: SideBarItem) => {
@@ -45,6 +48,8 @@ export const Item = (p: SideBarItem) => {
         return <MdPhotoCamera {...iconProps} />;
       case MainNavigationRoute.GALLERIES:
         return <MdCollections {...iconProps} />;
+      case MainNavigationRoute.INQUIRIES:
+        return <MdInbox {...iconProps} />;
       case MainNavigationRoute.BLOG:
         return <MdArticle {...iconProps} />;
       case MainNavigationRoute.ACCOUNTS:
@@ -70,6 +75,7 @@ export const Item = (p: SideBarItem) => {
       </AnimatePresence>
       <motion.p animate={{ color }} style={styles.label}>
         {p.label}
+        {p.badge ? <span style={styles.badge}>{p.badge > 99 ? '99+' : p.badge}</span> : null}
       </motion.p>
       {renderIcon()}
     </div>
@@ -91,5 +97,18 @@ const useStyles = mkUseStyles((t) => ({
     borderBottomRightRadius: t.borderRadius.medium,
     width: '4px',
   },
-  label: { marginLeft: t.spacing.m, flex: 1 },
+  label: { marginLeft: t.spacing.m, flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 },
+  badge: {
+    minWidth: 18,
+    height: 18,
+    padding: '0 6px',
+    boxSizing: 'border-box',
+    borderRadius: 999,
+    fontSize: 11,
+    fontWeight: 700,
+    lineHeight: '18px',
+    textAlign: 'center',
+    color: t.colors.white,
+    backgroundColor: t.colors.blue,
+  },
 }));

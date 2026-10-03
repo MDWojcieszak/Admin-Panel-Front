@@ -4,6 +4,7 @@ import { MdHub, MdMonitorHeart, MdSettings } from 'react-icons/md';
 import { GlassCard } from '~/components/GlassCard';
 import { Item } from '~/components/SideBar/Item';
 import { useAuth } from '~/hooks/useAuth';
+import { useInquiryUnread } from '~/hooks/useInquiryUnread';
 import { useCan, usePermissions } from '~/hooks/usePermissions';
 import { hasAccess } from '~/acl/permissions';
 import { MainNavigationRoute, MainRouteType } from '~/navigation/types';
@@ -29,6 +30,7 @@ export const SideBar = ({ items }: SideBarProps) => {
   const currentSub = location.pathname.split('/')[2] ?? '';
 
   const visibleItems = items.filter((item) => hasAccess(can, item.permission));
+  const unreadInquiries = useInquiryUnread();
   const settingsActive = current === MainNavigationRoute.SETTINGS;
   const accountActive = current === MainNavigationRoute.ACCOUNT;
   const systemStatusActive = current === MainNavigationRoute.SYSTEM_STATUS;
@@ -51,7 +53,13 @@ export const SideBar = ({ items }: SideBarProps) => {
             const subs = (item.subItems ?? []).filter((s) => hasAccess(can, s.permission));
             return (
               <div key={item.path} style={styles.itemGroup}>
-                <Item label={item.label} path={item.path} permission={item.permission} isActive={active} />
+                <Item
+                  label={item.label}
+                  path={item.path}
+                  permission={item.permission}
+                  isActive={active}
+                  badge={item.path === MainNavigationRoute.INQUIRIES ? unreadInquiries : undefined}
+                />
                 <AnimatePresence initial={false}>
                   {active && subs.length > 1 ? (
                     <motion.div

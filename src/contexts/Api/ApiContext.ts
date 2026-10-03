@@ -20,6 +20,7 @@ import {
   DefaultApi,
   FileApi,
   GalleriesApi,
+  InquiriesApi,
   GearApi,
   ImageApi,
   ImmichApi,
@@ -47,6 +48,7 @@ type ApiContextType = {
   integrationsApi: IntegrationsApi | false;
   tokenApi: TokenApi | false;
   galleriesApi: GalleriesApi | false;
+  inquiriesApi: InquiriesApi | false;
   gearApi: GearApi | false;
   astroObjectApi: AstroObjectApi | false;
   aclApi: ACLApi | false;
