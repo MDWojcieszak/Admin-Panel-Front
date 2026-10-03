@@ -5,7 +5,6 @@ import {
   MdArticle,
   MdCollections,
   MdGroup,
-  MdImage,
   MdPhotoCamera,
   MdSettings,
   MdShield,
@@ -46,8 +45,6 @@ export const Item = (p: SideBarItem) => {
         return <MdPhotoCamera {...iconProps} />;
       case MainNavigationRoute.GALLERIES:
         return <MdCollections {...iconProps} />;
-      case MainNavigationRoute.GALLERY:
-        return <MdImage {...iconProps} />;
       case MainNavigationRoute.BLOG:
         return <MdArticle {...iconProps} />;
       case MainNavigationRoute.ACCOUNTS:

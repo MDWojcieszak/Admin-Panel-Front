@@ -6,7 +6,6 @@ export enum MainNavigationRoute {
   ACCOUNTS = 'accounts',
   PHOTO_MANAGEMENT = 'photo-management',
   GALLERIES = 'galleries',
-  GALLERY = 'gallery',
   SETTINGS = 'settings',
   INTEGRATIONS = 'integrations',
   SERVERS = 'servers',

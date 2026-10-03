@@ -62,7 +62,7 @@ export const GallerySection = ({ gallery }: { gallery: DashboardGalleryResponseD
     <div style={styles.container}>
       <div style={styles.title}>
         <BsImages size={15} color={theme.colors.blue04} />
-        <span>Personal Gallery</span>
+        <span>Gallery</span>
       </div>
 
       <div style={styles.stats}>

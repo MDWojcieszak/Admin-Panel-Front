@@ -20,7 +20,6 @@ import { Account } from '~/routes/Account';
 import { About } from '~/routes/About';
 import { Dashboard } from '~/routes/Dashboard';
 import { GalleriesNavigation } from '~/navigation/GalleriesNavigation';
-import { Gallery } from '~/routes/Images';
 import { Integrations } from '~/routes/Integrations';
 import { Settings } from '~/routes/Settings';
 import { SystemStatus } from '~/routes/SystemStatus';
@@ -41,7 +40,7 @@ export const mainNavigationRoutes: MainRouteType[] = [
   },
   {
     path: MainNavigationRoute.PHOTO_MANAGEMENT,
-    label: 'Photo Library',
+    label: 'Photography',
     component: <PhotoManagementNavigation />,
     nested: true,
     // Gear sits here but the /gear/* endpoints want gallery.manage, so the
@@ -66,7 +65,6 @@ export const mainNavigationRoutes: MainRouteType[] = [
       { path: GalleryNavigationRoute.PROCESSING, label: 'Processing' },
     ],
   },
-  { path: MainNavigationRoute.GALLERY, label: 'Personal Gallery', component: <Gallery /> },
   {
     path: MainNavigationRoute.BLOG,
     label: 'Blog',
