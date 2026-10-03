@@ -1,13 +1,18 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { FiMapPin, FiSearch } from 'react-icons/fi';
 import { PhotoEntryLocationDto, PhotoEntryLocationResponse, PoiAdminResponse } from '~/api/api';
 import { Button } from '~/components/Button';
+import { Loader } from '~/components/Loader';
+import type { MapPoint } from '~/components/MapPointPicker';
 import { PlaceAutocomplete, isPlacesEnabled } from '~/components/PlaceAutocomplete';
 import { SegmentedTabs } from '~/components/SegmentedTabs';
 import { useApi } from '~/hooks/useApi';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
-type Mode = 'search' | 'poi' | 'coords';
+type Mode = 'map' | 'search' | 'poi' | 'coords';
+
+// MapLibre is heavy; it loads only when a map is actually shown.
+const MapPointPicker = lazy(() => import('~/components/MapPointPicker'));
 
 type EntryLocationEditorProps = {
   location?: PhotoEntryLocationResponse | null;
@@ -38,7 +43,7 @@ export const EntryLocationEditor = ({ location, saving, onSave }: EntryLocationE
   const styles = useStyles();
   const theme = useTheme();
   const [editing, setEditing] = useState(false);
-  const [mode, setMode] = useState<Mode>(isPlacesEnabled ? 'search' : 'poi');
+  const [mode, setMode] = useState<Mode>('map');
 
   const save = async (next: PhotoEntryLocationDto | null) => {
     await onSave(next);
@@ -66,6 +71,11 @@ export const EntryLocationEditor = ({ location, saving, onSave }: EntryLocationE
           <Button label={location ? 'Change' : 'Set location'} variant='secondary' onClick={() => setEditing(true)} />
           {location ? <Button label='Remove' variant='secondary' loading={saving} onClick={() => save(null)} /> : null}
         </div>
+        {location ? (
+          <Suspense fallback={null}>
+            <MapPointPicker value={location} height={160} style={{ flexBasis: '100%' }} />
+          </Suspense>
+        ) : null}
       </div>
     );
   }
@@ -75,6 +85,7 @@ export const EntryLocationEditor = ({ location, saving, onSave }: EntryLocationE
       <div style={styles.editorHead}>
         <SegmentedTabs
           items={[
+            { label: 'Pick on map', value: 'map' },
             ...(isPlacesEnabled ? [{ label: 'Search a place', value: 'search' }] : []),
             { label: 'From a blog POI', value: 'poi' },
             { label: 'Coordinates', value: 'coords' },
@@ -86,7 +97,9 @@ export const EntryLocationEditor = ({ location, saving, onSave }: EntryLocationE
         <Button label='Cancel' variant='secondary' onClick={() => setEditing(false)} />
       </div>
 
-      {mode === 'search' ? (
+      {mode === 'map' ? (
+        <MapForm initial={location} saving={saving} onSubmit={save} />
+      ) : mode === 'search' ? (
         <PlaceAutocomplete
           placeholder='Search a place…'
           onPlace={(place) => {
@@ -99,6 +112,47 @@ export const EntryLocationEditor = ({ location, saving, onSave }: EntryLocationE
       ) : (
         <CoordinatesForm initial={location} saving={saving} onSubmit={save} />
       )}
+    </div>
+  );
+};
+
+const MapForm = ({
+  initial,
+  saving,
+  onSubmit,
+}: {
+  initial?: PhotoEntryLocationResponse | null;
+  saving: boolean;
+  onSubmit: (location: PhotoEntryLocationDto) => void;
+}) => {
+  const styles = useStyles();
+  const [point, setPoint] = useState<MapPoint | null>(
+    initial ? { latitude: initial.latitude, longitude: initial.longitude } : null,
+  );
+  const [name, setName] = useState(initial?.name ?? '');
+
+  return (
+    <div style={styles.mapForm}>
+      <Suspense fallback={<Loader />}>
+        <MapPointPicker value={point} onChange={setPoint} height={340} />
+      </Suspense>
+      <div style={styles.coordsForm}>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder='Name (optional)'
+          style={styles.field}
+        />
+        <span style={styles.muted}>
+          {point ? formatCoords(point.latitude, point.longitude) : 'Click the map to drop a pin'}
+        </span>
+        <Button
+          label='Save'
+          disabled={!point}
+          loading={saving}
+          onClick={() => point && onSubmit({ name: name.trim() || null, ...point })}
+        />
+      </div>
     </div>
   );
 };
@@ -243,6 +297,7 @@ const useStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.3),
   },
+  mapForm: { gap: t.spacing.s },
   coordsForm: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap' },
   field: {
     flex: 1,
