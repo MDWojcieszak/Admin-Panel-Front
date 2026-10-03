@@ -22,6 +22,7 @@ import { Input } from '~/components/Input';
 import { Scrollbar } from '~/components/Scrollbar';
 import { EntryCommentsPanel } from '~/routes/PhotoManagement/components/EntryCommentsPanel';
 import { EntryGearPanel } from '~/routes/PhotoManagement/components/EntryGearPanel';
+import { EntryLocationEditor } from '~/routes/PhotoManagement/components/EntryLocationEditor';
 import { EntryProgressPanel } from '~/routes/PhotoManagement/components/EntryProgressPanel';
 import { ImmichAlbumsSection } from '~/routes/PhotoManagement/components/ImmichAlbumsSection';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
@@ -34,6 +35,7 @@ import {
   MediaStatus,
   PatchPhotoEntryDto,
   PhotoEntryDetailsResponse,
+  PhotoEntryLocationDto,
   PhotoEntryPostStage,
   PhotoEntryStatus,
   PhotoEntryType,
@@ -324,6 +326,26 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
     setEditing(false);
   };
 
+  const [savingLocation, setSavingLocation] = useState(false);
+  const saveLocation = async (location: PhotoEntryLocationDto | null) => {
+    if (!photoEntryApi) return;
+    setSavingLocation(true);
+    try {
+      await photoEntryApi.photoEntryControllerPatch({ id: entry.id, patchPhotoEntryDto: { location } });
+      await refresh();
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'Could not save the location.'), 'error');
+    } finally {
+      setSavingLocation(false);
+    }
+  };
+
+  const skySection = (
+    <Section key='sky' title='Location & sky'>
+      <EntryLocationEditor location={entry.location} saving={savingLocation} onSave={saveLocation} />
+    </Section>
+  );
+
   const gearSection = (
     <Section key='gear'>
       <EntryGearPanel key={gearVersion} entryId={entry.id} onChanged={refresh} />
@@ -340,12 +362,15 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   // shoot there is nothing to count, so progress is not shown at all and the
   // gear list leads; straight after it, securing the material comes first; once
   // post-production has started, the numbers do.
+  // Where and under what sky leads while planning; once shot it is history.
   const mainSections =
-    entry.status !== PhotoEntryStatus.Shot
-      ? [gearSection]
-      : entry.postStage === PhotoEntryPostStage.None
-        ? [gearSection, progressSection]
-        : [progressSection, gearSection];
+    entry.status === PhotoEntryStatus.Planned
+      ? [skySection, gearSection]
+      : entry.status !== PhotoEntryStatus.Shot
+        ? [gearSection, skySection]
+        : entry.postStage === PhotoEntryPostStage.None
+          ? [gearSection, progressSection, skySection]
+          : [progressSection, gearSection, skySection];
 
   const status = STATUS_META[entry.status];
 
