@@ -14,14 +14,18 @@ import { CSSProperties, useMemo, useState } from 'react';
 import { FiChevronLeft, FiChevronRight, FiHelpCircle, FiRadio } from 'react-icons/fi';
 import { PhotoEntryResponse } from '~/api/api';
 import { Button } from '~/components/Button';
+import { MoonIcon } from '~/components/MoonIcon';
 import { Scrollbar } from '~/components/Scrollbar';
 import { getEntryStateMeta, getMediaChip, getPhotoEntryTypeMeta } from '~/routes/PhotoManagement/utils/entryDisplay';
 import { isOverduePlan } from '~/routes/PhotoManagement/utils/kanban';
+import { DARK_SKY_ILLUMINATION, getMoonInfo } from '~/utils/moon';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type PhotoEntryCalendarViewProps = {
   entries: PhotoEntryResponse[];
   onEntryClick: (entry: PhotoEntryResponse) => void;
+  /** Moon phase on every day and a tint on dark-sky nights — for astro planning. */
+  showMoon?: boolean;
 };
 
 type Span = { entry: PhotoEntryResponse; start: Date; end: Date };
@@ -81,7 +85,7 @@ const placeWeek = (spans: Span[], weekStart: Date): Placed[] => {
  * the board's cards stretched over the calendar. Planned trips are hollow with a
  * dashed edge, shot ones filled in their stage colour, as everywhere else.
  */
-export const PhotoEntryCalendarView = ({ entries, onEntryClick }: PhotoEntryCalendarViewProps) => {
+export const PhotoEntryCalendarView = ({ entries, onEntryClick, showMoon }: PhotoEntryCalendarViewProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
@@ -164,25 +168,35 @@ export const PhotoEntryCalendarView = ({ entries, onEntryClick }: PhotoEntryCale
                 const day = addDays(week.start, i);
                 const isToday = isSameDay(day, today);
                 const outside = !isSameMonth(day, month);
+                const moon = showMoon ? getMoonInfo(day) : null;
+                const darkSky = Boolean(moon && moon.illumination < DARK_SKY_ILLUMINATION);
                 return (
                   <div
                     key={i}
                     style={{
                       ...styles.dayCell,
                       gridColumn: i + 1,
-                      backgroundColor: i >= 5 ? theme.colors.white + theme.colorOpacity(0.02) : 'transparent',
+                      backgroundColor: darkSky
+                        ? theme.colors.purple02 + theme.colorOpacity(0.08)
+                        : i >= 5
+                          ? theme.colors.white + theme.colorOpacity(0.02)
+                          : 'transparent',
                       borderLeftWidth: i === 0 ? 0 : 1,
                     }}
                   >
-                    <span
-                      style={{
-                        ...styles.dayNumber,
-                        ...(isToday ? styles.today : {}),
-                        opacity: outside ? 0.35 : 1,
-                      }}
-                    >
-                      {format(day, 'd')}
-                    </span>
+                    <div style={{ ...styles.dayHead, opacity: outside ? 0.35 : 1 }}>
+                      <span style={{ ...styles.dayNumber, ...(isToday ? styles.today : {}) }}>{format(day, 'd')}</span>
+                      {moon ? (
+                        <span style={styles.moon}>
+                          {darkSky ? <span style={styles.darkSky}>Dark sky</span> : null}
+                          <MoonIcon
+                            phase={moon.phase}
+                            size={16}
+                            title={`${moon.name} · ${Math.round(moon.illumination * 100)}% lit`}
+                          />
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
                 );
               })}
@@ -342,6 +356,21 @@ const useStyles = mkUseStyles((t) => ({
     borderLeftStyle: 'solid',
     borderLeftColor: t.colors.white + t.colorOpacity(0.06),
     padding: `6px ${t.spacing.s}px`,
+  },
+  dayHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 4,
+  },
+  moon: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 6 },
+  darkSky: {
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+    color: t.colors.purple02,
+    whiteSpace: 'nowrap',
   },
   dayNumber: {
     width: 24,
