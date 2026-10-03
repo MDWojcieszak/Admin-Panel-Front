@@ -1,8 +1,18 @@
-import { ReactNode, useState } from 'react';
-import { FiAlertTriangle, FiCheck, FiCheckSquare, FiHelpCircle, FiShoppingCart } from 'react-icons/fi';
+import { differenceInCalendarDays } from 'date-fns';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { IconType } from 'react-icons';
+import {
+  FiAlertTriangle,
+  FiCheck,
+  FiCheckCircle,
+  FiCheckSquare,
+  FiChevronRight,
+  FiExternalLink,
+  FiHelpCircle,
+  FiShoppingCart,
+} from 'react-icons/fi';
 import { MdSdCard } from 'react-icons/md';
 import { AttentionResponse, PhotoEntryDetailsResponse, PhotoEntryStatus } from '~/api/api';
-import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
@@ -16,17 +26,49 @@ import { formatAmount } from '~/utils/formatAmount';
 import { gearItemLabel } from '~/utils/gearCategory';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
-const formatDate = (value?: string | null) => {
-  if (!value) return 'No date';
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? 'No date' : date.toLocaleDateString();
+type CategoryKey = 'unsecuredOverdue' | 'pastPlanned' | 'openTodos' | 'wishlistDueSoon' | 'undeclared';
+
+type Category = {
+  key: CategoryKey;
+  label: string;
+  icon: IconType;
+  tone: 'red' | 'amber' | 'blue' | 'yellow' | 'slate';
+};
+
+/** Most urgent first; the first one with anything in it is open by default. */
+const CATEGORIES: Category[] = [
+  { key: 'unsecuredOverdue', label: 'Upload overdue', icon: MdSdCard, tone: 'red' },
+  { key: 'pastPlanned', label: 'Did it happen?', icon: FiHelpCircle, tone: 'amber' },
+  { key: 'openTodos', label: 'Open to-dos', icon: FiCheckSquare, tone: 'blue' },
+  { key: 'wishlistDueSoon', label: 'To buy soon', icon: FiShoppingCart, tone: 'yellow' },
+  { key: 'undeclared', label: 'Gear never declared', icon: FiHelpCircle, tone: 'slate' },
+];
+
+const TONE_COLOR = {
+  red: '#F08A80',
+  amber: '#E7BE63',
+  blue: '#7FCBFF',
+  yellow: '#F9F871',
+  slate: '#A9BCC9',
+};
+
+/** Long lists fold; the rest is a click away. */
+const VISIBLE_ROWS = 6;
+
+const relativeDay = (value?: string | null) => {
+  if (!value) return 'no date';
+  const days = differenceInCalendarDays(new Date(value), new Date());
+  if (days < 0) return `${-days} day${days === -1 ? '' : 's'} late`;
+  if (days === 0) return 'today';
+  if (days === 1) return 'tomorrow';
+  return `in ${days} days`;
 };
 
 /**
- * Everything in the photo library that is waiting on you, from one request:
- * plans whose dates passed, material not uploaded in time, shoots with no gear
- * list, purchases due within a month and open to-dos. Each item leads to its
- * session; plans can be answered right here.
+ * Everything in the photo library waiting on you, from one request. The five
+ * kinds are tiles with their counts, most urgent first; the open one lists its
+ * items below with the action each needs — answer a past plan, tick off a
+ * to-do, follow a shop link — and every item opens its session.
  */
 export const AttentionCard = () => {
   const styles = useStyles();
@@ -35,7 +77,10 @@ export const AttentionCard = () => {
   const { photoEntryApi } = useApi();
   const can = useCan();
   const canRead = can('photoEntry.read');
-  const [answering, setAnswering] = useState<string>();
+  const [busy, setBusy] = useState<string>();
+  const [selected, setSelected] = useState<CategoryKey>();
+  const [expanded, setExpanded] = useState(false);
+  const [hoveredRow, setHoveredRow] = useState<string>();
 
   const query = useAsync<AttentionResponse>(async () => {
     if (!photoEntryApi || !canRead) return undefined;
@@ -55,179 +100,253 @@ export const AttentionCard = () => {
     },
   );
 
+  const data = query.data;
+  const counts = data?.counts;
+
+  // Keep the open tile pointing at something: the first non-empty one, and
+  // move on when the open one empties out after an action.
+  const firstWithItems = useMemo(() => CATEGORIES.find((c) => counts?.[c.key])?.key, [counts]);
+  useEffect(() => {
+    if (!counts) return;
+    if (!selected || !counts[selected]) setSelected(firstWithItems);
+  }, [counts, selected, firstWithItems]);
+
   const openEntry = async (entryId: string) => {
     if (!photoEntryApi) return;
-    const { data } = await photoEntryApi.photoEntryControllerGetById({ id: entryId });
+    const { data: entry } = await photoEntryApi.photoEntryControllerGetById({ id: entryId });
     detailsModal.show({
-      entry: data as PhotoEntryDetailsResponse,
+      entry: entry as PhotoEntryDetailsResponse,
       onSaved: async () => {
         await query.reload();
       },
     });
   };
 
-  const answerPlan = async (entryId: string, status: PhotoEntryStatus) => {
-    if (!photoEntryApi) return;
-    setAnswering(`${entryId}:${status}`);
+  const run = async (key: string, action: () => Promise<unknown>, fallback: string) => {
+    setBusy(key);
     try {
-      await photoEntryApi.photoEntryControllerPatchStatus({ id: entryId, patchPhotoEntryStatusDto: { status } });
+      await action();
       await query.reload();
     } catch (e) {
-      toast(getApiErrorMessage(e, 'Could not update the session.'), 'error');
+      toast(getApiErrorMessage(e, fallback), 'error');
     } finally {
-      setAnswering(undefined);
+      setBusy(undefined);
     }
   };
 
-  const data = query.data;
-  if (!canRead || !data) return null;
+  const answerPlan = (entryId: string, status: PhotoEntryStatus) =>
+    photoEntryApi &&
+    run(
+      `${entryId}:${status}`,
+      () => photoEntryApi.photoEntryControllerPatchStatus({ id: entryId, patchPhotoEntryStatusDto: { status } }),
+      'Could not update the session.',
+    );
 
-  const total = Object.values(data.counts).reduce((sum, n) => sum + n, 0);
+  const tickOff = (commentId: string) =>
+    photoEntryApi &&
+    run(commentId, () => photoEntryApi.photoEntryCommentControllerResolve({ commentId }), 'Could not tick this off.');
+
+  if (!canRead || !data || !counts) return null;
+  const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
   if (!total) return null;
 
-  return (
-    <div style={styles.card}>
-      <div style={styles.cardTitle}>
-        <FiAlertTriangle size={16} /> Needs attention
-        <span style={styles.count}>{total}</span>
-      </div>
+  const rowProps = (key: string, onOpen?: () => void) => ({
+    style: { ...styles.row, ...(hoveredRow === key ? styles.rowHover : {}), cursor: onOpen ? 'pointer' : 'default' },
+    onMouseEnter: () => setHoveredRow(key),
+    onMouseLeave: () => setHoveredRow((prev) => (prev === key ? undefined : prev)),
+    onClick: onOpen,
+  });
 
-      <div style={styles.grid}>
-        {data.pastPlanned.length ? (
-          <Section icon={<FiHelpCircle size={14} />} title='Did it happen?' count={data.counts.pastPlanned}>
-            {data.pastPlanned.map((entry) => (
-              <div key={entry.photoEntryId} style={styles.row}>
-                <button type='button' style={styles.linkText} onClick={() => openEntry(entry.photoEntryId)}>
-                  {entry.name}
-                </button>
-                <span style={styles.muted}>
-                  {entry.daysOver} day{entry.daysOver === 1 ? '' : 's'} over
-                </span>
-                <div style={styles.rowActions}>
-                  <Button
-                    label='Cancelled'
-                    variant='secondary'
-                    loading={answering === `${entry.photoEntryId}:${PhotoEntryStatus.Cancelled}`}
-                    onClick={() => answerPlan(entry.photoEntryId, PhotoEntryStatus.Cancelled)}
-                  />
-                  <Button
-                    label='It happened'
-                    icon={<FiCheck size={14} />}
-                    loading={answering === `${entry.photoEntryId}:${PhotoEntryStatus.Shot}`}
-                    onClick={() => answerPlan(entry.photoEntryId, PhotoEntryStatus.Shot)}
-                  />
-                </div>
-              </div>
-            ))}
-          </Section>
-        ) : null}
+  const fold = <T,>(items: T[]) => (expanded ? items : items.slice(0, VISIBLE_ROWS));
+  const hiddenCount = (items: unknown[]) => (expanded ? 0 : Math.max(0, items.length - VISIBLE_ROWS));
 
-        {data.unsecuredOverdue.length ? (
-          <Section icon={<MdSdCard size={14} />} title='Upload overdue' count={data.counts.unsecuredOverdue} tone='red'>
-            {data.unsecuredOverdue.map((entry) => (
-              <div key={entry.photoEntryId} style={styles.block}>
-                <button type='button' style={styles.linkText} onClick={() => openEntry(entry.photoEntryId)}>
-                  {entry.name}
-                </button>
+  const renderList = (): { rows: ReactNode; more: number; footer?: ReactNode } => {
+    switch (selected) {
+      case 'unsecuredOverdue':
+        return {
+          more: hiddenCount(data.unsecuredOverdue),
+          rows: fold(data.unsecuredOverdue).map((entry) => (
+            <div key={entry.photoEntryId} {...rowProps(entry.photoEntryId, () => openEntry(entry.photoEntryId))}>
+              <div style={styles.rowMain}>
+                <span style={styles.rowTitle}>{entry.name}</span>
                 {entry.items.map((item) => (
-                  <span key={item.gear.id} style={styles.subRow}>
-                    <span style={{ color: item.overdue ? theme.colors.red : theme.colors.white }}>
-                      {gearItemLabel(item.gear)}
-                    </span>
-                    <span style={styles.muted}>
-                      {item.secureAction} · {item.daysPending}d of {item.reminderDays}d
+                  <span key={item.gear.id} style={styles.rowMeta}>
+                    {gearItemLabel(item.gear)} · {item.secureAction} ·{' '}
+                    <span style={{ color: item.overdue ? TONE_COLOR.red : undefined }}>
+                      {item.daysPending} of {item.reminderDays} days
                     </span>
                   </span>
                 ))}
               </div>
-            ))}
-          </Section>
-        ) : null}
-
-        {data.openTodos.length ? (
-          <Section icon={<FiCheckSquare size={14} />} title='Open to-dos' count={data.counts.openTodos}>
-            {data.openTodos.map((todo) => (
-              <button
-                key={todo.commentId}
-                type='button'
-                style={styles.todo}
-                onClick={() => openEntry(todo.photoEntryId)}
-              >
-                <span style={styles.todoBody}>{todo.body}</span>
-                <span style={styles.muted}>
-                  {todo.entryName} · {STAGE_LABELS[todo.stage] ?? todo.stage}
-                </span>
-              </button>
-            ))}
-          </Section>
-        ) : null}
-
-        {data.wishlistDueSoon.length ? (
-          <Section icon={<FiShoppingCart size={14} />} title='To buy soon' count={data.counts.wishlistDueSoon}>
-            {data.wishlistDueSoon.map((item) => (
-              <div key={item.id} style={styles.row}>
-                <span style={styles.itemName}>{gearItemLabel(item)}</span>
-                <span style={styles.muted}>
-                  by {formatDate(item.neededBy)}
-                  {item.neededFor ? ` · ${item.neededFor.name}` : ''}
-                </span>
-                {item.estimatedPrice != null ? <Badge label={formatAmount(item.estimatedPrice)} tone='yellow' /> : null}
-                {item.purchaseUrl ? (
-                  <a href={item.purchaseUrl} target='_blank' rel='noreferrer' style={styles.shop}>
-                    Shop
-                  </a>
-                ) : null}
-              </div>
-            ))}
-          </Section>
-        ) : null}
-
-        {data.undeclared.length ? (
-          <Section icon={<FiHelpCircle size={14} />} title='Gear never declared' count={data.counts.undeclared}>
-            {/* Not an alarm: after the migration every old session lands here. */}
-            <span style={styles.muted}>These shoots have no gear list yet — add one when you get to it.</span>
-            <div style={styles.chips}>
-              {data.undeclared.map((entry) => (
-                <button
-                  key={entry.photoEntryId}
-                  type='button'
-                  style={styles.chip}
-                  onClick={() => openEntry(entry.photoEntryId)}
-                >
+              <FiChevronRight size={16} color={theme.colors.dark05} />
+            </div>
+          )),
+        };
+      case 'pastPlanned':
+        return {
+          more: hiddenCount(data.pastPlanned),
+          rows: fold(data.pastPlanned).map((entry) => (
+            <div key={entry.photoEntryId} {...rowProps(entry.photoEntryId)}>
+              <div style={styles.rowMain}>
+                <button type='button' style={styles.rowTitleButton} onClick={() => openEntry(entry.photoEntryId)}>
                   {entry.name}
                 </button>
-              ))}
+                <span style={styles.rowMeta}>
+                  Planned until {entry.endDate ? new Date(entry.endDate).toLocaleDateString() : '—'} · {entry.daysOver}{' '}
+                  day{entry.daysOver === 1 ? '' : 's'} ago
+                </span>
+              </div>
+              <div style={styles.rowActions}>
+                <Button
+                  label='Cancelled'
+                  variant='secondary'
+                  loading={busy === `${entry.photoEntryId}:${PhotoEntryStatus.Cancelled}`}
+                  onClick={() => answerPlan(entry.photoEntryId, PhotoEntryStatus.Cancelled)}
+                />
+                <Button
+                  label='It happened'
+                  icon={<FiCheck size={14} />}
+                  loading={busy === `${entry.photoEntryId}:${PhotoEntryStatus.Shot}`}
+                  onClick={() => answerPlan(entry.photoEntryId, PhotoEntryStatus.Shot)}
+                />
+              </div>
             </div>
-          </Section>
-        ) : null}
-      </div>
-    </div>
-  );
-};
+          )),
+        };
+      case 'openTodos':
+        return {
+          more: hiddenCount(data.openTodos),
+          rows: fold(data.openTodos).map((todo) => (
+            <div key={todo.commentId} {...rowProps(todo.commentId, () => openEntry(todo.photoEntryId))}>
+              <button
+                type='button'
+                aria-label='Tick off'
+                title='Tick off'
+                style={{ ...styles.tick, opacity: busy === todo.commentId ? 0.5 : 1 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  tickOff(todo.commentId);
+                }}
+              >
+                {busy === todo.commentId ? <FiCheck size={12} /> : null}
+              </button>
+              <div style={styles.rowMain}>
+                <span style={styles.rowTitle}>{todo.body}</span>
+                <span style={styles.rowMeta}>
+                  {todo.entryName} · {STAGE_LABELS[todo.stage] ?? todo.stage}
+                </span>
+              </div>
+              <FiChevronRight size={16} color={theme.colors.dark05} />
+            </div>
+          )),
+        };
+      case 'wishlistDueSoon': {
+        const sum = data.wishlistDueSoon.reduce((acc, item) => acc + (item.estimatedPrice ?? 0), 0);
+        return {
+          more: hiddenCount(data.wishlistDueSoon),
+          footer: sum ? <span style={styles.footerNote}>About {formatAmount(sum)} in total</span> : undefined,
+          rows: fold(data.wishlistDueSoon).map((item) => (
+            <div key={item.id} {...rowProps(item.id)}>
+              <div style={styles.rowMain}>
+                <span style={styles.rowTitle}>{gearItemLabel(item)}</span>
+                <span style={styles.rowMeta}>
+                  Buy {relativeDay(item.neededBy)}
+                  {item.neededFor ? ` · for ${item.neededFor.name}` : ''}
+                </span>
+              </div>
+              {item.estimatedPrice != null ? (
+                <span style={styles.price}>{formatAmount(item.estimatedPrice)}</span>
+              ) : null}
+              {item.purchaseUrl ? (
+                <a href={item.purchaseUrl} target='_blank' rel='noreferrer' style={styles.shop}>
+                  Shop <FiExternalLink size={12} />
+                </a>
+              ) : null}
+            </div>
+          )),
+        };
+      }
+      case 'undeclared':
+        return {
+          more: hiddenCount(data.undeclared),
+          footer: (
+            <span style={styles.footerNote}>Old shoots land here after the migration — fill them in when you can.</span>
+          ),
+          rows: fold(data.undeclared).map((entry) => (
+            <div key={entry.photoEntryId} {...rowProps(entry.photoEntryId, () => openEntry(entry.photoEntryId))}>
+              <div style={styles.rowMain}>
+                <span style={styles.rowTitle}>{entry.name}</span>
+                <span style={styles.rowMeta}>
+                  {entry.startDate ? new Date(entry.startDate).toLocaleDateString() : 'No date'} · no gear list
+                </span>
+              </div>
+              <FiChevronRight size={16} color={theme.colors.dark05} />
+            </div>
+          )),
+        };
+      default:
+        return { rows: null, more: 0 };
+    }
+  };
 
-const Section = ({
-  icon,
-  title,
-  count,
-  tone,
-  children,
-}: {
-  icon: ReactNode;
-  title: string;
-  count: number;
-  tone?: 'red';
-  children: ReactNode;
-}) => {
-  const styles = useStyles();
-  const theme = useTheme();
+  const list = renderList();
 
   return (
-    <div style={styles.section}>
-      <div style={{ ...styles.sectionTitle, color: tone === 'red' ? theme.colors.red : theme.colors.white }}>
-        {icon} {title}
-        <span style={styles.count}>{count}</span>
+    <div style={styles.card}>
+      <div style={styles.header}>
+        <span style={styles.title}>
+          <FiAlertTriangle size={16} /> Needs attention
+        </span>
+        <span style={styles.muted}>
+          {total} thing{total === 1 ? '' : 's'} waiting on you
+        </span>
       </div>
-      {children}
+
+      <div style={styles.tiles}>
+        {CATEGORIES.map((category) => {
+          const count = counts[category.key];
+          const active = selected === category.key;
+          const Icon = count ? category.icon : FiCheckCircle;
+          const color = TONE_COLOR[category.tone];
+          return (
+            <button
+              key={category.key}
+              type='button'
+              disabled={!count}
+              onClick={() => {
+                setSelected(category.key);
+                setExpanded(false);
+              }}
+              style={{
+                ...styles.tile,
+                ...(active ? { borderColor: color, backgroundColor: `${color}14` } : {}),
+                opacity: count ? 1 : 0.45,
+                cursor: count ? 'pointer' : 'default',
+              }}
+            >
+              <span style={{ ...styles.tileIcon, color: count ? color : theme.colors.dark05 }}>
+                <Icon size={16} />
+              </span>
+              <span style={{ ...styles.tileCount, color: count ? theme.colors.white : theme.colors.dark05 }}>
+                {count || '0'}
+              </span>
+              <span style={styles.tileLabel}>{count ? category.label : `${category.label} · all clear`}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {selected ? (
+        <div style={styles.list}>
+          {list.rows}
+          {list.more ? (
+            <button type='button' style={styles.more} onClick={() => setExpanded(true)}>
+              Show {list.more} more
+            </button>
+          ) : null}
+          {list.footer}
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -239,40 +358,57 @@ const useStyles = mkUseStyles((t) => ({
     borderRadius: t.borderRadius.large,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
   },
-  cardTitle: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, fontWeight: 700, fontSize: 15 },
-  count: {
-    padding: '2px 8px',
-    borderRadius: 999,
-    fontSize: 11,
-    fontWeight: 700,
-    color: t.colors.dark05,
-    backgroundColor: t.colors.white + t.colorOpacity(0.06),
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-    gap: t.spacing.m,
-    alignItems: 'start',
-  },
-  section: {
-    gap: t.spacing.s,
-    padding: t.spacing.s,
-    borderRadius: t.borderRadius.default,
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.5),
-  },
-  sectionTitle: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, fontSize: 13, fontWeight: 700 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap' },
-  rowActions: { flexDirection: 'row', gap: t.spacing.xs, marginLeft: 'auto' },
-  block: { gap: 2 },
-  subRow: {
+  header: { flexDirection: 'row', alignItems: 'baseline', gap: t.spacing.s, flexWrap: 'wrap' },
+  title: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
     gap: t.spacing.s,
-    paddingLeft: t.spacing.s,
-    fontSize: 13,
-    flexWrap: 'wrap',
+    fontWeight: 700,
+    fontSize: 15,
   },
-  linkText: {
+  muted: { fontSize: 12, color: t.colors.dark05 },
+  tiles: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+    gap: t.spacing.s,
+  },
+  tile: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 4,
+    padding: t.spacing.sm,
+    borderRadius: t.borderRadius.large,
+    textAlign: 'left',
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.5),
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: t.colors.gray01 + t.colorOpacity(0.5),
+    transition: 'background-color 0.15s ease, border-color 0.15s ease',
+  },
+  tileIcon: { display: 'flex' },
+  tileCount: { fontSize: 24, fontWeight: 800, lineHeight: 1.1 },
+  tileLabel: { fontSize: 12, fontWeight: 600, color: t.colors.dark05 },
+  list: {
+    gap: 2,
+    padding: t.spacing.xs,
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.5),
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.m,
+    padding: `${t.spacing.s}px ${t.spacing.sm}px`,
+    borderRadius: t.borderRadius.default,
+    transition: 'background-color 0.12s ease',
+  },
+  rowHover: { backgroundColor: t.colors.white + t.colorOpacity(0.05) },
+  rowMain: { flex: 1, minWidth: 0, gap: 2 },
+  rowTitle: { fontSize: 14, fontWeight: 600, color: t.colors.white },
+  rowTitleButton: {
+    alignSelf: 'flex-start',
     padding: 0,
     border: 'none',
     background: 'transparent',
@@ -282,30 +418,42 @@ const useStyles = mkUseStyles((t) => ({
     fontWeight: 600,
     color: t.colors.white,
   },
-  itemName: { fontSize: 13, fontWeight: 600 },
-  muted: { fontSize: 12, color: t.colors.dark05 },
-  todo: {
+  rowMeta: { fontSize: 12, color: t.colors.dark05 },
+  rowActions: { flexDirection: 'row', gap: t.spacing.xs, flexShrink: 0 },
+  tick: {
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: 2,
-    padding: '6px 8px',
-    border: 'none',
-    borderRadius: t.borderRadius.default,
-    textAlign: 'left',
-    cursor: 'pointer',
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.3),
-  },
-  todoBody: { fontSize: 13, color: t.colors.white },
-  shop: { fontSize: 12, color: t.colors.blue04 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs },
-  chip: {
-    padding: `${t.spacing.xs}px ${t.spacing.s}px`,
-    border: 'none',
-    borderRadius: t.borderRadius.default,
-    fontSize: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 20,
+    height: 20,
+    flexShrink: 0,
+    borderRadius: 6,
     cursor: 'pointer',
     color: t.colors.white,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+    backgroundColor: 'transparent',
+    border: `2px solid ${t.colors.dark04}`,
   },
+  price: { fontSize: 13, fontWeight: 700, color: TONE_COLOR.yellow, whiteSpace: 'nowrap' },
+  shop: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    fontSize: 13,
+    fontWeight: 600,
+    color: t.colors.blue04,
+    whiteSpace: 'nowrap',
+  },
+  more: {
+    alignSelf: 'flex-start',
+    margin: `${t.spacing.xs}px ${t.spacing.sm}px`,
+    padding: 0,
+    border: 'none',
+    background: 'transparent',
+    cursor: 'pointer',
+    fontSize: 13,
+    fontWeight: 600,
+    color: t.colors.blue04,
+  },
+  footerNote: { padding: `${t.spacing.xs}px ${t.spacing.sm}px`, fontSize: 12, color: t.colors.dark05 },
 }));
