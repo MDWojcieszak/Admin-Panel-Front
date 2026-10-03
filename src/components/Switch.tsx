@@ -1,14 +1,19 @@
+import { ReactNode } from 'react';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type SwitchProps = {
   checked: boolean;
   onChange: (checked: boolean) => void;
   label?: string;
+  /** Shown in place of a label where space is tight; pair it with `title`. */
+  icon?: ReactNode;
+  /** Tooltip and accessible name — required in practice for an icon-only switch. */
+  title?: string;
   disabled?: boolean;
 };
 
 /** A themed on/off toggle. */
-export const Switch = ({ checked, onChange, label, disabled }: SwitchProps) => {
+export const Switch = ({ checked, onChange, label, icon, title, disabled }: SwitchProps) => {
   const styles = useStyles();
   const theme = useTheme();
   return (
@@ -16,6 +21,8 @@ export const Switch = ({ checked, onChange, label, disabled }: SwitchProps) => {
       type='button'
       role='switch'
       aria-checked={checked}
+      aria-label={title ?? label}
+      title={title}
       disabled={disabled}
       style={{ ...styles.row, opacity: disabled ? 0.5 : 1, cursor: disabled ? 'default' : 'pointer' }}
       onClick={() => !disabled && onChange(!checked)}
@@ -28,6 +35,9 @@ export const Switch = ({ checked, onChange, label, disabled }: SwitchProps) => {
       >
         <span style={{ ...styles.knob, transform: checked ? 'translateX(18px)' : 'translateX(0)' }} />
       </span>
+      {icon ? (
+        <span style={{ ...styles.icon, color: checked ? theme.colors.white : theme.colors.dark05 }}>{icon}</span>
+      ) : null}
       {label ? <span style={styles.label}>{label}</span> : null}
     </button>
   );
@@ -66,4 +76,5 @@ const useStyles = mkUseStyles((t) => ({
     boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
   },
   label: { fontSize: 14, color: t.colors.white },
+  icon: { display: 'flex', alignItems: 'center', transition: 'color 0.15s ease' },
 }));
