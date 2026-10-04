@@ -10,6 +10,7 @@ import { useModal } from '~/hooks/useModal';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { ProcessTerminal } from '~/routes/Servers/components/ProcessTerminal';
+import { DeploySteps } from '~/routes/Deploy/components/DeploySteps';
 import { Section, useDeployStyles } from '~/routes/Deploy/components/shared';
 import { RELEASE_LABEL, RELEASE_TONE, shortCommit, shortDigest, TRIGGER_LABEL } from '~/routes/Deploy/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
@@ -61,6 +62,12 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
           title='Deployment log'
           actions={<Button label='Close' variant='secondary' onClick={() => p.onSelectProcess(undefined)} />}
         >
+          {can('process.read') ? (
+            <DeploySteps
+              processId={p.selectedProcessId}
+              releaseStatus={p.releases?.find((r) => r.processId === p.selectedProcessId)?.status}
+            />
+          ) : null}
           <div style={styles.terminal}>
             {can('process.read') ? (
               <ProcessTerminal embedded processId={p.selectedProcessId} />
