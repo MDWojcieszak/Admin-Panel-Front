@@ -100,7 +100,12 @@ export const SettingsTab = ({ application, onChanged }: SettingsTabProps) => {
     }
   };
 
-  const webhookUrl = `${import.meta.env.VITE_API_URL ?? ''}/deploy/webhook/${application.slug}`;
+  // The API's address, always absolute: CI calls the backend, never the panel.
+  // A relative VITE_API_URL (behind a proxy) is resolved against this origin.
+  const apiBase = String(import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+  const webhookUrl = `${apiBase.startsWith('http') ? apiBase : `${window.location.origin}${apiBase}`}/deploy/webhook/${
+    application.slug
+  }`;
 
   return (
     <>
@@ -204,7 +209,15 @@ export const SettingsTab = ({ application, onChanged }: SettingsTabProps) => {
           ) : undefined
         }
       >
-        <span style={{ ...shared.muted, ...shared.mono }}>POST {webhookUrl}</span>
+        <div style={shared.row}>
+          <span style={{ ...shared.muted, ...shared.mono }}>POST {webhookUrl}</span>
+          <Button
+            label='Copy URL'
+            variant='secondary'
+            icon={<FiCopy size={13} />}
+            onClick={() => navigator.clipboard?.writeText(webhookUrl).then(() => toast('Copied', 'success'))}
+          />
+        </div>
         {secret ? (
           <div style={shared.warning}>
             <FiAlertTriangle size={14} />
