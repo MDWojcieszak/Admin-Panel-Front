@@ -26,9 +26,9 @@ import {
   ORIGIN_TONE,
   RELEASE_LABEL,
   RELEASE_TONE,
+  releaseLabel,
   RUNTIME_LABEL,
   RUNTIME_TONE,
-  shortDigest,
 } from '~/routes/Deploy/utils';
 import { useTheme } from '~/utils/theme';
 
@@ -140,7 +140,7 @@ export const ApplicationDetail = () => {
                 />
                 {application.currentRelease ? (
                   <Badge
-                    label={`${application.currentRelease.version ?? shortDigest(application.currentRelease.digest)} · ${
+                    label={`${releaseLabel(application.currentRelease)} · ${
                       RELEASE_LABEL[application.currentRelease.status]
                     }`}
                     tone={RELEASE_TONE[application.currentRelease.status]}

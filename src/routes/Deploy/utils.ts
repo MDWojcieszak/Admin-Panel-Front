@@ -90,6 +90,14 @@ export const shortDigest = (digest?: string | null) => (digest ? digest.replace(
 
 export const shortCommit = (commit?: string | null) => (commit ? commit.slice(0, 7) : '—');
 
+/**
+ * How a release is named: its version (image tag), else its git commit,
+ * else the image digest. Git releases rarely carry a version, and the
+ * digest alone says nothing about what code runs.
+ */
+export const releaseLabel = (release: { version?: string | null; commit?: string | null; digest?: string | null }) =>
+  release.version || (release.commit ? shortCommit(release.commit) : shortDigest(release.digest));
+
 export type DiffLine = { kind: 'same' | 'added' | 'removed'; text: string };
 
 /**

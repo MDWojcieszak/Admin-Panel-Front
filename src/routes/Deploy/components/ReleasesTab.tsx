@@ -12,7 +12,14 @@ import { useToast } from '~/hooks/useToast';
 import { ProcessTerminal } from '~/routes/Servers/components/ProcessTerminal';
 import { DeploySteps } from '~/routes/Deploy/components/DeploySteps';
 import { Section, useDeployStyles } from '~/routes/Deploy/components/shared';
-import { RELEASE_LABEL, RELEASE_TONE, shortCommit, shortDigest, TRIGGER_LABEL } from '~/routes/Deploy/utils';
+import {
+  RELEASE_LABEL,
+  RELEASE_TONE,
+  releaseLabel,
+  shortCommit,
+  shortDigest,
+  TRIGGER_LABEL,
+} from '~/routes/Deploy/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -97,7 +104,7 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
                 >
                   <div style={styles.main}>
                     <div style={shared.row}>
-                      <span style={styles.version}>{release.version ?? shortDigest(release.digest)}</span>
+                      <span style={styles.version}>{releaseLabel(release)}</span>
                       <Badge label={RELEASE_LABEL[release.status]} tone={RELEASE_TONE[release.status]} />
                       {current ? <Badge label='Current' tone='green' /> : null}
                       <span style={shared.muted}>{TRIGGER_LABEL[release.trigger]}</span>
@@ -126,7 +133,7 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
                       icon={<FiRotateCcw size={13} />}
                       onClick={() =>
                         confirmModal.show({
-                          message: `Roll back to ${release.version ?? shortDigest(release.digest)}?`,
+                          message: `Roll back to ${releaseLabel(release)}?`,
                           description: 'The compose file stored with that release is deployed again, as it was.',
                           confirmLabel: 'Roll back',
                           onConfirm: () => rollback(release),

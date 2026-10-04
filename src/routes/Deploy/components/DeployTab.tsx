@@ -9,7 +9,7 @@ import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { GitRefChoice, GitRefPicker, refOf } from '~/routes/Deploy/components/GitRefPicker';
 import { CodeBlock, DiffView, Fact, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
-import { shortCommit, shortDigest } from '~/routes/Deploy/utils';
+import { releaseLabel, shortCommit, shortDigest } from '~/routes/Deploy/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 
 type DeployTabProps = {
@@ -121,11 +121,11 @@ export const DeployTab = ({ application, onDeployed }: DeployTabProps) => {
         {isGit ? <GitRefPicker applicationId={application.id} value={buildFrom} onChange={setBuildFrom} /> : null}
         {application.currentRelease ? (
           <div style={shared.row}>
-            <Fact
-              label='Running'
-              value={application.currentRelease.version ?? shortDigest(application.currentRelease.digest)}
-            />
-            {isGit ? <Fact label='Commit' value={shortCommit(application.currentRelease.commit)} /> : null}
+            <Fact label='Running' value={releaseLabel(application.currentRelease)} />
+            {/* Running already names the commit when there is no version. */}
+            {isGit && application.currentRelease.version ? (
+              <Fact label='Commit' value={shortCommit(application.currentRelease.commit)} />
+            ) : null}
             <Fact label='Digest' value={shortDigest(application.currentRelease.digest)} />
             {application.availableDigest ? (
               <Fact label='Available' value={shortDigest(application.availableDigest)} />

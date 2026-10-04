@@ -22,9 +22,9 @@ import {
   ORIGIN_TONE,
   RELEASE_LABEL,
   RELEASE_TONE,
+  releaseLabel,
   RUNTIME_LABEL,
   RUNTIME_TONE,
-  shortDigest,
 } from '~/routes/Deploy/utils';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -126,7 +126,7 @@ export const Applications = () => {
                   {release ? (
                     <>
                       <div style={styles.releaseBlock}>
-                        <span style={styles.version}>{release.version ?? shortDigest(release.digest)}</span>
+                        <span style={styles.version}>{releaseLabel(release)}</span>
                         <Badge label={RELEASE_LABEL[release.status]} tone={RELEASE_TONE[release.status]} />
                       </div>
                       {release.deployedAt ? (
