@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiAlertTriangle, FiCopy, FiRefreshCw, FiTrash2 } from 'react-icons/fi';
+import { FiAlertTriangle, FiRefreshCw, FiTrash2 } from 'react-icons/fi';
 import { ApplicationDetailResponse, AppSourceType, ImportPreviewResponse, WebhookSecretResponse } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
@@ -10,7 +10,7 @@ import { useModal } from '~/hooks/useModal';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { DeployNavigationRoute, MainNavigationRoute } from '~/navigation/types';
-import { CodeBlock, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
+import { CodeBlock, CopyButton, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
 import { MoveToGitSection } from '~/routes/Deploy/components/MoveToGitSection';
 import { TakeoverSection } from '~/routes/Deploy/components/TakeoverSection';
 import { getApiErrorMessage } from '~/utils/apiError';
@@ -211,28 +211,18 @@ export const SettingsTab = ({ application, onChanged }: SettingsTabProps) => {
       >
         <div style={shared.row}>
           <span style={{ ...shared.muted, ...shared.mono }}>POST {webhookUrl}</span>
-          <Button
-            label='Copy URL'
-            variant='secondary'
-            icon={<FiCopy size={13} />}
-            onClick={() => navigator.clipboard?.writeText(webhookUrl).then(() => toast('Copied', 'success'))}
-          />
+          <CopyButton value={webhookUrl} title='Copy the URL' />
         </div>
         {secret ? (
           <div style={shared.warning}>
             <FiAlertTriangle size={14} />
             <div style={{ gap: 6, minWidth: 0 }}>
               <span>{secret.note}</span>
-              <span style={shared.mono}>
-                {secret.header}: {secret.secret}
-              </span>
-              <div>
-                <Button
-                  label='Copy secret'
-                  variant='secondary'
-                  icon={<FiCopy size={13} />}
-                  onClick={() => navigator.clipboard?.writeText(secret.secret).then(() => toast('Copied', 'success'))}
-                />
+              <div style={shared.row}>
+                <span style={shared.mono}>
+                  {secret.header}: {secret.secret}
+                </span>
+                <CopyButton value={secret.secret} title='Copy the secret' />
               </div>
             </div>
           </div>

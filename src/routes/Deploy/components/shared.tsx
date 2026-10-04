@@ -1,6 +1,6 @@
-import { CSSProperties, ReactNode, useMemo } from 'react';
+import { CSSProperties, ReactNode, useEffect, useMemo, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { FiCpu } from 'react-icons/fi';
+import { FiCheck, FiCopy, FiCpu } from 'react-icons/fi';
 import { AgentHealthResponse } from '~/api/api';
 import { Scrollbar } from '~/components/Scrollbar';
 import { Badge } from '~/components/Badge';
@@ -22,6 +22,38 @@ export const DeployPage = ({ header, children }: { header: ReactNode; children: 
         </Scrollbar>
       </div>
     </div>
+  );
+};
+
+/** A small copy icon beside a value; it turns into a tick for a moment once copied. */
+export const CopyButton = ({ value, title = 'Copy' }: { value: string; title?: string }) => {
+  const styles = useStyles();
+  const theme = useTheme();
+  const [copied, setCopied] = useState(false);
+  const [hover, setHover] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const timer = window.setTimeout(() => setCopied(false), 1500);
+    return () => window.clearTimeout(timer);
+  }, [copied]);
+
+  return (
+    <button
+      type='button'
+      title={copied ? 'Copied' : title}
+      aria-label={title}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={() => navigator.clipboard?.writeText(value).then(() => setCopied(true))}
+      style={{
+        ...styles.copy,
+        color: copied ? theme.colors.lightGreen : hover ? theme.colors.white : theme.colors.dark05,
+        backgroundColor: hover ? theme.colors.white + theme.colorOpacity(0.08) : 'transparent',
+      }}
+    >
+      {copied ? <FiCheck size={14} /> : <FiCopy size={14} />}
+    </button>
   );
 };
 
@@ -241,6 +273,19 @@ const useStyles = mkUseStyles((t) => ({
   pageScroll: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   // Room on the right for the scrollbar track, so it never sits on a card.
   pageContent: { gap: t.spacing.l, paddingRight: 16, paddingBottom: t.spacing.m },
+  copy: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 26,
+    height: 26,
+    flexShrink: 0,
+    padding: 0,
+    border: 'none',
+    borderRadius: 6,
+    cursor: 'pointer',
+    transition: 'background-color 0.12s ease, color 0.12s ease',
+  },
   section: {
     gap: t.spacing.m,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
