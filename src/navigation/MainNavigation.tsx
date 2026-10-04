@@ -35,26 +35,6 @@ const BlogNavigation = lazy(() => import('~/navigation/BlogNavigation').then((m)
 export const mainNavigationRoutes: MainRouteType[] = [
   { path: MainNavigationRoute.DASHBOARD, label: 'Dashboard', component: <Dashboard /> },
   {
-    path: MainNavigationRoute.SERVERS,
-    label: 'Servers',
-    component: <ServerNavigation />,
-    nested: true,
-    permission: 'server.read',
-  },
-  {
-    path: MainNavigationRoute.DEPLOY,
-    label: 'Deployments',
-    component: <DeployNavigation />,
-    nested: true,
-    permission: 'deploy.read',
-    subItems: [
-      { path: DeployNavigationRoute.CONTAINERS, label: 'Containers' },
-      { path: DeployNavigationRoute.APPLICATIONS, label: 'Applications' },
-      { path: DeployNavigationRoute.VARIABLES, label: 'Variables' },
-      { path: DeployNavigationRoute.GIT, label: 'Git', permission: 'deploy.git' },
-    ],
-  },
-  {
     path: MainNavigationRoute.PHOTO_MANAGEMENT,
     label: 'Photography',
     component: <PhotoManagementNavigation />,
@@ -103,6 +83,27 @@ export const mainNavigationRoutes: MainRouteType[] = [
       { path: BlogNavigationRoute.COUNTRIES, label: 'Countries', permission: 'blog.place.manage' },
       { path: BlogNavigationRoute.COLLECTIONS, label: 'Collections', permission: 'blog.place.manage' },
       { path: BlogNavigationRoute.HOME, label: 'Home page', permission: 'blog.home.manage' },
+    ],
+  },
+  // Photography first; the tools follow.
+  {
+    path: MainNavigationRoute.SERVERS,
+    label: 'Servers',
+    component: <ServerNavigation />,
+    nested: true,
+    permission: 'server.read',
+  },
+  {
+    path: MainNavigationRoute.DEPLOY,
+    label: 'Deployments',
+    component: <DeployNavigation />,
+    nested: true,
+    permission: 'deploy.read',
+    subItems: [
+      { path: DeployNavigationRoute.CONTAINERS, label: 'Containers' },
+      { path: DeployNavigationRoute.APPLICATIONS, label: 'Applications' },
+      { path: DeployNavigationRoute.VARIABLES, label: 'Variables' },
+      { path: DeployNavigationRoute.GIT, label: 'Git', permission: 'deploy.git' },
     ],
   },
   { path: MainNavigationRoute.ACCOUNTS, label: 'Users', component: <Accounts />, permission: 'user.read' },
