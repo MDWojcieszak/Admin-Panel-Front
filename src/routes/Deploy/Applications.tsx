@@ -91,59 +91,62 @@ export const Applications = () => {
           description='Adopt a running stack from Containers, or create one from a spec.'
         />
       ) : (
-        <div style={shared.panel}>
-          <div style={shared.list}>
-            {applications.map((app) => (
+        <div style={styles.grid}>
+          {applications.map((app) => {
+            const release = app.currentRelease;
+            const hover = hovered === app.id;
+            return (
               <button
                 key={app.id}
                 type='button'
-                style={{ ...styles.row, ...(hovered === app.id ? styles.rowHover : {}) }}
+                style={{ ...styles.tile, ...(hover ? styles.tileHover : {}) }}
                 onMouseEnter={() => setHovered(app.id)}
                 onMouseLeave={() => setHovered((h) => (h === app.id ? undefined : h))}
                 onClick={() => navigate(applicationPath(app.id))}
               >
-                <div style={styles.main}>
+                <div style={styles.tileTop}>
+                  <span style={styles.name}>{app.displayName || app.slug}</span>
+                  <Badge label={RUNTIME_LABEL[app.runtimeStatus]} tone={RUNTIME_TONE[app.runtimeStatus]} />
+                </div>
+                <span style={{ ...shared.muted, ...shared.mono, ...styles.ellipsis }}>
+                  {app.slug}
+                  {app.image ? ` · ${app.image}` : ''}
+                </span>
+                {app.origin !== ContainerOrigin.Managed || app.availableDigest ? (
                   <div style={shared.row}>
-                    <span style={styles.name}>{app.displayName || app.slug}</span>
                     {app.origin !== ContainerOrigin.Managed ? (
                       <Badge label={ORIGIN_LABEL[app.origin]} tone={ORIGIN_TONE[app.origin]} />
                     ) : null}
-                    <Badge label={RUNTIME_LABEL[app.runtimeStatus]} tone={RUNTIME_TONE[app.runtimeStatus]} />
                     {app.availableDigest ? (
                       <Badge label='Update available' tone='blue' icon={<FiArrowUpCircle size={12} />} />
                     ) : null}
                   </div>
-                  <span style={{ ...shared.muted, ...shared.mono }}>
-                    {app.slug}
-                    {app.image ? ` · ${app.image}` : ''}
-                  </span>
-                </div>
-                <div style={styles.release}>
-                  {app.currentRelease ? (
+                ) : null}
+                <div style={styles.tileFooter}>
+                  {release ? (
                     <>
-                      <span style={styles.version}>
-                        {app.currentRelease.version ?? shortDigest(app.currentRelease.digest)}
-                      </span>
-                      <span style={shared.row}>
-                        <Badge
-                          label={RELEASE_LABEL[app.currentRelease.status]}
-                          tone={RELEASE_TONE[app.currentRelease.status]}
-                        />
-                        {app.currentRelease.deployedAt ? (
-                          <span style={shared.muted}>
-                            {formatDistanceToNow(new Date(app.currentRelease.deployedAt), { addSuffix: true })}
-                          </span>
-                        ) : null}
-                      </span>
+                      <div style={styles.releaseBlock}>
+                        <span style={styles.version}>{release.version ?? shortDigest(release.digest)}</span>
+                        <Badge label={RELEASE_LABEL[release.status]} tone={RELEASE_TONE[release.status]} />
+                      </div>
+                      {release.deployedAt ? (
+                        <span style={shared.muted}>
+                          {formatDistanceToNow(new Date(release.deployedAt), { addSuffix: true })}
+                        </span>
+                      ) : null}
                     </>
                   ) : (
                     <span style={shared.muted}>Never deployed</span>
                   )}
+                  <FiChevronRight
+                    size={16}
+                    color={hover ? theme.colors.white : theme.colors.dark05}
+                    style={{ flexShrink: 0, marginLeft: 'auto' }}
+                  />
                 </div>
-                <FiChevronRight size={16} color={theme.colors.dark05} style={{ flexShrink: 0 }} />
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
       )}
     </DeployPage>
@@ -151,23 +154,48 @@ export const Applications = () => {
 };
 
 const useStyles = mkUseStyles((t) => ({
-  row: {
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: t.spacing.m },
+  tile: {
     display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.m,
-    padding: `${t.spacing.sm}px ${t.spacing.m}px`,
-    border: 'none',
+    flexDirection: 'column',
+    gap: t.spacing.s,
+    padding: t.spacing.m,
     textAlign: 'left',
     cursor: 'pointer',
     color: 'inherit',
     font: 'inherit',
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.35),
+    borderRadius: t.borderRadius.large,
+    backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
+    border: 'none',
     transition: 'background-color 0.12s ease',
   },
-  rowHover: { backgroundColor: t.colors.gray02 + t.colorOpacity(0.6) },
-  main: { flex: 1, minWidth: 0, gap: 2 },
-  name: { fontSize: 15, fontWeight: 700, color: t.colors.white },
-  release: { alignItems: 'flex-end', gap: 2, flexShrink: 0 },
-  version: { fontSize: 14, fontWeight: 600, color: t.colors.white },
+  tileHover: { backgroundColor: t.colors.gray02 + t.colorOpacity(0.75) },
+  tileTop: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: t.spacing.s,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 700,
+    color: t.colors.white,
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  ellipsis: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  tileFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.m,
+    marginTop: 'auto',
+    paddingTop: t.spacing.s,
+    borderTop: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
+  },
+  releaseBlock: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
+  version: { fontSize: 14, fontWeight: 700, color: t.colors.white },
 }));
