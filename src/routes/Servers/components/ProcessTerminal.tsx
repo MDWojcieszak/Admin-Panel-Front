@@ -24,10 +24,12 @@ export const ProcessTerminal = ({ processId, name, onClose, embedded }: ProcessT
   const styles = useStyles();
   const theme = useTheme();
   const { logs, progress, label, status, loading } = useProcess(processId);
-  const logEndRef = useRef<HTMLDivElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll the terminal itself: scrollIntoView also moved the page it sits in.
+    const el = terminalRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, [logs.length]);
 
   const renderLog = (log: ProcessLog) => (
@@ -53,9 +55,8 @@ export const ProcessTerminal = ({ processId, name, onClose, embedded }: ProcessT
           {Math.round(progress)}%
         </span>
       </div>
-      <div style={embedded ? { ...styles.terminal, ...styles.embeddedTerminal } : styles.terminal}>
+      <div ref={terminalRef} style={embedded ? { ...styles.terminal, ...styles.embeddedTerminal } : styles.terminal}>
         {loading && logs.length === 0 ? <span style={styles.logTime}>Loading logs…</span> : logs.map(renderLog)}
-        <div ref={logEndRef} />
       </div>
     </div>
   );
