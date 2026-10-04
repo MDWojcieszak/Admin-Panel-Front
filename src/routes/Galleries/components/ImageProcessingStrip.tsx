@@ -35,21 +35,26 @@ export const ImageProcessingStrip = ({ onFinished }: ImageProcessingStripProps) 
   }, [imageApi]);
 
   const summary = summaryQuery.data;
-  const inFlight = summary ? summary.pending + summary.processing : 0;
+  // There is no queue: "pending" is only images never processed, which wait
+  // for a reprocess. A batch is running while something is PROCESSING — or
+  // just after one was started, since a batch goes three at a time and the
+  // count can read 0 between chunks.
+  const [started, setStarted] = useState(false);
+  const [idleReads, setIdleReads] = useState(0);
+  const running = Boolean(summary?.processing) || started;
 
-  // Poll while work is in flight; tell the grid once it drains.
-  const [wasRunning, setWasRunning] = useState(false);
+  // Poll while a batch runs; call it finished after two reads with nothing PROCESSING.
   useEffect(() => {
-    if (!summary) return;
-    if (inFlight > 0) {
-      setWasRunning(true);
-      const timer = window.setTimeout(() => summaryQuery.reload(), 3000);
-      return () => window.clearTimeout(timer);
-    }
-    if (wasRunning) {
-      setWasRunning(false);
+    if (!summary || !running) return;
+    if (summary.processing) setIdleReads(0);
+    else if (idleReads >= 2) {
+      setStarted(false);
+      setIdleReads(0);
       onFinished?.();
-    }
+      return;
+    } else setIdleReads((n) => n + 1);
+    const timer = window.setTimeout(() => summaryQuery.reload(), 2000);
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [summary]);
 
@@ -59,6 +64,8 @@ export const ImageProcessingStrip = ({ onFinished }: ImageProcessingStripProps) 
     try {
       const { data } = await imageApi.imageControllerReprocess({ reprocessDto: { mode } });
       toast(`Reprocessing ${data.total} image${data.total === 1 ? '' : 's'}`, 'success');
+      setStarted(true);
+      setIdleReads(0);
       await summaryQuery.reload();
     } catch (e) {
       toast(getApiErrorMessage(e, 'Could not start reprocessing.'), 'error');
@@ -69,7 +76,7 @@ export const ImageProcessingStrip = ({ onFinished }: ImageProcessingStripProps) 
 
   if (!summary) return null;
 
-  const allDone = !inFlight && !summary.failed && summary.done >= summary.total;
+  const allDone = !running && !summary.failed && summary.done >= summary.total;
   const percent = summary.total ? (summary.done / summary.total) * 100 : 100;
 
   return (
@@ -84,7 +91,9 @@ export const ImageProcessingStrip = ({ onFinished }: ImageProcessingStripProps) 
           {allDone ? `All ${summary.total} images processed` : `${summary.done} / ${summary.total} images processed`}
         </span>
         {summary.processing ? <Badge label={`${summary.processing} processing`} tone='blue' /> : null}
-        {summary.pending ? <Badge label={`${summary.pending} queued`} tone='yellow' /> : null}
+        {summary.pending ? (
+          <Badge label={`${summary.pending} ${running ? 'waiting' : 'not processed'}`} tone='yellow' />
+        ) : null}
         {summary.failed ? <Badge label={`${summary.failed} failed`} tone='red' /> : null}
       </div>
 
@@ -92,14 +101,14 @@ export const ImageProcessingStrip = ({ onFinished }: ImageProcessingStripProps) 
         <Button
           label='Reprocess missing'
           variant='secondary'
-          disabled={inFlight > 0}
+          disabled={running}
           loading={starting === ReprocessTargetMode.Missing}
           onClick={() => reprocess(ReprocessTargetMode.Missing)}
         />
         <Button
           label='Reprocess all'
           variant='secondary'
-          disabled={inFlight > 0}
+          disabled={running}
           loading={starting === ReprocessTargetMode.All}
           onClick={() => reprocess(ReprocessTargetMode.All)}
         />
