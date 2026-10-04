@@ -14,7 +14,7 @@ import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
 import { ImagePreviewModal } from '~/routes/Galleries/modals/ImagePreviewModal';
 import { MediaSelectorModal } from '~/routes/Galleries/modals/MediaSelectorModal';
-import { imgUrl } from '~/routes/Galleries/utils';
+import { thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -229,7 +229,7 @@ export const HeroView = () => {
         ) : (
           <div style={styles.grid}>
             {items.map((it, i) => {
-              const cover = imgUrl(it.coverUrl);
+              const cover = thumbUrl(it.coverUrl);
               return (
                 <div
                   key={it.imageId}

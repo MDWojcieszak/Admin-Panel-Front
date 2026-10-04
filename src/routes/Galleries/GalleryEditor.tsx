@@ -32,7 +32,7 @@ import { useToast } from '~/hooks/useToast';
 import { EditImageModal } from '~/routes/Images/modals/EditImageModal';
 import { ImagePreviewModal } from '~/routes/Galleries/modals/ImagePreviewModal';
 import { MediaSelectorModal } from '~/routes/Galleries/modals/MediaSelectorModal';
-import { imgUrl, ROLE_LABEL, STATUS_LABEL, STATUS_TONE } from '~/routes/Galleries/utils';
+import { ROLE_LABEL, STATUS_LABEL, STATUS_TONE, thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -372,7 +372,7 @@ export const GalleryEditor = () => {
           ) : (
             <div style={styles.grid}>
               {items.map((it, i) => {
-                const cover = imgUrl(it.coverUrl);
+                const cover = thumbUrl(it.coverUrl);
                 const isCover = gallery.coverImageId === it.imageId;
                 return (
                   <div

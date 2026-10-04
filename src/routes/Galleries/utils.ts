@@ -18,6 +18,14 @@ export const exifTechSpecs = (exif?: ImageExifResponse | null): string => {
 export const imgUrl = (relative?: string | null): string | undefined =>
   relative ? `${import.meta.env.VITE_API_URL}${relative}` : undefined;
 
+/**
+ * The ~640 px version of a cover, for tiles, cards and pickers. The backend
+ * serves the cover until an image is reprocessed, so it is always safe.
+ * Decoding 1920 px covers into small tiles is what made grids stutter.
+ */
+export const thumbUrl = (cover?: string | null): string | undefined =>
+  imgUrl(cover?.replace('/image/cover', '/image/thumb'));
+
 export const STATUS_TONE: Record<GalleryStatus, BadgeTone> = {
   DRAFT: 'neutral',
   PUBLISHED: 'green',

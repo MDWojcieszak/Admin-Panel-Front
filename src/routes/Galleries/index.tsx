@@ -12,7 +12,7 @@ import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
 import { CreateGalleryModal } from '~/routes/Galleries/modals/CreateGalleryModal';
-import { imgUrl, STATUS_LABEL } from '~/routes/Galleries/utils';
+import { STATUS_LABEL, thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -132,7 +132,7 @@ const GalleryCard = ({
 }) => {
   const styles = useStyles();
   const theme = useTheme();
-  const cover = imgUrl(gallery.coverUrl);
+  const cover = thumbUrl(gallery.coverUrl);
   const statusColor = {
     DRAFT: theme.colors.dark05,
     PUBLISHED: theme.colors.lightGreen,

@@ -9,7 +9,7 @@ import { useApi } from '~/hooks/useApi';
 import { useModal } from '~/hooks/useModal';
 import { ImageProcessingStrip } from '~/routes/Galleries/components/ImageProcessingStrip';
 import { ImagePreviewModal } from '~/routes/Galleries/modals/ImagePreviewModal';
-import { imgUrl } from '~/routes/Galleries/utils';
+import { thumbUrl } from '~/routes/Galleries/utils';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 const TAKE = 60;
@@ -101,8 +101,7 @@ export const GalleryImagesView = () => {
           <>
             <div style={styles.grid}>
               {images.map((img) => {
-                // The ~640 px thumb, not the 1920 px cover: decoding dozens of covers made the grid stutter.
-                const url = imgUrl(img.coverUrl?.replace('/image/cover', '/image/thumb'));
+                const url = thumbUrl(img.coverUrl);
                 const preview = (initialInfo?: boolean) =>
                   previewModal.show({
                     imageId: img.imageId,

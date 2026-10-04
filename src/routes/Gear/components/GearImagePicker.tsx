@@ -6,7 +6,7 @@ import { Button } from '~/components/Button';
 import { Loader } from '~/components/Loader';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
-import { imgUrl } from '~/routes/Galleries/utils';
+import { imgUrl, thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -92,7 +92,7 @@ export const GearImagePicker = ({ label = 'Photo', coverUrl, onChange }: GearIma
     }
   };
 
-  const current = imgUrl(coverUrl);
+  const current = thumbUrl(coverUrl);
 
   return (
     <div style={styles.container}>

@@ -25,7 +25,7 @@ import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
-import { STATUS_TONE, imgUrl } from '~/routes/Galleries/utils';
+import { STATUS_TONE, thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -467,8 +467,8 @@ const GalleryPicker = ({
         onMouseLeave={() => setHovered(undefined)}
       >
         <span style={styles.pickerThumb}>
-          {selected && imgUrl(selected.coverUrl) ? (
-            <img src={imgUrl(selected.coverUrl)} alt='' style={styles.pickerThumbImg} />
+          {selected && thumbUrl(selected.coverUrl) ? (
+            <img src={thumbUrl(selected.coverUrl)} alt='' style={styles.pickerThumbImg} />
           ) : (
             <FiImage size={14} color={theme.colors.dark05} />
           )}
@@ -512,8 +512,8 @@ const GalleryPicker = ({
                     }}
                   >
                     <span style={styles.optionThumb}>
-                      {imgUrl(gallery.coverUrl) ? (
-                        <img src={imgUrl(gallery.coverUrl)} alt='' style={styles.pickerThumbImg} />
+                      {thumbUrl(gallery.coverUrl) ? (
+                        <img src={thumbUrl(gallery.coverUrl)} alt='' style={styles.pickerThumbImg} />
                       ) : (
                         <FiImage size={14} color={theme.colors.dark05} />
                       )}

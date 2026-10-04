@@ -9,7 +9,7 @@ import { Switch } from '~/components/Switch';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
-import { imgUrl } from '~/routes/Galleries/utils';
+import { thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -145,7 +145,7 @@ export const MediaSelectorModal = (p: MediaSelectorModalProps) => {
                 {images.map((img) => {
                   const already = inGallery.has(img.imageId);
                   const isSelected = selected.has(img.imageId);
-                  const url = imgUrl(img.coverUrl);
+                  const url = thumbUrl(img.coverUrl);
                   return (
                     <div
                       key={img.imageId}
