@@ -11,8 +11,10 @@ type ScrollbarProps = {
    * floating in empty space — the wrong default inside a dialog.
    */
   maxHeight?: number | string;
+  /** False for a column that only ever scrolls down: no sideways track, nothing to drift into. */
+  horizontal?: boolean;
 };
-export const Scrollbar = ({ children, style, maxHeight }: ScrollbarProps) => {
+export const Scrollbar = ({ children, style, maxHeight, horizontal = true }: ScrollbarProps) => {
   const styles = useStyles();
   return (
     <Scrollbars
@@ -21,6 +23,16 @@ export const Scrollbar = ({ children, style, maxHeight }: ScrollbarProps) => {
       autoHeightMax={maxHeight}
       renderTrackVertical={({ style, ...props }) => <div {...props} style={{ ...style, ...styles.scrollContainer }} />}
       renderThumbVertical={({ style, ...props }) => <div {...props} style={{ ...style, ...styles.scroll }} />}
+      // Horizontal too: left to the library it fell back to a bar that matched nothing else.
+      renderTrackHorizontal={({ style, ...props }) => (
+        <div {...props} style={{ ...style, ...(horizontal ? styles.scrollContainerHorizontal : styles.hidden) }} />
+      )}
+      renderView={({ style, ...props }) => (
+        <div {...props} style={horizontal ? style : { ...style, overflowX: 'hidden', marginBottom: 0 }} />
+      )}
+      renderThumbHorizontal={({ style, ...props }) => <div {...props} style={{ ...style, ...styles.scroll }} />}
+      // A track with nothing to scroll is just a stripe; show it only when there is.
+      hideTracksWhenNotNeeded
     >
       {children}
     </Scrollbars>
@@ -37,6 +49,17 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.8),
     borderRadius: t.borderRadius.default,
   },
+  scrollContainerHorizontal: {
+    left: 0,
+    // Clear of the vertical track in the corner.
+    right: 12,
+    bottom: 0,
+    height: 10,
+    cursor: 'pointer',
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.8),
+    borderRadius: t.borderRadius.default,
+  },
+  hidden: { display: 'none' },
   scroll: {
     backgroundColor: t.colors.gray02,
     borderRadius: t.borderRadius.default,
