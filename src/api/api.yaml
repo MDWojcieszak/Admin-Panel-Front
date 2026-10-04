@@ -8028,6 +8028,30 @@ paths:
                 $ref: '#/components/schemas/ApplicationDetailResponse'
       tags: *ref_83
       security: *ref_84
+  /deploy/applications/{id}/move-to-git:
+    post:
+      operationId: DeployController_moveToGit
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveToGitDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetailResponse'
+      tags: *ref_83
+      security: *ref_84
   /deploy/git/accounts:
     get:
       operationId: DeployController_listGitAccounts
@@ -18688,6 +18712,8 @@ components:
         gitRepoId:
           type: string
           nullable: true
+        buildMode:
+          $ref: '#/components/schemas/BuildMode'
         webhookEnabled:
           type: boolean
         spec:
@@ -18887,6 +18913,21 @@ components:
         - variablesToFill
         - notes
         - projectName
+    MoveToGitDto:
+      type: object
+      properties:
+        gitRepoId:
+          type: string
+        composeFile:
+          type: string
+          pattern: ^(?!\/)(?!(?:.*\/)?\.\.(?:\/|$))[\w.\/-]+$
+        runDirectory:
+          type: string
+          pattern: ^(?!\/)(?!(?:.*\/)?\.\.(?:\/|$))[\w.\/-]+$
+        buildMode:
+          $ref: '#/components/schemas/BuildMode'
+      required:
+        - gitRepoId
     GitAccountResponse:
       type: object
       properties:

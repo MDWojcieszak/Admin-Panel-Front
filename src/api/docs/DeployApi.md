@@ -30,6 +30,7 @@ All URIs are relative to *http://localhost*
 |[**deployControllerListGitRepos**](#deploycontrollerlistgitrepos) | **GET** /deploy/git/repos | |
 |[**deployControllerListReleases**](#deploycontrollerlistreleases) | **GET** /deploy/applications/{id}/releases | |
 |[**deployControllerListVariables**](#deploycontrollerlistvariables) | **GET** /deploy/variables | |
+|[**deployControllerMoveToGit**](#deploycontrollermovetogit) | **POST** /deploy/applications/{id}/move-to-git | |
 |[**deployControllerPreviewImport**](#deploycontrollerpreviewimport) | **POST** /deploy/applications/{id}/import/preview | |
 |[**deployControllerPreviewTakeover**](#deploycontrollerpreviewtakeover) | **POST** /deploy/applications/{id}/takeover/preview | |
 |[**deployControllerRefreshContainers**](#deploycontrollerrefreshcontainers) | **POST** /deploy/containers/refresh | |
@@ -1313,6 +1314,60 @@ This endpoint does not have any parameters.
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deployControllerMoveToGit**
+> ApplicationDetailResponse deployControllerMoveToGit(moveToGitDto)
+
+
+### Example
+
+```typescript
+import {
+    DeployApi,
+    Configuration,
+    MoveToGitDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DeployApi(configuration);
+
+let id: string; // (default to undefined)
+let moveToGitDto: MoveToGitDto; //
+
+const { status, data } = await apiInstance.deployControllerMoveToGit(
+    id,
+    moveToGitDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **moveToGitDto** | **MoveToGitDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**ApplicationDetailResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 

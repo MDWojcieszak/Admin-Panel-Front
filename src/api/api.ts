@@ -9757,6 +9757,39 @@ export interface MoonResponse {
 /**
  * 
  * @export
+ * @interface MoveToGitDto
+ */
+export interface MoveToGitDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof MoveToGitDto
+     */
+    'gitRepoId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MoveToGitDto
+     */
+    'composeFile'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MoveToGitDto
+     */
+    'runDirectory'?: string;
+    /**
+     * 
+     * @type {BuildMode}
+     * @memberof MoveToGitDto
+     */
+    'buildMode'?: BuildMode;
+}
+
+
+/**
+ * 
+ * @export
  * @interface MultiUploadResponseDto
  */
 export interface MultiUploadResponseDto {
@@ -19405,6 +19438,12 @@ export interface UpdateApplicationDto {
      * @memberof UpdateApplicationDto
      */
     'gitRepoId'?: string | null;
+    /**
+     * 
+     * @type {BuildMode}
+     * @memberof UpdateApplicationDto
+     */
+    'buildMode'?: BuildMode;
     /**
      * 
      * @type {boolean}
@@ -36972,6 +37011,49 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 
          * @param {string} id 
+         * @param {MoveToGitDto} moveToGitDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerMoveToGit: async (id: string, moveToGitDto: MoveToGitDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerMoveToGit', 'id', id)
+            // verify required parameter 'moveToGitDto' is not null or undefined
+            assertParamExists('deployControllerMoveToGit', 'moveToGitDto', moveToGitDto)
+            const localVarPath = `/deploy/applications/{id}/move-to-git`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(moveToGitDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -37815,6 +37897,19 @@ export const DeployApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
+         * @param {MoveToGitDto} moveToGitDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerMoveToGit(id: string, moveToGitDto: MoveToGitDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApplicationDetailResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerMoveToGit(id, moveToGitDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerMoveToGit']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -38212,6 +38307,15 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          */
         deployControllerListVariables(options?: RawAxiosRequestConfig): AxiosPromise<Array<VariableResponse>> {
             return localVarFp.deployControllerListVariables(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerMoveToGitRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerMoveToGit(requestParameters: DeployApiDeployControllerMoveToGitRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApplicationDetailResponse> {
+            return localVarFp.deployControllerMoveToGit(requestParameters.id, requestParameters.moveToGitDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -38645,6 +38749,27 @@ export interface DeployApiDeployControllerListReleasesRequest {
      * @memberof DeployApiDeployControllerListReleases
      */
     readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerMoveToGit operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerMoveToGitRequest
+ */
+export interface DeployApiDeployControllerMoveToGitRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerMoveToGit
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {MoveToGitDto}
+     * @memberof DeployApiDeployControllerMoveToGit
+     */
+    readonly moveToGitDto: MoveToGitDto
 }
 
 /**
@@ -39156,6 +39281,17 @@ export class DeployApi extends BaseAPI {
      */
     public deployControllerListVariables(options?: RawAxiosRequestConfig) {
         return DeployApiFp(this.configuration).deployControllerListVariables(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerMoveToGitRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerMoveToGit(requestParameters: DeployApiDeployControllerMoveToGitRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerMoveToGit(requestParameters.id, requestParameters.moveToGitDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
