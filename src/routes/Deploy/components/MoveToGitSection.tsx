@@ -17,7 +17,7 @@ import { DeployNavigationRoute, MainNavigationRoute } from '~/navigation/types';
 import { Section, useDeployStyles } from '~/routes/Deploy/components/shared';
 import { getApiErrorMessage } from '~/utils/apiError';
 
-type MoveForm = { gitRepoId: string; buildMode: BuildMode; composeFile: string; runDirectory: string };
+type MoveForm = { gitRepoId: string; gitRef: string; buildMode: BuildMode; composeFile: string; runDirectory: string };
 
 const BUILD_OPTIONS = [
   { value: BuildMode.Compose, label: 'Build here from the clone' },
@@ -44,13 +44,23 @@ export const MoveToGitSection = ({
   const can = useCan();
   const toast = useToast();
   const form = useForm<MoveForm>({
-    defaultValues: { gitRepoId: '', buildMode: BuildMode.Compose, composeFile: 'compose.yaml', runDirectory: '.' },
+    defaultValues: {
+      gitRepoId: '',
+      gitRef: '',
+      buildMode: BuildMode.Compose,
+      composeFile: 'compose.yaml',
+      runDirectory: '.',
+    },
   });
-  const { gitRepoId, buildMode, composeFile, runDirectory } = form.watch();
+  const { gitRepoId, gitRef, buildMode, composeFile, runDirectory } = form.watch();
   // Off: the backend's default, compose.yaml at the repository root.
   const [customPath, setCustomPath] = useState(false);
-  const composeValid = !customPath || INSIDE_CLONE.test(composeFile?.trim() ?? '');
-  const directoryValid = !customPath || INSIDE_CLONE.test(runDirectory?.trim() ?? '');
+  // Off keeps the compose file stored in the panel; the agent puts it into the
+  // clone on every deployment. Only possible once the panel holds a file.
+  const hasStoredCompose = Boolean(application.compose?.trim());
+  const [inRepository, setInRepository] = useState(true);
+  const composeValid = !inRepository || !customPath || INSIDE_CLONE.test(composeFile?.trim() ?? '');
+  const directoryValid = !inRepository || !customPath || INSIDE_CLONE.test(runDirectory?.trim() ?? '');
   const [open, setOpen] = useState(false);
   const confirmModal = useModal(`deploy-move-to-git-${application.id}`, ConfirmModal, { title: 'Move to git' });
 
@@ -78,7 +88,9 @@ export const MoveToGitSection = ({
         moveToGitDto: {
           gitRepoId,
           buildMode,
-          ...(customPath ? { composeFile: composeFile.trim(), runDirectory: runDirectory.trim() } : {}),
+          gitRef: gitRef.trim() || undefined,
+          composeInRepository: inRepository,
+          ...(inRepository && customPath ? { composeFile: composeFile.trim(), runDirectory: runDirectory.trim() } : {}),
         },
       });
       toast('Moved to git — preview and deploy to run it from the repository', 'success');
@@ -92,7 +104,6 @@ export const MoveToGitSection = ({
   return (
     <Section
       title='Move to a git repository'
-      description="The repository's own compose file runs from its clone on the host; every deployment fetches it first."
       actions={
         !open ? (
           <Button
@@ -123,13 +134,35 @@ export const MoveToGitSection = ({
                   control={form.control}
                   options={(repos.data ?? []).map((r) => ({ value: r.id, label: `${r.name} (${r.repo}@${r.branch})` }))}
                 />
-                <Select name='buildMode' label='Image source' control={form.control} options={BUILD_OPTIONS} />
+                <Input
+                  name='gitRef'
+                  label='Branch or tag'
+                  description="Empty follows the repository's branch — v1 or main runs two versions side by side"
+                />
               </div>
+              <Select name='buildMode' label='Image source' control={form.control} options={BUILD_OPTIONS} />
               <div style={shared.row}>
-                <Switch checked={customPath} onChange={setCustomPath} label='Custom compose file path' />
-                {!customPath ? <span style={{ ...shared.muted, ...shared.mono }}>compose.yaml at the root</span> : null}
+                <Switch
+                  checked={inRepository}
+                  onChange={setInRepository}
+                  label='Compose file in the repository'
+                  disabled={!hasStoredCompose && inRepository}
+                />
+                {!inRepository ? (
+                  <span style={shared.muted}>The panel&apos;s compose file runs from the clone</span>
+                ) : !hasStoredCompose ? (
+                  <span style={shared.muted}>To keep the panel&apos;s file instead, take it over or paste it first</span>
+                ) : null}
               </div>
-              {customPath ? (
+              {inRepository ? (
+                <div style={shared.row}>
+                  <Switch checked={customPath} onChange={setCustomPath} label='Custom compose file path' />
+                  {!customPath ? (
+                    <span style={{ ...shared.muted, ...shared.mono }}>compose.yaml at the root</span>
+                  ) : null}
+                </div>
+              ) : null}
+              {inRepository && customPath ? (
                 <div style={shared.fieldGrid}>
                   <Input
                     name='composeFile'
@@ -154,11 +187,19 @@ export const MoveToGitSection = ({
             </FormProvider>
             <div style={shared.warning}>
               <FiAlertTriangle size={14} />
-              <span>
-                Relative paths in the repository&apos;s compose file (<span style={shared.mono}>./data</span>) resolve
-                against the clone{repo?.clonePath ? ` (${repo.clonePath})` : ''}, not the directory the stack runs from
-                today. Make data volumes absolute before deploying, or the application starts on empty data.
-              </span>
+              {inRepository ? (
+                <span>
+                  Relative paths in the repository&apos;s compose file (<span style={shared.mono}>./data</span>) resolve
+                  against the clone{repo?.clonePath ? ` (${repo.clonePath})` : ''}, not the directory the stack runs
+                  from today. Make data volumes absolute before deploying, or the application starts on empty data.
+                </span>
+              ) : (
+                <span>
+                  Relative build contexts and env files (<span style={shared.mono}>., ./server</span>) point at the
+                  repository&apos;s code. Relative volumes (<span style={shared.mono}>./data</span>) are refused — a
+                  reclone would wipe them; make them absolute first.
+                </span>
+              )}
             </div>
             <div style={shared.row}>
               <Button
