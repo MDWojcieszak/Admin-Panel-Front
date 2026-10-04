@@ -7,6 +7,7 @@ import { Input } from '~/components/Input';
 import { useApi } from '~/hooks/useApi';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
+import { GitRefChoice, GitRefPicker, refOf } from '~/routes/Deploy/components/GitRefPicker';
 import { CodeBlock, DiffView, Fact, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
 import { shortCommit, shortDigest } from '~/routes/Deploy/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
@@ -29,10 +30,11 @@ export const DeployTab = ({ application, onDeployed }: DeployTabProps) => {
   const [preview, setPreview] = useState<RenderPreviewResponse>();
   const [rendering, setRendering] = useState(false);
   const [deploying, setDeploying] = useState(false);
-  const form = useForm<{ version: string; digest: string; gitRef: string }>({
-    defaultValues: { version: application.currentRelease?.version ?? '', digest: '', gitRef: '' },
+  const form = useForm<{ version: string; digest: string }>({
+    defaultValues: { version: application.currentRelease?.version ?? '', digest: '' },
   });
-  const { version, digest, gitRef } = form.watch();
+  const { version, digest } = form.watch();
+  const [buildFrom, setBuildFrom] = useState<GitRefChoice>({ kind: 'latest' });
   const [showEnv, setShowEnv] = useState(false);
 
   const isHost = application.sourceType === 'HOST';
@@ -67,7 +69,7 @@ export const DeployTab = ({ application, onDeployed }: DeployTabProps) => {
           composeHash: preview.composeHash,
           version: pinsImage ? version || undefined : undefined,
           digest: pinsImage ? digest || undefined : undefined,
-          ref: isGit ? gitRef.trim() || undefined : undefined,
+          ref: isGit ? refOf(buildFrom) : undefined,
         },
       });
       setPreview(undefined);
@@ -87,7 +89,8 @@ export const DeployTab = ({ application, onDeployed }: DeployTabProps) => {
       <Section title='Deploy'>
         <span style={shared.muted}>
           This stack was adopted and its compose file still lives on the host. Take the file over in Settings — it is
-          kept as it is — to deploy it from here; until then it can be started, restarted and stopped in the Containers tab.
+          kept as it is — to deploy it from here; until then it can be started, restarted and stopped in the Containers
+          tab.
         </span>
       </Section>
     );
@@ -114,14 +117,8 @@ export const DeployTab = ({ application, onDeployed }: DeployTabProps) => {
               <Input name='digest' label='Digest' description='Optional — sha256:… pins the exact image' />
             </div>
           ) : null}
-          {isGit ? (
-            <Input
-              name='gitRef'
-              label='Commit or tag'
-              description='Optional — the branch head when empty, or v1.4.0, a1b2c3d'
-            />
-          ) : null}
         </FormProvider>
+        {isGit ? <GitRefPicker applicationId={application.id} value={buildFrom} onChange={setBuildFrom} /> : null}
         {application.currentRelease ? (
           <div style={shared.row}>
             <Fact
