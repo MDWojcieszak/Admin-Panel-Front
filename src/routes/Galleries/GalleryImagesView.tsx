@@ -101,7 +101,8 @@ export const GalleryImagesView = () => {
           <>
             <div style={styles.grid}>
               {images.map((img) => {
-                const url = imgUrl(img.coverUrl);
+                // The ~640 px thumb, not the 1920 px cover: decoding dozens of covers made the grid stutter.
+                const url = imgUrl(img.coverUrl?.replace('/image/cover', '/image/thumb'));
                 const preview = (initialInfo?: boolean) =>
                   previewModal.show({
                     imageId: img.imageId,
@@ -112,7 +113,11 @@ export const GalleryImagesView = () => {
                   });
                 return (
                   <div key={img.imageId} style={styles.tile} onClick={() => preview()}>
-                    {url ? <img src={url} alt='' style={styles.img} loading='lazy' /> : <div style={styles.imgEmpty} />}
+                    {url ? (
+                      <img src={url} alt='' style={styles.img} loading='lazy' decoding='async' />
+                    ) : (
+                      <div style={styles.imgEmpty} />
+                    )}
                     <div
                       style={{
                         ...styles.usageChip,
