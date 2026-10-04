@@ -54,13 +54,12 @@ export const MoveToGitSection = ({
   });
   const { gitRepoId, gitRef, buildMode, composeFile, runDirectory } = form.watch();
   // Off: the backend's default, compose.yaml at the repository root.
-  const [customPath, setCustomPath] = useState(false);
-  // Off keeps the compose file stored in the panel; the agent puts it into the
+  // False keeps the compose file stored in the panel; the agent puts it into the
   // clone on every deployment. Only possible once the panel holds a file.
   const hasStoredCompose = Boolean(application.compose?.trim());
   const [inRepository, setInRepository] = useState(true);
-  const composeValid = !inRepository || !customPath || INSIDE_CLONE.test(composeFile?.trim() ?? '');
-  const directoryValid = !inRepository || !customPath || INSIDE_CLONE.test(runDirectory?.trim() ?? '');
+  const composeValid = !inRepository || INSIDE_CLONE.test(composeFile?.trim() ?? '');
+  const directoryValid = !inRepository || INSIDE_CLONE.test(runDirectory?.trim() ?? '');
   const [open, setOpen] = useState(false);
   const confirmModal = useModal(`deploy-move-to-git-${application.id}`, ConfirmModal, { title: 'Move to git' });
 
@@ -90,7 +89,7 @@ export const MoveToGitSection = ({
           buildMode,
           gitRef: gitRef.trim() || undefined,
           composeInRepository: inRepository,
-          ...(inRepository && customPath ? { composeFile: composeFile.trim(), runDirectory: runDirectory.trim() } : {}),
+          ...(inRepository ? { composeFile: composeFile.trim(), runDirectory: runDirectory.trim() } : {}),
         },
       });
       toast('Moved to git — preview and deploy to run it from the repository', 'success');
@@ -141,28 +140,14 @@ export const MoveToGitSection = ({
                 />
               </div>
               <Select name='buildMode' label='Image source' control={form.control} options={BUILD_OPTIONS} />
-              <div style={shared.row}>
+              {hasStoredCompose ? (
                 <Switch
-                  checked={inRepository}
-                  onChange={setInRepository}
-                  label='Compose file in the repository'
-                  disabled={!hasStoredCompose && inRepository}
+                  checked={!inRepository}
+                  onChange={(keep) => setInRepository(!keep)}
+                  label="Keep the panel's compose file"
                 />
-                {!inRepository ? (
-                  <span style={shared.muted}>The panel&apos;s compose file runs from the clone</span>
-                ) : !hasStoredCompose ? (
-                  <span style={shared.muted}>To keep the panel&apos;s file instead, take it over or paste it first</span>
-                ) : null}
-              </div>
-              {inRepository ? (
-                <div style={shared.row}>
-                  <Switch checked={customPath} onChange={setCustomPath} label='Custom compose file path' />
-                  {!customPath ? (
-                    <span style={{ ...shared.muted, ...shared.mono }}>compose.yaml at the root</span>
-                  ) : null}
-                </div>
               ) : null}
-              {inRepository && customPath ? (
+              {inRepository ? (
                 <div style={shared.fieldGrid}>
                   <Input
                     name='composeFile'
