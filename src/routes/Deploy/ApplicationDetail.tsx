@@ -17,7 +17,7 @@ import { DeployTab } from '~/routes/Deploy/components/DeployTab';
 import { EnvTab } from '~/routes/Deploy/components/EnvTab';
 import { ReleasesTab } from '~/routes/Deploy/components/ReleasesTab';
 import { SettingsTab } from '~/routes/Deploy/components/SettingsTab';
-import { useDeployStyles } from '~/routes/Deploy/components/shared';
+import { DeployPage } from '~/routes/Deploy/components/shared';
 import { SpecTab } from '~/routes/Deploy/components/SpecTab';
 import { useDeployEvents } from '~/routes/Deploy/hooks/useDeployEvents';
 import {
@@ -44,13 +44,16 @@ const TABS = [
 ];
 
 /** An own compose file replaces most of the spec; what remains are run options. */
-const tabsFor = (sourceType?: AppSourceType) =>
-  TABS.filter((t) => t.value !== 'compose' || sourceType === AppSourceType.Compose).map((t) =>
-    t.value === 'spec' && sourceType === AppSourceType.Compose ? { ...t, label: 'Options' } : t,
+/** The panel keeps a compose file: its own, or one written into a git clone. */
+const keepsCompose = (app?: ApplicationDetailResponse) =>
+  app?.sourceType === AppSourceType.Compose || (app?.sourceType === AppSourceType.Git && !!app.compose);
+
+const tabsFor = (app?: ApplicationDetailResponse) =>
+  TABS.filter((t) => t.value !== 'compose' || keepsCompose(app)).map((t) =>
+    t.value === 'spec' && keepsCompose(app) ? { ...t, label: 'Options' } : t,
   );
 
 export const ApplicationDetail = () => {
-  const shared = useDeployStyles();
   const theme = useTheme();
   const { id = '' } = useParams();
   const { deployApi } = useApi();
@@ -89,7 +92,7 @@ export const ApplicationDetail = () => {
   };
 
   const application = app.data;
-  const tabs = tabsFor(application?.sourceType);
+  const tabs = tabsFor(application);
   // A stack still running from the host's own file cannot be deployed from here yet;
   // what it offers is its containers.
   const defaultTab = application?.sourceType === AppSourceType.Host ? 'containers' : 'deploy';
@@ -113,68 +116,73 @@ export const ApplicationDetail = () => {
   };
 
   return (
-    <div style={shared.scroll}>
-      <div style={shared.content}>
-        <PageHeader
-          leading={
-            <Link to={backLink} style={{ color: theme.colors.blue04, display: 'flex' }} title='All applications'>
-              <FiArrowLeft size={20} />
-            </Link>
-          }
-          title={application.displayName || application.slug}
-          badges={
-            <>
-              {application.origin !== ContainerOrigin.Managed ? (
-                <Badge label={ORIGIN_LABEL[application.origin]} tone={ORIGIN_TONE[application.origin]} />
-              ) : null}
-              <Badge label={RUNTIME_LABEL[application.runtimeStatus]} tone={RUNTIME_TONE[application.runtimeStatus]} />
-              {application.currentRelease ? (
+    <DeployPage
+      header={
+        <>
+          <PageHeader
+            leading={
+              <Link to={backLink} style={{ color: theme.colors.blue04, display: 'flex' }} title='All applications'>
+                <FiArrowLeft size={20} />
+              </Link>
+            }
+            title={application.displayName || application.slug}
+            badges={
+              <>
+                {application.origin !== ContainerOrigin.Managed ? (
+                  <Badge label={ORIGIN_LABEL[application.origin]} tone={ORIGIN_TONE[application.origin]} />
+                ) : null}
                 <Badge
-                  label={`${application.currentRelease.version ?? shortDigest(application.currentRelease.digest)} · ${
-                    RELEASE_LABEL[application.currentRelease.status]
-                  }`}
-                  tone={RELEASE_TONE[application.currentRelease.status]}
+                  label={RUNTIME_LABEL[application.runtimeStatus]}
+                  tone={RUNTIME_TONE[application.runtimeStatus]}
                 />
-              ) : null}
-              {application.availableDigest ? (
-                <Badge label='Update available' tone='blue' icon={<FiArrowUpCircle size={12} />} />
-              ) : null}
-            </>
-          }
-          meta={
-            <span title={ORIGIN_HINT[application.origin]}>
-              {application.slug} · {application.tier.toLowerCase()} · {application.sourceType.toLowerCase()}
-              {application.runtimeMessage ? ` · ${application.runtimeMessage}` : ''}
-            </span>
-          }
-        />
-
-        <SegmentedTabs
-          items={tabs}
-          selected={tab}
-          handleSelect={(value) => setParams({ tab: value, process: null })}
-          layoutId='deploy-application-tabs'
-        />
-
-        {tab === 'deploy' ? <DeployTab application={application} onDeployed={openProcess} /> : null}
-        {tab === 'containers' ? <ContainersTab application={application} /> : null}
-        {tab === 'compose' ? <ComposeTab application={application} onSaved={(next) => app.setData(next)} /> : null}
-        {tab === 'env' ? <EnvTab applicationId={application.id} /> : null}
-        {tab === 'spec' ? <SpecTab application={application} onSaved={(next) => app.setData(next)} /> : null}
-        {tab === 'releases' ? (
-          <ReleasesTab
-            applicationId={application.id}
-            releases={releases.data}
-            loading={releases.loading}
-            currentReleaseId={application.currentRelease?.id}
-            selectedProcessId={params.process}
-            onSelectProcess={(processId) => setParams({ process: processId ?? null })}
-            onRolledBack={openProcess}
+                {application.currentRelease ? (
+                  <Badge
+                    label={`${application.currentRelease.version ?? shortDigest(application.currentRelease.digest)} · ${
+                      RELEASE_LABEL[application.currentRelease.status]
+                    }`}
+                    tone={RELEASE_TONE[application.currentRelease.status]}
+                  />
+                ) : null}
+                {application.availableDigest ? (
+                  <Badge label='Update available' tone='blue' icon={<FiArrowUpCircle size={12} />} />
+                ) : null}
+              </>
+            }
+            meta={
+              <span title={ORIGIN_HINT[application.origin]}>
+                {application.slug} · {application.tier.toLowerCase()} · {application.sourceType.toLowerCase()}
+                {application.runtimeMessage ? ` · ${application.runtimeMessage}` : ''}
+              </span>
+            }
           />
-        ) : null}
-        {tab === 'settings' ? <SettingsTab application={application} onChanged={reloadAll} /> : null}
-        {tab === 'activity' ? <ActivityTab applicationId={application.id} /> : null}
-      </div>
-    </div>
+
+          <SegmentedTabs
+            items={tabs}
+            selected={tab}
+            handleSelect={(value) => setParams({ tab: value, process: null })}
+            layoutId='deploy-application-tabs'
+          />
+        </>
+      }
+    >
+      {tab === 'deploy' ? <DeployTab application={application} onDeployed={openProcess} /> : null}
+      {tab === 'containers' ? <ContainersTab application={application} /> : null}
+      {tab === 'compose' ? <ComposeTab application={application} onSaved={(next) => app.setData(next)} /> : null}
+      {tab === 'env' ? <EnvTab applicationId={application.id} /> : null}
+      {tab === 'spec' ? <SpecTab application={application} onSaved={(next) => app.setData(next)} /> : null}
+      {tab === 'releases' ? (
+        <ReleasesTab
+          applicationId={application.id}
+          releases={releases.data}
+          loading={releases.loading}
+          currentReleaseId={application.currentRelease?.id}
+          selectedProcessId={params.process}
+          onSelectProcess={(processId) => setParams({ process: processId ?? null })}
+          onRolledBack={openProcess}
+        />
+      ) : null}
+      {tab === 'settings' ? <SettingsTab application={application} onChanged={reloadAll} /> : null}
+      {tab === 'activity' ? <ActivityTab applicationId={application.id} /> : null}
+    </DeployPage>
   );
 };

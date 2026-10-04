@@ -14,7 +14,7 @@ import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useCan } from '~/hooks/usePermissions';
 import { applicationPath } from '~/routes/Deploy/Containers';
-import { useDeployStyles } from '~/routes/Deploy/components/shared';
+import { DeployPage, useDeployStyles } from '~/routes/Deploy/components/shared';
 import { useDeployEvents } from '~/routes/Deploy/hooks/useDeployEvents';
 import { CreateApplicationModal } from '~/routes/Deploy/modals/CreateApplicationModal';
 import {
@@ -57,93 +57,96 @@ export const Applications = () => {
   const applications = query.data ?? [];
 
   return (
-    <div style={shared.scroll}>
-      <div style={shared.content}>
-        <PageHeader
-          title='Applications'
-          meta={applications.length ? `${applications.length} managed` : undefined}
-          actions={
-            can('deploy.manage') ? (
-              <>
-                <Button
-                  label='New application'
-                  icon={<FiPlus size={14} />}
-                  onClick={() =>
-                    createModal.show({
-                      onCreated: (id: string) => navigate(applicationPath(id)),
-                    })
-                  }
-                />
-              </>
-            ) : undefined
-          }
-        />
-        {query.loading && !query.data ? (
-          <Loader />
-        ) : applications.length === 0 ? (
-          <EmptyState
-            icon={<MdOutlineRocketLaunch size={26} color={theme.colors.blue04} />}
-            title='No applications yet'
-            description='Adopt a running stack from Containers, or create one from a spec.'
+    <DeployPage
+      header={
+        <>
+          <PageHeader
+            title='Applications'
+            meta={applications.length ? `${applications.length} managed` : undefined}
+            actions={
+              can('deploy.manage') ? (
+                <>
+                  <Button
+                    label='New application'
+                    icon={<FiPlus size={14} />}
+                    onClick={() =>
+                      createModal.show({
+                        onCreated: (id: string) => navigate(applicationPath(id)),
+                      })
+                    }
+                  />
+                </>
+              ) : undefined
+            }
           />
-        ) : (
-          <div style={shared.panel}>
-            <div style={shared.list}>
-              {applications.map((app) => (
-                <button
-                  key={app.id}
-                  type='button'
-                  style={{ ...styles.row, ...(hovered === app.id ? styles.rowHover : {}) }}
-                  onMouseEnter={() => setHovered(app.id)}
-                  onMouseLeave={() => setHovered((h) => (h === app.id ? undefined : h))}
-                  onClick={() => navigate(applicationPath(app.id))}
-                >
-                  <div style={styles.main}>
-                    <div style={shared.row}>
-                      <span style={styles.name}>{app.displayName || app.slug}</span>
-                      {app.origin !== ContainerOrigin.Managed ? (
-                        <Badge label={ORIGIN_LABEL[app.origin]} tone={ORIGIN_TONE[app.origin]} />
-                      ) : null}
-                      <Badge label={RUNTIME_LABEL[app.runtimeStatus]} tone={RUNTIME_TONE[app.runtimeStatus]} />
-                      {app.availableDigest ? (
-                        <Badge label='Update available' tone='blue' icon={<FiArrowUpCircle size={12} />} />
-                      ) : null}
-                    </div>
-                    <span style={{ ...shared.muted, ...shared.mono }}>
-                      {app.slug}
-                      {app.image ? ` · ${app.image}` : ''}
-                    </span>
+        </>
+      }
+    >
+      {query.loading && !query.data ? (
+        <Loader />
+      ) : applications.length === 0 ? (
+        <EmptyState
+          icon={<MdOutlineRocketLaunch size={26} color={theme.colors.blue04} />}
+          title='No applications yet'
+          description='Adopt a running stack from Containers, or create one from a spec.'
+        />
+      ) : (
+        <div style={shared.panel}>
+          <div style={shared.list}>
+            {applications.map((app) => (
+              <button
+                key={app.id}
+                type='button'
+                style={{ ...styles.row, ...(hovered === app.id ? styles.rowHover : {}) }}
+                onMouseEnter={() => setHovered(app.id)}
+                onMouseLeave={() => setHovered((h) => (h === app.id ? undefined : h))}
+                onClick={() => navigate(applicationPath(app.id))}
+              >
+                <div style={styles.main}>
+                  <div style={shared.row}>
+                    <span style={styles.name}>{app.displayName || app.slug}</span>
+                    {app.origin !== ContainerOrigin.Managed ? (
+                      <Badge label={ORIGIN_LABEL[app.origin]} tone={ORIGIN_TONE[app.origin]} />
+                    ) : null}
+                    <Badge label={RUNTIME_LABEL[app.runtimeStatus]} tone={RUNTIME_TONE[app.runtimeStatus]} />
+                    {app.availableDigest ? (
+                      <Badge label='Update available' tone='blue' icon={<FiArrowUpCircle size={12} />} />
+                    ) : null}
                   </div>
-                  <div style={styles.release}>
-                    {app.currentRelease ? (
-                      <>
-                        <span style={styles.version}>
-                          {app.currentRelease.version ?? shortDigest(app.currentRelease.digest)}
-                        </span>
-                        <span style={shared.row}>
-                          <Badge
-                            label={RELEASE_LABEL[app.currentRelease.status]}
-                            tone={RELEASE_TONE[app.currentRelease.status]}
-                          />
-                          {app.currentRelease.deployedAt ? (
-                            <span style={shared.muted}>
-                              {formatDistanceToNow(new Date(app.currentRelease.deployedAt), { addSuffix: true })}
-                            </span>
-                          ) : null}
-                        </span>
-                      </>
-                    ) : (
-                      <span style={shared.muted}>Never deployed</span>
-                    )}
-                  </div>
-                  <FiChevronRight size={16} color={theme.colors.dark05} style={{ flexShrink: 0 }} />
-                </button>
-              ))}
-            </div>
+                  <span style={{ ...shared.muted, ...shared.mono }}>
+                    {app.slug}
+                    {app.image ? ` · ${app.image}` : ''}
+                  </span>
+                </div>
+                <div style={styles.release}>
+                  {app.currentRelease ? (
+                    <>
+                      <span style={styles.version}>
+                        {app.currentRelease.version ?? shortDigest(app.currentRelease.digest)}
+                      </span>
+                      <span style={shared.row}>
+                        <Badge
+                          label={RELEASE_LABEL[app.currentRelease.status]}
+                          tone={RELEASE_TONE[app.currentRelease.status]}
+                        />
+                        {app.currentRelease.deployedAt ? (
+                          <span style={shared.muted}>
+                            {formatDistanceToNow(new Date(app.currentRelease.deployedAt), { addSuffix: true })}
+                          </span>
+                        ) : null}
+                      </span>
+                    </>
+                  ) : (
+                    <span style={shared.muted}>Never deployed</span>
+                  )}
+                </div>
+                <FiChevronRight size={16} color={theme.colors.dark05} style={{ flexShrink: 0 }} />
+              </button>
+            ))}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </DeployPage>
   );
 };
 

@@ -12,7 +12,7 @@ import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
-import { useDeployStyles } from '~/routes/Deploy/components/shared';
+import { DeployPage, useDeployStyles } from '~/routes/Deploy/components/shared';
 import { EnvValueInput, EnvValueModal } from '~/routes/Deploy/modals/EnvValueModal';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -55,81 +55,83 @@ export const Variables = () => {
   const variables = query.data ?? [];
 
   return (
-    <div style={shared.scroll}>
-      <div style={shared.content}>
-        <PageHeader
-          title='Variables'
-          meta={
-            variables.length
-              ? `${variables.length} shared · ${variables.filter((v) => v.isSecret).length} secret`
-              : undefined
-          }
-          actions={
-            canManage ? (
-              <Button
-                label='New variable'
-                icon={<FiPlus size={14} />}
-                onClick={() => editModal.show({ withDescription: true, onSave: save })}
-              />
-            ) : undefined
-          }
-        />
-        {query.loading && !query.data ? (
-          <Loader />
-        ) : variables.length === 0 ? (
-          <EmptyState
-            icon={<MdOutlineDataObject size={26} color={theme.colors.blue04} />}
-            title='No variables'
-            description='Values used by several applications — DB_HOST, TZ, a domain suffix — belong here.'
+    <DeployPage
+      header={
+        <>
+          <PageHeader
+            title='Variables'
+            meta={
+              variables.length
+                ? `${variables.length} shared · ${variables.filter((v) => v.isSecret).length} secret`
+                : undefined
+            }
+            actions={
+              canManage ? (
+                <Button
+                  label='New variable'
+                  icon={<FiPlus size={14} />}
+                  onClick={() => editModal.show({ withDescription: true, onSave: save })}
+                />
+              ) : undefined
+            }
           />
-        ) : (
-          <div style={shared.panel}>
-            <div style={shared.list}>
-              {variables.map((variable) => (
-                <div key={variable.id} style={shared.listRow}>
-                  <div style={styles.main}>
-                    <div style={shared.row}>
-                      <span style={{ ...styles.key, ...shared.mono }}>{variable.key}</span>
-                      {variable.isSecret ? <Badge label='Secret' tone='purple' icon={<FiLock size={11} />} /> : null}
-                      {!variable.isSet ? <Badge label='Empty' tone='yellow' /> : null}
-                    </div>
-                    {variable.description ? <span style={shared.muted}>{variable.description}</span> : null}
+        </>
+      }
+    >
+      {query.loading && !query.data ? (
+        <Loader />
+      ) : variables.length === 0 ? (
+        <EmptyState
+          icon={<MdOutlineDataObject size={26} color={theme.colors.blue04} />}
+          title='No variables'
+          description='Values used by several applications — DB_HOST, TZ, a domain suffix — belong here.'
+        />
+      ) : (
+        <div style={shared.panel}>
+          <div style={shared.list}>
+            {variables.map((variable) => (
+              <div key={variable.id} style={shared.listRow}>
+                <div style={styles.main}>
+                  <div style={shared.row}>
+                    <span style={{ ...styles.key, ...shared.mono }}>{variable.key}</span>
+                    {variable.isSecret ? <Badge label='Secret' tone='purple' icon={<FiLock size={11} />} /> : null}
+                    {!variable.isSet ? <Badge label='Empty' tone='yellow' /> : null}
                   </div>
-                  <span style={{ ...styles.value, ...shared.mono }}>
-                    {variable.isSecret ? (variable.isSet ? '••••••••' : '') : variable.value}
-                  </span>
-                  {canManage ? (
-                    <div style={shared.row}>
-                      <Button
-                        label='Edit'
-                        variant='secondary'
-                        icon={<FiEdit2 size={13} />}
-                        onClick={() => editModal.show({ initial: variable, withDescription: true, onSave: save })}
-                      />
-                      <Button
-                        label='Delete'
-                        variant='secondary'
-                        icon={<FiTrash2 size={13} />}
-                        onClick={() =>
-                          deleteModal.show({
-                            message: `Delete ${variable.key}?`,
-                            description:
-                              'Applications that reference it will fail to render until it is defined again.',
-                            confirmLabel: 'Delete',
-                            danger: true,
-                            onConfirm: () => remove(variable),
-                          })
-                        }
-                      />
-                    </div>
-                  ) : null}
+                  {variable.description ? <span style={shared.muted}>{variable.description}</span> : null}
                 </div>
-              ))}
-            </div>
+                <span style={{ ...styles.value, ...shared.mono }}>
+                  {variable.isSecret ? (variable.isSet ? '••••••••' : '') : variable.value}
+                </span>
+                {canManage ? (
+                  <div style={shared.row}>
+                    <Button
+                      label='Edit'
+                      variant='secondary'
+                      icon={<FiEdit2 size={13} />}
+                      onClick={() => editModal.show({ initial: variable, withDescription: true, onSave: save })}
+                    />
+                    <Button
+                      label='Delete'
+                      variant='secondary'
+                      icon={<FiTrash2 size={13} />}
+                      onClick={() =>
+                        deleteModal.show({
+                          message: `Delete ${variable.key}?`,
+                          description: 'Applications that reference it will fail to render until it is defined again.',
+                          confirmLabel: 'Delete',
+                          danger: true,
+                          onConfirm: () => remove(variable),
+                        })
+                      }
+                    />
+                  </div>
+                ) : null}
+              </div>
+            ))}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </DeployPage>
   );
 };
 

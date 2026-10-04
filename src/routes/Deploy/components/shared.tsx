@@ -2,9 +2,28 @@ import { CSSProperties, ReactNode, useMemo } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { FiCpu } from 'react-icons/fi';
 import { AgentHealthResponse } from '~/api/api';
+import { Scrollbar } from '~/components/Scrollbar';
 import { Badge } from '~/components/Badge';
 import { diffLines } from '~/routes/Deploy/utils';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+
+/**
+ * A Deploy page: the header (and tabs) stay put, the body scrolls in the
+ * app's own scrollbar rather than the browser's.
+ */
+export const DeployPage = ({ header, children }: { header: ReactNode; children: ReactNode }) => {
+  const styles = useStyles();
+  return (
+    <div style={styles.page}>
+      <div style={styles.pageHeader}>{header}</div>
+      <div style={styles.pageBody}>
+        <Scrollbar style={styles.pageScroll} horizontal={false}>
+          <div style={styles.pageContent}>{children}</div>
+        </Scrollbar>
+      </div>
+    </div>
+  );
+};
 
 /** A titled block, the page's basic unit. */
 export const Section = ({
@@ -207,6 +226,12 @@ export const useDeployStyles = mkUseStyles((t) => ({
 }));
 
 const useStyles = mkUseStyles((t) => ({
+  page: { width: '100%', height: '100%', minHeight: 0, gap: t.spacing.m },
+  pageHeader: { gap: t.spacing.m, flexShrink: 0 },
+  pageBody: { flex: 1, minHeight: 0, position: 'relative' },
+  pageScroll: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+  // Room on the right for the scrollbar track, so it never sits on a card.
+  pageContent: { gap: t.spacing.l, paddingRight: 16, paddingBottom: t.spacing.m },
   section: {
     gap: t.spacing.m,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),

@@ -16,7 +16,7 @@ import { useModal } from '~/hooks/useModal';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { DeployNavigationRoute, MainNavigationRoute } from '~/navigation/types';
-import { AgentStatus, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
+import { DeployPage, AgentStatus, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
 import { useDeployEvents } from '~/routes/Deploy/hooks/useDeployEvents';
 import { StackLogsModal } from '~/routes/Deploy/modals/StackLogsModal';
 import {
@@ -89,66 +89,68 @@ export const Containers = () => {
   })).filter((g) => g.stacks.length);
 
   return (
-    <div style={styles.scroll}>
-      <div style={styles.content}>
-        <PageHeader
-          title='Containers'
-          meta={
-            data?.receivedAt
-              ? `Reported ${formatDistanceToNow(new Date(data.receivedAt), { addSuffix: true })}`
-              : undefined
-          }
-          actions={
-            <>
-              <Button
-                label='Refresh'
-                variant='secondary'
-                icon={<FiRefreshCw size={14} />}
-                onClick={refresh}
-                loading={refreshing}
-              />
-            </>
-          }
-        />
-        <AgentStatus agent={data?.agent} />
-
-        {overview.loading && !data ? (
-          <Loader />
-        ) : !data?.known ? (
-          <EmptyState
-            icon={<MdOutlineViewInAr size={26} color={theme.colors.blue04} />}
-            title='Waiting for the agent'
-            description='The agent has not reported its containers yet. This is not the same as nothing running.'
-          />
-        ) : groups.length === 0 ? (
-          <EmptyState
-            icon={<MdOutlineViewInAr size={26} color={theme.colors.blue04} />}
-            title='No containers'
-            description='The agent reports no containers on the host.'
-          />
-        ) : (
-          groups.map((group) => (
-            <Section
-              key={group.origin}
-              title={
-                <span style={styles.row} title={ORIGIN_HINT[group.origin]}>
-                  {ORIGIN_LABEL[group.origin]} <Badge label={group.stacks.length} tone={ORIGIN_TONE[group.origin]} />
-                </span>
-              }
-            >
-              {group.stacks.map((stack) => (
-                <StackCard
-                  key={stack.project}
-                  stack={stack}
-                  applicationId={stack.slug ? appBySlug.get(stack.slug) : undefined}
-                  onChanged={() => overview.reload()}
+    <DeployPage
+      header={
+        <>
+          <PageHeader
+            title='Containers'
+            meta={
+              data?.receivedAt
+                ? `Reported ${formatDistanceToNow(new Date(data.receivedAt), { addSuffix: true })}`
+                : undefined
+            }
+            actions={
+              <>
+                <Button
+                  label='Refresh'
+                  variant='secondary'
+                  icon={<FiRefreshCw size={14} />}
+                  onClick={refresh}
+                  loading={refreshing}
                 />
-              ))}
-            </Section>
-          ))
-        )}
-      </div>
-    </div>
+              </>
+            }
+          />
+          <AgentStatus agent={data?.agent} />
+        </>
+      }
+    >
+      {overview.loading && !data ? (
+        <Loader />
+      ) : !data?.known ? (
+        <EmptyState
+          icon={<MdOutlineViewInAr size={26} color={theme.colors.blue04} />}
+          title='Waiting for the agent'
+          description='The agent has not reported its containers yet. This is not the same as nothing running.'
+        />
+      ) : groups.length === 0 ? (
+        <EmptyState
+          icon={<MdOutlineViewInAr size={26} color={theme.colors.blue04} />}
+          title='No containers'
+          description='The agent reports no containers on the host.'
+        />
+      ) : (
+        groups.map((group) => (
+          <Section
+            key={group.origin}
+            title={
+              <span style={styles.row} title={ORIGIN_HINT[group.origin]}>
+                {ORIGIN_LABEL[group.origin]} <Badge label={group.stacks.length} tone={ORIGIN_TONE[group.origin]} />
+              </span>
+            }
+          >
+            {group.stacks.map((stack) => (
+              <StackCard
+                key={stack.project}
+                stack={stack}
+                applicationId={stack.slug ? appBySlug.get(stack.slug) : undefined}
+                onChanged={() => overview.reload()}
+              />
+            ))}
+          </Section>
+        ))
+      )}
+    </DeployPage>
   );
 };
 

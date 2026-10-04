@@ -10,7 +10,7 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
-import { Section, useDeployStyles } from '~/routes/Deploy/components/shared';
+import { DeployPage, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
 import { GitAccountModal, GitRepoModal } from '~/routes/Deploy/modals/GitModals';
 import { shortCommit } from '~/routes/Deploy/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
@@ -60,160 +60,164 @@ export const GitSources = () => {
   if (!deployApi) return null;
 
   return (
-    <div style={shared.scroll}>
-      <div style={shared.content}>
-        <PageHeader
-          title='Git'
-          meta={
-            accounts.data && repos.data
-              ? `${accounts.data.length} accounts · ${repos.data.length} repositories`
-              : undefined
-          }
-        />
+    <DeployPage
+      header={
+        <>
+          <PageHeader
+            title='Git'
+            meta={
+              accounts.data && repos.data
+                ? `${accounts.data.length} account${accounts.data.length === 1 ? '' : 's'} · ${repos.data.length} ${
+                    repos.data.length === 1 ? 'repository' : 'repositories'
+                  }`
+                : undefined
+            }
+          />
+        </>
+      }
+    >
+      <Section
+        title='Accounts'
+        actions={
+          <Button
+            label='Add account'
+            icon={<FiPlus size={14} />}
+            onClick={() =>
+              accountModal.show({
+                onSave: async (dto) => {
+                  await deployApi.deployControllerCreateGitAccount({ upsertGitAccountDto: dto });
+                  await reloadAll();
+                },
+              })
+            }
+          />
+        }
+      >
+        {accounts.loading && !accounts.data ? (
+          <Loader />
+        ) : !accounts.data?.length ? (
+          <span style={shared.muted}>No accounts — public repositories need none.</span>
+        ) : (
+          <div style={shared.list}>
+            {accounts.data.map((account) => (
+              <div key={account.id} style={shared.listRow}>
+                <div style={styles.main}>
+                  <div style={shared.row}>
+                    <span style={styles.name}>{account.name}</span>
+                    {account.hasToken ? (
+                      <Badge label='Token' tone='green' icon={<FiKey size={11} />} />
+                    ) : (
+                      <Badge label='No token' tone='yellow' />
+                    )}
+                  </div>
+                  <span style={shared.muted}>
+                    {account.username}@{account.provider} · {account.repoCount} repositor
+                    {account.repoCount === 1 ? 'y' : 'ies'}
+                  </span>
+                </div>
+                <Button
+                  label='Edit'
+                  variant='secondary'
+                  icon={<FiEdit2 size={13} />}
+                  onClick={() =>
+                    accountModal.show({
+                      account,
+                      onSave: async (dto) => {
+                        await deployApi.deployControllerUpdateGitAccount({
+                          id: account.id,
+                          upsertGitAccountDto: dto,
+                        });
+                        await reloadAll();
+                      },
+                    })
+                  }
+                />
+                <Button
+                  label='Delete'
+                  variant='secondary'
+                  icon={<FiTrash2 size={13} />}
+                  onClick={() =>
+                    confirmDelete(account.name, () => deployApi.deployControllerDeleteGitAccount({ id: account.id }))
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
 
-        <Section
-          title='Accounts'
-          actions={
-            <Button
-              label='Add account'
-              icon={<FiPlus size={14} />}
-              onClick={() =>
-                accountModal.show({
-                  onSave: async (dto) => {
-                    await deployApi.deployControllerCreateGitAccount({ upsertGitAccountDto: dto });
-                    await reloadAll();
-                  },
-                })
-              }
-            />
-          }
-        >
-          {accounts.loading && !accounts.data ? (
-            <Loader />
-          ) : !accounts.data?.length ? (
-            <span style={shared.muted}>No accounts — public repositories need none.</span>
-          ) : (
-            <div style={shared.list}>
-              {accounts.data.map((account) => (
-                <div key={account.id} style={shared.listRow}>
-                  <div style={styles.main}>
-                    <div style={shared.row}>
-                      <span style={styles.name}>{account.name}</span>
-                      {account.hasToken ? (
-                        <Badge label='Token' tone='green' icon={<FiKey size={11} />} />
-                      ) : (
-                        <Badge label='No token' tone='yellow' />
-                      )}
-                    </div>
-                    <span style={shared.muted}>
-                      {account.username}@{account.provider} · {account.repoCount} repositor
-                      {account.repoCount === 1 ? 'y' : 'ies'}
+      <Section
+        title='Repositories'
+        actions={
+          <Button
+            label='Add repository'
+            icon={<FiPlus size={14} />}
+            onClick={() =>
+              repoModal.show({
+                accounts: accounts.data ?? [],
+                onSave: async (dto) => {
+                  await deployApi.deployControllerCreateGitRepo({ upsertGitRepoDto: dto });
+                  await reloadAll();
+                },
+              })
+            }
+          />
+        }
+      >
+        {repos.loading && !repos.data ? (
+          <Loader />
+        ) : !repos.data?.length ? (
+          <span style={shared.muted}>No repositories yet.</span>
+        ) : (
+          <div style={shared.list}>
+            {repos.data.map((repo) => (
+              <div key={repo.id} style={shared.listRow}>
+                <FiGitBranch size={16} />
+                <div style={styles.main}>
+                  <div style={shared.row}>
+                    <span style={styles.name}>{repo.name}</span>
+                    <span style={{ ...shared.muted, ...shared.mono }}>
+                      {repo.repo}@{repo.branch}
                     </span>
                   </div>
-                  <Button
-                    label='Edit'
-                    variant='secondary'
-                    icon={<FiEdit2 size={13} />}
-                    onClick={() =>
-                      accountModal.show({
-                        account,
-                        onSave: async (dto) => {
-                          await deployApi.deployControllerUpdateGitAccount({
-                            id: account.id,
-                            upsertGitAccountDto: dto,
-                          });
-                          await reloadAll();
-                        },
-                      })
-                    }
-                  />
-                  <Button
-                    label='Delete'
-                    variant='secondary'
-                    icon={<FiTrash2 size={13} />}
-                    onClick={() =>
-                      confirmDelete(account.name, () => deployApi.deployControllerDeleteGitAccount({ id: account.id }))
-                    }
-                  />
+                  <span style={shared.muted}>
+                    {repo.account ? `via ${repo.account.name}` : 'public'}
+                    {repo.lastCommit ? ` · ${shortCommit(repo.lastCommit)}` : ''}
+                    {repo.lastFetchedAt
+                      ? ` fetched ${formatDistanceToNow(new Date(repo.lastFetchedAt), { addSuffix: true })}`
+                      : ''}
+                    {repo.applications.length ? ` · used by ${repo.applications.map((a) => a.slug).join(', ')}` : ''}
+                  </span>
                 </div>
-              ))}
-            </div>
-          )}
-        </Section>
-
-        <Section
-          title='Repositories'
-          actions={
-            <Button
-              label='Add repository'
-              icon={<FiPlus size={14} />}
-              onClick={() =>
-                repoModal.show({
-                  accounts: accounts.data ?? [],
-                  onSave: async (dto) => {
-                    await deployApi.deployControllerCreateGitRepo({ upsertGitRepoDto: dto });
-                    await reloadAll();
-                  },
-                })
-              }
-            />
-          }
-        >
-          {repos.loading && !repos.data ? (
-            <Loader />
-          ) : !repos.data?.length ? (
-            <span style={shared.muted}>No repositories yet.</span>
-          ) : (
-            <div style={shared.list}>
-              {repos.data.map((repo) => (
-                <div key={repo.id} style={shared.listRow}>
-                  <FiGitBranch size={16} />
-                  <div style={styles.main}>
-                    <div style={shared.row}>
-                      <span style={styles.name}>{repo.name}</span>
-                      <span style={{ ...shared.muted, ...shared.mono }}>
-                        {repo.repo}@{repo.branch}
-                      </span>
-                    </div>
-                    <span style={shared.muted}>
-                      {repo.account ? `via ${repo.account.name}` : 'public'}
-                      {repo.lastCommit ? ` · ${shortCommit(repo.lastCommit)}` : ''}
-                      {repo.lastFetchedAt
-                        ? ` fetched ${formatDistanceToNow(new Date(repo.lastFetchedAt), { addSuffix: true })}`
-                        : ''}
-                      {repo.applications.length ? ` · used by ${repo.applications.map((a) => a.slug).join(', ')}` : ''}
-                    </span>
-                  </div>
-                  <Button
-                    label='Edit'
-                    variant='secondary'
-                    icon={<FiEdit2 size={13} />}
-                    onClick={() =>
-                      repoModal.show({
-                        repo,
-                        accounts: accounts.data ?? [],
-                        onSave: async (dto) => {
-                          await deployApi.deployControllerUpdateGitRepo({ id: repo.id, upsertGitRepoDto: dto });
-                          await reloadAll();
-                        },
-                      })
-                    }
-                  />
-                  <Button
-                    label='Delete'
-                    variant='secondary'
-                    icon={<FiTrash2 size={13} />}
-                    onClick={() =>
-                      confirmDelete(repo.name, () => deployApi.deployControllerDeleteGitRepo({ id: repo.id }))
-                    }
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </Section>
-      </div>
-    </div>
+                <Button
+                  label='Edit'
+                  variant='secondary'
+                  icon={<FiEdit2 size={13} />}
+                  onClick={() =>
+                    repoModal.show({
+                      repo,
+                      accounts: accounts.data ?? [],
+                      onSave: async (dto) => {
+                        await deployApi.deployControllerUpdateGitRepo({ id: repo.id, upsertGitRepoDto: dto });
+                        await reloadAll();
+                      },
+                    })
+                  }
+                />
+                <Button
+                  label='Delete'
+                  variant='secondary'
+                  icon={<FiTrash2 size={13} />}
+                  onClick={() =>
+                    confirmDelete(repo.name, () => deployApi.deployControllerDeleteGitRepo({ id: repo.id }))
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
+    </DeployPage>
   );
 };
 
