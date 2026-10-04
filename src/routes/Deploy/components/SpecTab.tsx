@@ -20,6 +20,7 @@ type IdentityForm = {
   image: string;
   tier: ApplicationTier;
   gitRepoId: string;
+  gitRef: string;
   buildMode: BuildMode;
 };
 
@@ -54,10 +55,11 @@ export const SpecTab = ({
     image: app.image ?? '',
     tier: app.tier,
     gitRepoId: app.gitRepoId ?? '',
+    gitRef: app.gitRef ?? '',
     buildMode: app.buildMode,
   });
   const form = useForm<IdentityForm>({ defaultValues: identity(application) });
-  const { displayName, description, image, tier, gitRepoId, buildMode } = form.watch();
+  const { displayName, description, image, tier, gitRepoId, gitRef, buildMode } = form.watch();
   const isGit = application.sourceType === AppSourceType.Git;
   // An own compose file decides this itself: it builds when a service has build:.
   const choosesBuild = application.sourceType !== AppSourceType.Compose;
@@ -84,6 +86,7 @@ export const SpecTab = ({
     application.image,
     application.tier,
     application.gitRepoId,
+    application.gitRef,
     application.buildMode,
   ]);
 
@@ -103,6 +106,7 @@ export const SpecTab = ({
     image !== (application.image ?? '') ||
     tier !== application.tier ||
     (isGit && gitRepoId !== (application.gitRepoId ?? '')) ||
+    (isGit && gitRef.trim() !== (application.gitRef ?? '')) ||
     (choosesBuild && buildMode !== application.buildMode) ||
     (parsed !== undefined && JSON.stringify(parsed) !== JSON.stringify(application.spec ?? {}));
 
@@ -118,7 +122,7 @@ export const SpecTab = ({
           image,
           tier,
           spec: parsed,
-          ...(isGit ? { gitRepoId: gitRepoId || null } : {}),
+          ...(isGit ? { gitRepoId: gitRepoId || null, gitRef: gitRef.trim() || null } : {}),
           ...(choosesBuild ? { buildMode } : {}),
         },
       });
@@ -170,6 +174,13 @@ export const SpecTab = ({
               description='Cloned into REPOS_DIR on the host; its own compose file runs from the clone'
               control={form.control}
               options={(repos.data ?? []).map((r) => ({ value: r.id, label: `${r.name} (${r.repo}@${r.branch})` }))}
+            />
+          ) : null}
+          {isGit ? (
+            <Input
+              name='gitRef'
+              label='Branch or tag'
+              description="What this application follows. Empty follows the repository's branch — set v1 or main to run two versions side by side"
             />
           ) : null}
           {choosesBuild ? (

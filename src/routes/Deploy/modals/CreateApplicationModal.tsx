@@ -6,6 +6,7 @@ import { ApplicationTier, AppSourceType, GitRepoResponse } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
 import { Select } from '~/components/Select';
+import { Switch } from '~/components/Switch';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
@@ -60,7 +61,11 @@ export const CreateApplicationModal = (p: CreateApplicationModalProps) => {
     defaultValues: { tier: ApplicationTier.Application, sourceType: AppSourceType.Compose },
   });
   const sourceType = form.watch('sourceType');
-  const isCompose = sourceType === AppSourceType.Compose;
+  const isGit = sourceType === AppSourceType.Git;
+  // A git application can bring its own file; the repository then only
+  // supplies the code, and the file is written into the clone.
+  const [keepInPanel, setKeepInPanel] = useState(true);
+  const pastesCompose = sourceType === AppSourceType.Compose || (isGit && keepInPanel);
 
   useEffect(() => {
     if (!deployApi || sourceType !== AppSourceType.Git) return;
@@ -78,11 +83,11 @@ export const CreateApplicationModal = (p: CreateApplicationModalProps) => {
         createApplicationDto: {
           slug: data.slug,
           displayName: data.displayName || undefined,
-          image: isCompose ? undefined : data.image || undefined,
+          image: sourceType === AppSourceType.Rendered ? data.image || undefined : undefined,
           tier: data.tier,
           sourceType: data.sourceType,
           gitRepoId: data.sourceType === AppSourceType.Git ? data.gitRepoId || undefined : undefined,
-          compose: isCompose ? compose : undefined,
+          compose: pastesCompose ? compose : undefined,
         },
       });
       p.handleClose?.();
@@ -96,11 +101,11 @@ export const CreateApplicationModal = (p: CreateApplicationModalProps) => {
 
   return (
     <FormProvider {...form}>
-      <div style={{ ...styles.container, width: isCompose ? 'min(760px, 90vw)' : 420 }}>
+      <div style={{ ...styles.container, width: pastesCompose ? 'min(760px, 90vw)' : 420 }}>
         <Select name='sourceType' label='Source' options={SOURCE_OPTIONS} control={form.control} />
         <Input name='slug' label='Slug' description='Compose project and URL name, e.g. photo-gallery-backend' />
         <Input name='displayName' label='Display name' description='Shown in the panel' />
-        {!isCompose ? (
+        {sourceType === AppSourceType.Rendered ? (
           <Input
             name='image'
             label='Image'
@@ -116,7 +121,10 @@ export const CreateApplicationModal = (p: CreateApplicationModalProps) => {
             control={form.control}
           />
         ) : null}
-        {isCompose ? (
+        {isGit ? (
+          <Switch checked={keepInPanel} onChange={setKeepInPanel} label='Keep the compose file in the panel' />
+        ) : null}
+        {pastesCompose ? (
           <>
             <span style={shared.fieldLabel}>compose.yaml</span>
             <span style={shared.muted}>{COMPOSE_HINT}</span>
@@ -124,6 +132,7 @@ export const CreateApplicationModal = (p: CreateApplicationModalProps) => {
               value={compose}
               onChange={setCompose}
               rows={16}
+              inClone={isGit}
               onCheck={(_, error) => setComposeError(error)}
             />
           </>
@@ -132,7 +141,7 @@ export const CreateApplicationModal = (p: CreateApplicationModalProps) => {
           label='Create application'
           onClick={form.handleSubmit(save)}
           loading={saving}
-          disabled={isCompose && (!compose.trim() || !!composeError)}
+          disabled={pastesCompose && (!compose.trim() || !!composeError)}
         />
       </div>
     </FormProvider>

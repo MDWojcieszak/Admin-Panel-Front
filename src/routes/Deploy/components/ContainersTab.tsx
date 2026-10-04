@@ -5,7 +5,8 @@ import { Loader } from '~/components/Loader';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { StackCard } from '~/routes/Deploy/Containers';
-import { useDeployEvents } from '~/routes/Deploy/hooks/useDeployEvents';
+import { useToast } from '~/hooks/useToast';
+import { stackActionFailure, useDeployEvents } from '~/routes/Deploy/hooks/useDeployEvents';
 import { useTheme } from '~/utils/theme';
 
 /**
@@ -16,6 +17,7 @@ import { useTheme } from '~/utils/theme';
 export const ContainersTab = ({ application }: { application: ApplicationDetailResponse }) => {
   const theme = useTheme();
   const { deployApi } = useApi();
+  const toast = useToast();
 
   const stack = useAsync<DiscoveredStackResponse | null>(async () => {
     if (!deployApi) return undefined;
@@ -28,7 +30,14 @@ export const ContainersTab = ({ application }: { application: ApplicationDetailR
     }
   }, [deployApi, application.slug]);
 
-  useDeployEvents({ onContainersChanged: () => stack.reload() });
+  useDeployEvents({
+    onContainersChanged: () => stack.reload(),
+    onStackActionResult: (event) => {
+      if (event.project !== application.slug) return;
+      const failure = stackActionFailure(event);
+      if (failure) toast(failure, 'error');
+    },
+  });
 
   if (stack.loading && stack.data === undefined) return <Loader />;
   if (!stack.data) {

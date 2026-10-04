@@ -24,6 +24,18 @@ export type UpdateAvailableEvent = {
   digest: string;
 };
 
+/**
+ * How a start/stop/restart ended. The request itself only says "sent": a
+ * failure (a port already taken, a missing image) changes no container, so
+ * this is the only place it shows up.
+ */
+export type StackActionResultEvent = {
+  project: string;
+  action: string;
+  success: boolean;
+  error: string | null;
+};
+
 type DeployEventHandlers = {
   onAgentHealth?: (health: AgentHealthResponse) => void;
   /** A full snapshot or a single container change: either way, reload the list. */
@@ -31,6 +43,7 @@ type DeployEventHandlers = {
   onReleaseStatus?: (event: ReleaseStatusEvent) => void;
   onRuntime?: (event: ApplicationRuntimeEvent) => void;
   onUpdateAvailable?: (event: UpdateAvailableEvent) => void;
+  onStackActionResult?: (event: StackActionResultEvent) => void;
 };
 
 /** Container events arrive in bursts (one per container); reloads are coalesced. */
@@ -58,4 +71,9 @@ export const useDeployEvents = (handlers: DeployEventHandlers) => {
   useWebSocket<ReleaseStatusEvent>('release.status', (event) => ref.current.onReleaseStatus?.(event));
   useWebSocket<ApplicationRuntimeEvent>('application.runtime', (event) => ref.current.onRuntime?.(event));
   useWebSocket<UpdateAvailableEvent>('application.update-available', (event) => ref.current.onUpdateAvailable?.(event));
+  useWebSocket<StackActionResultEvent>('stack.action.result', (event) => ref.current.onStackActionResult?.(event));
 };
+
+/** Message for a failed action, or null when there is nothing to report. */
+export const stackActionFailure = (event: StackActionResultEvent): string | null =>
+  event.success ? null : `${event.action} on ${event.project} failed: ${event.error ?? 'no reason given'}`;

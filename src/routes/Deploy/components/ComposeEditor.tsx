@@ -22,13 +22,23 @@ type ComposeEditorProps = {
   readOnly?: boolean;
   rows?: number;
   onCheck?: (result?: ComposeCheckResponse, error?: string) => void;
+  /** For a git application: runs from the clone, relative builds are the repository's code. */
+  inClone?: boolean;
 };
 
 /**
  * A compose file being written, checked against the backend as it changes:
  * what would be stored, which secrets would move, which variables it reads.
  */
-export const ComposeEditor = ({ value, onChange, definedKeys, readOnly, rows, onCheck }: ComposeEditorProps) => {
+export const ComposeEditor = ({
+  value,
+  onChange,
+  definedKeys,
+  readOnly,
+  rows,
+  onCheck,
+  inClone,
+}: ComposeEditorProps) => {
   const shared = useDeployStyles();
   const { deployApi } = useApi();
   const [check, setCheck] = useState<ComposeCheckResponse>();
@@ -44,7 +54,9 @@ export const ComposeEditor = ({ value, onChange, definedKeys, readOnly, rows, on
     let active = true;
     const timer = window.setTimeout(async () => {
       try {
-        const { data } = await deployApi.deployControllerCheckCompose({ checkComposeDto: { compose: value } });
+        const { data } = await deployApi.deployControllerCheckCompose({
+          checkComposeDto: { compose: value, inClone },
+        });
         if (!active) return;
         setCheck(data);
         setError(undefined);
@@ -62,7 +74,7 @@ export const ComposeEditor = ({ value, onChange, definedKeys, readOnly, rows, on
       window.clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deployApi, value]);
+  }, [deployApi, value, inClone]);
 
   const defined = new Set(definedKeys ?? []);
   const undefinedVars = (check?.variables ?? []).filter(

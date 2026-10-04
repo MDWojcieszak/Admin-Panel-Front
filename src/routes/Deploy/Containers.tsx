@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiDownload, FiFileText, FiPlay, FiRefreshCw, FiRotateCw, FiSquare } from 'react-icons/fi';
 import { MdOutlineViewInAr } from 'react-icons/md';
-import { ContainerOrigin, ContainerOverviewResponse, DiscoveredStackResponse, StackActionKind } from '~/api/api';
+import {
+  ContainerOrigin,
+  ContainerOverviewResponse,
+  DiscoveredContainerResponse,
+  DiscoveredStackResponse,
+  StackActionKind,
+} from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
@@ -17,7 +23,7 @@ import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { DeployNavigationRoute, MainNavigationRoute } from '~/navigation/types';
 import { DeployPage, AgentStatus, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
-import { useDeployEvents } from '~/routes/Deploy/hooks/useDeployEvents';
+import { stackActionFailure, useDeployEvents } from '~/routes/Deploy/hooks/useDeployEvents';
 import { StackLogsModal } from '~/routes/Deploy/modals/StackLogsModal';
 import {
   containerTone,
@@ -65,6 +71,10 @@ export const Containers = () => {
   useDeployEvents({
     onContainersChanged: () => overview.reload(),
     onAgentHealth: (agent) => overview.setData((prev) => (prev ? { ...prev, agent } : prev)),
+    onStackActionResult: (event) => {
+      const failure = stackActionFailure(event);
+      if (failure) toast(failure, 'error');
+    },
   });
 
   const refresh = async () => {
@@ -180,6 +190,28 @@ export const StackCard = ({
 
   const allowed = (action: StackActionKind) => stack.allowedActions.includes(action);
   const canExecute = can('deploy.execute');
+
+  const runOne = async (container: DiscoveredContainerResponse, action: LifecycleAction) => {
+    if (!deployApi) return;
+    setBusy(`${container.id}:${action}`);
+    try {
+      const { data } = await deployApi.deployControllerRunContainerAction({
+        project: stack.project,
+        containerId: container.id,
+        action,
+      });
+      if (data.accepted) toast(`${container.name}: ${action} sent`, 'success');
+      else toast(data.message ?? `The agent refused to ${action} ${container.name}.`, 'error');
+      onChanged();
+    } catch (e) {
+      toast(getApiErrorMessage(e, `Could not ${action} ${container.name}.`), 'error');
+    } finally {
+      setBusy(undefined);
+    }
+  };
+
+  // With a single container the stack's own buttons already do this.
+  const perContainer = canExecute && stack.containers.length > 1;
 
   const run = async (action: LifecycleAction) => {
     if (!deployApi) return;
@@ -299,6 +331,46 @@ export const StackCard = ({
             {container.state === 'exited' && container.exitCode != null ? (
               <span style={shared.muted}>exit {container.exitCode}</span>
             ) : null}
+            {perContainer ? (
+              <div style={styles.rowActions}>
+                {container.state !== 'running' && allowed(StackActionKind.Start) ? (
+                  <IconAction
+                    title={`Start ${container.name}`}
+                    icon={<FiPlay size={14} />}
+                    busy={busy === `${container.id}:start`}
+                    disabled={!!busy}
+                    onClick={() => runOne(container, 'start')}
+                  />
+                ) : null}
+                {container.state === 'running' && allowed(StackActionKind.Restart) ? (
+                  <IconAction
+                    title={`Restart ${container.name}`}
+                    icon={<FiRotateCw size={14} />}
+                    busy={busy === `${container.id}:restart`}
+                    disabled={!!busy}
+                    onClick={() => runOne(container, 'restart')}
+                  />
+                ) : null}
+                {container.state === 'running' && allowed(StackActionKind.Stop) ? (
+                  <IconAction
+                    title={`Stop ${container.name}`}
+                    icon={<FiSquare size={14} />}
+                    busy={busy === `${container.id}:stop`}
+                    disabled={!!busy}
+                    onClick={() =>
+                      confirmModal.show({
+                        message: `Stop ${container.name}?`,
+                        description:
+                          'Only this container stops; the rest of the stack keeps running. The next deployment starts it again.',
+                        confirmLabel: 'Stop',
+                        danger: true,
+                        onConfirm: () => runOne(container, 'stop'),
+                      })
+                    }
+                  />
+                ) : null}
+              </div>
+            ) : null}
           </div>
         ))}
       </div>
@@ -306,13 +378,63 @@ export const StackCard = ({
   );
 };
 
+/** A compact, icon-only action for one container's row. */
+const IconAction = ({
+  title,
+  icon,
+  busy,
+  disabled,
+  onClick,
+}: {
+  title: string;
+  icon: ReactNode;
+  busy?: boolean;
+  disabled?: boolean;
+  onClick: () => void;
+}) => {
+  const styles = useStyles();
+  return (
+    <button
+      type='button'
+      title={title}
+      aria-label={title}
+      onClick={onClick}
+      disabled={disabled}
+      style={{ ...styles.iconAction, opacity: disabled && !busy ? 0.4 : busy ? 0.6 : 1 }}
+    >
+      {icon}
+    </button>
+  );
+};
+
 const useStyles = mkUseStyles((t) => ({
+  // Fixed width so the state badges line up whatever actions a row has.
+  rowActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 4,
+    width: 64,
+    flexShrink: 0,
+  },
+  iconAction: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 30,
+    height: 30,
+    padding: 0,
+    border: 'none',
+    borderRadius: t.borderRadius.default,
+    cursor: 'pointer',
+    color: t.colors.lightBlue,
+    backgroundColor: t.colors.white + t.colorOpacity(0.06),
+  },
   card: {
     gap: t.spacing.s,
     padding: t.spacing.m,
     borderRadius: t.borderRadius.large,
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.35),
-    border: `1px solid ${t.colors.white + t.colorOpacity(0.05)}`,
   },
   cardHeader: {
     flexDirection: 'row',

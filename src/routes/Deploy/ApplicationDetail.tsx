@@ -44,9 +44,12 @@ const TABS = [
 ];
 
 /** An own compose file replaces most of the spec; what remains are run options. */
-/** The panel keeps a compose file: its own, or one written into a git clone. */
+/**
+ * Applications whose compose file can live in the panel: their own, or — for
+ * git — one written into the clone instead of the repository's.
+ */
 const keepsCompose = (app?: ApplicationDetailResponse) =>
-  app?.sourceType === AppSourceType.Compose || (app?.sourceType === AppSourceType.Git && !!app.compose);
+  app?.sourceType === AppSourceType.Compose || app?.sourceType === AppSourceType.Git;
 
 const tabsFor = (app?: ApplicationDetailResponse) =>
   TABS.filter((t) => t.value !== 'compose' || keepsCompose(app)).map((t) =>
