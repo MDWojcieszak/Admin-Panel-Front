@@ -14,6 +14,9 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 type StackLogsModalProps = { project: string } & Partial<InternalModalProps>;
 
 const TAILS = ['100', '500', '2000'];
+/** Room for a few containers' worth of lines; the agent refuses more than MAX_TAIL. */
+const FETCH_FACTOR = 4;
+const MAX_TAIL = 5000;
 
 /** The agent prefixes each line with its container when a stack has several: `name | line`. */
 const CONTAINER_PREFIX = /^(\S+) \| ([\s\S]*)$/;
@@ -31,7 +34,7 @@ const splitByContainer = (lines: string[]) => {
     if (!match) return null;
     groups.set(match[1], [...(groups.get(match[1]) ?? []), match[2]]);
   }
-  return groups.size > 1 ? groups : null;
+  return groups.size ? groups : null;
 };
 
 /** Recent output of every container in a stack, fetched on demand from the agent. */
@@ -53,7 +56,12 @@ export const StackLogsModal = ({ project }: StackLogsModalProps) => {
     setLoading(true);
     setError(undefined);
     try {
-      const { data } = await deployApi.deployControllerStackLogs({ project, tail: Number(tail) });
+      // The agent trims the joined stack to `tail`, which drops whole containers;
+      // ask for more and keep `tail` per container here.
+      const { data } = await deployApi.deployControllerStackLogs({
+        project,
+        tail: Math.min(Number(tail) * FETCH_FACTOR, MAX_TAIL),
+      });
       setLines(data.lines);
     } catch (e) {
       setError(getApiErrorMessage(e, 'The agent did not return the logs.'));
@@ -73,7 +81,10 @@ export const StackLogsModal = ({ project }: StackLogsModalProps) => {
   const groups = useMemo(() => splitByContainer(lines), [lines]);
   const names = groups ? [...groups.keys()] : [];
   const active = container && names.includes(container) ? container : names[0];
-  const current = useMemo(() => (groups && active ? groups.get(active) ?? [] : lines), [groups, active, lines]);
+  const current = useMemo(
+    () => (groups && active ? groups.get(active) ?? [] : lines).slice(-Number(tail)),
+    [groups, active, lines, tail],
+  );
 
   // Numbered before filtering, so a match keeps its place in the log.
   const shown = useMemo(() => {
@@ -161,7 +172,8 @@ export const StackLogsModal = ({ project }: StackLogsModalProps) => {
               ) : (
                 <span style={styles.empty}>{current.length ? 'No line matches.' : 'No output.'}</span>
               )}
-              <div ref={endRef} />
+              {/* Scrolled to on load; unwrapped it is as tall as the sideways track, so the last line clears it. */}
+              <div ref={endRef} style={{ height: wrap ? 0 : 16, flexShrink: 0 }} />
             </div>
           </Scrollbar>
         </div>
@@ -221,7 +233,7 @@ const useStyles = mkUseStyles((t) => ({
     lineHeight: 1.6,
   },
   linesWrapped: { whiteSpace: 'pre-wrap' },
-  linesUnwrapped: { whiteSpace: 'pre', width: 'max-content', minWidth: '100%', paddingBottom: 18 },
+  linesUnwrapped: { whiteSpace: 'pre', width: 'max-content', minWidth: '100%' },
   switchBox: { height: 40, justifyContent: 'center' },
   line: { flexDirection: 'row', alignItems: 'flex-start', paddingRight: t.spacing.s },
   lineError: { backgroundColor: t.colors.red + t.colorOpacity(0.08) },
