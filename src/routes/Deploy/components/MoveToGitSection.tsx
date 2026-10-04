@@ -144,7 +144,7 @@ export const MoveToGitSection = ({
                 <Switch
                   checked={!inRepository}
                   onChange={(keep) => setInRepository(!keep)}
-                  label="Keep the panel's compose file"
+                  label='Keep the compose file in the panel'
                 />
               ) : null}
               {inRepository ? (
