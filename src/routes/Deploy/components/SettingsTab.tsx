@@ -11,6 +11,7 @@ import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { DeployNavigationRoute, MainNavigationRoute } from '~/navigation/types';
 import { CodeBlock, Section, useDeployStyles } from '~/routes/Deploy/components/shared';
+import { MoveToGitSection } from '~/routes/Deploy/components/MoveToGitSection';
 import { TakeoverSection } from '~/routes/Deploy/components/TakeoverSection';
 import { getApiErrorMessage } from '~/utils/apiError';
 
@@ -105,6 +106,10 @@ export const SettingsTab = ({ application, onChanged }: SettingsTabProps) => {
     <>
       {application.sourceType === AppSourceType.Host && can('deploy.manage') ? (
         <TakeoverSection application={application} onChanged={onChanged} />
+      ) : null}
+
+      {application.sourceType !== AppSourceType.Git && application.tier !== 'BOOTSTRAP' && can('deploy.manage') ? (
+        <MoveToGitSection application={application} onChanged={onChanged} />
       ) : null}
 
       {application.sourceType === AppSourceType.Host && can('deploy.manage') ? (

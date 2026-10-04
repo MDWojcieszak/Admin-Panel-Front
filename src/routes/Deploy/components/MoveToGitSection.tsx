@@ -1,0 +1,185 @@
+import { useEffect, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import { FiAlertTriangle, FiGitBranch } from 'react-icons/fi';
+import { ApplicationDetailResponse, BuildMode } from '~/api/api';
+import { Button } from '~/components/Button';
+import { Input } from '~/components/Input';
+import { Select } from '~/components/Select';
+import { Switch } from '~/components/Switch';
+import { ConfirmModal } from '~/components/ConfirmModal';
+import { useApi } from '~/hooks/useApi';
+import { useAsync } from '~/hooks/useAsync';
+import { useModal } from '~/hooks/useModal';
+import { useCan } from '~/hooks/usePermissions';
+import { useToast } from '~/hooks/useToast';
+import { DeployNavigationRoute, MainNavigationRoute } from '~/navigation/types';
+import { Section, useDeployStyles } from '~/routes/Deploy/components/shared';
+import { getApiErrorMessage } from '~/utils/apiError';
+
+type MoveForm = { gitRepoId: string; buildMode: BuildMode; composeFile: string; runDirectory: string };
+
+const BUILD_OPTIONS = [
+  { value: BuildMode.Compose, label: 'Build here from the clone' },
+  { value: BuildMode.Registry, label: 'Pull — built elsewhere (CI)' },
+  { value: BuildMode.None, label: 'None — third-party images' },
+];
+
+/** Relative, inside the clone — the backend's rule: no leading slash, no `..` segment. */
+const INSIDE_CLONE = /^(?!\/)(?!(?:.*\/)?\.\.(?:\/|$))[\w./-]+$/;
+
+/**
+ * Moves any application onto a git repository: the repository's own compose
+ * file then runs from its clone, and each deployment fetches it first.
+ */
+export const MoveToGitSection = ({
+  application,
+  onChanged,
+}: {
+  application: ApplicationDetailResponse;
+  onChanged: () => void;
+}) => {
+  const shared = useDeployStyles();
+  const { deployApi } = useApi();
+  const can = useCan();
+  const toast = useToast();
+  const form = useForm<MoveForm>({
+    defaultValues: { gitRepoId: '', buildMode: BuildMode.Compose, composeFile: 'compose.yaml', runDirectory: '.' },
+  });
+  const { gitRepoId, buildMode, composeFile, runDirectory } = form.watch();
+  // Off: the backend's default, compose.yaml at the repository root.
+  const [customPath, setCustomPath] = useState(false);
+  const composeValid = !customPath || INSIDE_CLONE.test(composeFile?.trim() ?? '');
+  const directoryValid = !customPath || INSIDE_CLONE.test(runDirectory?.trim() ?? '');
+  const [open, setOpen] = useState(false);
+  const confirmModal = useModal(`deploy-move-to-git-${application.id}`, ConfirmModal, { title: 'Move to git' });
+
+  const repos = useAsync(async () => {
+    if (!deployApi || !open || !can('deploy.git')) return undefined;
+    const { data } = await deployApi.deployControllerListGitRepos();
+    return data;
+  }, [deployApi, open]);
+
+  const repo = repos.data?.find((r) => r.id === gitRepoId);
+
+  // The select shows its first option when nothing is chosen; make that the choice.
+  useEffect(() => {
+    if (repos.data?.length && !repos.data.some((r) => r.id === form.getValues('gitRepoId'))) {
+      form.setValue('gitRepoId', repos.data[0].id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [repos.data]);
+
+  const move = async () => {
+    if (!deployApi) return;
+    try {
+      await deployApi.deployControllerMoveToGit({
+        id: application.id,
+        moveToGitDto: {
+          gitRepoId,
+          buildMode,
+          ...(customPath ? { composeFile: composeFile.trim(), runDirectory: runDirectory.trim() } : {}),
+        },
+      });
+      toast('Moved to git — preview and deploy to run it from the repository', 'success');
+      setOpen(false);
+      onChanged();
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'The move was refused.'), 'error');
+    }
+  };
+
+  return (
+    <Section
+      title='Move to a git repository'
+      description="The repository's own compose file runs from its clone on the host; every deployment fetches it first."
+      actions={
+        !open ? (
+          <Button
+            label='Choose a repository'
+            variant='secondary'
+            icon={<FiGitBranch size={13} />}
+            onClick={() => setOpen(true)}
+          />
+        ) : undefined
+      }
+    >
+      {open ? (
+        !can('deploy.git') ? (
+          <span style={shared.muted}>Choosing a repository needs the deploy.git permission.</span>
+        ) : (
+          <>
+            {repos.data && !repos.data.length ? (
+              <span style={shared.muted}>
+                No repositories yet — add one in{' '}
+                <Link to={`/${MainNavigationRoute.DEPLOY}/${DeployNavigationRoute.GIT}`}>Git</Link>.
+              </span>
+            ) : null}
+            <FormProvider {...form}>
+              <div style={shared.fieldGrid}>
+                <Select
+                  name='gitRepoId'
+                  label='Repository'
+                  control={form.control}
+                  options={(repos.data ?? []).map((r) => ({ value: r.id, label: `${r.name} (${r.repo}@${r.branch})` }))}
+                />
+                <Select name='buildMode' label='Image source' control={form.control} options={BUILD_OPTIONS} />
+              </div>
+              <div style={shared.row}>
+                <Switch checked={customPath} onChange={setCustomPath} label='Custom compose file path' />
+                {!customPath ? <span style={{ ...shared.muted, ...shared.mono }}>compose.yaml at the root</span> : null}
+              </div>
+              {customPath ? (
+                <div style={shared.fieldGrid}>
+                  <Input
+                    name='composeFile'
+                    label='Compose file'
+                    description={
+                      composeValid
+                        ? 'Path in the repository, from the run directory'
+                        : 'A relative path inside the clone'
+                    }
+                  />
+                  <Input
+                    name='runDirectory'
+                    label='Run directory'
+                    description={
+                      directoryValid
+                        ? 'Where compose runs; . is the repository root'
+                        : 'A relative path inside the clone'
+                    }
+                  />
+                </div>
+              ) : null}
+            </FormProvider>
+            <div style={shared.warning}>
+              <FiAlertTriangle size={14} />
+              <span>
+                Relative paths in the repository&apos;s compose file (<span style={shared.mono}>./data</span>) resolve
+                against the clone{repo?.clonePath ? ` (${repo.clonePath})` : ''}, not the directory the stack runs from
+                today. Make data volumes absolute before deploying, or the application starts on empty data.
+              </span>
+            </div>
+            <div style={shared.row}>
+              <Button
+                label='Move to git'
+                disabled={!gitRepoId || !composeValid || !directoryValid}
+                onClick={() =>
+                  confirmModal.show({
+                    message: `Move ${application.slug} to ${repo?.name ?? 'the repository'}?`,
+                    description:
+                      'Nothing is deployed now. The project name and the environment are kept; the next deployment ' +
+                      'updates the running containers from the repository.',
+                    confirmLabel: 'Move',
+                    onConfirm: move,
+                  })
+                }
+              />
+              <Button label='Cancel' variant='secondary' onClick={() => setOpen(false)} />
+            </div>
+          </>
+        )
+      ) : null}
+    </Section>
+  );
+};

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { FiSave } from 'react-icons/fi';
-import { ApplicationDetailResponse, ApplicationTier } from '~/api/api';
+import { ApplicationDetailResponse, ApplicationTier, AppSourceType, BuildMode } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
 import { Select } from '~/components/Select';
 import { useApi } from '~/hooks/useApi';
+import { useAsync } from '~/hooks/useAsync';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { Section, useDeployStyles } from '~/routes/Deploy/components/shared';
@@ -13,7 +14,20 @@ import { getApiErrorMessage } from '~/utils/apiError';
 
 const pretty = (spec: object) => JSON.stringify(spec ?? {}, null, 2);
 
-type IdentityForm = { displayName: string; description: string; image: string; tier: ApplicationTier };
+type IdentityForm = {
+  displayName: string;
+  description: string;
+  image: string;
+  tier: ApplicationTier;
+  gitRepoId: string;
+  buildMode: BuildMode;
+};
+
+const BUILD_OPTIONS = [
+  { value: BuildMode.Registry, label: 'Pull — the image is built elsewhere (CI)' },
+  { value: BuildMode.Compose, label: 'Build here — the agent runs compose build' },
+  { value: BuildMode.None, label: 'None — a third-party image' },
+];
 
 const SPEC_HINT =
   'port, health, healthCommand, domain, publishPort, network, volumes [{host, path, readOnly}], depends, ' +
@@ -39,9 +53,20 @@ export const SpecTab = ({
     description: app.description ?? '',
     image: app.image ?? '',
     tier: app.tier,
+    gitRepoId: app.gitRepoId ?? '',
+    buildMode: app.buildMode,
   });
   const form = useForm<IdentityForm>({ defaultValues: identity(application) });
-  const { displayName, description, image, tier } = form.watch();
+  const { displayName, description, image, tier, gitRepoId, buildMode } = form.watch();
+  const isGit = application.sourceType === AppSourceType.Git;
+  // An own compose file decides this itself: it builds when a service has build:.
+  const choosesBuild = application.sourceType !== AppSourceType.Compose;
+
+  const repos = useAsync(async () => {
+    if (!deployApi || !isGit || !can('deploy.git')) return undefined;
+    const { data } = await deployApi.deployControllerListGitRepos();
+    return data;
+  }, [deployApi, isGit]);
   const [specText, setSpecText] = useState(pretty(application.spec));
   const [saving, setSaving] = useState(false);
 
@@ -53,7 +78,14 @@ export const SpecTab = ({
   useEffect(() => {
     form.reset(identity(application));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [application.displayName, application.description, application.image, application.tier]);
+  }, [
+    application.displayName,
+    application.description,
+    application.image,
+    application.tier,
+    application.gitRepoId,
+    application.buildMode,
+  ]);
 
   let specError: string | undefined;
   let parsed: object | undefined;
@@ -70,6 +102,8 @@ export const SpecTab = ({
     description !== (application.description ?? '') ||
     image !== (application.image ?? '') ||
     tier !== application.tier ||
+    (isGit && gitRepoId !== (application.gitRepoId ?? '')) ||
+    (choosesBuild && buildMode !== application.buildMode) ||
     (parsed !== undefined && JSON.stringify(parsed) !== JSON.stringify(application.spec ?? {}));
 
   const save = async () => {
@@ -78,7 +112,15 @@ export const SpecTab = ({
     try {
       const { data } = await deployApi.deployControllerUpdateApplication({
         id: application.id,
-        updateApplicationDto: { displayName, description, image, tier, spec: parsed },
+        updateApplicationDto: {
+          displayName,
+          description,
+          image,
+          tier,
+          spec: parsed,
+          ...(isGit ? { gitRepoId: gitRepoId || null } : {}),
+          ...(choosesBuild ? { buildMode } : {}),
+        },
       });
       onSaved(data);
       toast('Saved — preview and deploy to apply it', 'success');
@@ -121,7 +163,21 @@ export const SpecTab = ({
               ]}
             />
           </div>
-          <Input name='image' label='Image' description='Without a tag — the release picks the version' />
+          {isGit ? (
+            <Select
+              name='gitRepoId'
+              label='Repository'
+              description='Cloned into REPOS_DIR on the host; its own compose file runs from the clone'
+              control={form.control}
+              options={(repos.data ?? []).map((r) => ({ value: r.id, label: `${r.name} (${r.repo}@${r.branch})` }))}
+            />
+          ) : null}
+          {choosesBuild ? (
+            <Select name='buildMode' label='Image source' control={form.control} options={BUILD_OPTIONS} />
+          ) : null}
+          {application.sourceType === AppSourceType.Rendered ? (
+            <Input name='image' label='Image' description='Without a tag — the release picks the version' />
+          ) : null}
           <Input name='description' label='Description' description='A line about what it is' />
         </FormProvider>
       </Section>
