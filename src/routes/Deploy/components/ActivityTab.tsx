@@ -34,7 +34,7 @@ export const ActivityTab = ({ applicationId }: { applicationId: string }) => {
       {query.loading && !query.data ? (
         <Loader />
       ) : entries.length === 0 ? (
-        <span style={shared.muted}>No recorded changes.</span>
+        <div style={shared.emptyRow}>No recorded changes.</div>
       ) : (
         <div style={shared.list}>
           {entries.map((entry) => {

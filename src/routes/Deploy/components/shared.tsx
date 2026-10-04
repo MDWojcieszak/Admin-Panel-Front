@@ -153,7 +153,16 @@ export const useDeployStyles = mkUseStyles((t) => ({
   scroll: { height: '100%', minHeight: 0, width: '100%', overflowY: 'auto' },
   content: { gap: t.spacing.l, paddingBottom: t.spacing.m },
   muted: { fontSize: 13, color: t.colors.dark05 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap' },
+  // display set here too: it is also put on spans, which the global div rule does not reach.
+  row: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap' },
+  /** A list's empty state, in the list's own row so it lines up with the rows it stands for. */
+  emptyRow: {
+    padding: `${t.spacing.m}px ${t.spacing.m}px`,
+    borderRadius: t.borderRadius.default,
+    fontSize: 13,
+    color: t.colors.dark05,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.35),
+  },
   /** App inputs two to a row, wrapping on a narrow screen. */
   fieldGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', columnGap: t.spacing.m },
   mono: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace', fontSize: 12 },

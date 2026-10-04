@@ -66,7 +66,7 @@ export const EnvTab = ({ applicationId }: { applicationId: string }) => {
       {query.loading && !query.data ? (
         <Loader />
       ) : envs.length === 0 ? (
-        <span style={shared.muted}>No variables.</span>
+        <div style={shared.emptyRow}>No variables.</div>
       ) : (
         <div style={shared.list}>
           {envs.map((env) => (

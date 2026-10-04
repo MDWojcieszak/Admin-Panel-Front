@@ -82,7 +82,7 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
         {p.loading && !p.releases ? (
           <Loader />
         ) : releases.length === 0 ? (
-          <span style={shared.muted}>Nothing deployed yet.</span>
+          <div style={shared.emptyRow}>Nothing deployed yet.</div>
         ) : (
           <div style={shared.list}>
             {releases.map((release) => {

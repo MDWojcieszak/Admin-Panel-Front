@@ -96,7 +96,7 @@ export const GitSources = () => {
         {accounts.loading && !accounts.data ? (
           <Loader />
         ) : !accounts.data?.length ? (
-          <span style={shared.muted}>No accounts — public repositories need none.</span>
+          <div style={shared.emptyRow}>No accounts — public repositories need none.</div>
         ) : (
           <div style={shared.list}>
             {accounts.data.map((account) => (
@@ -167,7 +167,7 @@ export const GitSources = () => {
         {repos.loading && !repos.data ? (
           <Loader />
         ) : !repos.data?.length ? (
-          <span style={shared.muted}>No repositories yet.</span>
+          <div style={shared.emptyRow}>No repositories yet.</div>
         ) : (
           <div style={shared.list}>
             {repos.data.map((repo) => (
