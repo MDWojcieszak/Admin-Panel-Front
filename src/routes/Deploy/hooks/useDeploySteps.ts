@@ -45,7 +45,11 @@ const finishedOk = (process?: ServerProcessStatus, release?: ReleaseStatus) =>
   release === ReleaseStatus.Superseded;
 
 const finishedBad = (process?: ServerProcessStatus, release?: ReleaseStatus) =>
-  process === ServerProcessStatus.Failed || release === ReleaseStatus.Failed || release === ReleaseStatus.RolledBack;
+  process === ServerProcessStatus.Failed ||
+  release === ReleaseStatus.Failed ||
+  release === ReleaseStatus.RolledBack ||
+  // A cancel stops the step that was running; it ends crossed, the rest stay grey.
+  release === ReleaseStatus.Cancelled;
 
 /**
  * The deployment as steps — build, pull, (down,) up, health — read from the

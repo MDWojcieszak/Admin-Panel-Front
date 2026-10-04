@@ -49,6 +49,7 @@ export const RELEASE_LABEL: Record<ReleaseStatus, string> = {
   ROLLED_BACK: 'Rolled back',
   DEFERRED: 'Deferred',
   UNKNOWN: 'Unknown',
+  CANCELLED: 'Cancelled',
 };
 
 export const RELEASE_TONE: Record<ReleaseStatus, BadgeTone> = {
@@ -60,6 +61,7 @@ export const RELEASE_TONE: Record<ReleaseStatus, BadgeTone> = {
   ROLLED_BACK: 'purple',
   DEFERRED: 'blue',
   UNKNOWN: 'yellow',
+  CANCELLED: 'neutral',
 };
 
 /** A release still in flight: its status will change on its own. */

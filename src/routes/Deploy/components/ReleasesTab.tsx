@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { FiRotateCcw, FiTerminal } from 'react-icons/fi';
+import { FiRotateCcw, FiTerminal, FiXCircle } from 'react-icons/fi';
 import { ReleaseResponse, ReleaseStatus } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
@@ -15,10 +15,11 @@ import { Section, useDeployStyles } from '~/routes/Deploy/components/shared';
 import {
   RELEASE_LABEL,
   RELEASE_TONE,
+  TRIGGER_LABEL,
+  isReleaseRunning,
   releaseLabel,
   shortCommit,
   shortDigest,
-  TRIGGER_LABEL,
 } from '~/routes/Deploy/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -48,6 +49,29 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
   const can = useCan();
   const toast = useToast();
   const confirmModal = useModal(`deploy-rollback-${p.applicationId}`, ConfirmModal, { title: 'Roll back' });
+  const cancelModal = useModal(`deploy-cancel-${p.applicationId}`, ConfirmModal, { title: 'Cancel deployment' });
+
+  const cancel = async (release: ReleaseResponse) => {
+    if (!deployApi) return;
+    try {
+      await deployApi.deployControllerCancelRelease({ id: release.id });
+      toast('Deployment cancelled', 'success');
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'Could not cancel the deployment.'), 'error');
+    }
+  };
+
+  const askCancel = (release: ReleaseResponse) =>
+    cancelModal.show({
+      message: `Cancel the deployment of ${releaseLabel(release)}?`,
+      description:
+        'The step running now is stopped and the application is free to deploy again. Containers already ' +
+        'recreated keep running as they are.',
+      confirmLabel: 'Cancel deployment',
+      cancelLabel: 'Keep it running',
+      danger: true,
+      onConfirm: () => cancel(release),
+    });
 
   const rollback = async (release: ReleaseResponse) => {
     if (!deployApi) return;
@@ -61,19 +85,30 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
   };
 
   const releases = p.releases ?? [];
+  const selectedRelease = releases.find((r) => r.processId === p.selectedProcessId);
 
   return (
     <>
       {p.selectedProcessId ? (
         <Section
           title='Deployment log'
-          actions={<Button label='Close' variant='secondary' onClick={() => p.onSelectProcess(undefined)} />}
+          actions={
+            <>
+              {/* Where a running deployment is watched, it can be stopped too. */}
+              {selectedRelease && can('deploy.execute') && isReleaseRunning(selectedRelease.status) ? (
+                <Button
+                  label='Cancel'
+                  variant='danger'
+                  icon={<FiXCircle size={13} />}
+                  onClick={() => askCancel(selectedRelease)}
+                />
+              ) : null}
+              <Button label='Close' variant='secondary' onClick={() => p.onSelectProcess(undefined)} />
+            </>
+          }
         >
           {can('process.read') ? (
-            <DeploySteps
-              processId={p.selectedProcessId}
-              releaseStatus={p.releases?.find((r) => r.processId === p.selectedProcessId)?.status}
-            />
+            <DeploySteps processId={p.selectedProcessId} releaseStatus={selectedRelease?.status} />
           ) : null}
           <div style={styles.terminal}>
             {can('process.read') ? (
@@ -113,7 +148,8 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
                       {format(new Date(release.createdAt), 'd MMM yyyy, HH:mm')}
                       {release.triggeredBy ? ` · ${release.triggeredBy.email}` : ''}
                       {release.digest ? ` · ${shortDigest(release.digest)}` : ''}
-                      {release.commit ? ` · commit ${shortCommit(release.commit)}` : ''}
+                      {/* Named by its commit already when it has no version. */}
+                      {release.commit && release.version ? ` · commit ${shortCommit(release.commit)}` : ''}
                       {release.homelabCommit ? ` · homelab ${shortCommit(release.homelabCommit)}` : ''}
                     </span>
                     {release.failureReason ? <span style={styles.failure}>{release.failureReason}</span> : null}
@@ -124,6 +160,14 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
                       variant='secondary'
                       icon={<FiTerminal size={13} />}
                       onClick={() => p.onSelectProcess(release.processId ?? undefined)}
+                    />
+                  ) : null}
+                  {can('deploy.execute') && isReleaseRunning(release.status) ? (
+                    <Button
+                      label='Cancel'
+                      variant='danger'
+                      icon={<FiXCircle size={13} />}
+                      onClick={() => askCancel(release)}
                     />
                   ) : null}
                   {can('deploy.execute') && canRollBackTo(release, p.currentReleaseId) ? (
