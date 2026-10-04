@@ -14,9 +14,9 @@ import {
 
 import { Permission } from '~/acl/permissions';
 import { MainNavigationRoute } from '~/navigation/types';
-import { FaServer } from 'react-icons/fa6';
+import { FaCodeBranch, FaServer } from 'react-icons/fa6';
 
-const ICON_SIZE = 24;
+const ICON_SIZE = 20;
 
 export type SideBarItem = {
   label: string;
@@ -44,6 +44,8 @@ export const Item = (p: SideBarItem) => {
         return <MdSpaceDashboard {...iconProps} />;
       case MainNavigationRoute.SERVERS:
         return <FaServer {...iconProps} />;
+      case MainNavigationRoute.DEPLOY:
+        return <FaCodeBranch {...iconProps} />;
       case MainNavigationRoute.PHOTO_MANAGEMENT:
         return <MdPhotoCamera {...iconProps} />;
       case MainNavigationRoute.GALLERIES:
