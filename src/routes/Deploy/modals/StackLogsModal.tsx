@@ -15,6 +15,25 @@ type StackLogsModalProps = { project: string } & Partial<InternalModalProps>;
 
 const TAILS = ['100', '500', '2000'];
 
+/** The agent prefixes each line with its container when a stack has several: `name | line`. */
+const CONTAINER_PREFIX = /^(\S+) \| ([\s\S]*)$/;
+
+/**
+ * The agent sends a stack's containers one after another, not interleaved
+ * in time, so read together they look like one garbled log. Split them back
+ * per container — only when every line carries a prefix, so a lone
+ * container's own `x | y` lines are left alone.
+ */
+const splitByContainer = (lines: string[]) => {
+  const groups = new Map<string, string[]>();
+  for (const line of lines) {
+    const match = line.match(CONTAINER_PREFIX);
+    if (!match) return null;
+    groups.set(match[1], [...(groups.get(match[1]) ?? []), match[2]]);
+  }
+  return groups.size > 1 ? groups : null;
+};
+
 /** Recent output of every container in a stack, fetched on demand from the agent. */
 export const StackLogsModal = ({ project }: StackLogsModalProps) => {
   const styles = useStyles();
@@ -26,6 +45,7 @@ export const StackLogsModal = ({ project }: StackLogsModalProps) => {
   const [error, setError] = useState<string>();
   const [filter, setFilter] = useState('');
   const [wrap, setWrap] = useState(true);
+  const [container, setContainer] = useState<string>();
   const endRef = useRef<HTMLDivElement>(null);
 
   const load = useCallback(async () => {
@@ -47,17 +67,22 @@ export const StackLogsModal = ({ project }: StackLogsModalProps) => {
   }, [load]);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView();
-  }, [lines]);
+    endRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [lines, container]);
+
+  const groups = useMemo(() => splitByContainer(lines), [lines]);
+  const names = groups ? [...groups.keys()] : [];
+  const active = container && names.includes(container) ? container : names[0];
+  const current = useMemo(() => (groups && active ? groups.get(active) ?? [] : lines), [groups, active, lines]);
 
   // Numbered before filtering, so a match keeps its place in the log.
   const shown = useMemo(() => {
     const term = filter.trim().toLowerCase();
-    const numbered = lines.map((line, i) => ({ line, n: i + 1 }));
+    const numbered = current.map((line, i) => ({ line, n: i + 1 }));
     return term ? numbered.filter(({ line }) => stripAnsi(line).toLowerCase().includes(term)) : numbered;
-  }, [lines, filter]);
-  const errors = useMemo(() => lines.filter((line) => lineSeverity(line) === 'error').length, [lines]);
-  const gutter = String(lines.length).length;
+  }, [current, filter]);
+  const errors = useMemo(() => current.filter((line) => lineSeverity(line) === 'error').length, [current]);
+  const gutter = String(current.length).length;
 
   return (
     <div style={styles.container}>
@@ -87,10 +112,24 @@ export const StackLogsModal = ({ project }: StackLogsModalProps) => {
         </div>
         <Button label='Reload' variant='secondary' icon={<FiRefreshCw size={14} />} onClick={load} loading={loading} />
       </div>
+      {names.length ? (
+        <SegmentedTabs
+          items={names.map((name) => ({ value: name, label: name }))}
+          selected={active ?? ''}
+          handleSelect={setContainer}
+          layoutId={`stack-logs-container-${project}`}
+          style={styles.containerTabs}
+        />
+      ) : null}
       <div style={styles.meta}>
         <span>
-          {filter ? `${shown.length} of ${lines.length} lines` : `${lines.length} lines`}
-          {errors ? <span style={{ color: theme.colors.red }}> · {errors} errors</span> : null}
+          {filter ? `${shown.length} of ${current.length} lines` : `${current.length} lines`}
+          {errors ? (
+            <span style={{ color: theme.colors.red }}>
+              {' '}
+              · {errors} error{errors === 1 ? '' : 's'}
+            </span>
+          ) : null}
         </span>
       </div>
       {error ? <span style={styles.error}>{error}</span> : null}
@@ -120,7 +159,7 @@ export const StackLogsModal = ({ project }: StackLogsModalProps) => {
                   );
                 })
               ) : (
-                <span style={styles.empty}>{lines.length ? 'No line matches.' : 'No output.'}</span>
+                <span style={styles.empty}>{current.length ? 'No line matches.' : 'No output.'}</span>
               )}
               <div ref={endRef} />
             </div>
@@ -161,6 +200,7 @@ const useStyles = mkUseStyles((t) => ({
     padding: 0,
   },
   clear: { display: 'flex', border: 'none', background: 'transparent', color: t.colors.dark05, cursor: 'pointer' },
+  containerTabs: { alignSelf: 'flex-start', maxWidth: '100%', overflowX: 'auto' },
   meta: { flexDirection: 'row', fontSize: 12, color: t.colors.dark05 },
   error: { color: t.colors.red, fontSize: 13 },
   terminal: {
