@@ -152,12 +152,14 @@ export const Containers = () => {
   );
 };
 
-const StackCard = ({
+/** One compose stack (or lone container) with the actions the agent allows on it. */
+export const StackCard = ({
   stack,
   applicationId,
   onChanged,
 }: {
   stack: DiscoveredStackResponse;
+  /** Links the title to the application; left out on the application's own page. */
   applicationId?: string;
   onChanged: () => void;
 }) => {

@@ -87,7 +87,7 @@ export const DeployTab = ({ application, onDeployed }: DeployTabProps) => {
       <Section title='Deploy'>
         <span style={shared.muted}>
           This stack was adopted and its compose file still lives on the host. Take the file over in Settings — it is
-          kept as it is — to deploy it from here; until then it can be started, restarted and stopped from Containers.
+          kept as it is — to deploy it from here; until then it can be started, restarted and stopped in the Containers tab.
         </span>
       </Section>
     );

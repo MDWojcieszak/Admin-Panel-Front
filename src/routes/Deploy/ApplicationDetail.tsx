@@ -12,6 +12,7 @@ import { useUrlParams } from '~/hooks/useUrlParam';
 import { DeployNavigationRoute, MainNavigationRoute } from '~/navigation/types';
 import { ActivityTab } from '~/routes/Deploy/components/ActivityTab';
 import { ComposeTab } from '~/routes/Deploy/components/ComposeTab';
+import { ContainersTab } from '~/routes/Deploy/components/ContainersTab';
 import { DeployTab } from '~/routes/Deploy/components/DeployTab';
 import { EnvTab } from '~/routes/Deploy/components/EnvTab';
 import { ReleasesTab } from '~/routes/Deploy/components/ReleasesTab';
@@ -33,6 +34,7 @@ import { useTheme } from '~/utils/theme';
 
 const TABS = [
   { value: 'deploy', label: 'Deploy' },
+  { value: 'containers', label: 'Containers' },
   { value: 'compose', label: 'Compose' },
   { value: 'env', label: 'Environment' },
   { value: 'spec', label: 'Spec' },
@@ -88,7 +90,10 @@ export const ApplicationDetail = () => {
 
   const application = app.data;
   const tabs = tabsFor(application?.sourceType);
-  const tab = tabs.some((t) => t.value === params.tab) ? params.tab! : 'deploy';
+  // A stack still running from the host's own file cannot be deployed from here yet;
+  // what it offers is its containers.
+  const defaultTab = application?.sourceType === AppSourceType.Host ? 'containers' : 'deploy';
+  const tab = tabs.some((t) => t.value === params.tab) ? params.tab! : defaultTab;
   const backLink = `/${MainNavigationRoute.DEPLOY}/${DeployNavigationRoute.APPLICATIONS}`;
 
   if (app.loading && !application) return <Loader />;
@@ -152,6 +157,7 @@ export const ApplicationDetail = () => {
         />
 
         {tab === 'deploy' ? <DeployTab application={application} onDeployed={openProcess} /> : null}
+        {tab === 'containers' ? <ContainersTab application={application} /> : null}
         {tab === 'compose' ? <ComposeTab application={application} onSaved={(next) => app.setData(next)} /> : null}
         {tab === 'env' ? <EnvTab applicationId={application.id} /> : null}
         {tab === 'spec' ? <SpecTab application={application} onSaved={(next) => app.setData(next)} /> : null}
