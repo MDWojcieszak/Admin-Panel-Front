@@ -1,10 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ReactElement, createContext, useContext, useState } from 'react';
+import { ReactElement, createContext, useContext, useEffect, useState } from 'react';
 import { HiX } from 'react-icons/hi';
 import useMeasure from 'react-use-measure';
 import { GlassCard } from '~/components/GlassCard';
+import { Scrollbar } from '~/components/Scrollbar';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { mkUseStyles } from '~/utils/theme';
+
+/** Title bar, card padding and a margin above and below the dialog. */
+const MODAL_CHROME = 160;
 
 type ModalProps = {
   children: ReactElement;
@@ -60,6 +64,13 @@ const SidePanel = (p: ModalProps) => {
 export const Modal = (p: ModalProps) => {
   const styles = useStyles();
   const [ref, { height }] = useMeasure();
+  // A tall dialog (a pasted compose file) scrolls inside instead of running off the screen.
+  const [maxBody, setMaxBody] = useState(() => window.innerHeight - MODAL_CHROME);
+  useEffect(() => {
+    const onResize = () => setMaxBody(window.innerHeight - MODAL_CHROME);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   // A panel docked to the right edge at full height, for content too large to
   // sit in a centred dialog. The page stays readable beside it — the mask only
@@ -101,12 +112,17 @@ export const Modal = (p: ModalProps) => {
               )}
               <motion.div
                 className='flex flex-col gap-6'
-                animate={{ height: height }}
+                animate={{ height: Math.min(height, maxBody) }}
                 transition={{ duration: 0.3 }}
                 initial={{ height: 0 }}
                 exit={{ height: 0 }}
               >
-                <div ref={ref}>{p.children}</div>
+                <Scrollbar maxHeight={maxBody} horizontal={false}>
+                  {/* Room for the track once it scrolls, so it never sits on a field. */}
+                  <div ref={ref} style={{ paddingRight: height > maxBody ? 16 : 0 }}>
+                    {p.children}
+                  </div>
+                </Scrollbar>
               </motion.div>
             </GlassCard>
           </motion.div>
