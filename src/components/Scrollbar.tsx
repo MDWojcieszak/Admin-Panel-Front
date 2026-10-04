@@ -1,6 +1,7 @@
 import { CSSProperties, ReactNode } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { mkUseStyles } from '~/utils/theme';
+import '~/components/Scrollbar.css';
 
 type ScrollbarProps = {
   children: ReactNode;
@@ -27,8 +28,13 @@ export const Scrollbar = ({ children, style, maxHeight, horizontal = true }: Scr
       renderTrackHorizontal={({ style, ...props }) => (
         <div {...props} style={{ ...style, ...(horizontal ? styles.scrollContainerHorizontal : styles.hidden) }} />
       )}
+      // Native bars are hidden by the stylesheet, so the margins that pushed them out of sight go.
       renderView={({ style, ...props }) => (
-        <div {...props} style={horizontal ? style : { ...style, overflowX: 'hidden', marginBottom: 0 }} />
+        <div
+          {...props}
+          className='app-scrollbar-view'
+          style={{ ...style, marginRight: 0, marginBottom: 0, ...(horizontal ? {} : { overflowX: 'hidden' }) }}
+        />
       )}
       renderThumbHorizontal={({ style, ...props }) => <div {...props} style={{ ...style, ...styles.scroll }} />}
       // A track with nothing to scroll is just a stripe; show it only when there is.
