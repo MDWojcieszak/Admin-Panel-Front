@@ -16452,7 +16452,8 @@ export const ReleaseStatus = {
     Superseded: 'SUPERSEDED',
     RolledBack: 'ROLLED_BACK',
     Deferred: 'DEFERRED',
-    Unknown: 'UNKNOWN'
+    Unknown: 'UNKNOWN',
+    Cancelled: 'CANCELLED'
 } as const;
 
 export type ReleaseStatus = typeof ReleaseStatus[keyof typeof ReleaseStatus];
@@ -36397,6 +36398,43 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCancelRelease: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerCancelRelease', 'id', id)
+            const localVarPath = `/deploy/releases/{id}/cancel`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {CheckComposeDto} checkComposeDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -37933,6 +37971,18 @@ export const DeployApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerCancelRelease(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerCancelRelease(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerCancelRelease']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {CheckComposeDto} checkComposeDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -38445,6 +38495,15 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @param {DeployApiDeployControllerCancelReleaseRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerCancelRelease(requestParameters: DeployApiDeployControllerCancelReleaseRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deployControllerCancelRelease(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {DeployApiDeployControllerCheckComposeRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -38829,6 +38888,20 @@ export interface DeployApiDeployControllerApplyTakeoverRequest {
      * @memberof DeployApiDeployControllerApplyTakeover
      */
     readonly takeoverComposeDto: TakeoverComposeDto
+}
+
+/**
+ * Request parameters for deployControllerCancelRelease operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerCancelReleaseRequest
+ */
+export interface DeployApiDeployControllerCancelReleaseRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerCancelRelease
+     */
+    readonly id: string
 }
 
 /**
@@ -39446,6 +39519,17 @@ export class DeployApi extends BaseAPI {
      */
     public deployControllerApplyTakeover(requestParameters: DeployApiDeployControllerApplyTakeoverRequest, options?: RawAxiosRequestConfig) {
         return DeployApiFp(this.configuration).deployControllerApplyTakeover(requestParameters.id, requestParameters.takeoverComposeDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerCancelReleaseRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerCancelRelease(requestParameters: DeployApiDeployControllerCancelReleaseRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerCancelRelease(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

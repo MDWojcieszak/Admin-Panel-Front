@@ -8,6 +8,7 @@ All URIs are relative to *http://localhost*
 |[**deployControllerAgentStatus**](#deploycontrolleragentstatus) | **GET** /deploy/agent | |
 |[**deployControllerApplyImport**](#deploycontrollerapplyimport) | **POST** /deploy/applications/{id}/import | |
 |[**deployControllerApplyTakeover**](#deploycontrollerapplytakeover) | **POST** /deploy/applications/{id}/takeover | |
+|[**deployControllerCancelRelease**](#deploycontrollercancelrelease) | **POST** /deploy/releases/{id}/cancel | |
 |[**deployControllerCheckCompose**](#deploycontrollercheckcompose) | **POST** /deploy/compose/check | |
 |[**deployControllerCreateApplication**](#deploycontrollercreateapplication) | **POST** /deploy/applications | |
 |[**deployControllerCreateGitAccount**](#deploycontrollercreategitaccount) | **POST** /deploy/git/accounts | |
@@ -241,6 +242,56 @@ const { status, data } = await apiInstance.deployControllerApplyTakeover(
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 |**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deployControllerCancelRelease**
+> deployControllerCancelRelease()
+
+
+### Example
+
+```typescript
+import {
+    DeployApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DeployApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.deployControllerCancelRelease(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+void (empty response body)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: Not defined
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**201** |  |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
