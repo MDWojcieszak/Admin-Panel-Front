@@ -19,7 +19,8 @@ const NGINX_ERROR = /^(\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}) \[(\w+)\] (\d+#\d+
 /** Common / combined access log: `IP - user [date] "GET /x HTTP/1.1" 200 453 "ref" "agent"` */
 const ACCESS = /^(\S+) (\S+) (\S+) \[([^\]]+)\] "(\w+) (\S+) ([^"]+)" (\d{3}) (\S+)(?: "([^"]*)" "([^"]*)")?(.*)$/;
 /** Leading ISO timestamp: `2024-11-27T20:03:36.123Z …` */
-const ISO_TIME = /^(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[.,]\d+)?(?:Z|[+-]\d{2}:?\d{2})?)\s+/;
+// Docker's --timestamps prefix can run straight into the line: `…+00:00[32m[Nest]`.
+const ISO_TIME = /^(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[.,]\d+)?(?:Z|[+-]\d{2}:?\d{2})?)\s*/;
 /** `/docker-entrypoint.sh: …` or `10-listen-on-ipv6-by-default.sh: info: …` */
 const SCRIPT_PREFIX = /^(\/?[\w./-]+\.(?:sh|envsh)):\s/;
 const LEVEL_WORD = /\b(emerg|alert|crit|critical|fatal|panic|error|err|warn|warning|notice|info|debug|trace)\b:?/i;
@@ -199,6 +200,15 @@ export const LogLine = ({ line }: { line: string }) => {
   }
 
   if (HAS_ANSI.test(rest)) {
+    const stamp = rest.match(ISO_TIME);
+    if (stamp) {
+      parts.push(
+        <span key='iso' style={dim}>
+          {stamp[1]}{' '}
+        </span>,
+      );
+      rest = rest.slice(stamp[0].length);
+    }
     parts.push(...renderAnsi(rest, colors, 'a'));
     return <>{parts}</>;
   }
