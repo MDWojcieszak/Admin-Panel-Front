@@ -1,21 +1,23 @@
-# CheckComposeDto
+# GitTagResponse
 
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**compose** | **string** |  | [default to undefined]
-**inClone** | **boolean** |  | [optional] [default to undefined]
+**name** | **string** |  | [default to undefined]
+**sha** | **string** |  | [default to undefined]
+**shortSha** | **string** |  | [default to undefined]
 
 ## Example
 
 ```typescript
-import { CheckComposeDto } from './api';
+import { GitTagResponse } from './api';
 
-const instance: CheckComposeDto = {
-    compose,
-    inClone,
+const instance: GitTagResponse = {
+    name,
+    sha,
+    shortSha,
 };
 ```
 

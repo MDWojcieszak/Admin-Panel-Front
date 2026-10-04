@@ -27,6 +27,7 @@ All URIs are relative to *http://localhost*
 |[**deployControllerListContainers**](#deploycontrollerlistcontainers) | **GET** /deploy/containers | |
 |[**deployControllerListEnv**](#deploycontrollerlistenv) | **GET** /deploy/applications/{id}/env | |
 |[**deployControllerListGitAccounts**](#deploycontrollerlistgitaccounts) | **GET** /deploy/git/accounts | |
+|[**deployControllerListGitRefs**](#deploycontrollerlistgitrefs) | **GET** /deploy/applications/{id}/git/refs | |
 |[**deployControllerListGitRepos**](#deploycontrollerlistgitrepos) | **GET** /deploy/git/repos | |
 |[**deployControllerListReleases**](#deploycontrollerlistreleases) | **GET** /deploy/applications/{id}/releases | |
 |[**deployControllerListVariables**](#deploycontrollerlistvariables) | **GET** /deploy/variables | |
@@ -37,6 +38,7 @@ All URIs are relative to *http://localhost*
 |[**deployControllerRenderApplication**](#deploycontrollerrenderapplication) | **POST** /deploy/applications/{id}/render | |
 |[**deployControllerRollback**](#deploycontrollerrollback) | **POST** /deploy/releases/{id}/rollback | |
 |[**deployControllerRotateWebhookSecret**](#deploycontrollerrotatewebhooksecret) | **POST** /deploy/applications/{id}/webhook/rotate | |
+|[**deployControllerRunContainerAction**](#deploycontrollerruncontaineraction) | **POST** /deploy/containers/{project}/containers/{containerId}/actions/{action} | |
 |[**deployControllerRunStackAction**](#deploycontrollerrunstackaction) | **POST** /deploy/containers/{project}/actions/{action} | |
 |[**deployControllerStackLogs**](#deploycontrollerstacklogs) | **GET** /deploy/containers/{project}/logs | |
 |[**deployControllerUpdateApplication**](#deploycontrollerupdateapplication) | **PATCH** /deploy/applications/{id} | |
@@ -1188,6 +1190,62 @@ This endpoint does not have any parameters.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **deployControllerListGitRefs**
+> GitRefsResponse deployControllerListGitRefs()
+
+
+### Example
+
+```typescript
+import {
+    DeployApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DeployApi(configuration);
+
+let id: string; // (default to undefined)
+let search: string; // (optional) (default to undefined)
+let take: number; // (optional) (default to undefined)
+
+const { status, data } = await apiInstance.deployControllerListGitRefs(
+    id,
+    search,
+    take
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+| **search** | [**string**] |  | (optional) defaults to undefined|
+| **take** | [**number**] |  | (optional) defaults to undefined|
+
+
+### Return type
+
+**GitRefsResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **deployControllerListGitRepos**
 > Array<GitRepoResponse> deployControllerListGitRepos()
 
@@ -1657,6 +1715,62 @@ const { status, data } = await apiInstance.deployControllerRotateWebhookSecret(
 ### Return type
 
 **WebhookSecretResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **deployControllerRunContainerAction**
+> StackActionResponse deployControllerRunContainerAction()
+
+
+### Example
+
+```typescript
+import {
+    DeployApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new DeployApi(configuration);
+
+let project: string; // (default to undefined)
+let containerId: string; // (default to undefined)
+let action: string; // (default to undefined)
+
+const { status, data } = await apiInstance.deployControllerRunContainerAction(
+    project,
+    containerId,
+    action
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **project** | [**string**] |  | defaults to undefined|
+| **containerId** | [**string**] |  | defaults to undefined|
+| **action** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**StackActionResponse**
 
 ### Authorization
 

@@ -8052,6 +8052,34 @@ paths:
                 $ref: '#/components/schemas/ApplicationDetailResponse'
       tags: *ref_83
       security: *ref_84
+  /deploy/applications/{id}/git/refs:
+    get:
+      operationId: DeployController_listGitRefs
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: search
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: take
+          required: false
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitRefsResponse'
+      tags: *ref_83
+      security: *ref_84
   /deploy/git/accounts:
     get:
       operationId: DeployController_listGitAccounts
@@ -8377,6 +8405,34 @@ paths:
       operationId: DeployController_runStackAction
       parameters:
         - name: project
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: action
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StackActionResponse'
+      tags: *ref_83
+      security: *ref_84
+  /deploy/containers/{project}/containers/{containerId}/actions/{action}:
+    post:
+      operationId: DeployController_runContainerAction
+      parameters:
+        - name: project
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: containerId
           required: true
           in: path
           schema:
@@ -18526,6 +18582,9 @@ components:
         gitRepoId:
           type: string
           nullable: true
+        gitRef:
+          type: string
+          nullable: true
         compose:
           type: string
           nullable: true
@@ -18592,6 +18651,10 @@ components:
           type: string
         gitRepoId:
           type: string
+        gitRef:
+          type: string
+          pattern: ^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._/-]{0,254}$
+          nullable: true
         spec:
           type: object
         compose:
@@ -18639,6 +18702,9 @@ components:
           type: string
           nullable: true
         gitRepoId:
+          type: string
+          nullable: true
+        gitRef:
           type: string
           nullable: true
         compose:
@@ -18712,6 +18778,10 @@ components:
         gitRepoId:
           type: string
           nullable: true
+        gitRef:
+          type: string
+          pattern: ^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._/-]{0,254}$
+          nullable: true
         buildMode:
           $ref: '#/components/schemas/BuildMode'
         webhookEnabled:
@@ -18725,6 +18795,8 @@ components:
       properties:
         compose:
           type: string
+        inClone:
+          type: boolean
       required:
         - compose
     ComposeVariableResponse:
@@ -18918,16 +18990,89 @@ components:
       properties:
         gitRepoId:
           type: string
+        gitRef:
+          type: string
+          pattern: ^(?!.*\.\.)[A-Za-z0-9][A-Za-z0-9._/-]{0,254}$
         composeFile:
           type: string
           pattern: ^(?!\/)(?!(?:.*\/)?\.\.(?:\/|$))[\w.\/-]+$
         runDirectory:
           type: string
           pattern: ^(?!\/)(?!(?:.*\/)?\.\.(?:\/|$))[\w.\/-]+$
+        composeInRepository:
+          type: boolean
         buildMode:
           $ref: '#/components/schemas/BuildMode'
       required:
         - gitRepoId
+    GitCommitResponse:
+      type: object
+      properties:
+        sha:
+          type: string
+        shortSha:
+          type: string
+        message:
+          type: string
+        author:
+          type: string
+          nullable: true
+        committedAt:
+          type: string
+          nullable: true
+      required:
+        - sha
+        - shortSha
+        - message
+    GitTagResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        sha:
+          type: string
+        shortSha:
+          type: string
+      required:
+        - name
+        - sha
+        - shortSha
+    GitBranchResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        sha:
+          type: string
+      required:
+        - name
+        - sha
+    GitRefsResponse:
+      type: object
+      properties:
+        branch:
+          type: string
+        head:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/GitCommitResponse'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitTagResponse'
+        commits:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitCommitResponse'
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitBranchResponse'
+      required:
+        - branch
+        - tags
+        - commits
+        - branches
     GitAccountResponse:
       type: object
       properties:
@@ -19372,6 +19517,28 @@ components:
           type: boolean
       required:
         - container
+    StackActionType:
+      type: string
+      enum:
+        - start
+        - restart
+        - stop
+    StackActionResultDto:
+      type: object
+      properties:
+        project:
+          type: string
+        action:
+          $ref: '#/components/schemas/StackActionType'
+        success:
+          type: boolean
+        error:
+          type: string
+          nullable: true
+      required:
+        - project
+        - action
+        - success
     AgentHeartbeatDto:
       type: object
       properties:

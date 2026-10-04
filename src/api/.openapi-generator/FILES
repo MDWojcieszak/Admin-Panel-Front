@@ -254,10 +254,14 @@ docs/GearSystemResponse.md
 docs/GenerateTokenDto.md
 docs/GenerateTokenResponseDto.md
 docs/GitAccountResponse.md
+docs/GitBranchResponse.md
+docs/GitCommitResponse.md
 docs/GitCredentialsRequestDto.md
+docs/GitRefsResponse.md
 docs/GitRepoAccountResponse.md
 docs/GitRepoApplicationResponse.md
 docs/GitRepoResponse.md
+docs/GitTagResponse.md
 docs/GrantListResponse.md
 docs/GrantResponse.md
 docs/HomeConfigResponse.md
@@ -570,6 +574,8 @@ docs/SkyDayResponse.md
 docs/SkyEclipseResponse.md
 docs/StackActionKind.md
 docs/StackActionResponse.md
+docs/StackActionResultDto.md
+docs/StackActionType.md
 docs/StackLogsResponse.md
 docs/SubsystemCheckResponse.md
 docs/SunTimesResponse.md

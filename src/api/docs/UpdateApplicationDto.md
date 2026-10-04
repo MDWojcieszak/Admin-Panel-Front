@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **tier** | [**ApplicationTier**](ApplicationTier.md) |  | [optional] [default to undefined]
 **image** | **string** |  | [optional] [default to undefined]
 **gitRepoId** | **string** |  | [optional] [default to undefined]
+**gitRef** | **string** |  | [optional] [default to undefined]
 **buildMode** | [**BuildMode**](BuildMode.md) |  | [optional] [default to undefined]
 **webhookEnabled** | **boolean** |  | [optional] [default to undefined]
 **spec** | **object** |  | [optional] [default to undefined]
@@ -26,6 +27,7 @@ const instance: UpdateApplicationDto = {
     tier,
     image,
     gitRepoId,
+    gitRef,
     buildMode,
     webhookEnabled,
     spec,

@@ -656,6 +656,12 @@ export interface ApplicationDetailResponse {
      * @type {string}
      * @memberof ApplicationDetailResponse
      */
+    'gitRef'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationDetailResponse
+     */
     'compose'?: string | null;
     /**
      * 
@@ -866,6 +872,12 @@ export interface ApplicationResponse {
      * @memberof ApplicationResponse
      */
     'gitRepoId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApplicationResponse
+     */
+    'gitRef'?: string | null;
     /**
      * 
      * @type {string}
@@ -2222,6 +2234,12 @@ export interface CheckComposeDto {
      * @memberof CheckComposeDto
      */
     'compose': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CheckComposeDto
+     */
+    'inClone'?: boolean;
 }
 /**
  * 
@@ -3198,6 +3216,12 @@ export interface CreateApplicationDto {
      * @memberof CreateApplicationDto
      */
     'gitRepoId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateApplicationDto
+     */
+    'gitRef'?: string | null;
     /**
      * 
      * @type {object}
@@ -7830,6 +7854,62 @@ export interface GitAccountResponse {
 /**
  * 
  * @export
+ * @interface GitBranchResponse
+ */
+export interface GitBranchResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GitBranchResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitBranchResponse
+     */
+    'sha': string;
+}
+/**
+ * 
+ * @export
+ * @interface GitCommitResponse
+ */
+export interface GitCommitResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GitCommitResponse
+     */
+    'sha': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitCommitResponse
+     */
+    'shortSha': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitCommitResponse
+     */
+    'message': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitCommitResponse
+     */
+    'author'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitCommitResponse
+     */
+    'committedAt'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface GitCredentialsRequestDto
  */
 export interface GitCredentialsRequestDto {
@@ -7839,6 +7919,43 @@ export interface GitCredentialsRequestDto {
      * @memberof GitCredentialsRequestDto
      */
     'repoId': string;
+}
+/**
+ * 
+ * @export
+ * @interface GitRefsResponse
+ */
+export interface GitRefsResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GitRefsResponse
+     */
+    'branch': string;
+    /**
+     * 
+     * @type {GitCommitResponse}
+     * @memberof GitRefsResponse
+     */
+    'head'?: GitCommitResponse | null;
+    /**
+     * 
+     * @type {Array<GitTagResponse>}
+     * @memberof GitRefsResponse
+     */
+    'tags': Array<GitTagResponse>;
+    /**
+     * 
+     * @type {Array<GitCommitResponse>}
+     * @memberof GitRefsResponse
+     */
+    'commits': Array<GitCommitResponse>;
+    /**
+     * 
+     * @type {Array<GitBranchResponse>}
+     * @memberof GitRefsResponse
+     */
+    'branches': Array<GitBranchResponse>;
 }
 /**
  * 
@@ -7956,6 +8073,31 @@ export interface GitRepoResponse {
      * @memberof GitRepoResponse
      */
     'updatedAt': string;
+}
+/**
+ * 
+ * @export
+ * @interface GitTagResponse
+ */
+export interface GitTagResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GitTagResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitTagResponse
+     */
+    'sha': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GitTagResponse
+     */
+    'shortSha': string;
 }
 /**
  * 
@@ -9771,6 +9913,12 @@ export interface MoveToGitDto {
      * @type {string}
      * @memberof MoveToGitDto
      */
+    'gitRef'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MoveToGitDto
+     */
     'composeFile'?: string;
     /**
      * 
@@ -9778,6 +9926,12 @@ export interface MoveToGitDto {
      * @memberof MoveToGitDto
      */
     'runDirectory'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof MoveToGitDto
+     */
+    'composeInRepository'?: boolean;
     /**
      * 
      * @type {BuildMode}
@@ -18809,6 +18963,54 @@ export interface StackActionResponse {
 /**
  * 
  * @export
+ * @interface StackActionResultDto
+ */
+export interface StackActionResultDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof StackActionResultDto
+     */
+    'project': string;
+    /**
+     * 
+     * @type {StackActionType}
+     * @memberof StackActionResultDto
+     */
+    'action': StackActionType;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StackActionResultDto
+     */
+    'success': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof StackActionResultDto
+     */
+    'error'?: string | null;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const StackActionType = {
+    Start: 'start',
+    Restart: 'restart',
+    Stop: 'stop'
+} as const;
+
+export type StackActionType = typeof StackActionType[keyof typeof StackActionType];
+
+
+/**
+ * 
+ * @export
  * @interface StackLogsResponse
  */
 export interface StackLogsResponse {
@@ -19438,6 +19640,12 @@ export interface UpdateApplicationDto {
      * @memberof UpdateApplicationDto
      */
     'gitRepoId'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateApplicationDto
+     */
+    'gitRef'?: string | null;
     /**
      * 
      * @type {BuildMode}
@@ -36907,6 +37115,53 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
+         * @param {string} id 
+         * @param {string} [search] 
+         * @param {number} [take] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListGitRefs: async (id: string, search?: string, take?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deployControllerListGitRefs', 'id', id)
+            const localVarPath = `/deploy/applications/{id}/git/refs`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (take !== undefined) {
+                localVarQueryParameter['take'] = take;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -37249,6 +37504,51 @@ export const DeployApiAxiosParamCreator = function (configuration?: Configuratio
             assertParamExists('deployControllerRotateWebhookSecret', 'id', id)
             const localVarPath = `/deploy/applications/{id}/webhook/rotate`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} project 
+         * @param {string} containerId 
+         * @param {string} action 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRunContainerAction: async (project: string, containerId: string, action: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'project' is not null or undefined
+            assertParamExists('deployControllerRunContainerAction', 'project', project)
+            // verify required parameter 'containerId' is not null or undefined
+            assertParamExists('deployControllerRunContainerAction', 'containerId', containerId)
+            // verify required parameter 'action' is not null or undefined
+            assertParamExists('deployControllerRunContainerAction', 'action', action)
+            const localVarPath = `/deploy/containers/{project}/containers/{containerId}/actions/{action}`
+                .replace(`{${"project"}}`, encodeURIComponent(String(project)))
+                .replace(`{${"containerId"}}`, encodeURIComponent(String(containerId)))
+                .replace(`{${"action"}}`, encodeURIComponent(String(action)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -37862,6 +38162,20 @@ export const DeployApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} id 
+         * @param {string} [search] 
+         * @param {number} [take] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerListGitRefs(id: string, search?: string, take?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GitRefsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerListGitRefs(id, search, take, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerListGitRefs']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -37977,6 +38291,20 @@ export const DeployApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRotateWebhookSecret(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRotateWebhookSecret']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} project 
+         * @param {string} containerId 
+         * @param {string} action 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deployControllerRunContainerAction(project: string, containerId: string, action: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StackActionResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deployControllerRunContainerAction(project, containerId, action, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DeployApi.deployControllerRunContainerAction']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -38285,6 +38613,15 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @param {DeployApiDeployControllerListGitRefsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerListGitRefs(requestParameters: DeployApiDeployControllerListGitRefsRequest, options?: RawAxiosRequestConfig): AxiosPromise<GitRefsResponse> {
+            return localVarFp.deployControllerListGitRefs(requestParameters.id, requestParameters.search, requestParameters.take, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -38369,6 +38706,15 @@ export const DeployApiFactory = function (configuration?: Configuration, basePat
          */
         deployControllerRotateWebhookSecret(requestParameters: DeployApiDeployControllerRotateWebhookSecretRequest, options?: RawAxiosRequestConfig): AxiosPromise<WebhookSecretResponse> {
             return localVarFp.deployControllerRotateWebhookSecret(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeployApiDeployControllerRunContainerActionRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployControllerRunContainerAction(requestParameters: DeployApiDeployControllerRunContainerActionRequest, options?: RawAxiosRequestConfig): AxiosPromise<StackActionResponse> {
+            return localVarFp.deployControllerRunContainerAction(requestParameters.project, requestParameters.containerId, requestParameters.action, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -38738,6 +39084,34 @@ export interface DeployApiDeployControllerListEnvRequest {
 }
 
 /**
+ * Request parameters for deployControllerListGitRefs operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerListGitRefsRequest
+ */
+export interface DeployApiDeployControllerListGitRefsRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerListGitRefs
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerListGitRefs
+     */
+    readonly search?: string
+
+    /**
+     * 
+     * @type {number}
+     * @memberof DeployApiDeployControllerListGitRefs
+     */
+    readonly take?: number
+}
+
+/**
  * Request parameters for deployControllerListReleases operation in DeployApi.
  * @export
  * @interface DeployApiDeployControllerListReleasesRequest
@@ -38847,6 +39221,34 @@ export interface DeployApiDeployControllerRotateWebhookSecretRequest {
      * @memberof DeployApiDeployControllerRotateWebhookSecret
      */
     readonly id: string
+}
+
+/**
+ * Request parameters for deployControllerRunContainerAction operation in DeployApi.
+ * @export
+ * @interface DeployApiDeployControllerRunContainerActionRequest
+ */
+export interface DeployApiDeployControllerRunContainerActionRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRunContainerAction
+     */
+    readonly project: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRunContainerAction
+     */
+    readonly containerId: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DeployApiDeployControllerRunContainerAction
+     */
+    readonly action: string
 }
 
 /**
@@ -39254,6 +39656,17 @@ export class DeployApi extends BaseAPI {
 
     /**
      * 
+     * @param {DeployApiDeployControllerListGitRefsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerListGitRefs(requestParameters: DeployApiDeployControllerListGitRefsRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerListGitRefs(requestParameters.id, requestParameters.search, requestParameters.take, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DeployApi
@@ -39357,6 +39770,17 @@ export class DeployApi extends BaseAPI {
      */
     public deployControllerRotateWebhookSecret(requestParameters: DeployApiDeployControllerRotateWebhookSecretRequest, options?: RawAxiosRequestConfig) {
         return DeployApiFp(this.configuration).deployControllerRotateWebhookSecret(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeployApiDeployControllerRunContainerActionRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployControllerRunContainerAction(requestParameters: DeployApiDeployControllerRunContainerActionRequest, options?: RawAxiosRequestConfig) {
+        return DeployApiFp(this.configuration).deployControllerRunContainerAction(requestParameters.project, requestParameters.containerId, requestParameters.action, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

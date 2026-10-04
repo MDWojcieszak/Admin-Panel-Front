@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **buildMode** | [**BuildMode**](BuildMode.md) |  | [default to undefined]
 **image** | **string** |  | [optional] [default to undefined]
 **gitRepoId** | **string** |  | [optional] [default to undefined]
+**gitRef** | **string** |  | [optional] [default to undefined]
 **compose** | **string** |  | [optional] [default to undefined]
 **spec** | **object** |  | [default to undefined]
 **runtimeStatus** | [**CommandRuntimeStatus**](CommandRuntimeStatus.md) |  | [default to undefined]
@@ -46,6 +47,7 @@ const instance: ApplicationDetailResponse = {
     buildMode,
     image,
     gitRepoId,
+    gitRef,
     compose,
     spec,
     runtimeStatus,
