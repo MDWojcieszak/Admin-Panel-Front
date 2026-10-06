@@ -9311,6 +9311,9 @@ components:
           format: date-time
         startedBy:
           $ref: '#/components/schemas/User'
+        startedByLabel:
+          type: string
+          nullable: true
         category:
           $ref: '#/components/schemas/Category'
       required:
@@ -18559,6 +18562,9 @@ components:
           nullable: true
           allOf:
             - $ref: '#/components/schemas/ReleaseActorResponse'
+        triggeredByLabel:
+          type: string
+          nullable: true
         createdAt:
           type: string
           format: date-time

@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **homelabCommit** | **string** |  | [optional] [default to undefined]
 **processId** | **string** |  | [optional] [default to undefined]
 **triggeredBy** | [**ReleaseActorResponse**](ReleaseActorResponse.md) |  | [optional] [default to undefined]
+**triggeredByLabel** | **string** |  | [optional] [default to undefined]
 **createdAt** | **string** |  | [default to undefined]
 **deployedAt** | **string** |  | [optional] [default to undefined]
 
@@ -34,6 +35,7 @@ const instance: ReleaseResponse = {
     homelabCommit,
     processId,
     triggeredBy,
+    triggeredByLabel,
     createdAt,
     deployedAt,
 };

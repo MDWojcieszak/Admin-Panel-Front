@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **startedAt** | **string** |  | [default to undefined]
 **stoppedAt** | **string** |  | [optional] [default to undefined]
 **startedBy** | [**User**](User.md) |  | [optional] [default to undefined]
+**startedByLabel** | **string** |  | [optional] [default to undefined]
 **category** | [**Category**](Category.md) |  | [optional] [default to undefined]
 
 ## Example
@@ -29,6 +30,7 @@ const instance: ProcessResponseDto = {
     startedAt,
     stoppedAt,
     startedBy,
+    startedByLabel,
     category,
 };
 ```

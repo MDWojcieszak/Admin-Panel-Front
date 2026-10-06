@@ -15418,6 +15418,12 @@ export interface ProcessResponseDto {
     'startedBy'?: User;
     /**
      * 
+     * @type {string}
+     * @memberof ProcessResponseDto
+     */
+    'startedByLabel'?: string | null;
+    /**
+     * 
      * @type {Category}
      * @memberof ProcessResponseDto
      */
@@ -16404,6 +16410,12 @@ export interface ReleaseResponse {
      * @memberof ReleaseResponse
      */
     'triggeredBy'?: ReleaseActorResponse | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ReleaseResponse
+     */
+    'triggeredByLabel'?: string | null;
     /**
      * 
      * @type {string}
