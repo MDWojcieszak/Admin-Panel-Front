@@ -34,6 +34,20 @@ type ReleasesTabProps = {
   onRolledBack: (processId: string) => void;
 };
 
+/**
+ * Who started it: the user, or — for a webhook, a schedule or an automatic
+ * update — what the backend recorded in words. The trigger itself is already
+ * on the line above, so its name is not repeated here.
+ */
+const startedBy = (release: ReleaseResponse): string | null => {
+  if (release.triggeredBy) return release.triggeredBy.email;
+  const label = release.triggeredByLabel?.trim();
+  if (!label) return null;
+  const trigger = TRIGGER_LABEL[release.trigger].toLowerCase();
+  if (label.toLowerCase() === trigger) return null;
+  return label.toLowerCase().startsWith(`${trigger} · `) ? label.slice(trigger.length + 3) : label;
+};
+
 /** A rollback redeploys the stored bytes of that release — not the current spec. */
 const canRollBackTo = (release: ReleaseResponse, currentReleaseId?: string) =>
   release.id !== currentReleaseId &&
@@ -147,7 +161,7 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
                     </div>
                     <span style={shared.muted}>
                       {format(new Date(release.createdAt), 'd MMM yyyy, HH:mm')}
-                      {release.triggeredBy ? ` · ${release.triggeredBy.email}` : ''}
+                      {startedBy(release) ? ` · ${startedBy(release)}` : ''}
                       {release.digest ? ` · ${shortDigest(release.digest)}` : ''}
                       {/* Named by its commit already when it has no version. */}
                       {release.commit && release.version ? ` · commit ${shortCommit(release.commit)}` : ''}
