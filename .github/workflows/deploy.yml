@@ -1,0 +1,52 @@
+# Deploys the app from the panel on every push to main.
+#
+# The panel's webhook starts a release; the deploy agent then fetches the
+# repository, builds the image on the host and runs compose up. Nothing is
+# built here.
+#
+# Setup, once:
+#   1. Panel → Deploy → the application → Settings → webhook → generate secret.
+#   2. GitHub → this repo → Settings → Secrets and variables → Actions:
+#        secret   DEPLOY_WEBHOOK_SECRET  = the secret from step 1
+#      optional variables, if the defaults below do not fit:
+#        variable DEPLOY_APP_SLUG        = the application's slug in the panel
+#        variable DEPLOY_API_URL         = the backend's public URL
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  # "Run workflow" button in the Actions tab, to redeploy without a push.
+  workflow_dispatch:
+
+# Pushes in quick succession: the panel allows one deployment per application
+# at a time anyway, so a newer run replaces a waiting one instead of failing.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger the deployment in the panel
+        env:
+          API_URL: ${{ vars.DEPLOY_API_URL || 'https://api.whcp.pl' }}
+          APP_SLUG: ${{ vars.DEPLOY_APP_SLUG || 'admin-panel' }}
+          SECRET: ${{ secrets.DEPLOY_WEBHOOK_SECRET }}
+          # Shown in the panel as who started the release.
+          ACTOR: ${{ github.actor }}
+        run: |
+          if [ -z "$SECRET" ]; then
+            echo "::error::DEPLOY_WEBHOOK_SECRET is not set (Settings → Secrets and variables → Actions → Secrets)"
+            exit 1
+          fi
+
+          # 401: wrong secret or slug, or the webhook is disabled in the panel.
+          # 409: another deployment of this application is still running.
+          curl --fail-with-body -sS -X POST "$API_URL/deploy/webhook/$APP_SLUG" \
+            -H "Content-Type: application/json" \
+            -H "x-deploy-secret: $SECRET" \
+            -d "{\"version\":\"${GITHUB_SHA::7}\",\"triggeredBy\":\"GitHub Actions · ${ACTOR} · ${GITHUB_SHA::7}\"}"
