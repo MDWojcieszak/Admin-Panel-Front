@@ -8,8 +8,11 @@ export const ModalManagerProvider = ({ children }: PropsWithChildren) => {
   const [collection, setCollection] = useState<ModalType<FC<Partial<InternalModalProps>>>[]>([]);
   const resolveShowRef = useRef<{ resolve: F0; id: string }[]>([]);
   const resolveHideRef = useRef<{ resolve: F0; id: string }[]>([]);
+  // Each opening starts from what the modal was registered with.
+  const defaultsRef = useRef<Record<string, object>>({});
 
   const register = useCallback<ModalManager['register']>((id, component, config, defaultProps) => {
+    if (!(id in defaultsRef.current)) defaultsRef.current[id] = (defaultProps as object) || {};
     const newModal: ModalType<typeof component> = {
       id,
       component,
@@ -43,7 +46,9 @@ export const ModalManagerProvider = ({ children }: PropsWithChildren) => {
           return prev.map((item) => ({
             ...item,
             visible: item.id === id,
-            props: item.id === id ? { ...item.props, ...props } : item.props,
+            // From the defaults, not the last opening: an Add after an Edit kept the
+            // edited item and silently saved over it.
+            props: item.id === id ? { ...defaultsRef.current[id], ...props } : item.props,
           }));
         });
       }),
@@ -61,6 +66,7 @@ export const ModalManagerProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   const remove = useCallback<ModalManager['remove']>((id) => {
+    delete defaultsRef.current[id];
     setCollection((prev) => {
       const newCollection = prev.filter((modal) => modal.id !== id);
       return newCollection.length === prev.length ? prev : newCollection;
