@@ -49,6 +49,7 @@ export const RELEASE_LABEL: Record<ReleaseStatus, string> = {
   ROLLED_BACK: 'Rolled back',
   DEFERRED: 'Deferred',
   UNKNOWN: 'Unknown',
+  CANCELLING: 'Cancelling',
   CANCELLED: 'Cancelled',
 };
 
@@ -61,11 +62,15 @@ export const RELEASE_TONE: Record<ReleaseStatus, BadgeTone> = {
   ROLLED_BACK: 'purple',
   DEFERRED: 'blue',
   UNKNOWN: 'yellow',
+  CANCELLING: 'yellow',
   CANCELLED: 'neutral',
 };
 
-/** A release still in flight: its status will change on its own. */
-export const isReleaseRunning = (status: ReleaseStatus) =>
+/**
+ * In flight and not already being cancelled. A CANCELLING release is waiting
+ * for the agent to stop; asking again changes nothing.
+ */
+export const isReleaseCancellable = (status: ReleaseStatus) =>
   status === ReleaseStatus.Pending || status === ReleaseStatus.Deploying || status === ReleaseStatus.Deferred;
 
 export const TRIGGER_LABEL: Record<ReleaseTrigger, string> = {

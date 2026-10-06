@@ -16,7 +16,7 @@ import {
   RELEASE_LABEL,
   RELEASE_TONE,
   TRIGGER_LABEL,
-  isReleaseRunning,
+  isReleaseCancellable,
   releaseLabel,
   shortCommit,
   shortDigest,
@@ -55,7 +55,8 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
     if (!deployApi) return;
     try {
       await deployApi.deployControllerCancelRelease({ id: release.id });
-      toast('Deployment cancelled', 'success');
+      // The agent still has to stop it; the status moves on to Cancelled by itself.
+      toast('Cancelling — waiting for the agent to stop the deployment', 'success');
     } catch (e) {
       toast(getApiErrorMessage(e, 'Could not cancel the deployment.'), 'error');
     }
@@ -95,7 +96,7 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
           actions={
             <>
               {/* Where a running deployment is watched, it can be stopped too. */}
-              {selectedRelease && can('deploy.execute') && isReleaseRunning(selectedRelease.status) ? (
+              {selectedRelease && can('deploy.execute') && isReleaseCancellable(selectedRelease.status) ? (
                 <Button
                   label='Cancel'
                   variant='danger'
@@ -162,7 +163,7 @@ export const ReleasesTab = (p: ReleasesTabProps) => {
                       onClick={() => p.onSelectProcess(release.processId ?? undefined)}
                     />
                   ) : null}
-                  {can('deploy.execute') && isReleaseRunning(release.status) ? (
+                  {can('deploy.execute') && isReleaseCancellable(release.status) ? (
                     <Button
                       label='Cancel'
                       variant='danger'
