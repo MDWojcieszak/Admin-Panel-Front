@@ -18507,6 +18507,7 @@ components:
         - ROLLED_BACK
         - DEFERRED
         - UNKNOWN
+        - CANCELLING
         - CANCELLED
     ReleaseTrigger:
       type: string

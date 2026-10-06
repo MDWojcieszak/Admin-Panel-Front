@@ -16453,6 +16453,7 @@ export const ReleaseStatus = {
     RolledBack: 'ROLLED_BACK',
     Deferred: 'DEFERRED',
     Unknown: 'UNKNOWN',
+    Cancelling: 'CANCELLING',
     Cancelled: 'CANCELLED'
 } as const;
 
