@@ -33,7 +33,15 @@ export const Scrollbar = ({ children, style, maxHeight, horizontal = true }: Scr
         <div
           {...props}
           className='app-scrollbar-view'
-          style={{ ...style, marginRight: 0, marginBottom: 0, ...(horizontal ? {} : { overflowX: 'hidden' }) }}
+          style={{
+            ...style,
+            marginRight: 0,
+            marginBottom: 0,
+            // With autoHeight the library also grows the view by the native bar's width to make up for
+            // those margins; without them the view outgrew its box and always had ~17 px to scroll.
+            ...(maxHeight !== undefined ? { minHeight: 0, maxHeight } : {}),
+            ...(horizontal ? {} : { overflowX: 'hidden' }),
+          }}
         />
       )}
       renderThumbHorizontal={({ style, ...props }) => <div {...props} style={{ ...style, ...styles.scroll }} />}

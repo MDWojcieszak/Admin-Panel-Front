@@ -117,7 +117,8 @@ export const Modal = (p: ModalProps) => {
                 initial={{ height: 0 }}
                 exit={{ height: 0 }}
               >
-                <Scrollbar maxHeight={maxBody} horizontal={false}>
+                {/* No shrinking while the dialog animates open from 0: the library decides on its track once, at mount. */}
+                <Scrollbar maxHeight={maxBody} horizontal={false} style={{ flexShrink: 0 }}>
                   {/* Room for the track once it scrolls, so it never sits on a field. */}
                   <div ref={ref} style={{ paddingRight: height > maxBody ? 16 : 0 }}>
                     {p.children}
