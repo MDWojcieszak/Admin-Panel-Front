@@ -35,6 +35,7 @@ import { MediaSelectorModal } from '~/routes/Galleries/modals/MediaSelectorModal
 import { ROLE_LABEL, STATUS_LABEL, STATUS_TONE, thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 
 const ROLES: GalleryImageRole[] = ['HERO', 'LARGE', 'NORMAL', 'HIDDEN'];
 const STATUSES: GalleryStatus[] = ['DRAFT', 'PUBLISHED', 'HIDDEN', 'ARCHIVED'];
@@ -60,6 +61,7 @@ const parseHomePreviewCount = (value?: string): number | null => {
 
 export const GalleryEditor = () => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
   const theme = useTheme();
   const navigate = useNavigate();
   const { id = '' } = useParams();
@@ -358,7 +360,11 @@ export const GalleryEditor = () => {
           <div style={styles.blockHeader}>
             <div style={styles.imagesTitle}>
               <span style={styles.blockTitle}>Images</span>
-              <span style={styles.imagesHint}>Drag to reorder · pick a role · set the cover.</span>
+              <span style={styles.imagesHint}>
+                {isMobile
+                  ? 'Pick a role · set the cover · reorder on a computer.'
+                  : 'Drag to reorder · pick a role · set the cover.'}
+              </span>
             </div>
             <Button label='Add images' icon={<FiPlus size={14} />} onClick={openMedia} />
           </div>
@@ -388,7 +394,7 @@ export const GalleryEditor = () => {
                   >
                     <div
                       style={styles.tileImageWrap}
-                      draggable
+                      draggable={!isMobile}
                       onClick={() => openPreview(it)}
                       onDragStart={() => (dragIndex.current = i)}
                       onDragEnd={() => {
@@ -507,7 +513,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   detailsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))',
     gap: t.spacing.m,
   },
   detailsActions: {
@@ -535,7 +541,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(190px, calc(50% - 12px)), 1fr))',
     gap: t.spacing.m,
   },
   tile: {

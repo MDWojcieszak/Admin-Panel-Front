@@ -17,6 +17,7 @@ import { MediaSelectorModal } from '~/routes/Galleries/modals/MediaSelectorModal
 import { thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 
 /** Coerce a free-text field to a positive integer (mirrors the backend's <1 → 1 clamp). */
 const clampInt = (value: string, fallback = 1) => {
@@ -139,6 +140,7 @@ const HomeSettingsPanel = () => {
 
 export const HeroView = () => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
   const theme = useTheme();
   const { galleriesApi } = useApi();
   const toast = useToast();
@@ -244,7 +246,7 @@ export const HeroView = () => {
                 >
                   <div
                     style={styles.imageWrap}
-                    draggable
+                    draggable={!isMobile}
                     onClick={() =>
                       previewModal.show({
                         imageId: it.imageId,
@@ -328,7 +330,7 @@ const useStyles = mkUseStyles((t) => ({
   blockTitle: { fontWeight: 700, fontSize: 16 },
   settingsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))',
     gap: t.spacing.m,
   },
   disabledField: { opacity: 0.4, pointerEvents: 'none' },
@@ -341,7 +343,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, calc(50% - 12px)), 1fr))',
     gap: t.spacing.m,
   },
   tile: { borderRadius: t.borderRadius.large, overflow: 'hidden' },

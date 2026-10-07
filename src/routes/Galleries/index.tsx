@@ -15,6 +15,7 @@ import { CreateGalleryModal } from '~/routes/Galleries/modals/CreateGalleryModal
 import { STATUS_LABEL, thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 
 export const GalleriesList = () => {
   const styles = useStyles();
@@ -131,6 +132,8 @@ const GalleryCard = ({
   onDragEnd?: () => void;
 }) => {
   const styles = useStyles();
+  // Touch screens cannot drag (HTML5 drag & drop is mouse-only); order on a computer.
+  const isMobile = useIsMobile();
   const theme = useTheme();
   const cover = thumbUrl(gallery.coverUrl);
   const statusColor = {
@@ -143,7 +146,7 @@ const GalleryCard = ({
     <div
       style={styles.card}
       onClick={onClick}
-      draggable
+      draggable={!isMobile}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
@@ -224,7 +227,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(240px, calc(50% - 12px)), 1fr))',
     gap: t.spacing.m,
   },
   card: {
