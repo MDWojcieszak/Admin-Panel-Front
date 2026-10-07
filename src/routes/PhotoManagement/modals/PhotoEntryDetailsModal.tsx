@@ -40,6 +40,7 @@ import { useToast } from '~/hooks/useToast';
 import { isOverduePlan } from '~/routes/PhotoManagement/utils/kanban';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import {
   MediaStatus,
   PatchPhotoEntryDto,
@@ -149,6 +150,7 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { width: viewportWidth } = useViewportSize();
   const stacked = viewportWidth > 0 && viewportWidth < 1000;
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setEntry(p.entry);
@@ -407,7 +409,8 @@ export const PhotoEntryDetailsModal = (p: PhotoEntryDetailsModalProps) => {
   return (
     <FormProvider {...formMethods}>
       <Scrollbar style={styles.scroll}>
-        <div style={styles.page}>
+        {/* No room kept for a scrollbar track on a phone — its scrollbars overlay. */}
+        <div style={isMobile ? { ...styles.page, paddingRight: 0 } : styles.page}>
           <div style={styles.hero}>
             {editing ? (
               <div style={styles.editForm}>
@@ -804,7 +807,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   tabBody: { gap: t.spacing.m, minWidth: 0 },
   editWrap: { display: 'flex' },
-  targets: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: t.spacing.s },
+  targets: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, 100%), 1fr))', gap: t.spacing.s },
   target: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -848,7 +851,7 @@ const useStyles = mkUseStyles((t) => ({
   heroActions: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap' },
   facts: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(150px, 100%), 1fr))',
     gap: t.spacing.s,
   },
   fact: {
@@ -888,7 +891,7 @@ const useStyles = mkUseStyles((t) => ({
   astroPicker: { gap: t.spacing.xs },
   astroList: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(190px, 100%), 1fr))',
     gap: t.spacing.xs,
     paddingRight: t.spacing.l,
   },

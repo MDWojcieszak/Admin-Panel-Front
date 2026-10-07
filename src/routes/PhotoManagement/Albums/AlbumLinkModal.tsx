@@ -300,7 +300,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(84px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(84px, 100%), 1fr))',
     gridAutoRows: 'min-content',
     gap: t.spacing.s,
     height: '100%',

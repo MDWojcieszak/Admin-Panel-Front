@@ -28,6 +28,7 @@ import { useToast } from '~/hooks/useToast';
 import { STATUS_TONE, thumbUrl } from '~/routes/Galleries/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 
 type EntryPublishPanelProps = {
   entryId: string;
@@ -62,6 +63,7 @@ const isSelectable = (file: ExportFileResponse) =>
  */
 export const EntryPublishPanel = ({ entryId }: EntryPublishPanelProps) => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
   const theme = useTheme();
   const toast = useToast();
   const { photoEntryApi, galleriesApi } = useApi();
@@ -218,7 +220,7 @@ export const EntryPublishPanel = ({ entryId }: EntryPublishPanelProps) => {
             </button>
           </div>
 
-          <div style={styles.grid}>
+          <div style={isMobile ? { ...styles.grid, ...styles.gridMobile } : styles.grid}>
             {visibleFiles.map((file, index) => {
               const order = selected.indexOf(file.key);
               const selectable = isSelectable(file);
@@ -274,7 +276,8 @@ export const EntryPublishPanel = ({ entryId }: EntryPublishPanelProps) => {
                 Clear
               </button>
             ) : null}
-            <div style={styles.actionRight}>
+            {/* Phone: the gallery picker takes the line, Publish sits beside it. */}
+            <div style={isMobile ? { ...styles.actionRight, ...styles.actionRightMobile } : styles.actionRight}>
               <GalleryPicker galleries={galleries} target={target} onTarget={setTarget} />
               <Button
                 label='Publish'
@@ -432,6 +435,7 @@ const GalleryPicker = ({
 }) => {
   const styles = useStyles();
   const theme = useTheme();
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   // Inline styles have no :hover, so the pointer is tracked instead.
@@ -458,10 +462,14 @@ const GalleryPicker = ({
   const visible = galleries.filter((gallery) => gallery.title.toLowerCase().includes(query.trim().toLowerCase()));
 
   return (
-    <div ref={ref} style={styles.pickerWrap}>
+    <div ref={ref} style={isMobile ? { ...styles.pickerWrap, flex: 1, minWidth: 0 } : styles.pickerWrap}>
       <button
         type='button'
-        style={{ ...styles.pickerButton, ...(hovered === 'button' || open ? styles.pickerButtonHover : {}) }}
+        style={{
+          ...styles.pickerButton,
+          ...(isMobile ? { minWidth: 0, maxWidth: 'none', width: '100%' } : null),
+          ...(hovered === 'button' || open ? styles.pickerButtonHover : {}),
+        }}
         onClick={() => setOpen((v) => !v)}
         onMouseEnter={() => setHovered('button')}
         onMouseLeave={() => setHovered(undefined)}
@@ -481,7 +489,7 @@ const GalleryPicker = ({
       </button>
 
       {open ? (
-        <div style={styles.pickerMenu}>
+        <div style={isMobile ? { ...styles.pickerMenu, ...styles.pickerMenuMobile } : styles.pickerMenu}>
           {galleries.length ? (
             <>
               {galleries.length > 6 ? (
@@ -619,6 +627,10 @@ const useStyles = mkUseStyles((t) => ({
   selectionInfo: { gap: 2 },
   selectionCount: { fontSize: 14, fontWeight: 700, color: t.colors.white },
   actionRight: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, marginLeft: 'auto', flexWrap: 'wrap' },
+  actionRightMobile: { width: '100%', marginLeft: 0, flexWrap: 'nowrap' },
+  gridMobile: { gridTemplateColumns: 'repeat(auto-fill, minmax(min(130px, 100%), 1fr))' },
+  // Opens upwards across the card, never wider than the screen.
+  pickerMenuMobile: { width: 'calc(100vw - 64px)', maxHeight: '55dvh', left: 0, right: 'auto' },
   pickerWrap: { position: 'relative' },
   pickerButton: {
     display: 'flex',
@@ -735,7 +747,7 @@ const useStyles = mkUseStyles((t) => ({
   optionText: { display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, gap: 1 },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(160px, 100%), 1fr))',
     gap: t.spacing.s,
   },
   tile: {

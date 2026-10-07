@@ -3,10 +3,12 @@ import { useMemo } from 'react';
 import { MoonIcon } from '~/components/MoonIcon';
 import { findNextPhase, getMoonInfo } from '~/utils/moon';
 import { mkUseStyles } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 
 /** Tonight's moon and the coming new and full moon — what decides a night out. */
 export const MoonSummary = () => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
 
   const moon = useMemo(() => {
     const today = new Date();
@@ -26,7 +28,8 @@ export const MoonSummary = () => {
   };
 
   return (
-    <div style={styles.strip}>
+    // One swipeable line on a phone rather than three wrapped rows above the list.
+    <div style={isMobile ? { ...styles.strip, ...styles.stripMobile } : styles.strip} className='no-scrollbar'>
       <div style={styles.item}>
         <MoonIcon phase={moon.tonight.phase} size={30} title={moon.tonight.name} />
         <div style={styles.text}>
@@ -69,7 +72,8 @@ const useStyles = mkUseStyles((t) => ({
     flexWrap: 'wrap',
     gap: t.spacing.l,
   },
-  item: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
+  stripMobile: { flexWrap: 'nowrap', overflowX: 'auto', gap: t.spacing.m, scrollbarWidth: 'none' },
+  item: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexShrink: 0 },
   text: { gap: 2 },
   label: {
     fontSize: 11,

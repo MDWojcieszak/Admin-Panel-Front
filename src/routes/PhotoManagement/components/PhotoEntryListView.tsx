@@ -17,6 +17,7 @@ import {
 import { buildNameQualifiers } from '~/routes/PhotoManagement/utils/entryNames';
 import { compareEntriesByDate } from '~/routes/PhotoManagement/utils/kanban';
 import { mkUseStyles } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 
 type PhotoEntryListViewProps = {
   entries: PhotoEntryResponse[];
@@ -44,6 +45,7 @@ const dayCount = (entry: PhotoEntryResponse): number | null => {
  */
 export const PhotoEntryListView = ({ entries, onRowClick }: PhotoEntryListViewProps) => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
 
   const sorted = useMemo(
     () => [...entries].sort((a, b) => GROUPS[a.status].order - GROUPS[b.status].order || compareEntriesByDate(a, b)),
@@ -148,7 +150,8 @@ export const PhotoEntryListView = ({ entries, onRowClick }: PhotoEntryListViewPr
   const table = useReactTable({ data: sorted, columns, getCoreRowModel: getCoreRowModel() });
 
   return (
-    <div style={styles.container}>
+    // On a phone the rows are cards already; a padded box around them only narrows them.
+    <div style={isMobile ? { ...styles.container, padding: 0, backgroundColor: 'transparent' } : styles.container}>
       <Table
         table={table}
         hidePagination

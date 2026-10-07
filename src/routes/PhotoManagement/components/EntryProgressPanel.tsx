@@ -331,7 +331,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   stats: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(96px, 100%), 1fr))',
     gap: t.spacing.s,
   },
   stat: {
@@ -362,7 +362,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   fields: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(104px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(104px, 100%), 1fr))',
     gap: t.spacing.m,
   },
   field: {

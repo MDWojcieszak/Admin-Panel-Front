@@ -1,10 +1,22 @@
 import { ChangeEvent, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { IconType } from 'react-icons';
-import { FiCalendar, FiCamera, FiChevronDown, FiColumns, FiList, FiPlus, FiSearch, FiSlash, FiX } from 'react-icons/fi';
+import {
+  FiCalendar,
+  FiCamera,
+  FiChevronDown,
+  FiColumns,
+  FiList,
+  FiPlus,
+  FiSearch,
+  FiSlash,
+  FiSliders,
+  FiX,
+} from 'react-icons/fi';
 import { TbGalaxy } from 'react-icons/tb';
 import { AstroObjectResponse, PhotoEntryPostStage, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
 import { Button } from '~/components/Button';
 import { SegmentedTabs } from '~/components/SegmentedTabs';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { getPhotoEntryTypeMeta } from '~/routes/PhotoManagement/utils/entryDisplay';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -71,29 +83,94 @@ export const PhotoLibraryToolbar = (p: PhotoLibraryToolbarProps) => {
   const showStage = p.status !== PhotoEntryStatus.Planned && p.status !== PhotoEntryStatus.Cancelled;
   const showTarget = p.type === PhotoEntryType.Astro;
   const hasActiveFilters = Boolean(p.search.trim() || p.status || p.postStage || p.type || p.astroObjectId);
+  const isMobile = useIsMobile();
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const searchBox = (
+    <label style={isMobile ? { ...styles.searchBox, ...styles.searchBoxMobile } : styles.searchBox}>
+      <FiSearch size={16} />
+      <input
+        value={p.search}
+        onChange={(event: ChangeEvent<HTMLInputElement>) => p.onSearchChange(event.target.value)}
+        placeholder='Search sessions…'
+        // 16px keeps iOS from zooming the page in when the field takes focus.
+        style={isMobile ? { ...styles.searchInput, fontSize: 16 } : styles.searchInput}
+      />
+      {p.search ? (
+        <button type='button' aria-label='Clear search' style={styles.clearSearch} onClick={() => p.onSearchChange('')}>
+          <FiX size={14} />
+        </button>
+      ) : null}
+    </label>
+  );
+
+  // Phone layout: search, a filter button and New on one line; the chip rows
+  // fold away behind the button — on a phone they took the whole screen.
+  if (isMobile) {
+    const activeCount = [p.status, p.postStage, p.type, p.astroObjectId].filter(Boolean).length;
+    return (
+      <div style={{ ...styles.container, ...styles.containerMobile }}>
+        <div style={styles.mobileRow}>
+          {searchBox}
+          <button
+            type='button'
+            aria-label='Filters'
+            aria-expanded={filtersOpen}
+            style={{ ...styles.iconButton, ...(filtersOpen || activeCount ? styles.iconButtonOn : null) }}
+            onClick={() => setFiltersOpen((open) => !open)}
+          >
+            <FiSliders size={18} />
+            {activeCount ? <span style={styles.countBadge}>{activeCount}</span> : null}
+          </button>
+          <button
+            type='button'
+            aria-label='New session'
+            style={{ ...styles.iconButton, ...styles.addButton }}
+            onClick={p.onAddEntry}
+          >
+            <FiPlus size={20} />
+          </button>
+        </div>
+
+        {filtersOpen ? (
+          <div style={styles.mobileFilters}>
+            <ChipGroup stacked label='Status' options={STATUS_OPTIONS} value={p.status} onChange={p.onStatusChange} />
+            {showStage ? (
+              <ChipGroup
+                stacked
+                label='Stage'
+                options={STAGE_OPTIONS}
+                value={p.postStage}
+                onChange={p.onPostStageChange}
+              />
+            ) : null}
+            <ChipGroup stacked label='Type' options={TYPE_OPTIONS} value={p.type} onChange={p.onTypeChange} />
+            {showTarget ? (
+              <TargetPicker targets={p.astroTargets} value={p.astroObjectId} onChange={p.onAstroObjectChange} />
+            ) : null}
+            {hasActiveFilters ? (
+              <button type='button' style={{ ...styles.resetButton, marginLeft: 0 }} onClick={p.onResetFilters}>
+                <FiX size={14} />
+                Clear filters
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+
+        <SegmentedTabs
+          items={VIEW_ITEMS}
+          selected={p.view}
+          handleSelect={(value) => p.onViewChange(value as PhotoLibraryView)}
+          layoutId='photo-library-view'
+        />
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container}>
       <div style={styles.topRow}>
-        <label style={styles.searchBox}>
-          <FiSearch size={16} />
-          <input
-            value={p.search}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => p.onSearchChange(event.target.value)}
-            placeholder='Search sessions…'
-            style={styles.searchInput}
-          />
-          {p.search ? (
-            <button
-              type='button'
-              aria-label='Clear search'
-              style={styles.clearSearch}
-              onClick={() => p.onSearchChange('')}
-            >
-              <FiX size={14} />
-            </button>
-          ) : null}
-        </label>
+        {searchBox}
 
         <div style={styles.topActions}>
           <SegmentedTabs
@@ -132,7 +209,10 @@ const ChipGroup = <T,>({
   options,
   value,
   onChange,
+  stacked,
 }: {
+  /** Label above and the chips in one swipeable line (the phone's filter panel). */
+  stacked?: boolean;
   label: string;
   options: ChipOption<T>[];
   value: T | undefined;
@@ -141,9 +221,9 @@ const ChipGroup = <T,>({
   const styles = useStyles();
 
   return (
-    <div style={styles.group}>
+    <div style={stacked ? styles.groupStacked : styles.group}>
       <span style={styles.groupLabel}>{label}</span>
-      <div style={styles.chips}>
+      <div style={stacked ? styles.chipsLine : styles.chips} className={stacked ? 'no-scrollbar' : undefined}>
         {options.map((option) => (
           <Chip
             key={option.label}
@@ -345,6 +425,48 @@ const useStyles = mkUseStyles((t) => ({
     flexWrap: 'wrap',
     columnGap: t.spacing.l,
     rowGap: t.spacing.s,
+  },
+  containerMobile: { gap: t.spacing.sm, padding: t.spacing.sm },
+  mobileRow: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
+  searchBoxMobile: { minWidth: 0, maxWidth: 'none' },
+  iconButton: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 44,
+    height: 44,
+    flexShrink: 0,
+    borderRadius: t.borderRadius.default,
+    border: 'none',
+    cursor: 'pointer',
+    color: t.colors.white,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.5),
+  },
+  iconButtonOn: { color: t.colors.blue, backgroundColor: t.colors.blue + t.colorOpacity(0.16) },
+  addButton: { backgroundColor: t.colors.blue },
+  countBadge: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    fontSize: 10,
+    fontWeight: 700,
+    lineHeight: '16px',
+    textAlign: 'center',
+    color: t.colors.white,
+    backgroundColor: t.colors.blue,
+  },
+  mobileFilters: { gap: t.spacing.sm },
+  groupStacked: { gap: t.spacing.xs, minWidth: 0 },
+  chipsLine: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    gap: t.spacing.xs,
+    overflowX: 'auto',
+    scrollbarWidth: 'none',
   },
   group: {
     flexDirection: 'row',

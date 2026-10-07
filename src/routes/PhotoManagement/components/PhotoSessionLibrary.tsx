@@ -19,6 +19,9 @@ import { useToast } from '~/hooks/useToast';
 import { useUrlParams } from '~/hooks/useUrlParam';
 import { PhotoEntryCalendarView } from '~/routes/PhotoManagement/components/PhotoEntryCalendarView';
 import { PhotoEntryKanban } from '~/routes/PhotoManagement/components/PhotoEntryKanban';
+import { PhotoEntryLanes } from '~/routes/PhotoManagement/components/PhotoEntryLanes';
+import { PhotoEntryMonthAgenda } from '~/routes/PhotoManagement/components/PhotoEntryMonthAgenda';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { MoonSummary } from '~/routes/PhotoManagement/components/MoonSummary';
 import { PhotoEntryListView } from '~/routes/PhotoManagement/components/PhotoEntryListView';
 import { PhotoLibraryToolbar, PhotoLibraryView } from '~/routes/PhotoManagement/components/PhotoLibraryToolbar';
@@ -54,6 +57,7 @@ export const PhotoSessionLibrary = () => {
   const navigate = useNavigate();
   const { photoEntryApi, astroObjectApi } = useApi();
   const toast = useToast();
+  const isMobile = useIsMobile();
 
   const [view, setView] = useState<PhotoLibraryView>(() => readStoredView(VIEW_STORAGE_KEY));
 
@@ -240,11 +244,16 @@ export const PhotoSessionLibrary = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photoEntryApi, urlState.entry]);
 
+  // Dragging between five lanes needs a desktop; a phone moves cards one lane at a time.
+  const BoardView = isMobile ? PhotoEntryLanes : PhotoEntryKanban;
+  // Likewise the month: trips drawn across seven columns need the width.
+  const CalendarView = isMobile ? PhotoEntryMonthAgenda : PhotoEntryCalendarView;
+
   const astroObjects = astroObjectsQuery.data?.astroObjects || [];
   const entries = photoEntriesQuery.data?.photoEntries || [];
 
   return (
-    <div style={styles.container}>
+    <div style={isMobile ? { ...styles.container, gap: 12 } : styles.container}>
       <PageHeader
         title='Library'
         meta={`${entries.length} session${entries.length === 1 ? '' : 's'} · ${astroObjects.length} astro target${
@@ -254,9 +263,11 @@ export const PhotoSessionLibrary = () => {
         actions={
           <Button
             variant='secondary'
-            label='New target'
+            // The phone keeps the title's line for the title.
+            label={isMobile ? 'Target' : 'New target'}
             icon={<HiOutlineSparkles color={theme.colors.purple02} size={18} />}
             onClick={() => createAstroObjectModal.show()}
+            style={isMobile ? styles.compactButton : undefined}
           />
         }
       />
@@ -313,9 +324,9 @@ export const PhotoSessionLibrary = () => {
         {view === 'list' ? (
           <PhotoEntryListView entries={entries} onRowClick={handleOpenEntryDetails} />
         ) : view === 'calendar' ? (
-          <PhotoEntryCalendarView entries={entries} onEntryClick={handleOpenEntryDetails} />
+          <CalendarView entries={entries} onEntryClick={handleOpenEntryDetails} />
         ) : (
-          <PhotoEntryKanban
+          <BoardView
             entries={entries}
             onRequestColumnChange={handleRequestColumnChange}
             onForbiddenMove={(reason) => toast(reason, 'error')}
@@ -337,6 +348,7 @@ const useStyles = mkUseStyles(() => ({
     boxSizing: 'border-box',
   },
 
+  compactButton: { padding: '8px 12px', fontSize: 14 },
   kanbanCard: {
     flex: 1,
     minHeight: 0,

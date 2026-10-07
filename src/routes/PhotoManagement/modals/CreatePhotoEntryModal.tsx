@@ -209,12 +209,15 @@ export const CreatePhotoEntryModal = (p: CreatePhotoEntryModalProps) => {
 };
 
 const useStyles = mkUseStyles((t) => ({
+  // Two fields to a line where they fit, one per line on a phone.
   row: {
     gap: t.spacing.m,
     flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   flex: {
-    flex: 1,
+    flex: '1 1 150px',
+    minWidth: 0,
   },
   astroSection: {
     gap: t.spacing.s,

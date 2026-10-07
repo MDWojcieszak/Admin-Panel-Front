@@ -455,7 +455,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   albumGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, calc(50% - 12px)), 1fr))',
     gap: t.spacing.m,
   },
   albumCard: {
@@ -570,7 +570,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   photoGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(96px, 100%), 1fr))',
     gap: t.spacing.s,
   },
   stateBox: {
