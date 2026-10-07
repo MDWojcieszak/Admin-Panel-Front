@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import {
   FiArchive,
+  FiChevronLeft,
   FiCornerUpLeft,
   FiInbox,
   FiMail,
@@ -14,6 +15,7 @@ import {
   FiTrash2,
   FiX,
 } from 'react-icons/fi';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { InquiryResponse, InquiryStatus, InquirySummaryResponse, InquiryTopic } from '~/api/api';
 import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
@@ -181,6 +183,7 @@ const errorMessage = (e: unknown, fallback: string) => {
 
 export const InquiriesInbox = () => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
   const theme = useTheme();
   const { inquiriesApi } = useApi();
   const can = useCan();
@@ -408,7 +411,15 @@ export const InquiriesInbox = () => {
         }
       />
 
-      <div style={styles.toolbar}>
+      {/* Phone: one pane at a time — the list, or the open message with a way back. */}
+      {isMobile && selectedId ? (
+        <button type='button' style={styles.backToList} onClick={() => setParams({ id: null })}>
+          <FiChevronLeft size={18} />
+          All messages
+        </button>
+      ) : null}
+
+      <div style={isMobile && selectedId ? { display: 'none' } : styles.toolbar}>
         <div style={styles.toolbarRow}>
           <SegmentedTabs
             layoutId='inquiry-box'
@@ -435,7 +446,10 @@ export const InquiriesInbox = () => {
             ) : null}
           </label>
         </div>
-        <div style={styles.chips}>
+        <div
+          style={isMobile ? { ...styles.chips, ...styles.chipsLine } : styles.chips}
+          className={isMobile ? 'no-scrollbar' : undefined}
+        >
           <button
             type='button'
             style={{ ...styles.chip, ...(!topic ? styles.chipOn : {}) }}
@@ -457,7 +471,11 @@ export const InquiriesInbox = () => {
       </div>
 
       <div style={styles.body}>
-        <div style={styles.listColumn}>
+        <div
+          style={
+            isMobile ? (selectedId ? { display: 'none' } : { ...styles.listColumn, width: '100%' }) : styles.listColumn
+          }
+        >
           {loading ? (
             <div style={styles.centered}>
               <Loader />
@@ -497,7 +515,7 @@ export const InquiriesInbox = () => {
           )}
         </div>
 
-        <div style={styles.detailColumn}>
+        <div style={isMobile && !selectedId ? { display: 'none' } : styles.detailColumn}>
           {detail && detail.id === selectedId ? (
             <InquiryDetail
               key={detail.id}
@@ -805,6 +823,23 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.blue + t.colorOpacity(0.18),
   },
   body: { flex: 1, minHeight: 0, flexDirection: 'row', gap: t.spacing.m },
+  chipsLine: { flexWrap: 'nowrap', overflowX: 'auto', scrollbarWidth: 'none' },
+  backToList: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    alignSelf: 'flex-start',
+    height: 36,
+    padding: '0 10px 0 4px',
+    border: 'none',
+    borderRadius: t.borderRadius.default,
+    background: 'transparent',
+    color: t.colors.blue,
+    fontSize: 15,
+    fontWeight: 600,
+    cursor: 'pointer',
+  },
   listColumn: {
     width: 400,
     flexShrink: 0,
