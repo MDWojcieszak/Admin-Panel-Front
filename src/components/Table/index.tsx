@@ -5,6 +5,8 @@ import { Scrollbar } from '~/components/Scrollbar';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 import { motion } from 'framer-motion';
 import { TablePagination } from '~/components/Table/TablePagination';
+import { useIsMobile } from '~/hooks/useBreakpoint';
+import '~/components/Table/types';
 
 const ROW_HEIGHT = 52;
 
@@ -24,6 +26,7 @@ type TableProps<T> = {
 export const Table = <T extends object>({ table, hidePagination, emptyState, onRowClick, getGroup }: TableProps<T>) => {
   const styles = useStyles();
   const theme = useTheme();
+  const isMobile = useIsMobile();
 
   const headerGroups = table.getHeaderGroups();
   const rows = table.getRowModel().rows;
@@ -48,6 +51,99 @@ export const Table = <T extends object>({ table, hidePagination, emptyState, onR
     padding: `0 ${theme.spacing.m}px`,
     overflow: 'hidden',
   });
+
+  const empty =
+    rows.length === 0 ? (
+      <div style={styles.emptyWrap}>
+        <EmptyState
+          icon={emptyState?.icon}
+          title={emptyState?.title ?? 'Nothing here yet'}
+          description={emptyState?.description}
+        />
+      </div>
+    ) : null;
+
+  // Phone layout: a row of five columns does not fit 360px, so every row
+  // becomes a card — heading, then the other columns as labelled fields.
+  if (isMobile) {
+    return (
+      <div style={styles.wrapper}>
+        <div style={styles.scrollWrap}>
+          <Scrollbar style={styles.scroll}>
+            <div style={{ ...styles.list, paddingRight: 0 }}>
+              {rows.map((row, rowIndex) => {
+                const cells = row.getVisibleCells();
+                const roleOf = (index: number) => {
+                  const column = cells[index].column;
+                  if (column.columnDef.meta?.mobile) return column.columnDef.meta.mobile;
+                  if (index === 0) return 'title';
+                  if (index === cells.length - 1 && !column.columnDef.header) return 'actions';
+                  return 'field';
+                };
+                const title = cells.filter((_, i) => roleOf(i) === 'title');
+                const actions = cells.filter((_, i) => roleOf(i) === 'actions');
+                const fields = cells.filter((_, i) => roleOf(i) === 'field');
+                const group = getGroup?.(row.original);
+                const startsGroup =
+                  group && (rowIndex === 0 || getGroup?.(rows[rowIndex - 1].original).key !== group.key);
+                return (
+                  <Fragment key={row.id}>
+                    {startsGroup ? (
+                      <div style={{ ...styles.groupRow, marginTop: rowIndex === 0 ? 0 : theme.spacing.s }}>
+                        {group.label}
+                        <span style={styles.groupCount}>{groupCounts.get(group.key)}</span>
+                      </div>
+                    ) : null}
+                    <div
+                      style={{ ...styles.card, cursor: onRowClick ? 'pointer' : undefined }}
+                      onClick={onRowClick ? () => onRowClick(row.original) : undefined}
+                    >
+                      <div style={styles.cardHead}>
+                        <div style={styles.cardTitle}>
+                          {title.map((cell) => (
+                            <Fragment key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Fragment>
+                          ))}
+                        </div>
+                        {actions.length ? (
+                          // Actions act on their own; a tap on them is not a tap on the row.
+                          <div style={styles.cardActions} onClick={(e) => e.stopPropagation()}>
+                            {actions.map((cell) => (
+                              <Fragment key={cell.id}>
+                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              </Fragment>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                      {fields.length ? (
+                        <div style={styles.cardFields}>
+                          {fields.map((cell) => {
+                            const header = cell.column.columnDef.header;
+                            return (
+                              <div key={cell.id} style={styles.cardField}>
+                                {typeof header === 'string' && header ? (
+                                  <span style={styles.cardLabel}>{header}</span>
+                                ) : null}
+                                <div style={styles.cardValue}>
+                                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
+                  </Fragment>
+                );
+              })}
+              {empty}
+            </div>
+          </Scrollbar>
+        </div>
+        {hidePagination ? null : <TablePagination table={table} />}
+      </div>
+    );
+  }
 
   return (
     <div style={styles.wrapper}>
@@ -103,15 +199,7 @@ export const Table = <T extends object>({ table, hidePagination, emptyState, onR
               );
             })}
 
-            {rows.length === 0 ? (
-              <div style={styles.emptyWrap}>
-                <EmptyState
-                  icon={emptyState?.icon}
-                  title={emptyState?.title ?? 'Nothing here yet'}
-                  description={emptyState?.description}
-                />
-              </div>
-            ) : null}
+            {empty}
           </div>
         </Scrollbar>
       </div>
@@ -195,6 +283,28 @@ const useStyles = mkUseStyles((t) => ({
     fontSize: 14,
     color: t.colors.white,
   },
+  card: {
+    gap: t.spacing.s,
+    padding: t.spacing.sm,
+    borderRadius: t.borderRadius.large,
+    fontSize: 14,
+    color: t.colors.white,
+    backgroundColor: t.colors.white + t.colorOpacity(0.035),
+    border: `1px solid ${t.colors.white + t.colorOpacity(0.05)}`,
+  },
+  cardHead: { flexDirection: 'row', alignItems: 'flex-start', gap: t.spacing.s, minWidth: 0 },
+  cardTitle: { flex: 1, minWidth: 0, fontWeight: 600, fontSize: 15 },
+  cardActions: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexShrink: 0 },
+  cardFields: { flexDirection: 'row', flexWrap: 'wrap', columnGap: t.spacing.m, rowGap: t.spacing.s },
+  cardField: { gap: 3, minWidth: 0, maxWidth: '100%' },
+  cardLabel: {
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    color: t.colors.dark05,
+  },
+  cardValue: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: t.spacing.xs, minWidth: 0 },
   empty: {
     padding: t.spacing.m,
     color: t.colors.dark05,

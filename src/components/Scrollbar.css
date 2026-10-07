@@ -11,3 +11,11 @@
   width: 0;
   height: 0;
 }
+
+/*
+ * Touch layout: no room kept for the track (see Scrollbar.tsx). Scroll content
+ * is padded on the right by the page, on the element directly inside the view.
+ */
+.app-scrollbar-view--touch > * {
+  padding-right: 0 !important;
+}

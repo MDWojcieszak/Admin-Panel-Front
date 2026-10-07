@@ -1,6 +1,7 @@
 import { CSSProperties, ReactNode, useState } from 'react';
 import { motion } from 'framer-motion';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 
 type SegmentedItem = {
   label: string;
@@ -26,19 +27,24 @@ export const SegmentedTabs = ({
 }: SegmentedTabsProps) => {
   const styles = useStyles();
   const theme = useTheme();
+  const isMobile = useIsMobile();
   // Hover is driven from state rather than whileHover: switching whileHover off
   // on the item that became active left its hover colour behind once it was
   // inactive again, until the pointer passed over it once more.
   const [hovered, setHovered] = useState<string | null>(null);
 
   return (
-    <div style={{ ...styles.container, ...style }}>
+    // Phone layout: the full width, one line, swiped sideways if it does not fit.
+    <div
+      style={{ ...styles.container, ...(isMobile ? styles.containerMobile : null), ...style }}
+      className={isMobile ? 'no-scrollbar' : undefined}
+    >
       {items.map((item) => {
         const isActive = item.value === selected;
         return (
           <motion.div
             key={item.value}
-            style={styles.item}
+            style={isMobile ? { ...styles.item, ...styles.itemMobile } : styles.item}
             onClick={() => handleSelect(item.value)}
             onHoverStart={() => setHovered(item.value)}
             onHoverEnd={() => setHovered((prev) => (prev === item.value ? null : prev))}
@@ -59,7 +65,13 @@ export const SegmentedTabs = ({
                 transition={{ type: 'spring', stiffness: 420, damping: 34 }}
               />
             )}
-            <div style={{ ...styles.content, color: isActive ? theme.colors.white : theme.colors.dark05 }}>
+            <div
+              style={{
+                ...styles.content,
+                ...(isMobile ? styles.contentMobile : null),
+                color: isActive ? theme.colors.white : theme.colors.dark05,
+              }}
+            >
               {item.icon}
               <span style={styles.label}>{item.label}</span>
             </div>
@@ -82,6 +94,9 @@ const useStyles = mkUseStyles((t) => ({
     borderRadius: t.borderRadius.large,
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.7),
   },
+  containerMobile: { width: '100%', boxSizing: 'border-box', flexWrap: 'nowrap', overflowX: 'auto', scrollbarWidth: 'none' },
+  itemMobile: { flex: '1 0 auto' },
+  contentMobile: { justifyContent: 'center', paddingLeft: t.spacing.sm, paddingRight: t.spacing.sm, fontSize: 14 },
   item: {
     position: 'relative',
     cursor: 'pointer',

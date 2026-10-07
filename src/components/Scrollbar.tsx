@@ -1,5 +1,6 @@
 import { CSSProperties, ReactNode } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { mkUseStyles } from '~/utils/theme';
 import '~/components/Scrollbar.css';
 
@@ -17,12 +18,18 @@ type ScrollbarProps = {
 };
 export const Scrollbar = ({ children, style, maxHeight, horizontal = true }: ScrollbarProps) => {
   const styles = useStyles();
+  // Phones overlay a thin indicator, as their own scrollbars do, so content
+  // keeps no gutter for a track — pages pad their scroll content on the right
+  // for the desktop track, and on a phone that padding was dead space.
+  const isMobile = useIsMobile();
   return (
     <Scrollbars
       style={style}
       autoHeight={maxHeight !== undefined}
       autoHeightMax={maxHeight}
-      renderTrackVertical={({ style, ...props }) => <div {...props} style={{ ...style, ...styles.scrollContainer }} />}
+      renderTrackVertical={({ style, ...props }) => (
+        <div {...props} style={{ ...style, ...(isMobile ? styles.scrollContainerTouch : styles.scrollContainer) }} />
+      )}
       renderThumbVertical={({ style, ...props }) => <div {...props} style={{ ...style, ...styles.scroll }} />}
       // Horizontal too: left to the library it fell back to a bar that matched nothing else.
       renderTrackHorizontal={({ style, ...props }) => (
@@ -32,7 +39,7 @@ export const Scrollbar = ({ children, style, maxHeight, horizontal = true }: Scr
       renderView={({ style, ...props }) => (
         <div
           {...props}
-          className='app-scrollbar-view'
+          className={isMobile ? 'app-scrollbar-view app-scrollbar-view--touch' : 'app-scrollbar-view'}
           style={{
             ...style,
             marginRight: 0,
@@ -62,6 +69,14 @@ const useStyles = mkUseStyles((t) => ({
     cursor: 'pointer',
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.8),
     borderRadius: t.borderRadius.default,
+  },
+  scrollContainerTouch: {
+    right: 1,
+    top: 2,
+    bottom: 2,
+    width: 4,
+    borderRadius: 2,
+    pointerEvents: 'none',
   },
   scrollContainerHorizontal: {
     left: 0,

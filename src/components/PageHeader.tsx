@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { mkUseStyles } from '~/utils/theme';
 
 type PageHeaderProps = {
@@ -21,6 +22,30 @@ type PageHeaderProps = {
  */
 export const PageHeader = ({ title, leading, badges, meta, aside, actions }: PageHeaderProps) => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
+
+  // Phone layout: the actions stay on the title's line, the aside (a strip of
+  // facts) drops underneath at full width instead of squeezing the title.
+  if (isMobile) {
+    return (
+      <div style={styles.mobileHeader}>
+        <div style={styles.mobileTop}>
+          <div style={{ ...styles.left, ...styles.mobileLeft }}>
+            {leading}
+            <div style={styles.titleBlock}>
+              <div style={styles.titleRow}>
+                <h2 style={{ ...styles.title, fontSize: 19 }}>{title}</h2>
+                {badges}
+              </div>
+              {meta ? <span style={styles.meta}>{meta}</span> : null}
+            </div>
+          </div>
+          {actions ? <div style={styles.mobileActions}>{actions}</div> : null}
+        </div>
+        {aside}
+      </div>
+    );
+  }
 
   return (
     <div style={styles.header}>
@@ -53,6 +78,19 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.m,
     minHeight: 48,
     flexShrink: 0,
+  },
+  mobileHeader: { gap: t.spacing.sm, flexShrink: 0, minWidth: 0 },
+  // A lone short action sits beside the title; several (a status picker, Delete…)
+  // wrap onto their own line instead of crushing it.
+  mobileTop: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: t.spacing.s, minWidth: 0 },
+  mobileLeft: { flex: '1 1 160px', gap: t.spacing.s },
+  mobileActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: t.spacing.s,
+    marginLeft: 'auto',
+    maxWidth: '100%',
   },
   left: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m, minWidth: 0 },
   titleBlock: { gap: 2, minWidth: 0 },

@@ -4,12 +4,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { MdCheckCircle, MdClose, MdErrorOutline, MdInfoOutline } from 'react-icons/md';
 import { ShowToast, ToastContext, ToastType } from '~/contexts/Toast/ToastContext';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 
 type Toast = { id: number; message: string; type: ToastType };
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const styles = useStyles();
   const theme = useTheme();
+  const isMobile = useIsMobile();
   const [toasts, setToasts] = useState<Toast[]>([]);
   const counter = useRef(0);
 
@@ -33,15 +35,15 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     <ToastContext.Provider value={show}>
       {children}
       {createPortal(
-        <div style={styles.container}>
+        <div style={isMobile ? { ...styles.container, ...styles.containerMobile } : styles.container}>
           <AnimatePresence>
             {toasts.map((t) => (
               <motion.div
                 key={t.id}
                 layout
-                initial={{ opacity: 0, x: 60 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 60 }}
+                initial={isMobile ? { opacity: 0, y: 40 } : { opacity: 0, x: 60 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                exit={isMobile ? { opacity: 0, y: 40 } : { opacity: 0, x: 60 }}
                 transition={{ type: 'spring', stiffness: 340, damping: 32 }}
                 style={{ ...styles.toast, borderLeft: `3px solid ${colorOf(t.type)}` }}
               >
@@ -71,6 +73,13 @@ const useStyles = mkUseStyles((t) => ({
     gap: t.spacing.s,
     maxWidth: 380,
     pointerEvents: 'none',
+  },
+  // Phone layout: across the bottom, clear of the home indicator.
+  containerMobile: {
+    left: t.spacing.sm,
+    right: t.spacing.sm,
+    bottom: `calc(${t.spacing.sm}px + env(safe-area-inset-bottom, 0px))`,
+    maxWidth: 'none',
   },
   toast: {
     display: 'flex',

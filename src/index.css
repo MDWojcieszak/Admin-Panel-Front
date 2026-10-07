@@ -37,3 +37,25 @@ h4 {
   margin: 0;
   padding: 0;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Phone layout: no rubber-banding of the whole page, no grey flash on taps. */
+@media (max-width: 767px) {
+  html,
+  body {
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Dialog bodies are sized for a desktop (width: 420, minWidth: 400…); in the
+   phone's bottom sheet they take the sheet's width instead. */
+.modal-sheet-body > * {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box;
+}

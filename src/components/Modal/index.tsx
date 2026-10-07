@@ -1,10 +1,11 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, DragControls, motion, useDragControls } from 'framer-motion';
 import { ReactElement, createContext, useContext, useEffect, useState } from 'react';
 import { HiX } from 'react-icons/hi';
 import useMeasure from 'react-use-measure';
 import { GlassCard } from '~/components/GlassCard';
 import { Scrollbar } from '~/components/Scrollbar';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { mkUseStyles } from '~/utils/theme';
 
 /** Title bar, card padding and a margin above and below the dialog. */
@@ -25,6 +26,7 @@ export const useSidePanelReady = () => useContext(SidePanelReadyContext);
 
 const SidePanel = (p: ModalProps) => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
   const [ready, setReady] = useState(false);
 
   return (
@@ -38,14 +40,16 @@ const SidePanel = (p: ModalProps) => {
         onClick={p.handleClose}
       />
       <motion.div
-        style={styles.sidePanel}
+        // On a phone the panel is the whole screen: a narrower strip beside a
+        // page nobody can read at that width would only waste the room.
+        style={isMobile ? { ...styles.sidePanel, ...styles.sidePanelMobile } : styles.sidePanel}
         initial={{ x: '100%' }}
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'tween', ease: [0.22, 1, 0.36, 1], duration: 0.32 }}
         onAnimationComplete={() => setReady(true)}
       >
-        <GlassCard style={styles.sideCard}>
+        <GlassCard style={isMobile ? { ...styles.sideCard, ...styles.sideCardMobile } : styles.sideCard}>
           {p.showHeader === false ? null : (
             <div style={styles.titleContainer}>
               <div>{p.title}</div>
@@ -61,8 +65,65 @@ const SidePanel = (p: ModalProps) => {
   );
 };
 
+/**
+ * The phone layout's dialog: a sheet from the bottom edge, full width, closed
+ * by the X, a tap on the dimmed page or a swipe down on its header.
+ */
+const BottomSheet = (p: ModalProps) => {
+  const styles = useStyles();
+  const drag = useDragControls();
+
+  return (
+    <div style={styles.sheetContainer}>
+      <motion.div
+        style={styles.modalMask}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.22 }}
+        onClick={p.handleClose}
+      />
+      <motion.div
+        style={styles.sheet}
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        exit={{ y: '100%' }}
+        transition={{ type: 'tween', ease: [0.22, 1, 0.36, 1], duration: 0.3 }}
+        drag={p.handleClose ? 'y' : false}
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0, bottom: 0.6 }}
+        // Only the header starts a swipe; the body has to scroll.
+        dragListener={false}
+        dragControls={drag}
+        onDragEnd={(_, info) => (info.offset.y > 100 || info.velocity.y > 600) && p.handleClose?.()}
+      >
+        <SheetHeader {...p} drag={drag} />
+        <div style={styles.sheetBody} className='modal-sheet-body'>
+          {p.children}
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+const SheetHeader = (p: ModalProps & { drag: DragControls }) => {
+  const styles = useStyles();
+  return (
+    <div style={styles.sheetHeader} onPointerDown={(e) => p.drag.start(e)}>
+      <div style={styles.sheetHandle} />
+      {p.showHeader === false ? null : (
+        <div style={styles.titleContainer}>
+          <div style={styles.sheetTitle}>{p.title}</div>
+          {p.handleClose ? <HiX size={24} onClick={p.handleClose} style={styles.icon} /> : null}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const Modal = (p: ModalProps) => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
   const [ref, { height }] = useMeasure();
   // A tall dialog (a pasted compose file) scrolls inside instead of running off the screen.
   const [maxBody, setMaxBody] = useState(() => window.innerHeight - MODAL_CHROME);
@@ -80,6 +141,14 @@ export const Modal = (p: ModalProps) => {
     return (
       <AnimatePresence mode='wait' key={p.title}>
         {p.isVisible && <SidePanel {...p} />}
+      </AnimatePresence>
+    );
+  }
+
+  if (isMobile) {
+    return (
+      <AnimatePresence mode='wait' key={p.title}>
+        {p.isVisible && <BottomSheet {...p} />}
       </AnimatePresence>
     );
   }
@@ -211,6 +280,55 @@ const useStyles = mkUseStyles((t) => ({
     // stutter. The panel goes without it.
     backdropFilter: 'none',
     webkitBackdropFilter: 'none',
+  },
+  sidePanelMobile: { width: '100vw', padding: 0 },
+  sideCardMobile: {
+    borderRadius: 0,
+    borderWidth: 0,
+    padding: t.spacing.sm,
+    paddingTop: `calc(${t.spacing.sm}px + env(safe-area-inset-top, 0px))`,
+    paddingBottom: `calc(${t.spacing.sm}px + env(safe-area-inset-bottom, 0px))`,
+    gap: t.spacing.sm,
+    boxShadow: 'none',
+  },
+  sheetContainer: {
+    position: 'fixed',
+    inset: 0,
+    zIndex: 200,
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  sheet: {
+    position: 'relative',
+    zIndex: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    maxHeight: 'calc(100dvh - 40px - env(safe-area-inset-top, 0px))',
+    backgroundColor: t.colors.gray045,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    borderTop: `1px solid ${t.colors.blue02 + t.colorOpacity(0.3)}`,
+    boxShadow: '0 -12px 40px rgba(0, 0, 0, 0.45)',
+  },
+  sheetHeader: { flexShrink: 0, touchAction: 'none', paddingLeft: t.spacing.m, paddingRight: t.spacing.m, paddingBottom: t.spacing.s },
+  sheetHandle: {
+    width: 38,
+    height: 5,
+    borderRadius: 3,
+    alignSelf: 'center',
+    marginTop: t.spacing.s,
+    marginBottom: t.spacing.s,
+    backgroundColor: t.colors.dark05 + t.colorOpacity(0.4),
+  },
+  sheetTitle: { fontWeight: 700 },
+  sheetBody: {
+    flex: 1,
+    minHeight: 0,
+    overflowY: 'auto',
+    overscrollBehavior: 'contain',
+    paddingLeft: t.spacing.m,
+    paddingRight: t.spacing.m,
+    paddingBottom: `calc(${t.spacing.m}px + env(safe-area-inset-bottom, 0px))`,
   },
   sideBody: {
     flex: 1,

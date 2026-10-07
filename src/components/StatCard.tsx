@@ -37,7 +37,9 @@ export const StatCard = ({ icon, label, value, sub, accent = 'blue04', progress 
 const useStyles = mkUseStyles((t) => ({
   card: {
     flex: 1,
-    minWidth: 190,
+    // Two to a row on a phone, where 190px would leave one per line (the
+    // percentage leaves room for the gap, the padding and the border).
+    minWidth: 'min(190px, calc(50% - 42px))',
     gap: t.spacing.xs,
     padding: t.spacing.m,
     borderRadius: t.borderRadius.large,
