@@ -196,7 +196,7 @@ export const useDeployStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.35),
   },
   /** App inputs two to a row, wrapping on a narrow screen. */
-  fieldGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', columnGap: t.spacing.m },
+  fieldGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))', columnGap: t.spacing.m },
   mono: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace', fontSize: 12 },
   textInput: {
     height: 38,
