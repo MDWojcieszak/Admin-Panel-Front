@@ -374,7 +374,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   pickGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(128px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(128px, 100%), 1fr))',
     gap: t.spacing.s,
     paddingRight: t.spacing.l,
   },

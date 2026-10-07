@@ -32,6 +32,7 @@ import { formatAmount } from '~/utils/formatAmount';
 import { GEAR_CATEGORY_GROUPS, gearCategoryColor, gearCategoryIcon, gearCategoryLabel } from '~/utils/gearCategory';
 import { getApiErrorMessage, getApiErrorStatus } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 
 /** Category → its group label, for filtering by kind of gear. */
 const GROUP_OF = new Map<GearCategory, string>(
@@ -40,6 +41,7 @@ const GROUP_OF = new Map<GearCategory, string>(
 
 export const GearView = () => {
   const styles = useStyles();
+  const isMobile = useIsMobile();
   const theme = useTheme();
   const { gearApi } = useApi();
   const toast = useToast();
@@ -299,8 +301,9 @@ export const GearView = () => {
   const visibleSystems = groupFilter ? systems.filter((system) => system.items.some(matches)) : systems;
   const visibleUngrouped = ungrouped.filter(matches);
   // A reorder sends the ids it can see; with a filter on that would be a
-  // partial list, so dragging waits until the filter is cleared.
-  const canReorder = !groupFilter;
+  // partial list, so dragging waits until the filter is cleared. Touch screens
+  // cannot drag at all (HTML5 drag & drop is mouse-only): order on a computer.
+  const canReorder = !groupFilter && !isMobile;
 
   const wishlistCount = details
     ? Array.from(details.values()).filter((item) => item.ownership === GearOwnership.Wishlist).length
@@ -396,7 +399,11 @@ export const GearView = () => {
               >
                 <div style={styles.blockHeader}>
                   <div
-                    style={{ ...styles.grip, visibility: canReorder ? 'visible' : 'hidden' }}
+                    style={{
+                      ...styles.grip,
+                      visibility: canReorder ? 'visible' : 'hidden',
+                      ...(isMobile ? { display: 'none' } : null),
+                    }}
                     title='Drag to reorder systems'
                     draggable={canReorder}
                     onDragStart={(e: DragEvent) => {
@@ -827,7 +834,7 @@ const useStyles = mkUseStyles((t) => ({
   emptyLabel: { fontSize: 13, color: t.colors.dark05 },
   itemsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(210px, calc(50% - 12px)), 1fr))',
     gap: t.spacing.sm,
   },
   itemTile: {

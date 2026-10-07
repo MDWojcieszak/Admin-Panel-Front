@@ -266,7 +266,7 @@ const useStyles = mkUseStyles((t) => ({
   gridWrap: { maxHeight: 280, overflowY: 'auto' },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(92px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(92px, 100%), 1fr))',
     gap: t.spacing.s,
   },
   tile: {
