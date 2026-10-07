@@ -234,7 +234,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   card: {
     flex: 1,
-    minWidth: 320,
+    minWidth: 'min(320px, 100%)',
     gap: t.spacing.m,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
     padding: t.spacing.m,

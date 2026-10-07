@@ -163,7 +163,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   col: {
     flex: 1,
-    minWidth: 240,
+    minWidth: 'min(240px, 100%)',
     gap: t.spacing.s,
   },
   colTitle: {
@@ -215,7 +215,7 @@ const useStyles = mkUseStyles((t) => ({
     flexDirection: 'row',
     gap: t.spacing.s,
     alignItems: 'center',
-    width: 240,
+    width: 'min(240px, 100%)',
     padding: t.spacing.s,
     borderRadius: t.borderRadius.default,
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.5),

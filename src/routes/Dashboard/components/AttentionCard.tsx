@@ -298,7 +298,7 @@ const useStyles = mkUseStyles((t) => ({
   muted: { fontSize: 12, color: t.colors.dark05 },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(380px, 100%), 1fr))',
     gap: t.spacing.m,
     alignItems: 'start',
   },

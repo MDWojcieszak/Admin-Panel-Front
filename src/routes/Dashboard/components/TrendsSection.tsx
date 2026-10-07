@@ -132,7 +132,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   chartCard: {
     flex: 1,
-    minWidth: 260,
+    minWidth: 'min(260px, 100%)',
     gap: t.spacing.s,
     padding: t.spacing.m,
     borderRadius: t.borderRadius.default,
