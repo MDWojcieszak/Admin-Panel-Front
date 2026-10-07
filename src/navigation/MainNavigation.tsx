@@ -1,8 +1,11 @@
-import { Suspense, lazy } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { Suspense, lazy, useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Loader } from '~/components/Loader';
 import { SideBar } from '~/components/SideBar';
+import { MobileTopBar } from '~/components/SideBar/MobileTopBar';
+import { DesktopOnly } from '~/components/DesktopOnly';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { AnimatedRoute } from '~/navigation/AnimatedRoute';
 import { PhotoManagementNavigation } from '~/navigation/PhotoManagementNavigation';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
@@ -68,6 +71,7 @@ export const mainNavigationRoutes: MainRouteType[] = [
   },
   {
     path: MainNavigationRoute.BLOG,
+    desktopOnly: true,
     label: 'Blog',
     component: (
       <Suspense fallback={<Loader />}>
@@ -88,6 +92,7 @@ export const mainNavigationRoutes: MainRouteType[] = [
   // Photography first; the tools follow.
   {
     path: MainNavigationRoute.SERVERS,
+    desktopOnly: true,
     label: 'Servers',
     component: <ServerNavigation />,
     nested: true,
@@ -95,6 +100,7 @@ export const mainNavigationRoutes: MainRouteType[] = [
   },
   {
     path: MainNavigationRoute.DEPLOY,
+    desktopOnly: true,
     label: 'Deployments',
     component: <DeployNavigation />,
     nested: true,
@@ -109,6 +115,7 @@ export const mainNavigationRoutes: MainRouteType[] = [
   { path: MainNavigationRoute.ACCOUNTS, label: 'Users', component: <Accounts />, permission: 'user.read' },
   {
     path: MainNavigationRoute.ACCESS_CONTROL,
+    desktopOnly: true,
     label: 'Access Control',
     component: <AccessControl />,
     permission: ['acl.manage', 'acl.assign'],
@@ -135,6 +142,11 @@ const allRoutes = [...mainNavigationRoutes, ...footerRoutes];
 
 export const MainNavigation = () => {
   const location = useLocation();
+  const isMobile = useIsMobile();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Picking a page in the drawer is also closing it.
+  useEffect(() => setMenuOpen(false), [location.pathname]);
 
   const renderRoute = (route: MainRouteType) => (
     <Route
@@ -144,23 +156,71 @@ export const MainNavigation = () => {
       element={
         <ProtectedRoute permission={route.permission}>
           <AnimatedRoute key={route.path} bare={route.bare}>
-            {route.component}
+            {route.desktopOnly ? <DesktopOnly label={route.label}>{route.component}</DesktopOnly> : route.component}
           </AnimatedRoute>
         </ProtectedRoute>
       }
     />
   );
 
+  const routes = (
+    <AnimatePresence mode='wait' key='navigation' presenceAffectsLayout>
+      <Routes key={location.pathname} location={location}>
+        {allRoutes.map(renderRoute)}
+        <Route path='/' element={<Navigate to={MainNavigationRoute.DASHBOARD} />} />
+        <Route path='*' element={<Navigate to='not-found' />} />
+      </Routes>
+    </AnimatePresence>
+  );
+
+  if (isMobile) {
+    // Phone layout: a top bar instead of the sidebar, which slides in as a drawer.
+    return (
+      <div style={styles.mobileColumn}>
+        <MobileTopBar items={allRoutes} onMenu={() => setMenuOpen(true)} />
+        {routes}
+        <AnimatePresence>
+          {menuOpen ? (
+            <div style={styles.drawerLayer}>
+              <motion.div
+                style={styles.drawerMask}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setMenuOpen(false)}
+              />
+              <motion.div
+                style={styles.drawer}
+                initial={{ x: '-100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ type: 'tween', ease: [0.22, 1, 0.36, 1], duration: 0.28 }}
+                drag='x'
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={{ left: 0.6, right: 0 }}
+                onDragEnd={(_, info) => (info.offset.x < -80 || info.velocity.x < -500) && setMenuOpen(false)}
+              >
+                <SideBar items={mainNavigationRoutes} variant='drawer' />
+              </motion.div>
+            </div>
+          ) : null}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
   return (
     <>
       <SideBar items={mainNavigationRoutes} />
-      <AnimatePresence mode='wait' key='navigation' presenceAffectsLayout>
-        <Routes key={location.pathname} location={location}>
-          {allRoutes.map(renderRoute)}
-          <Route path='/' element={<Navigate to={MainNavigationRoute.DASHBOARD} />} />
-          <Route path='*' element={<Navigate to='not-found' />} />
-        </Routes>
-      </AnimatePresence>
+      {routes}
     </>
   );
 };
+
+const styles = {
+  mobileColumn: { flex: 1, minWidth: 0, height: '100%', display: 'flex', flexDirection: 'column' },
+  drawerLayer: { position: 'fixed', inset: 0, zIndex: 150 },
+  drawerMask: { position: 'absolute', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+  drawer: { position: 'absolute', top: 0, bottom: 0, left: 0, display: 'flex' },
+} satisfies Record<string, React.CSSProperties>;

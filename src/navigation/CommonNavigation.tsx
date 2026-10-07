@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
+import { DesktopOnly } from '~/components/DesktopOnly';
 import { Loader } from '~/components/Loader';
 import { MainNavigation } from '~/navigation/MainNavigation';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
@@ -47,9 +48,11 @@ export const CommonNavigation = () => {
           path='blog/posts/:id/edit'
           element={
             <ProtectedRoute permission='blog.write'>
-              <Suspense fallback={<Loader />}>
-                <BlogPostEditor />
-              </Suspense>
+              <DesktopOnly label='The post editor' back={{ label: 'Blog', path: '/blog' }}>
+                <Suspense fallback={<Loader />}>
+                  <BlogPostEditor />
+                </Suspense>
+              </DesktopOnly>
             </ProtectedRoute>
           }
         />
@@ -63,7 +66,8 @@ const useStyles = mkUseStyles(() => ({
   container: {
     flexDirection: 'row',
     width: '100vw',
-    height: '100vh',
+    // The visible height: on phones 100vh runs under the browser's toolbar.
+    height: '100dvh',
     overflow: 'hidden',
   },
 }));

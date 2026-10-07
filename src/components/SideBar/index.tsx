@@ -14,9 +14,11 @@ const WIDTH = 250;
 
 type SideBarProps = {
   items: MainRouteType[];
+  /** `drawer`: the phone layout's slide-in menu — full height, flush with the screen edge. */
+  variant?: 'rail' | 'drawer';
 };
 
-export const SideBar = ({ items }: SideBarProps) => {
+export const SideBar = ({ items, variant = 'rail' }: SideBarProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const location = useLocation();
@@ -38,7 +40,7 @@ export const SideBar = ({ items }: SideBarProps) => {
   const canSystemStatus = can('system.read');
 
   return (
-    <GlassCard style={styles.container}>
+    <GlassCard style={variant === 'drawer' ? { ...styles.container, ...styles.drawer } : styles.container}>
       <div style={styles.top}>
         <img
           src='/full_logo.png'
@@ -50,7 +52,11 @@ export const SideBar = ({ items }: SideBarProps) => {
         <div style={styles.itemContainer}>
           {visibleItems.map((item) => {
             const active = current === item.path;
-            const subs = (item.subItems ?? []).filter((s) => hasAccess(can, s.permission));
+            // In the phone's drawer a desktop-only section is one link to its notice, no sub-pages.
+            const subs =
+              variant === 'drawer' && item.desktopOnly
+                ? []
+                : (item.subItems ?? []).filter((s) => hasAccess(can, s.permission));
             return (
               <div key={item.path} style={styles.itemGroup}>
                 <Item
@@ -59,6 +65,7 @@ export const SideBar = ({ items }: SideBarProps) => {
                   permission={item.permission}
                   isActive={active}
                   badge={item.path === MainNavigationRoute.INQUIRIES ? unreadInquiries : undefined}
+                  desktopHint={variant === 'drawer' && item.desktopOnly}
                 />
                 <AnimatePresence initial={false}>
                   {active && subs.length > 1 ? (
@@ -150,6 +157,18 @@ const useStyles = mkUseStyles((t) => ({
     margin: t.spacing.m,
     height: `calc(100% - ${t.spacing.m * 2}px)`,
     justifyContent: 'space-between',
+  },
+  drawer: {
+    width: 'min(300px, 84vw)',
+    margin: 0,
+    height: '100%',
+    boxSizing: 'border-box',
+    overflowY: 'auto',
+    borderRadius: '0 16px 16px 0',
+    borderLeftWidth: 0,
+    backgroundColor: t.colors.gray05 + t.colorOpacity(0.94),
+    paddingTop: 'env(safe-area-inset-top, 0px)',
+    paddingBottom: 'env(safe-area-inset-bottom, 0px)',
   },
   top: {
     gap: t.spacing.l,

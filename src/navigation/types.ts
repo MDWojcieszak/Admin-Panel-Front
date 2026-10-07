@@ -85,6 +85,8 @@ type RouteType<T> = {
   subItems?: SubNavItem[];
   /** Render without the full-screen glass card wrapper (page provides its own centered card). */
   bare?: boolean;
+  /** Built for a big screen: on a phone the section shows "open it on a computer" instead. */
+  desktopOnly?: boolean;
 };
 
 export type CommonRouteType = RouteType<CommonNavigationRoute>;

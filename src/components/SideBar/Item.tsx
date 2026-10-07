@@ -15,6 +15,7 @@ import {
 import { Permission } from '~/acl/permissions';
 import { MainNavigationRoute } from '~/navigation/types';
 import { FaCodeBranch, FaServer } from 'react-icons/fa6';
+import { FiMonitor } from 'react-icons/fi';
 
 const ICON_SIZE = 20;
 
@@ -25,6 +26,8 @@ export type SideBarItem = {
   permission?: Permission | Permission[];
   /** A count shown beside the label, e.g. unread inquiries. Hidden at 0. */
   badge?: number;
+  /** Marks a section that only shows "open it on a computer" on this device. */
+  desktopHint?: boolean;
 };
 
 export const Item = (p: SideBarItem) => {
@@ -78,6 +81,11 @@ export const Item = (p: SideBarItem) => {
       <motion.p animate={{ color }} style={styles.label}>
         {p.label}
         {p.badge ? <span style={styles.badge}>{p.badge > 99 ? '99+' : p.badge}</span> : null}
+        {p.desktopHint ? (
+          <span style={styles.desktopHint} title='Best on a computer'>
+            <FiMonitor size={13} />
+          </span>
+        ) : null}
       </motion.p>
       {renderIcon()}
     </div>
@@ -100,6 +108,7 @@ const useStyles = mkUseStyles((t) => ({
     width: '4px',
   },
   label: { marginLeft: t.spacing.m, flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 },
+  desktopHint: { display: 'flex', color: t.colors.dark05, opacity: 0.7 },
   badge: {
     minWidth: 18,
     height: 18,
