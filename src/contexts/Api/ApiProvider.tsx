@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useMemo } from 'react';
+import { ReactNode, useContext, useMemo, useRef } from 'react';
 import {
   ACLApi,
   AstroObjectApi,
@@ -43,13 +43,24 @@ type ApiProviderProps = {
 };
 export const ApiProvider = ({ children }: ApiProviderProps) => {
   const { accessToken } = useContext(AuthContext);
+  // The clients live for the whole session and read the token per request.
+  // Rebuilt on every refresh, they changed identity every few minutes: each
+  // query depending on them refetched, the permissions reloaded, and the
+  // routes waiting on those unmounted the page — open dialogs and half-filled
+  // forms included.
+  const tokenRef = useRef(accessToken);
+  tokenRef.current = accessToken;
   const config = useMemo<Configuration>(
     () => ({
       basePath: import.meta.env.VITE_API_URL,
-      accessToken: accessToken,
+      // A getter, not a function: the generated client sends no Authorization
+      // header while this is undefined, as it did with the plain value.
+      get accessToken() {
+        return tokenRef.current;
+      },
       isJsonMime: (mime: string) => mime === 'application/json',
     }),
-    [accessToken],
+    [],
   );
 
   const authApi = useMemo(() => config && new AuthApi(config), [config]);
