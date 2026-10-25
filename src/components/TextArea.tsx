@@ -7,10 +7,17 @@ import '~/components/TextArea.css';
 type TextAreaProps<T extends FieldValues> = {
   label: string;
   name: string;
-  description: string;
+  /** Shown under the field while it has focus; without it no room is kept under the field. */
+  description?: string;
   type?: HTMLInputTypeAttribute;
   rows?: number;
   style?: CSSProperties;
+  /** Shown in the empty field while it has focus. */
+  placeholder?: string;
+  disabled?: boolean;
+  /** Every change, for fields that save as they go. */
+  onValueChange?: (value: string) => void;
+  onBlur?: () => void;
 } & UseControllerProps<T>;
 
 const MAX_HEIGHT = 320;
@@ -20,8 +27,16 @@ const MAX_HEIGHT = 320;
  * and the same hint/error transition. The textarea auto-grows with its content; it only scrolls past
  * MAX_HEIGHT.
  */
-export const TextArea = <T extends FieldValues>({ label, description, rows = 5, ...p }: TextAreaProps<T>) => {
+export const TextArea = <T extends FieldValues>({
+  label,
+  description,
+  rows = 5,
+  placeholder,
+  onValueChange,
+  ...p
+}: TextAreaProps<T>) => {
   const [showLabel, setShowLabel] = useState(true);
+  const [focused, setFocused] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
   const {
     field,
@@ -44,16 +59,28 @@ export const TextArea = <T extends FieldValues>({ label, description, rows = 5, 
   }, [field.value]);
 
   const handleFocus = () => {
+    setFocused(true);
     setShowLabel(false);
     setShowDescription(true);
   };
   const handleBlur = () => {
+    setFocused(false);
     if (!ref.current?.value) setShowLabel(true);
     setShowDescription(false);
+    field.onBlur();
+    p.onBlur?.();
   };
 
   return (
-    <div style={{ ...styles.container, ...p.style }}>
+    <div
+      style={{
+        ...styles.container,
+        // Room for the line under the field only when there is one to show.
+        marginBottom: description || error ? theme.spacing.l : 0,
+        ...(p.disabled ? { opacity: 0.6 } : null),
+        ...p.style,
+      }}
+    >
       <motion.label
         animate={{
           color: showLabel ? theme.colors.lightBlue : theme.colors.blue04,
@@ -75,10 +102,13 @@ export const TextArea = <T extends FieldValues>({ label, description, rows = 5, 
         rows={rows}
         onChange={(e) => {
           field.onChange(e);
+          onValueChange?.(e.target.value);
           autoSize(e.currentTarget);
         }}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        placeholder={focused ? placeholder : undefined}
+        disabled={p.disabled}
       />
       <AnimatePresence mode='wait'>
         {(showDescription || error) && (description || error) ? (
@@ -101,8 +131,7 @@ const useStyles = mkUseStyles((t) => ({
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    // Reserve room for the absolutely-positioned hint (top:100%) so it can't overlap the field below.
-    marginBottom: t.spacing.l,
+    minWidth: 0,
   },
   label: {
     position: 'absolute',
@@ -117,6 +146,8 @@ const useStyles = mkUseStyles((t) => ({
     maxHeight: MAX_HEIGHT,
     boxSizing: 'border-box',
     color: t.colors.white,
+    // A textarea does not inherit the page font on its own; it fell back to monospace.
+    fontFamily: 'inherit',
     fontSize: '15px',
     lineHeight: 1.45,
     borderRadius: t.borderRadius.default,

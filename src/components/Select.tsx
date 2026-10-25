@@ -23,6 +23,7 @@ type SelectProps<T extends FieldValues> = {
   style?: CSSProperties;
   variant?: 'primary' | 'secondary';
   onValueChange?: (value: string) => void;
+  disabled?: boolean;
 } & UseControllerProps<T>;
 
 export type SelectRef = {
@@ -101,6 +102,7 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
   }, [isExtended]);
 
   const handlePress = () => {
+    if (p.disabled) return;
     if (!isExtended) updateCoords();
     setIsExtended((prev) => !prev);
   };
@@ -139,6 +141,7 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
       style={{
         ...styles.selectContainer,
         marginBottom: hasBottomSpace ? theme.spacing.l : 0,
+        ...(p.disabled ? { opacity: 0.6 } : null),
         ...p.style,
       }}
     >
@@ -199,6 +202,8 @@ export const Select = <T extends FieldValues>(p: SelectProps<T>) => {
           paddingLeft: SelectedIcon ? theme.spacing.m + ICON_SIZE + theme.spacing.s : theme.spacing.m,
         }}
         readOnly
+        aria-label={p.label}
+        aria-disabled={p.disabled || undefined}
         onClick={handlePress}
         onBlur={handleBlur}
       />
@@ -260,6 +265,9 @@ const useStyles = mkUseStyles((t) => ({
     userSelect: 'none',
     webkitUserSelect: 'none',
     boxSizing: 'border-box',
+    // A long value stops short of the chevron instead of running under it.
+    paddingRight: t.spacing.m + 20 + t.spacing.s,
+    textOverflow: 'ellipsis',
   },
   optionsContainer: {
     listStyle: 'none',

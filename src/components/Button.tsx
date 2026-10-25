@@ -14,6 +14,8 @@ type ButtonProps = {
   loading?: boolean;
   disabled?: boolean;
   icon?: ReactNode;
+  /** Tooltip and accessible name; an icon-only button needs one. */
+  title?: string;
 };
 
 export const Button = ({ label, onClick, variant = 'primary', ...p }: ButtonProps) => {
@@ -35,6 +37,8 @@ export const Button = ({ label, onClick, variant = 'primary', ...p }: ButtonProp
   return (
     <motion.button
       type={p.type}
+      title={p.title}
+      aria-label={p.title ?? (label || undefined)}
       whileTap={p.disabled ? undefined : { filter: 'brightness(0.9)' }}
       whileHover={p.disabled ? undefined : { filter: 'brightness(1.15)' }}
       transition={{ duration: 0.12 }}
@@ -47,7 +51,9 @@ export const Button = ({ label, onClick, variant = 'primary', ...p }: ButtonProp
       }}
     >
       <div style={styles.innerContainer}>
-        {p.icon} {label}
+        {p.icon}
+        {/* An icon-only button has no label; a stray space beside the icon pushed it off centre. */}
+        {label ? <span>{label}</span> : null}
       </div>
       <div style={styles.loaderContainer}>
         <AnimatePresence> {p.loading && <Loader />}</AnimatePresence>
@@ -70,7 +76,7 @@ const useStyles = mkUseStyles((t) => ({
     position: 'relative',
   },
   innerContainer: {
-    alignItmes: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     gap: t.spacing.s,

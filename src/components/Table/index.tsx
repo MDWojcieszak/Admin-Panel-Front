@@ -21,9 +21,22 @@ type TableProps<T> = {
    * group; a heading is drawn wherever the key changes, with the group's count.
    */
   getGroup?: (row: T) => { key: string; label: ReactNode };
+  /**
+   * True (the default): the table fills its parent's height and scrolls
+   * inside. False: it grows with its rows and the page around it scrolls —
+   * for a table under other content on a phone.
+   */
+  fillHeight?: boolean;
 };
 
-export const Table = <T extends object>({ table, hidePagination, emptyState, onRowClick, getGroup }: TableProps<T>) => {
+export const Table = <T extends object>({
+  table,
+  hidePagination,
+  emptyState,
+  onRowClick,
+  getGroup,
+  fillHeight = true,
+}: TableProps<T>) => {
   const styles = useStyles();
   const theme = useTheme();
   const isMobile = useIsMobile();
@@ -68,8 +81,12 @@ export const Table = <T extends object>({ table, hidePagination, emptyState, onR
   if (isMobile) {
     return (
       <div style={styles.wrapper}>
-        <div style={styles.scrollWrap}>
-          <Scrollbar style={styles.scroll}>
+        <div style={fillHeight ? styles.scrollWrap : undefined}>
+          <Scrollbar
+            style={fillHeight ? styles.scroll : undefined}
+            maxHeight={fillHeight ? undefined : 1e6}
+            horizontal={fillHeight}
+          >
             <div style={{ ...styles.list, paddingRight: 0 }}>
               {rows.map((row, rowIndex) => {
                 const cells = row.getVisibleCells();
@@ -101,7 +118,9 @@ export const Table = <T extends object>({ table, hidePagination, emptyState, onR
                       <div style={styles.cardHead}>
                         <div style={styles.cardTitle}>
                           {title.map((cell) => (
-                            <Fragment key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Fragment>
+                            <Fragment key={cell.id}>
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </Fragment>
                           ))}
                         </div>
                         {actions.length ? (
@@ -147,8 +166,12 @@ export const Table = <T extends object>({ table, hidePagination, emptyState, onR
 
   return (
     <div style={styles.wrapper}>
-      <div style={styles.scrollWrap}>
-        <Scrollbar style={styles.scroll}>
+      <div style={fillHeight ? styles.scrollWrap : undefined}>
+        <Scrollbar
+          style={fillHeight ? styles.scroll : undefined}
+          maxHeight={fillHeight ? undefined : 1e6}
+          horizontal={fillHeight}
+        >
           <div style={styles.list}>
             {headerGroups.map((group) => (
               <div key={group.id} style={styles.headerRow}>

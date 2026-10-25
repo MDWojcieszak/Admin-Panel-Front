@@ -72,7 +72,13 @@ export const Item = (p: SideBarItem) => {
     }
   };
   return (
-    <div style={styles.container} onClick={handlePress}>
+    <motion.div
+      style={styles.container}
+      onClick={handlePress}
+      initial={false}
+      whileHover={{ backgroundColor: theme.colors.white + theme.colorOpacity(0.05) }}
+      transition={{ duration: 0.12 }}
+    >
       <AnimatePresence mode='sync' key={'menu-item' + p.path}>
         {p.isActive && (
           <motion.div
@@ -84,6 +90,8 @@ export const Item = (p: SideBarItem) => {
           />
         )}
       </AnimatePresence>
+      {/* Icon first: the row reads like the footer links and starts where the eye lands. */}
+      <span style={styles.icon}>{renderIcon()}</span>
       <motion.p animate={{ color }} style={styles.label}>
         {p.label}
         {p.badge ? <span style={styles.badge}>{p.badge > 99 ? '99+' : p.badge}</span> : null}
@@ -93,27 +101,34 @@ export const Item = (p: SideBarItem) => {
           </span>
         ) : null}
       </motion.p>
-      {renderIcon()}
-    </div>
+    </motion.div>
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
   container: {
+    position: 'relative',
     cursor: 'pointer',
     flexDirection: 'row',
     userSelect: 'none',
     alignItems: 'center',
-    paddingRight: t.spacing.l,
+    paddingRight: t.spacing.m,
     height: 50,
+    // The hover animates from here; framer-motion cannot animate from 'transparent'.
+    backgroundColor: t.colors.white + t.colorOpacity(0),
   },
+  // The active marker hugs the edge without pushing the icon and label along.
   box: {
+    position: 'absolute',
+    left: 0,
+    top: 12.5,
     height: '25px',
     borderTopRightRadius: t.borderRadius.medium,
     borderBottomRightRadius: t.borderRadius.medium,
     width: '4px',
   },
-  label: { marginLeft: t.spacing.m, flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 },
+  icon: { display: 'flex', alignItems: 'center', marginLeft: t.spacing.l, flexShrink: 0 },
+  label: { marginLeft: t.spacing.sm, flex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 },
   desktopHint: { display: 'flex', color: t.colors.dark05, opacity: 0.7 },
   badge: {
     minWidth: 18,

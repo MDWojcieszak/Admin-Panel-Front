@@ -6,21 +6,44 @@ import { FieldValues, UseControllerProps, useController } from 'react-hook-form'
 type InputProps<T extends FieldValues> = {
   label: string;
   name: string;
-  description: string;
+  /** Shown under the field while it has focus; without it no room is kept under the field. */
+  description?: string;
   type?: HTMLInputTypeAttribute;
   style?: CSSProperties;
   disableAutofill?: boolean;
+  /** Shown in the empty field while it has focus — the label sits above it by then. */
+  placeholder?: string;
+  disabled?: boolean;
+  autoFocus?: boolean;
+  maxLength?: number;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
+  /** Rewrites what is typed before it is stored (upper case, digits only…). */
+  transform?: (value: string) => string;
+  /** Every change, for fields that save as they go. */
+  onValueChange?: (value: string) => void;
+  onBlur?: () => void;
+  /** Enter pressed in the field. */
+  onEnter?: () => void;
 } & UseControllerProps<T>;
+
+/** Types whose empty control shows its own mask (dd.mm.yyyy, --:--): the label stays up. */
+const MASKED_TYPES: HTMLInputTypeAttribute[] = ['date', 'datetime-local', 'time', 'month'];
 
 export const Input = <T extends FieldValues>({
   label,
   description,
   type = 'text',
   disableAutofill = true,
+  placeholder,
+  transform,
+  onValueChange,
+  onEnter,
   ...p
 }: InputProps<T>) => {
+  const masked = MASKED_TYPES.includes(type);
   const [showDescription, setShowDescription] = useState(false);
-  const [showLabel, setShowLabel] = useState(type !== 'datetime-local' && type !== 'date');
+  const [focused, setFocused] = useState(false);
+  const [showLabel, setShowLabel] = useState(!masked);
   const {
     field,
     formState: { errors },
@@ -29,12 +52,16 @@ export const Input = <T extends FieldValues>({
   const theme = useTheme();
   const inputRef = useRef<HTMLInputElement>(null);
   const handleFocus = () => {
+    setFocused(true);
     setShowLabel(false);
     setShowDescription(true);
   };
   const handleBlur = () => {
-    if (!inputRef?.current?.value && type !== 'datetime-local' && type !== 'date') setShowLabel(true);
+    setFocused(false);
+    if (!inputRef?.current?.value && !masked) setShowLabel(true);
     setShowDescription(false);
+    field.onBlur();
+    p.onBlur?.();
   };
 
   useEffect(() => {
@@ -51,7 +78,15 @@ export const Input = <T extends FieldValues>({
   const renderDescription = errors[p.name] ? <>{errors[p.name]?.message}</> : description;
 
   return (
-    <div style={{ ...styles.inputContainer, ...p.style }}>
+    <div
+      style={{
+        ...styles.inputContainer,
+        // Room for the line under the field only when there is one to show.
+        marginBottom: description || errors[p.name] ? theme.spacing.l : 0,
+        ...(p.disabled ? { opacity: 0.6 } : null),
+        ...p.style,
+      }}
+    >
       <motion.label
         animate={{
           color: showLabel ? theme.colors.lightBlue : theme.colors.blue04,
@@ -68,13 +103,29 @@ export const Input = <T extends FieldValues>({
         autoComplete={disableAutofill ? 'off' : 'on'}
         data-lpignore={disableAutofill ? 'true' : undefined}
         data-form-type={disableAutofill ? 'other' : undefined}
-        style={false ? { ...styles.input, borderColor: 'red' } : styles.input}
+        style={styles.input}
+        onChange={(e) => {
+          const value = transform ? transform(e.target.value) : e.target.value;
+          field.onChange(value);
+          onValueChange?.(value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && onEnter) {
+            e.preventDefault();
+            onEnter();
+          }
+        }}
         onFocus={handleFocus}
         onBlur={handleBlur}
         type={type}
+        placeholder={focused ? placeholder : undefined}
+        disabled={p.disabled}
+        autoFocus={p.autoFocus}
+        maxLength={p.maxLength}
+        inputMode={p.inputMode}
       />
       <AnimatePresence mode='wait'>
-        {(showDescription || errors[p.name]) && (
+        {(showDescription || errors[p.name]) && renderDescription && (
           <motion.p
             initial={{ opacity: 0, translateY: -5 }}
             animate={{ opacity: 1, translateY: 0, color: errors[p.name] ? theme.colors.red : theme.colors.blue04 }}
@@ -91,8 +142,8 @@ export const Input = <T extends FieldValues>({
 
 const useStyles = mkUseStyles((t) => ({
   inputContainer: {
-    marginBottom: t.spacing.l,
     position: 'relative',
+    minWidth: 0,
   },
   label: {
     position: 'absolute',
@@ -109,6 +160,10 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
     border: 0,
     outline: 'none',
+    width: '100%',
+    boxSizing: 'border-box',
+    // Native date and time controls draw their icons for a dark page.
+    colorScheme: 'dark',
   },
   description: {
     position: 'absolute',

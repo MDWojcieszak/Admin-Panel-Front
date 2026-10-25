@@ -14,6 +14,9 @@ type DateInputProps<T extends FieldValues> = {
   min?: string;
   /** Latest selectable day, as `YYYY-MM-DD`. */
   max?: string;
+  /** Every change (a pick, Today, Clear), for fields that save as they go. */
+  onValueChange?: (value: string) => void;
+  disabled?: boolean;
 } & UseControllerProps<T>;
 
 /** Space the description/error line takes under the field, gap included. */
@@ -82,7 +85,13 @@ export const DateInput = <T extends FieldValues>(p: DateInputProps<T>) => {
     });
   };
 
+  const setValue = (value: string) => {
+    field.onChange(value);
+    p.onValueChange?.(value);
+  };
+
   const openCalendar = () => {
+    if (p.disabled) return;
     // Always reopen on the month of the current value, not wherever it was left.
     setView(startOfMonth(selected ?? new Date()));
     updateCoords();
@@ -136,7 +145,7 @@ export const DateInput = <T extends FieldValues>(p: DateInputProps<T>) => {
 
   const pick = (day: Date) => {
     if (isDisabled(day)) return;
-    field.onChange(toValue(day));
+    setValue(toValue(day));
     setOpen(false);
   };
 
@@ -147,6 +156,7 @@ export const DateInput = <T extends FieldValues>(p: DateInputProps<T>) => {
       style={{
         ...styles.container,
         marginBottom: hasBottomSpace ? theme.spacing.l : 0,
+        ...(p.disabled ? { opacity: 0.6 } : null),
         ...p.style,
       }}
     >
@@ -155,8 +165,14 @@ export const DateInput = <T extends FieldValues>(p: DateInputProps<T>) => {
       <div
         ref={fieldRef}
         role='button'
-        tabIndex={0}
-        style={{ ...styles.field, boxShadow: open ? `inset 0 0 0 1px ${theme.colors.blue}` : undefined }}
+        tabIndex={p.disabled ? -1 : 0}
+        aria-label={p.label}
+        aria-disabled={p.disabled || undefined}
+        style={{
+          ...styles.field,
+          boxShadow: open ? `inset 0 0 0 1px ${theme.colors.blue}` : undefined,
+          cursor: p.disabled ? 'default' : 'pointer',
+        }}
         onClick={() => (open ? setOpen(false) : openCalendar())}
         onKeyDown={(e) => {
           if (e.key !== 'Enter' && e.key !== ' ') return;
@@ -237,7 +253,7 @@ export const DateInput = <T extends FieldValues>(p: DateInputProps<T>) => {
                   type='button'
                   style={styles.footerButton}
                   onClick={() => {
-                    field.onChange('');
+                    setValue('');
                     setOpen(false);
                   }}
                 >

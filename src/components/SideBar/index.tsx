@@ -190,7 +190,8 @@ const useStyles = mkUseStyles((t) => ({
     overflow: 'hidden',
   },
   subItems: {
-    paddingLeft: t.spacing.l,
+    // Under the item's label: past its icon (edge + 20px icon + gap).
+    paddingLeft: t.spacing.l + 20 + t.spacing.sm,
     paddingTop: t.spacing.xxs,
     paddingBottom: t.spacing.s,
     gap: t.spacing.xs,
