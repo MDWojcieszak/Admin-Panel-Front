@@ -1,9 +1,10 @@
-import { Suspense, lazy } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Suspense, lazy, useEffect } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { DesktopOnly } from '~/components/DesktopOnly';
 import { Loader } from '~/components/Loader';
 import { MainNavigation } from '~/navigation/MainNavigation';
+import { setNavigator } from '~/navigation/navigator';
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { CommonNavigationRoute, CommonRouteType } from '~/navigation/types';
 import { Activate } from '~/routes/Activate';
@@ -40,6 +41,13 @@ const commonRoutes: CommonRouteType[] = [
 export const CommonNavigation = () => {
   const styles = useStyles();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Lets modals, which render outside the router, navigate (see navigator.ts).
+  useEffect(() => {
+    setNavigator(navigate);
+    return () => setNavigator(null);
+  }, [navigate]);
 
   const renderRoute = (route: CommonRouteType) => (
     <Route path={route.path} key={route.path} element={route.component} />
