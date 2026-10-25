@@ -4,6 +4,7 @@ import { FiCornerLeftUp, FiTrash2, FiX } from 'react-icons/fi';
 import {
   ProjectDetailResponse,
   ProjectType,
+  RepeatType,
   StatusCategory,
   TaskDetailResponse,
   TaskPriority,
@@ -32,6 +33,22 @@ type TaskPanelProps = {
   /** Called however the panel closes, including from inside (a deleted task). */
   onClose?: () => void;
 } & Partial<InternalModalProps>;
+
+/** An ISO time as `<input type="datetime-local">` wants it: local, to the minute. */
+const toLocalInput = (iso: string) => {
+  const date = new Date(iso);
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  return date.toISOString().slice(0, 16);
+};
+
+const REPEAT_LABEL: Record<RepeatType, string> = {
+  NONE: 'Does not repeat',
+  DAILY: 'Every day',
+  WEEKLY: 'Every week',
+  MONTHLY: 'Every month',
+  YEARLY: 'Every year',
+  CUSTOM: 'Every…',
+};
 
 /** A text field's local draft; it follows the server only when the server's value changes. */
 const useDraft = (value: string) => {
@@ -101,6 +118,7 @@ export const TaskPanel = (p: TaskPanelProps) => {
   const [notes, setNotes] = useDraft(task?.notes ?? '');
   const [quantity, setQuantity] = useDraft(task?.quantity != null ? String(task.quantity) : '');
   const [unit, setUnit] = useDraft(task?.unit ?? '');
+  const [repeatCustom, setRepeatCustom] = useDraft(task?.repeatCustom ?? '');
 
   const deleteModal = useModal('project-task-delete', ConfirmModal, { title: 'Delete task' });
 
@@ -204,6 +222,47 @@ export const TaskPanel = (p: TaskPanelProps) => {
             value={toDateInput(task.dueDate)}
             onChange={(e) => update({ dueDate: fromDateInput(e.target.value) })}
           />
+        </Field>
+        <Field label='Remind me'>
+          <input
+            type='datetime-local'
+            style={shared.textInput}
+            disabled={!editable}
+            title='An email when the time comes, to whoever the task is on'
+            value={task.reminderAt ? toLocalInput(task.reminderAt) : ''}
+            onChange={(e) => update({ reminderAt: e.target.value ? new Date(e.target.value).toISOString() : null })}
+          />
+        </Field>
+        <Field label='Repeat'>
+          <div style={{ ...shared.row, flexWrap: 'nowrap' }}>
+            <PlainSelect
+              value={task.repeat}
+              disabled={!editable}
+              options={Object.values(RepeatType).map((value) => ({ value, label: REPEAT_LABEL[value] }))}
+              onChange={(repeat) =>
+                update(
+                  repeat === RepeatType.Custom
+                    ? { repeat: RepeatType.Custom, repeatCustom: task.repeatCustom || '2w' }
+                    : { repeat: repeat as RepeatType, repeatCustom: null },
+                )
+              }
+            />
+            {task.repeat === RepeatType.Custom ? (
+              <input
+                style={{ ...shared.textInput, ...shared.mono, width: 70, flexShrink: 0 }}
+                disabled={!editable}
+                value={repeatCustom}
+                title='Every: 3d, 2w, 6m, 1y'
+                onChange={(e) => setRepeatCustom(e.target.value)}
+                onBlur={() => {
+                  const value = repeatCustom.trim().toLowerCase();
+                  if (value === task.repeatCustom) return;
+                  if (/^[1-9]\d{0,2}\s*[dwmy]$/.test(value)) update({ repeatCustom: value });
+                  else setRepeatCustom(task.repeatCustom ?? '');
+                }}
+              />
+            ) : null}
+          </div>
         </Field>
         <Field label='Priority'>
           <PlainSelect

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { FiDownload, FiExternalLink, FiTrash2, FiX } from 'react-icons/fi';
@@ -14,6 +14,10 @@ import { useToast } from '~/hooks/useToast';
 import { Field, PlainSelect, useProjectStyles } from '~/routes/Projects/components/shared';
 import { projectPath, userName } from '~/routes/Projects/utils';
 import { apiUrl, formatSize, KIND_LABEL, KindIcon } from '~/routes/Documents/utils';
+
+/** Formats three.js can read; the viewer itself loads only when one is opened. */
+const VIEWABLE_3D = new Set(['stl', 'obj', '3mf', 'glb', 'ply']);
+const ModelViewer = lazy(() => import('~/routes/Documents/components/ModelViewer'));
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -108,6 +112,10 @@ export const DocumentPanel = (p: DocumentPanelProps) => {
           </a>
         ) : doc.kind === DocumentKind.Pdf ? (
           <iframe title={doc.title} src={apiUrl(doc.fileUrl)} style={styles.pdf} />
+        ) : doc.extension && VIEWABLE_3D.has(doc.extension) ? (
+          <Suspense fallback={<Loader />}>
+            <ModelViewer url={apiUrl(doc.fileUrl)} extension={doc.extension} />
+          </Suspense>
         ) : (
           <div style={styles.icon}>
             <KindIcon kind={doc.kind} size={48} color={theme.colors.blue04} />

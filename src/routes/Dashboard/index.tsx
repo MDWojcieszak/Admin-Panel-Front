@@ -9,6 +9,7 @@ import { Scrollbar } from '~/components/Scrollbar';
 import { StatCard } from '~/components/StatCard';
 import { GallerySection } from '~/routes/Dashboard/components/GallerySection';
 import { AttentionCard } from '~/routes/Dashboard/components/AttentionCard';
+import { MyWorkCard } from '~/routes/Dashboard/components/MyWorkCard';
 import { TrendsSection } from '~/routes/Dashboard/components/TrendsSection';
 import { useDashboard } from '~/routes/Dashboard/hooks/useDashboard';
 import { getPhotoEntryStatusColors } from '~/routes/PhotoManagement/utils/colors';
@@ -162,6 +163,7 @@ export const Dashboard = () => {
           />
         </div>
 
+        <MyWorkCard />
         <AttentionCard />
 
         <div style={styles.panels}>

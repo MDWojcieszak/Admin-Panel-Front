@@ -195,6 +195,16 @@ export const Settings = () => {
       ],
     },
     {
+      title: 'Projects',
+      rows: [
+        {
+          key: 'taskEmailNotifications',
+          label: 'Task reminders (email)',
+          description: 'Email me when a reminder set on a task comes due, for tasks assigned to me or my own.',
+        },
+      ],
+    },
+    {
       title: 'Inbox',
       rows: [
         {
