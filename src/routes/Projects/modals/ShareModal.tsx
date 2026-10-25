@@ -55,6 +55,8 @@ export const ShareModal = (p: ShareModalProps) => {
   if (!project) return <Loader />;
 
   const owns = project.role === ProjectRole.Owner;
+  // `members` starts with the owner, shown on its own row above.
+  const invited = project.members.filter((m) => m.role !== ProjectRole.Owner);
 
   const run = async (action: () => Promise<unknown>, failure: string) => {
     setBusy(true);
@@ -112,7 +114,7 @@ export const ShareModal = (p: ShareModalProps) => {
             <PersonLabel name={userName(project.owner)} email={project.owner.email} />
             <Badge label='Owner' tone={ROLE_TONE.OWNER} />
           </div>
-          {project.members.map((member) => {
+          {invited.map((member) => {
             const isMe = member.user.id === userData?.id;
             return (
               <div key={member.user.id} style={shared.listRow}>
@@ -168,7 +170,7 @@ export const ShareModal = (p: ShareModalProps) => {
             );
           })}
         </div>
-        {project.members.length === 0 ? <span style={shared.muted}>Only you, so far.</span> : null}
+        {invited.length === 0 ? <span style={shared.muted}>Only you, so far.</span> : null}
       </div>
 
       {owns ? <ShareLinks projectId={project.id} /> : null}

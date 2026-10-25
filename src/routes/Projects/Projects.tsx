@@ -31,7 +31,26 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 enum Scope {
   ACTIVE = 'active',
   ARCHIVED = 'archived',
+  TEMPLATES = 'templates',
 }
+
+const SCOPE_NOUN: Record<Scope, string> = {
+  [Scope.ACTIVE]: 'open',
+  [Scope.ARCHIVED]: 'archived',
+  [Scope.TEMPLATES]: 'templates',
+};
+
+const EMPTY: Record<Scope, { title: string; description: string }> = {
+  [Scope.ACTIVE]: {
+    title: 'No projects yet',
+    description: 'A project holds tasks, a shopping list or a build. Share it with whoever helps.',
+  },
+  [Scope.ARCHIVED]: { title: 'Nothing archived', description: 'Archived projects keep their tasks, out of the way.' },
+  [Scope.TEMPLATES]: {
+    title: 'No templates yet',
+    description: 'Save a project as a template from its settings, then start new ones from it.',
+  },
+};
 
 /** Every project you own or were invited to; the inbox comes first. */
 export const Projects = () => {
@@ -43,7 +62,9 @@ export const Projects = () => {
 
   const query = useAsync<ProjectSummaryResponse[]>(async () => {
     if (!projectsApi) return undefined;
-    const { data } = await projectsApi.projectControllerList({ archived: scope === Scope.ARCHIVED });
+    const { data } = await projectsApi.projectControllerList(
+      scope === Scope.TEMPLATES ? { templates: true } : { archived: scope === Scope.ARCHIVED },
+    );
     return data;
   }, [projectsApi, scope]);
 
@@ -59,7 +80,7 @@ export const Projects = () => {
         <>
           <PageHeader
             title='Projects'
-            meta={projects.length ? `${projects.length} ${scope === Scope.ARCHIVED ? 'archived' : 'open'}` : undefined}
+            meta={projects.length ? `${projects.length} ${SCOPE_NOUN[scope]}` : undefined}
             actions={
               <Button
                 label='New project'
@@ -72,6 +93,7 @@ export const Projects = () => {
             items={[
               { label: 'Open', value: Scope.ACTIVE },
               { label: 'Archived', value: Scope.ARCHIVED },
+              { label: 'Templates', value: Scope.TEMPLATES },
             ]}
             selected={scope}
             handleSelect={(value) => setScope(value as Scope)}
@@ -85,12 +107,8 @@ export const Projects = () => {
       ) : projects.length === 0 ? (
         <EmptyState
           icon={<MdOutlineChecklist size={26} color={theme.colors.blue04} />}
-          title={scope === Scope.ARCHIVED ? 'Nothing archived' : 'No projects yet'}
-          description={
-            scope === Scope.ARCHIVED
-              ? 'Archived projects keep their tasks, out of the way.'
-              : 'A project holds tasks, a shopping list or a build. Share it with whoever helps.'
-          }
+          title={EMPTY[scope].title}
+          description={EMPTY[scope].description}
         />
       ) : (
         <div style={styles.grid}>
@@ -129,6 +147,7 @@ const ProjectTile = ({ project, onOpen }: { project: ProjectSummaryResponse; onO
         <span style={{ ...shared.muted, ...styles.description }}>{project.description}</span>
       ) : null}
       <div style={shared.row}>
+        {project.isTemplate ? <Badge label='Template' tone='purple' /> : null}
         {!project.isInbox ? <Badge label={TYPE_LABEL[project.type]} /> : null}
         {!project.isInbox ? <Badge label={STATUS_LABEL[project.status]} tone={STATUS_TONE[project.status]} /> : null}
         {project.role !== 'OWNER' ? (

@@ -109,7 +109,8 @@ export const TaskPanel = (p: TaskPanelProps) => {
   const editable = canEdit(project.role);
   const checkable = canCheck(project.role, project.viewersCanCheck);
   const done = task.status.category === StatusCategory.Done;
-  const people = [project.owner, ...project.members.map((m) => m.user)];
+  // The owner comes first in `members`.
+  const people = project.members.map((m) => m.user);
 
   const run = async <T,>(action: () => Promise<T>, failure: string) => {
     try {

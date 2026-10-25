@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiArchive, FiArrowDown, FiArrowUp, FiPlus, FiTrash2, FiX } from 'react-icons/fi';
+import { FiArchive, FiArrowDown, FiArrowUp, FiCopy, FiLayers, FiPlus, FiTrash2, FiX } from 'react-icons/fi';
 import {
   ProjectDetailResponse,
   ProjectRole,
@@ -14,8 +14,10 @@ import { Loader } from '~/components/Loader';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useModal } from '~/hooks/useModal';
+import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { Field, PlainSelect, useProjectStyles } from '~/routes/Projects/components/shared';
+import { DuplicateMode, DuplicateProjectModal } from '~/routes/Projects/modals/DuplicateProjectModal';
 import { CATEGORY_LABEL, fromDateInput, STATUS_LABEL, toDateInput, TYPE_LABEL } from '~/routes/Projects/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles } from '~/utils/theme';
@@ -24,6 +26,8 @@ type ProjectSettingsModalProps = {
   projectId: string;
   /** Deleted or archived: the project page has nothing left to show. */
   onGone?: () => void;
+  /** A copy or template was made: open it. */
+  onCopied?: (id: string) => void;
 } & Partial<InternalModalProps>;
 
 const CATEGORY_OPTIONS = Object.values(StatusCategory).map((value) => ({ value, label: CATEGORY_LABEL[value] }));
@@ -51,10 +55,22 @@ export const ProjectSettingsModal = (p: ProjectSettingsModalProps) => {
   }, [projectsApi, p.projectId]);
 
   const confirmModal = useModal('project-settings-confirm', ConfirmModal, { title: 'Delete project' });
+  const copyModal = useModal('project-settings-copy', DuplicateProjectModal, { title: 'Copy project' });
 
   if (!project) return <Loader />;
 
   const owns = project.role === ProjectRole.Owner;
+
+  const copy = (mode: DuplicateMode) =>
+    copyModal.show({
+      projectId: project.id,
+      sourceTitle: project.title,
+      mode,
+      onCreated: (id: string) => {
+        p.handleClose?.();
+        p.onCopied?.(id);
+      },
+    });
 
   const run = async (action: () => Promise<unknown>, failure: string) => {
     try {
@@ -71,6 +87,33 @@ export const ProjectSettingsModal = (p: ProjectSettingsModalProps) => {
     <div style={styles.container}>
       <DetailsForm project={project} owns={owns} onSaved={setProject} />
       <Workflow project={project} run={run} />
+
+      {project.isInbox ? null : (
+        <div style={styles.section}>
+          <span style={shared.fieldLabel}>Copies</span>
+          <span style={shared.muted}>The plan without its history: no ticks, people, links, journal or comments.</span>
+          <div style={shared.row}>
+            {project.isTemplate ? (
+              <Button label='New project from it' icon={<FiCopy size={14} />} onClick={() => copy('fromTemplate')} />
+            ) : (
+              <>
+                <Button
+                  label='Duplicate'
+                  variant='secondary'
+                  icon={<FiCopy size={14} />}
+                  onClick={() => copy('copy')}
+                />
+                <Button
+                  label='Save as template'
+                  variant='secondary'
+                  icon={<FiLayers size={14} />}
+                  onClick={() => copy('template')}
+                />
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {owns && !project.isInbox ? (
         <div style={styles.section}>
@@ -146,6 +189,7 @@ const DetailsForm = ({
     startDate: toDateInput(project.startDate),
     dueDate: toDateInput(project.dueDate),
     color: project.color ?? '',
+    photoEntryId: project.photoEntry?.id ?? '',
   });
   const [form, setForm] = useState(initial);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,6 +198,18 @@ const DetailsForm = ({
   const set = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
   const editable = project.role !== ProjectRole.Viewer;
+  const can = useCan();
+  // Choosing a shoot takes reading shoots; others see the linked one by name.
+  const pickShoot = editable && form.type === ProjectType.Trip && can('photoEntry.read');
+  const { photoEntryApi } = useApi();
+  const [shoots, setShoots] = useState<{ id: string; name: string }[]>([]);
+  useEffect(() => {
+    if (!pickShoot || !photoEntryApi) return;
+    photoEntryApi
+      .photoEntryControllerList({ take: 200 })
+      .then(({ data }) => setShoots(data.photoEntries.map((e) => ({ id: e.id, name: e.name }))))
+      .catch(() => setShoots([]));
+  }, [pickShoot, photoEntryApi]);
 
   const save = async () => {
     if (!projectsApi || !form.title.trim()) return;
@@ -167,6 +223,7 @@ const DetailsForm = ({
           startDate: fromDateInput(form.startDate),
           dueDate: fromDateInput(form.dueDate),
           color: form.color || null,
+          ...(pickShoot ? { photoEntryId: form.photoEntryId || null } : {}),
           ...(project.isInbox ? {} : { type: form.type, status: form.status }),
           ...(owns && !project.isInbox && form.key !== project.key ? { key: form.key } : {}),
         },
@@ -249,6 +306,25 @@ const DetailsForm = ({
             onChange={(e) => set('dueDate', e.target.value)}
           />
         </Field>
+        {pickShoot ? (
+          <Field label='Shoot'>
+            <PlainSelect
+              value={form.photoEntryId}
+              options={[
+                { value: '', label: 'No shoot' },
+                ...(project.photoEntry && !shoots.some((s) => s.id === project.photoEntry!.id)
+                  ? [{ value: project.photoEntry.id, label: project.photoEntry.name }]
+                  : []),
+                ...shoots.map((s) => ({ value: s.id, label: s.name })),
+              ]}
+              onChange={(value) => set('photoEntryId', value)}
+            />
+          </Field>
+        ) : project.photoEntry ? (
+          <Field label='Shoot'>
+            <span style={{ fontSize: 14, lineHeight: '38px' }}>{project.photoEntry.name}</span>
+          </Field>
+        ) : null}
         <Field label='Colour'>
           <div style={{ ...shared.row, flexWrap: 'nowrap' }}>
             <input

@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   FiArrowLeft,
   FiBookOpen,
+  FiCamera,
   FiColumns,
   FiFolder,
   FiInbox,
@@ -23,6 +24,7 @@ import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
 import { useIsMobile } from '~/hooks/useBreakpoint';
 import { useModal } from '~/hooks/useModal';
+import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
 import { MainNavigationRoute } from '~/navigation/types';
 import { BomList } from '~/routes/Projects/components/BomList';
@@ -32,8 +34,10 @@ import { ProjectDocuments } from '~/routes/Projects/components/ProjectDocuments'
 import { QuickAdd } from '~/routes/Projects/components/QuickAdd';
 import { Avatar, ProjectsPage, useProjectStyles } from '~/routes/Projects/components/shared';
 import { TaskBoard } from '~/routes/Projects/components/TaskBoard';
+import { TripPacking } from '~/routes/Projects/components/TripPacking';
 import { TaskList } from '~/routes/Projects/components/TaskList';
 import { useProjectEvents } from '~/routes/Projects/hooks/useProjectEvents';
+import { DuplicateProjectModal } from '~/routes/Projects/modals/DuplicateProjectModal';
 import { ProjectSettingsModal } from '~/routes/Projects/modals/ProjectSettingsModal';
 import { ShareModal } from '~/routes/Projects/modals/ShareModal';
 import { TaskPanel } from '~/routes/Projects/modals/TaskPanel';
@@ -57,6 +61,7 @@ enum View {
   LIST = 'list',
   DOCS = 'docs',
   PARTS = 'parts',
+  PACKING = 'packing',
   JOURNAL = 'journal',
   COMMENTS = 'comments',
 }
@@ -70,6 +75,7 @@ const QUICK_ADD_PLACEHOLDER: Record<ProjectType, string> = {
 
 const VIEW_HINT: Partial<Record<View, string>> = {
   [View.PARTS]: 'What the build needs, what it costs, what is still to buy.',
+  [View.PACKING]: 'Camera gear from the shoot; pack everything else as tasks.',
   [View.JOURNAL]: 'The build, step by step: its documentation.',
   [View.DOCS]: 'Files pinned to the project and anything in it.',
   [View.COMMENTS]: 'Talk about the project as a whole.',
@@ -122,6 +128,8 @@ export const ProjectDetail = () => {
   const taskModal = useModal('project-task', TaskPanel, { title: 'Task', type: 'side' });
   const shareModal = useModal('project-share', ShareModal, { title: 'Share' });
   const settingsModal = useModal('project-settings', ProjectSettingsModal, { title: 'Project settings', type: 'side' });
+  const useTemplateModal = useModal('project-from-template', DuplicateProjectModal, { title: 'New from template' });
+  const can = useCan();
 
   const openTask = (taskId: string) => setParams((prev) => ({ ...Object.fromEntries(prev), task: taskId }));
 
@@ -175,6 +183,10 @@ export const ProjectDetail = () => {
           { label: 'Parts', value: View.PARTS, icon: <FiPackage size={14} /> },
           { label: 'Journal', value: View.JOURNAL, icon: <FiBookOpen size={14} /> },
         ]
+      : []),
+    // The shoot's gear list, for those who may read shoots.
+    ...(project.type === ProjectType.Trip && project.photoEntry && can('photoEntry.read')
+      ? [{ label: 'Packing', value: View.PACKING, icon: <FiCamera size={14} /> }]
       : []),
     { label: 'Docs', value: View.DOCS, icon: <FiFolder size={14} /> },
     { label: 'Comments', value: View.COMMENTS, icon: <FiMessageSquare size={14} /> },
@@ -238,11 +250,14 @@ export const ProjectDetail = () => {
     }, 'Could not change the task.');
 
   const { progress } = project;
-  const people = [project.owner, ...project.members.map((m) => m.user)];
+  // The owner comes first in `members`.
+  const people = project.members.map((m) => m.user);
 
   const body =
     view === View.PARTS ? (
       <BomList project={project} />
+    ) : view === View.PACKING && project.photoEntry ? (
+      <TripPacking entry={project.photoEntry} />
     ) : view === View.JOURNAL ? (
       <Journal project={project} />
     ) : view === View.COMMENTS ? (
@@ -306,6 +321,7 @@ export const ProjectDetail = () => {
               progress.total ? `${progress.done} of ${progress.total} done` : 'No tasks yet',
               progress.overdue ? `${progress.overdue} overdue` : '',
               project.dueDate ? `due ${dueLabel(project.dueDate)}` : '',
+              project.photoEntry ? `shoot: ${project.photoEntry.name}` : '',
               project.role !== ProjectRole.Owner ? `shared by ${userName(project.owner)}` : '',
             ]
               .filter(Boolean)
@@ -331,11 +347,35 @@ export const ProjectDetail = () => {
                   label={isMobile ? '' : 'Settings'}
                   variant='secondary'
                   icon={<FiSettings size={14} />}
-                  onClick={() => settingsModal.show({ projectId: project.id, onGone: () => navigate(projectsRoot) })}
+                  onClick={() =>
+                    settingsModal.show({
+                      projectId: project.id,
+                      onGone: () => navigate(projectsRoot),
+                      onCopied: (id: string) => navigate(`${projectsRoot}/${id}`),
+                    })
+                  }
                 />
               </>
             }
           />
+          {project.isTemplate ? (
+            <div style={styles.template}>
+              <span style={{ flex: 1 }}>
+                A template: a plan to start projects from. Ticks here are not work; it stays out of your lists.
+              </span>
+              <Button
+                label='Use template'
+                onClick={() =>
+                  useTemplateModal.show({
+                    projectId: project.id,
+                    sourceTitle: project.title,
+                    mode: 'fromTemplate',
+                    onCreated: (id: string) => navigate(`${projectsRoot}/${id}`),
+                  })
+                }
+              />
+            </div>
+          ) : null}
           {project.description ? (
             <span style={{ ...shared.muted, ...styles.description }}>{project.description}</span>
           ) : null}
@@ -385,6 +425,17 @@ const useStyles = mkUseStyles((t) => ({
   toolbar: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m, flexWrap: 'wrap' },
   quickAdd: { flex: '1 1 280px', maxWidth: 640 },
   comments: { maxWidth: 760 },
+  template: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: t.spacing.m,
+    padding: `${t.spacing.sm}px ${t.spacing.m}px`,
+    borderRadius: t.borderRadius.large,
+    fontSize: 13,
+    color: t.colors.purple02,
+    backgroundColor: t.colors.purple02 + t.colorOpacity(0.1),
+  },
   people: {
     display: 'inline-flex',
     alignItems: 'center',
