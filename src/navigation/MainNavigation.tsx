@@ -11,9 +11,11 @@ import { PhotoManagementNavigation } from '~/navigation/PhotoManagementNavigatio
 import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { ServerNavigation } from '~/navigation/ServerNavigation';
 import { DeployNavigation } from '~/navigation/DeployNavigation';
+import { ProjectsNavigation } from '~/navigation/ProjectsNavigation';
 import {
   BlogNavigationRoute,
   DeployNavigationRoute,
+  ProjectsNavigationRoute,
   GalleryNavigationRoute,
   MainNavigationRoute,
   MainRouteType,
@@ -97,6 +99,17 @@ export const mainNavigationRoutes: MainRouteType[] = [
     component: <ServerNavigation />,
     nested: true,
     permission: 'server.read',
+  },
+  {
+    path: MainNavigationRoute.PROJECTS,
+    label: 'Projects',
+    component: <ProjectsNavigation />,
+    nested: true,
+    // No ACL gate: projects are personal and shared by membership.
+    subItems: [
+      { path: ProjectsNavigationRoute.PROJECTS, label: 'Projects' },
+      { path: ProjectsNavigationRoute.MY_WORK, label: 'My work' },
+    ],
   },
   {
     path: MainNavigationRoute.DEPLOY,

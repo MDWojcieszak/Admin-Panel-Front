@@ -19,6 +19,8 @@ import {
   DashboardApi,
   DefaultApi,
   DeployApi,
+  ProjectsApi,
+  TasksApi,
   FileApi,
   GalleriesApi,
   InquiriesApi,
@@ -82,6 +84,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const aclApi = useMemo(() => config && new ACLApi(config), [config]);
   const defaultApi = useMemo(() => config && new DefaultApi(config), [config]);
   const deployApi = useMemo(() => config && new DeployApi(config), [config]);
+  const projectsApi = useMemo(() => config && new ProjectsApi(config), [config]);
+  const tasksApi = useMemo(() => config && new TasksApi(config), [config]);
   const dashboardApi = useMemo(() => config && new DashboardApi(config), [config]);
   const blogPostsApi = useMemo(() => config && new BlogPostsApi(config), [config]);
   const blogVersioningApi = useMemo(() => config && new BlogVersioningApi(config), [config]);
@@ -119,6 +123,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         aclApi,
         defaultApi,
         deployApi,
+        projectsApi,
+        tasksApi,
         dashboardApi,
         blogPostsApi,
         blogVersioningApi,

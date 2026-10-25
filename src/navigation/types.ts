@@ -16,6 +16,7 @@ export enum MainNavigationRoute {
   ABOUT = 'about',
   BLOG = 'blog',
   DEPLOY = 'deploy',
+  PROJECTS = 'projects',
 }
 
 export enum PhotoNavigationRoute {
@@ -39,6 +40,11 @@ export enum BlogNavigationRoute {
   HOME = 'home',
   TEMPLATES = 'templates',
   INSIGHTS = 'insights',
+}
+
+export enum ProjectsNavigationRoute {
+  PROJECTS = '',
+  MY_WORK = 'my-work',
 }
 
 export enum DeployNavigationRoute {

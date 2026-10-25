@@ -19,6 +19,8 @@ import {
   DashboardApi,
   DefaultApi,
   DeployApi,
+  ProjectsApi,
+  TasksApi,
   FileApi,
   GalleriesApi,
   InquiriesApi,
@@ -55,6 +57,8 @@ type ApiContextType = {
   aclApi: ACLApi | false;
   defaultApi: DefaultApi | false;
   deployApi: DeployApi | false;
+  projectsApi: ProjectsApi | false;
+  tasksApi: TasksApi | false;
   dashboardApi: DashboardApi | false;
   blogPostsApi: BlogPostsApi | false;
   blogVersioningApi: BlogVersioningApi | false;
