@@ -3650,6 +3650,25 @@ export interface CreateCommentDto {
 /**
  * 
  * @export
+ * @interface CreateDocumentLinkDto
+ */
+export interface CreateDocumentLinkDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateDocumentLinkDto
+     */
+    'projectId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateDocumentLinkDto
+     */
+    'taskId'?: string;
+}
+/**
+ * 
+ * @export
  * @interface CreateEmptyAlbumDto
  */
 export interface CreateEmptyAlbumDto {
@@ -6020,6 +6039,25 @@ export interface DocumentColumnDto {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+
+export const DocumentKind = {
+    Image: 'IMAGE',
+    Pdf: 'PDF',
+    Model3D: 'MODEL_3D',
+    Cad: 'CAD',
+    Archive: 'ARCHIVE',
+    Text: 'TEXT',
+    Other: 'OTHER'
+} as const;
+
+export type DocumentKind = typeof DocumentKind[keyof typeof DocumentKind];
+
+
+/**
+ * 
+ * @export
  * @interface DocumentLeafBlockDto
  */
 export interface DocumentLeafBlockDto {
@@ -6197,6 +6235,93 @@ export interface DocumentLeafBlockDto {
 /**
  * 
  * @export
+ * @interface DocumentLinkProjectResponse
+ */
+export interface DocumentLinkProjectResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkProjectResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkProjectResponse
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkProjectResponse
+     */
+    'key': string;
+}
+/**
+ * 
+ * @export
+ * @interface DocumentLinkResponse
+ */
+export interface DocumentLinkResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {DocumentLinkProjectResponse}
+     * @memberof DocumentLinkResponse
+     */
+    'project': DocumentLinkProjectResponse;
+    /**
+     * 
+     * @type {DocumentLinkTaskResponse}
+     * @memberof DocumentLinkResponse
+     */
+    'task'?: DocumentLinkTaskResponse | null;
+    /**
+     * 
+     * @type {ProjectUserResponse}
+     * @memberof DocumentLinkResponse
+     */
+    'addedBy': ProjectUserResponse;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkResponse
+     */
+    'createdAt': string;
+}
+/**
+ * 
+ * @export
+ * @interface DocumentLinkTaskResponse
+ */
+export interface DocumentLinkTaskResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkTaskResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkTaskResponse
+     */
+    'key': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkTaskResponse
+     */
+    'title': string;
+}
+/**
+ * 
+ * @export
  * @interface DocumentListItemInputDto
  */
 export interface DocumentListItemInputDto {
@@ -6207,6 +6332,150 @@ export interface DocumentListItemInputDto {
      */
     'content'?: string | null;
 }
+/**
+ * 
+ * @export
+ * @interface DocumentResponse
+ */
+export interface DocumentResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'originalName': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'mimeType': string;
+    /**
+     * 
+     * @type {DocumentKind}
+     * @memberof DocumentResponse
+     */
+    'kind': DocumentKind;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentResponse
+     */
+    'sizeBytes': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'extension'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentResponse
+     */
+    'width'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentResponse
+     */
+    'height'?: number | null;
+    /**
+     * 
+     * @type {ProjectUserResponse}
+     * @memberof DocumentResponse
+     */
+    'owner': ProjectUserResponse;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DocumentResponse
+     */
+    'isMine': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DocumentResponse
+     */
+    'inline': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'thumbUrl'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'previewUrl'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'fileUrl': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'downloadUrl': string;
+    /**
+     * 
+     * @type {Array<DocumentLinkResponse>}
+     * @memberof DocumentResponse
+     */
+    'links': Array<DocumentLinkResponse>;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentResponse
+     */
+    'updatedAt': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const DocumentVariant = {
+    Original: 'original',
+    Thumb: 'thumb',
+    Large: 'large'
+} as const;
+
+export type DocumentVariant = typeof DocumentVariant[keyof typeof DocumentVariant];
+
+
 /**
  * 
  * @export
@@ -21327,6 +21596,25 @@ export interface UpdateContactSettingsDto {
 /**
  * 
  * @export
+ * @interface UpdateDocumentDto
+ */
+export interface UpdateDocumentDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateDocumentDto
+     */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateDocumentDto
+     */
+    'description'?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface UpdateGalleryDto
  */
 export interface UpdateGalleryDto {
@@ -21776,6 +22064,25 @@ export interface UpdateTaskDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface UploadDocumentResponse
+ */
+export interface UploadDocumentResponse {
+    /**
+     * 
+     * @type {DocumentResponse}
+     * @memberof UploadDocumentResponse
+     */
+    'document': DocumentResponse;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UploadDocumentResponse
+     */
+    'duplicate': boolean;
+}
 /**
  * 
  * @export
@@ -41887,6 +42194,910 @@ export class DeviceAuthorizationApi extends BaseAPI {
      */
     public deviceAuthControllerToken(requestParameters: DeviceAuthorizationApiDeviceAuthControllerTokenRequest, options?: RawAxiosRequestConfig) {
         return DeviceAuthorizationApiFp(this.configuration).deviceAuthControllerToken(requestParameters.deviceTokenDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * DocumentsApi - axios parameter creator
+ * @export
+ */
+export const DocumentsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Do not build this URL: take fileUrl / thumbUrl / previewUrl from the document.
+         * @summary A document file or preview (signed URL)
+         * @param {string} id 
+         * @param {DocumentVariant} variant 
+         * @param {string} exp 
+         * @param {string} sig 
+         * @param {string} [download] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerFile: async (id: string, variant: DocumentVariant, exp: string, sig: string, download?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('documentControllerFile', 'id', id)
+            // verify required parameter 'variant' is not null or undefined
+            assertParamExists('documentControllerFile', 'variant', variant)
+            // verify required parameter 'exp' is not null or undefined
+            assertParamExists('documentControllerFile', 'exp', exp)
+            // verify required parameter 'sig' is not null or undefined
+            assertParamExists('documentControllerFile', 'sig', sig)
+            const localVarPath = `/documents/{id}/file`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (variant !== undefined) {
+                localVarQueryParameter['variant'] = variant;
+            }
+
+            if (exp !== undefined) {
+                localVarQueryParameter['exp'] = exp;
+            }
+
+            if (sig !== undefined) {
+                localVarQueryParameter['sig'] = sig;
+            }
+
+            if (download !== undefined) {
+                localVarQueryParameter['download'] = download;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerGet: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('documentControllerGet', 'id', id)
+            const localVarPath = `/documents/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {CreateDocumentLinkDto} createDocumentLinkDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerLink: async (id: string, createDocumentLinkDto: CreateDocumentLinkDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('documentControllerLink', 'id', id)
+            // verify required parameter 'createDocumentLinkDto' is not null or undefined
+            assertParamExists('documentControllerLink', 'createDocumentLinkDto', createDocumentLinkDto)
+            const localVarPath = `/documents/{id}/links`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createDocumentLinkDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [projectId] 
+         * @param {string} [taskId] 
+         * @param {string} [q] 
+         * @param {DocumentKind} [kind] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerList: async (projectId?: string, taskId?: string, q?: string, kind?: DocumentKind, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/documents`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (projectId !== undefined) {
+                localVarQueryParameter['projectId'] = projectId;
+            }
+
+            if (taskId !== undefined) {
+                localVarQueryParameter['taskId'] = taskId;
+            }
+
+            if (q !== undefined) {
+                localVarQueryParameter['q'] = q;
+            }
+
+            if (kind !== undefined) {
+                localVarQueryParameter['kind'] = kind;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerRemove: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('documentControllerRemove', 'id', id)
+            const localVarPath = `/documents/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} linkId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerUnlink: async (id: string, linkId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('documentControllerUnlink', 'id', id)
+            // verify required parameter 'linkId' is not null or undefined
+            assertParamExists('documentControllerUnlink', 'linkId', linkId)
+            const localVarPath = `/documents/{id}/links/{linkId}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"linkId"}}`, encodeURIComponent(String(linkId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateDocumentDto} updateDocumentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerUpdate: async (id: string, updateDocumentDto: UpdateDocumentDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('documentControllerUpdate', 'id', id)
+            // verify required parameter 'updateDocumentDto' is not null or undefined
+            assertParamExists('documentControllerUpdate', 'updateDocumentDto', updateDocumentDto)
+            const localVarPath = `/documents/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateDocumentDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Optionally pinned to a project or task at once. The same file uploaded again returns the document you already have (duplicate: true).
+         * @summary Upload any file to your library
+         * @param {File} file 
+         * @param {string} [title] 
+         * @param {string} [description] 
+         * @param {string} [projectId] 
+         * @param {string} [taskId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerUpload: async (file: File, title?: string, description?: string, projectId?: string, taskId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'file' is not null or undefined
+            assertParamExists('documentControllerUpload', 'file', file)
+            const localVarPath = `/documents`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
+            }
+    
+            if (title !== undefined) { 
+                localVarFormParams.append('title', title as any);
+            }
+    
+            if (description !== undefined) { 
+                localVarFormParams.append('description', description as any);
+            }
+    
+            if (projectId !== undefined) { 
+                localVarFormParams.append('projectId', projectId as any);
+            }
+    
+            if (taskId !== undefined) { 
+                localVarFormParams.append('taskId', taskId as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DocumentsApi - functional programming interface
+ * @export
+ */
+export const DocumentsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DocumentsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Do not build this URL: take fileUrl / thumbUrl / previewUrl from the document.
+         * @summary A document file or preview (signed URL)
+         * @param {string} id 
+         * @param {DocumentVariant} variant 
+         * @param {string} exp 
+         * @param {string} sig 
+         * @param {string} [download] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentControllerFile(id: string, variant: DocumentVariant, exp: string, sig: string, download?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerFile(id, variant, exp, sig, download, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerFile']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentControllerGet(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerGet(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {CreateDocumentLinkDto} createDocumentLinkDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentControllerLink(id: string, createDocumentLinkDto: CreateDocumentLinkDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerLink(id, createDocumentLinkDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerLink']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} [projectId] 
+         * @param {string} [taskId] 
+         * @param {string} [q] 
+         * @param {DocumentKind} [kind] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentControllerList(projectId?: string, taskId?: string, q?: string, kind?: DocumentKind, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DocumentResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerList(projectId, taskId, q, kind, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentControllerRemove(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerRemove(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerRemove']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} linkId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentControllerUnlink(id: string, linkId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerUnlink(id, linkId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerUnlink']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateDocumentDto} updateDocumentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentControllerUpdate(id: string, updateDocumentDto: UpdateDocumentDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerUpdate(id, updateDocumentDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Optionally pinned to a project or task at once. The same file uploaded again returns the document you already have (duplicate: true).
+         * @summary Upload any file to your library
+         * @param {File} file 
+         * @param {string} [title] 
+         * @param {string} [description] 
+         * @param {string} [projectId] 
+         * @param {string} [taskId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentControllerUpload(file: File, title?: string, description?: string, projectId?: string, taskId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadDocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerUpload(file, title, description, projectId, taskId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerUpload']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DocumentsApi - factory interface
+ * @export
+ */
+export const DocumentsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DocumentsApiFp(configuration)
+    return {
+        /**
+         * Do not build this URL: take fileUrl / thumbUrl / previewUrl from the document.
+         * @summary A document file or preview (signed URL)
+         * @param {DocumentsApiDocumentControllerFileRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerFile(requestParameters: DocumentsApiDocumentControllerFileRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.documentControllerFile(requestParameters.id, requestParameters.variant, requestParameters.exp, requestParameters.sig, requestParameters.download, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DocumentsApiDocumentControllerGetRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerGet(requestParameters: DocumentsApiDocumentControllerGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
+            return localVarFp.documentControllerGet(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DocumentsApiDocumentControllerLinkRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerLink(requestParameters: DocumentsApiDocumentControllerLinkRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
+            return localVarFp.documentControllerLink(requestParameters.id, requestParameters.createDocumentLinkDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DocumentsApiDocumentControllerListRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerList(requestParameters: DocumentsApiDocumentControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<DocumentResponse>> {
+            return localVarFp.documentControllerList(requestParameters.projectId, requestParameters.taskId, requestParameters.q, requestParameters.kind, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DocumentsApiDocumentControllerRemoveRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerRemove(requestParameters: DocumentsApiDocumentControllerRemoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.documentControllerRemove(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DocumentsApiDocumentControllerUnlinkRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerUnlink(requestParameters: DocumentsApiDocumentControllerUnlinkRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
+            return localVarFp.documentControllerUnlink(requestParameters.id, requestParameters.linkId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DocumentsApiDocumentControllerUpdateRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerUpdate(requestParameters: DocumentsApiDocumentControllerUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
+            return localVarFp.documentControllerUpdate(requestParameters.id, requestParameters.updateDocumentDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Optionally pinned to a project or task at once. The same file uploaded again returns the document you already have (duplicate: true).
+         * @summary Upload any file to your library
+         * @param {DocumentsApiDocumentControllerUploadRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentControllerUpload(requestParameters: DocumentsApiDocumentControllerUploadRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadDocumentResponse> {
+            return localVarFp.documentControllerUpload(requestParameters.file, requestParameters.title, requestParameters.description, requestParameters.projectId, requestParameters.taskId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for documentControllerFile operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiDocumentControllerFileRequest
+ */
+export interface DocumentsApiDocumentControllerFileRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerFile
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {DocumentVariant}
+     * @memberof DocumentsApiDocumentControllerFile
+     */
+    readonly variant: DocumentVariant
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerFile
+     */
+    readonly exp: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerFile
+     */
+    readonly sig: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerFile
+     */
+    readonly download?: string
+}
+
+/**
+ * Request parameters for documentControllerGet operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiDocumentControllerGetRequest
+ */
+export interface DocumentsApiDocumentControllerGetRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerGet
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for documentControllerLink operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiDocumentControllerLinkRequest
+ */
+export interface DocumentsApiDocumentControllerLinkRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerLink
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {CreateDocumentLinkDto}
+     * @memberof DocumentsApiDocumentControllerLink
+     */
+    readonly createDocumentLinkDto: CreateDocumentLinkDto
+}
+
+/**
+ * Request parameters for documentControllerList operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiDocumentControllerListRequest
+ */
+export interface DocumentsApiDocumentControllerListRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerList
+     */
+    readonly projectId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerList
+     */
+    readonly taskId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerList
+     */
+    readonly q?: string
+
+    /**
+     * 
+     * @type {DocumentKind}
+     * @memberof DocumentsApiDocumentControllerList
+     */
+    readonly kind?: DocumentKind
+}
+
+/**
+ * Request parameters for documentControllerRemove operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiDocumentControllerRemoveRequest
+ */
+export interface DocumentsApiDocumentControllerRemoveRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerRemove
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for documentControllerUnlink operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiDocumentControllerUnlinkRequest
+ */
+export interface DocumentsApiDocumentControllerUnlinkRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerUnlink
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerUnlink
+     */
+    readonly linkId: string
+}
+
+/**
+ * Request parameters for documentControllerUpdate operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiDocumentControllerUpdateRequest
+ */
+export interface DocumentsApiDocumentControllerUpdateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerUpdate
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {UpdateDocumentDto}
+     * @memberof DocumentsApiDocumentControllerUpdate
+     */
+    readonly updateDocumentDto: UpdateDocumentDto
+}
+
+/**
+ * Request parameters for documentControllerUpload operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiDocumentControllerUploadRequest
+ */
+export interface DocumentsApiDocumentControllerUploadRequest {
+    /**
+     * 
+     * @type {File}
+     * @memberof DocumentsApiDocumentControllerUpload
+     */
+    readonly file: File
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerUpload
+     */
+    readonly title?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerUpload
+     */
+    readonly description?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerUpload
+     */
+    readonly projectId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentControllerUpload
+     */
+    readonly taskId?: string
+}
+
+/**
+ * DocumentsApi - object-oriented interface
+ * @export
+ * @class DocumentsApi
+ * @extends {BaseAPI}
+ */
+export class DocumentsApi extends BaseAPI {
+    /**
+     * Do not build this URL: take fileUrl / thumbUrl / previewUrl from the document.
+     * @summary A document file or preview (signed URL)
+     * @param {DocumentsApiDocumentControllerFileRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public documentControllerFile(requestParameters: DocumentsApiDocumentControllerFileRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentControllerFile(requestParameters.id, requestParameters.variant, requestParameters.exp, requestParameters.sig, requestParameters.download, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DocumentsApiDocumentControllerGetRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public documentControllerGet(requestParameters: DocumentsApiDocumentControllerGetRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentControllerGet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DocumentsApiDocumentControllerLinkRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public documentControllerLink(requestParameters: DocumentsApiDocumentControllerLinkRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentControllerLink(requestParameters.id, requestParameters.createDocumentLinkDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DocumentsApiDocumentControllerListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public documentControllerList(requestParameters: DocumentsApiDocumentControllerListRequest = {}, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentControllerList(requestParameters.projectId, requestParameters.taskId, requestParameters.q, requestParameters.kind, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DocumentsApiDocumentControllerRemoveRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public documentControllerRemove(requestParameters: DocumentsApiDocumentControllerRemoveRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentControllerRemove(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DocumentsApiDocumentControllerUnlinkRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public documentControllerUnlink(requestParameters: DocumentsApiDocumentControllerUnlinkRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentControllerUnlink(requestParameters.id, requestParameters.linkId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DocumentsApiDocumentControllerUpdateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public documentControllerUpdate(requestParameters: DocumentsApiDocumentControllerUpdateRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentControllerUpdate(requestParameters.id, requestParameters.updateDocumentDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Optionally pinned to a project or task at once. The same file uploaded again returns the document you already have (duplicate: true).
+     * @summary Upload any file to your library
+     * @param {DocumentsApiDocumentControllerUploadRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public documentControllerUpload(requestParameters: DocumentsApiDocumentControllerUploadRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentControllerUpload(requestParameters.file, requestParameters.title, requestParameters.description, requestParameters.projectId, requestParameters.taskId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

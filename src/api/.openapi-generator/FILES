@@ -143,6 +143,7 @@ docs/CreateCodeDto.md
 docs/CreateCollectionDto.md
 docs/CreateCommandProgressMarkerDto.md
 docs/CreateCommentDto.md
+docs/CreateDocumentLinkDto.md
 docs/CreateEmptyAlbumDto.md
 docs/CreateGalleryDto.md
 docs/CreateGearDto.md
@@ -201,8 +202,15 @@ docs/DiskType.md
 docs/DocumentBlockDto.md
 docs/DocumentBlockType.md
 docs/DocumentColumnDto.md
+docs/DocumentKind.md
 docs/DocumentLeafBlockDto.md
+docs/DocumentLinkProjectResponse.md
+docs/DocumentLinkResponse.md
+docs/DocumentLinkTaskResponse.md
 docs/DocumentListItemInputDto.md
+docs/DocumentResponse.md
+docs/DocumentVariant.md
+docs/DocumentsApi.md
 docs/EclipseContactsResponse.md
 docs/EcosystemAccessGrantsApi.md
 docs/EcosystemAppDevicesApi.md
@@ -639,6 +647,7 @@ docs/UpdateApplicationDto.md
 docs/UpdateChecklistItemDto.md
 docs/UpdateCommandProgressMarkerDto.md
 docs/UpdateContactSettingsDto.md
+docs/UpdateDocumentDto.md
 docs/UpdateGalleryDto.md
 docs/UpdateGearDto.md
 docs/UpdateGearKitDto.md
@@ -649,6 +658,7 @@ docs/UpdateProjectDto.md
 docs/UpdateProjectMemberDto.md
 docs/UpdateProjectStatusDto.md
 docs/UpdateTaskDto.md
+docs/UploadDocumentResponse.md
 docs/UploadResponseDto.md
 docs/UpsertApplicationEnvDto.md
 docs/UpsertCategoryTranslationDto.md
