@@ -21,6 +21,8 @@ import {
   DeployApi,
   ProjectsApi,
   DocumentsApi,
+  BuildsApi,
+  CommentsApi,
   TasksApi,
   FileApi,
   GalleriesApi,
@@ -60,6 +62,8 @@ type ApiContextType = {
   deployApi: DeployApi | false;
   projectsApi: ProjectsApi | false;
   documentsApi: DocumentsApi | false;
+  buildsApi: BuildsApi | false;
+  commentsApi: CommentsApi | false;
   tasksApi: TasksApi | false;
   dashboardApi: DashboardApi | false;
   blogPostsApi: BlogPostsApi | false;

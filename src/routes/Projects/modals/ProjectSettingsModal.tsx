@@ -300,7 +300,7 @@ const Workflow = ({
     run(
       () =>
         projectsApi
-          ? projectsApi.projectControllerReorderStatuses({ id: project.id, reorderDto: { ids } })
+          ? projectsApi.projectControllerReorderStatuses({ id: project.id, reorderIdsDto: { ids } })
           : Promise.resolve(),
       'Could not reorder.',
     );

@@ -35,7 +35,7 @@ export const Documents = () => {
 
   const query = useAsync<DocumentResponse[]>(async () => {
     if (!documentsApi) return undefined;
-    const { data } = await documentsApi.documentControllerList({
+    const { data } = await documentsApi.documentLibraryControllerList({
       q: q.trim() || undefined,
       // Archives and text files sit under Other with everything unrecognised.
       kind: kind === ALL || kind === DocumentKind.Other ? undefined : (kind as DocumentKind),

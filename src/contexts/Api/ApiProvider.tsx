@@ -21,6 +21,8 @@ import {
   DeployApi,
   ProjectsApi,
   DocumentsApi,
+  BuildsApi,
+  CommentsApi,
   TasksApi,
   FileApi,
   GalleriesApi,
@@ -87,6 +89,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const deployApi = useMemo(() => config && new DeployApi(config), [config]);
   const projectsApi = useMemo(() => config && new ProjectsApi(config), [config]);
   const documentsApi = useMemo(() => config && new DocumentsApi(config), [config]);
+  const buildsApi = useMemo(() => config && new BuildsApi(config), [config]);
+  const commentsApi = useMemo(() => config && new CommentsApi(config), [config]);
   const tasksApi = useMemo(() => config && new TasksApi(config), [config]);
   const dashboardApi = useMemo(() => config && new DashboardApi(config), [config]);
   const blogPostsApi = useMemo(() => config && new BlogPostsApi(config), [config]);
@@ -127,6 +131,8 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         deployApi,
         projectsApi,
         documentsApi,
+        buildsApi,
+        commentsApi,
         tasksApi,
         dashboardApi,
         blogPostsApi,

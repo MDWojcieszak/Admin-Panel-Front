@@ -1,5 +1,6 @@
 import { format, isToday, isTomorrow } from 'date-fns';
 import {
+  BomStatus,
   ProjectProgressResponse,
   ProjectRole,
   ProjectStatus,
@@ -103,3 +104,26 @@ export const fromDateInput = (value: string) => (value ? new Date(`${value}T12:0
 
 export const quantityLabel = (quantity?: number | null, unit?: string | null) =>
   quantity != null ? `${quantity}${unit ? ` ${unit}` : ''}` : unit || '';
+
+export const BOM_STATUS_LABEL: Record<BomStatus, string> = {
+  NEEDED: 'Needed',
+  ORDERED: 'Ordered',
+  HAVE: 'Have',
+  USED: 'Used',
+};
+
+export const BOM_STATUS_COLOR: Record<BomStatus, string> = {
+  NEEDED: '#F59E0B',
+  ORDERED: '#3B82F6',
+  HAVE: '#22C55E',
+  USED: '#64748B',
+};
+
+/** "312.50 PLN"; a price without a currency is just the number. */
+export const formatMoney = (value: number, currency?: string | null) => {
+  const amount = value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return currency ? `${amount} ${currency}` : amount;
+};
+
+/** Typed by another member: only plain web links become clickable. */
+export const SAFE_URL = /^https?:\/\//i;

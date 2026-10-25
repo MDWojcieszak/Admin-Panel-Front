@@ -10,7 +10,8 @@ import { DocumentPanel } from '~/routes/Documents/modals/DocumentPanel';
 import { PickDocumentModal } from '~/routes/Documents/modals/PickDocumentModal';
 import { useProjectEvents } from '~/routes/Projects/hooks/useProjectEvents';
 
-type Target = { projectId: string; taskId?: undefined } | { taskId: string; projectId?: undefined };
+/** Exactly one place, as the API wants it. */
+type Target = { projectId?: string; taskId?: string; bomItemId?: string; journalEntryId?: string };
 
 /**
  * Documents pinned to a project (with those on its tasks) or to one task.
@@ -29,13 +30,16 @@ export const ProjectDocuments = ({
   compact?: boolean;
 }) => {
   const { documentsApi } = useApi();
-  const scope = target.taskId ? `task-${target.taskId}` : `project-${target.projectId}`;
+  const scope = Object.entries(target)
+    .filter(([, id]) => id)
+    .map(([key, id]) => `${key}-${id}`)
+    .join('');
 
   const query = useAsync<DocumentResponse[]>(async () => {
     if (!documentsApi) return undefined;
-    const { data } = await documentsApi.documentControllerList(target);
+    const { data } = await documentsApi.documentLibraryControllerList(target);
     return data;
-  }, [documentsApi, target.projectId, target.taskId]);
+  }, [documentsApi, scope]);
 
   useProjectEvents((event) => event.kind === 'document' && query.reload(), projectId);
 

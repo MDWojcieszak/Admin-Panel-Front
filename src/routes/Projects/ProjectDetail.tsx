@@ -1,6 +1,17 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { FiArrowLeft, FiColumns, FiFolder, FiInbox, FiList, FiSettings, FiUsers } from 'react-icons/fi';
+import {
+  FiArrowLeft,
+  FiBookOpen,
+  FiColumns,
+  FiFolder,
+  FiInbox,
+  FiList,
+  FiMessageSquare,
+  FiPackage,
+  FiSettings,
+  FiUsers,
+} from 'react-icons/fi';
 import { CreateTaskDto, ProjectDetailResponse, ProjectRole, ProjectType, TaskResponse } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
@@ -14,6 +25,9 @@ import { useIsMobile } from '~/hooks/useBreakpoint';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
 import { MainNavigationRoute } from '~/navigation/types';
+import { BomList } from '~/routes/Projects/components/BomList';
+import { Comments } from '~/routes/Projects/components/Comments';
+import { Journal } from '~/routes/Projects/components/Journal';
 import { ProjectDocuments } from '~/routes/Projects/components/ProjectDocuments';
 import { QuickAdd } from '~/routes/Projects/components/QuickAdd';
 import { Avatar, ProjectsPage, useProjectStyles } from '~/routes/Projects/components/shared';
@@ -42,6 +56,9 @@ enum View {
   BOARD = 'board',
   LIST = 'list',
   DOCS = 'docs',
+  PARTS = 'parts',
+  JOURNAL = 'journal',
+  COMMENTS = 'comments',
 }
 
 const QUICK_ADD_PLACEHOLDER: Record<ProjectType, string> = {
@@ -49,6 +66,13 @@ const QUICK_ADD_PLACEHOLDER: Record<ProjectType, string> = {
   LIST: 'Add an item: "2 kg flour", "milk"',
   TRIP: 'Something to arrange or pack',
   DIY: 'A step, a part to order, a thing to test',
+};
+
+const VIEW_HINT: Partial<Record<View, string>> = {
+  [View.PARTS]: 'What the build needs, what it costs, what is still to buy.',
+  [View.JOURNAL]: 'The build, step by step: its documentation.',
+  [View.DOCS]: 'Files pinned to the project and anything in it.',
+  [View.COMMENTS]: 'Talk about the project as a whole.',
 };
 
 /** Projects are listed at /projects; the panel opens a task with ?task=<id>. */
@@ -141,7 +165,22 @@ export const ProjectDetail = () => {
   const checkable = canCheck(project.role, project.viewersCanCheck);
   const shopping = project.type === ProjectType.List;
   const defaultView = shopping || isMobile ? View.LIST : View.BOARD;
-  const view = (params.get('view') as View | null) ?? defaultView;
+  const build = project.type === ProjectType.Diy;
+  const tabs = [
+    { label: 'Board', value: View.BOARD, icon: <FiColumns size={14} /> },
+    { label: 'List', value: View.LIST, icon: <FiList size={14} /> },
+    // A build's sections; on other types they hide, their data stays (D6).
+    ...(build
+      ? [
+          { label: 'Parts', value: View.PARTS, icon: <FiPackage size={14} /> },
+          { label: 'Journal', value: View.JOURNAL, icon: <FiBookOpen size={14} /> },
+        ]
+      : []),
+    { label: 'Docs', value: View.DOCS, icon: <FiFolder size={14} /> },
+    { label: 'Comments', value: View.COMMENTS, icon: <FiMessageSquare size={14} /> },
+  ];
+  const asked = params.get('view') as View | null;
+  const view = asked && tabs.some((t) => t.value === asked) ? asked : defaultView;
   const setView = (next: View) =>
     setParams((prev) => {
       const out = new URLSearchParams(prev);
@@ -202,7 +241,15 @@ export const ProjectDetail = () => {
   const people = [project.owner, ...project.members.map((m) => m.user)];
 
   const body =
-    view === View.DOCS ? (
+    view === View.PARTS ? (
+      <BomList project={project} />
+    ) : view === View.JOURNAL ? (
+      <Journal project={project} />
+    ) : view === View.COMMENTS ? (
+      <div style={styles.comments}>
+        <Comments target={{ projectId: project.id }} projectId={project.id} />
+      </div>
+    ) : view === View.DOCS ? (
       <ProjectDocuments target={{ projectId: project.id }} projectId={project.id} editable={editable} />
     ) : view === View.BOARD ? (
       <TaskBoard
@@ -296,8 +343,8 @@ export const ProjectDetail = () => {
             <div style={{ ...styles.barFill, width: `${donePercent(progress)}%` }} />
           </div>
           <div style={styles.toolbar}>
-            {view === View.DOCS ? (
-              <span style={{ ...shared.muted, flex: 1 }}>Files pinned to the project and its tasks.</span>
+            {view !== View.BOARD && view !== View.LIST ? (
+              <span style={{ ...shared.muted, flex: 1 }}>{VIEW_HINT[view]}</span>
             ) : editable ? (
               <div style={styles.quickAdd}>
                 <QuickAdd
@@ -312,11 +359,7 @@ export const ProjectDetail = () => {
               </span>
             )}
             <SegmentedTabs
-              items={[
-                { label: 'Board', value: View.BOARD, icon: <FiColumns size={14} /> },
-                { label: 'List', value: View.LIST, icon: <FiList size={14} /> },
-                { label: 'Docs', value: View.DOCS, icon: <FiFolder size={14} /> },
-              ]}
+              items={tabs}
               selected={view}
               handleSelect={(value) => setView(value as View)}
               layoutId='project-view'
@@ -341,6 +384,7 @@ const useStyles = mkUseStyles((t) => ({
   barFill: { height: '100%', backgroundColor: t.colors.lightGreen, transition: 'width 0.3s ease' },
   toolbar: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m, flexWrap: 'wrap' },
   quickAdd: { flex: '1 1 280px', maxWidth: 640 },
+  comments: { maxWidth: 760 },
   people: {
     display: 'inline-flex',
     alignItems: 'center',

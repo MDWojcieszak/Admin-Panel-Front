@@ -49,7 +49,7 @@ export const DocumentPanel = (p: DocumentPanelProps) => {
   useEffect(() => {
     if (!ready || !documentsApi) return;
     documentsApi
-      .documentControllerGet({ id: p.documentId })
+      .documentLibraryControllerGet({ id: p.documentId })
       .then(({ data }) => show(data))
       .catch((e) => {
         toast(getApiErrorMessage(e, 'Could not open the document.'), 'error');
@@ -93,7 +93,7 @@ export const DocumentPanel = (p: DocumentPanelProps) => {
   const save = (dto: { title?: string; description?: string | null }) =>
     run(async () => {
       if (!documentsApi) return;
-      return (await documentsApi.documentControllerUpdate({ id: doc.id, updateDocumentDto: dto })).data;
+      return (await documentsApi.documentLibraryControllerUpdate({ id: doc.id, updateDocumentDto: dto })).data;
     }, 'Could not save the document.');
 
   const pinnedProjects = new Set(doc.links.filter((l) => !l.task).map((l) => l.project.id));
@@ -179,15 +179,30 @@ export const DocumentPanel = (p: DocumentPanelProps) => {
                   style={styles.place}
                   onClick={() => {
                     p.handleClose?.();
+                    const base = projectPath(link.project.id);
                     navigate(
                       link.task
-                        ? `${projectPath(link.project.id)}?task=${link.task.id}`
-                        : `${projectPath(link.project.id)}?view=docs`,
+                        ? `${base}?task=${link.task.id}`
+                        : link.bomItem
+                          ? `${base}?view=parts`
+                          : link.journalEntry
+                            ? `${base}?view=journal`
+                            : `${base}?view=docs`,
                     );
                   }}
                 >
                   <span style={shared.key}>{link.task ? link.task.key : link.project.key}</span>
-                  <span style={shared.ellipsis}>{link.task ? link.task.title : link.project.title}</span>
+                  <span style={shared.ellipsis}>
+                    {link.task
+                      ? link.task.title
+                      : link.bomItem
+                        ? `Part: ${link.bomItem.name}`
+                        : link.journalEntry
+                          ? `Journal: ${
+                              link.journalEntry.title || format(new Date(link.journalEntry.happenedAt), 'd MMM yyyy')
+                            }`
+                          : link.project.title}
+                  </span>
                 </button>
                 <button
                   type='button'
@@ -196,7 +211,10 @@ export const DocumentPanel = (p: DocumentPanelProps) => {
                   onClick={async () => {
                     if (!documentsApi) return;
                     try {
-                      const { data } = await documentsApi.documentControllerUnlink({ id: doc.id, linkId: link.id });
+                      const { data } = await documentsApi.documentLibraryControllerUnlink({
+                        id: doc.id,
+                        linkId: link.id,
+                      });
                       p.onChanged?.();
                       // The pin was the only way to see it: nothing left to show.
                       if (!data) p.handleClose?.();
@@ -244,7 +262,7 @@ export const DocumentPanel = (p: DocumentPanelProps) => {
               onClick={async () => {
                 const next = await run(async () => {
                   if (!documentsApi) return;
-                  const { data } = await documentsApi.documentControllerLink({
+                  const { data } = await documentsApi.documentLibraryControllerLink({
                     id: doc.id,
                     createDocumentLinkDto: pinTask ? { taskId: pinTask } : { projectId: pinProject },
                   });
@@ -279,7 +297,7 @@ export const DocumentPanel = (p: DocumentPanelProps) => {
                 onConfirm: async () => {
                   if (!documentsApi) return;
                   try {
-                    await documentsApi.documentControllerRemove({ id: doc.id });
+                    await documentsApi.documentLibraryControllerRemove({ id: doc.id });
                     p.onChanged?.();
                     p.handleClose?.();
                   } catch (e) {

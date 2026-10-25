@@ -4,7 +4,8 @@ import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
 import { getApiErrorMessage } from '~/utils/apiError';
 
-export type UploadTarget = { projectId?: string; taskId?: string };
+/** Exactly one place to pin uploads to. */
+export type UploadTarget = { projectId?: string; taskId?: string; bomItemId?: string; journalEntryId?: string };
 
 export type UploadProgress = { name: string; percent: number };
 
@@ -24,8 +25,8 @@ export const useDocumentUpload = (target?: UploadTarget) => {
     for (const file of files) {
       setProgress({ name: file.name, percent: 0 });
       try {
-        const { data } = await documentsApi.documentControllerUpload(
-          { file, projectId: target?.projectId, taskId: target?.taskId },
+        const { data } = await documentsApi.documentLibraryControllerUpload(
+          { file, ...target },
           {
             onUploadProgress: (e) =>
               setProgress({ name: file.name, percent: e.total ? Math.round((e.loaded / e.total) * 100) : 0 }),

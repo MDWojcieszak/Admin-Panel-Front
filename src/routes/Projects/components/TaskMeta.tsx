@@ -1,4 +1,4 @@
-import { FiCalendar, FiCheckSquare, FiGitBranch } from 'react-icons/fi';
+import { FiCalendar, FiCheckSquare, FiGitBranch, FiMessageSquare, FiPaperclip } from 'react-icons/fi';
 import { StatusCategory, TaskPriority, TaskResponse } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Avatar, useProjectStyles } from '~/routes/Projects/components/shared';
@@ -27,6 +27,18 @@ export const TaskMeta = ({ task, hideQuantity }: { task: TaskResponse; hideQuant
         <span style={{ ...shared.row, gap: 4 }}>
           <FiCheckSquare size={12} />
           {task.checklist.done}/{task.checklist.total}
+        </span>
+      ) : null}
+      {task.documentCount ? (
+        <span style={{ ...shared.row, gap: 4 }}>
+          <FiPaperclip size={12} />
+          {task.documentCount}
+        </span>
+      ) : null}
+      {task.commentCount ? (
+        <span style={{ ...shared.row, gap: 4 }}>
+          <FiMessageSquare size={12} />
+          {task.commentCount}
         </span>
       ) : null}
       {task.subtaskCount ? (

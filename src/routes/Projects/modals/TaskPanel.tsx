@@ -17,6 +17,7 @@ import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
+import { Comments } from '~/routes/Projects/components/Comments';
 import { ProjectDocuments } from '~/routes/Projects/components/ProjectDocuments';
 import { QuickAdd } from '~/routes/Projects/components/QuickAdd';
 import { Checkbox, Field, PlainSelect, StatusDot, useProjectStyles } from '~/routes/Projects/components/shared';
@@ -368,6 +369,11 @@ export const TaskPanel = (p: TaskPanelProps) => {
       <div style={styles.section}>
         <span style={shared.fieldLabel}>Files</span>
         <ProjectDocuments compact target={{ taskId: task.id }} projectId={task.project.id} editable={editable} />
+      </div>
+
+      <div style={styles.section}>
+        <span style={shared.fieldLabel}>Comments</span>
+        <Comments target={{ taskId: task.id }} projectId={task.project.id} />
       </div>
 
       <div style={styles.footer}>

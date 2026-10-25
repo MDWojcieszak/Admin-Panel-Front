@@ -30,7 +30,7 @@ export const PickDocumentModal = (p: PickDocumentModalProps) => {
     if (!documentsApi) return;
     const timer = window.setTimeout(() => {
       documentsApi
-        .documentControllerList({ q: q.trim() || undefined })
+        .documentLibraryControllerList({ q: q.trim() || undefined })
         .then(({ data }) => setDocuments(data))
         .catch(() => setDocuments([]));
     }, 200);
@@ -56,7 +56,7 @@ export const PickDocumentModal = (p: PickDocumentModalProps) => {
           onOpen={async (doc) => {
             if (!documentsApi) return;
             try {
-              await documentsApi.documentControllerLink({ id: doc.id, createDocumentLinkDto: p.target });
+              await documentsApi.documentLibraryControllerLink({ id: doc.id, createDocumentLinkDto: p.target });
               p.onPicked?.();
               p.handleClose?.();
             } catch (e) {
