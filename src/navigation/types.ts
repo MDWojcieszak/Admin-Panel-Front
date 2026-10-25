@@ -60,6 +60,7 @@ export enum CommonNavigationRoute {
   RESET_PASSWORD = 'reset-password',
   USER_REGISTRATION = 'register',
   ACTIVATE = 'activate',
+  SHARED = 'shared/:token',
   MAIN_NAVIGATION = '*',
   NOT_FOUND = 'not-found',
 }

@@ -9,6 +9,7 @@ import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useAuth } from '~/hooks/useAuth';
 import { useToast } from '~/hooks/useToast';
+import { ShareLinks } from '~/routes/Projects/components/ShareLinks';
 import { Avatar, PlainSelect, useProjectStyles } from '~/routes/Projects/components/shared';
 import { ROLE_LABEL, ROLE_TONE, userName } from '~/routes/Projects/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
@@ -25,7 +26,10 @@ const ROLE_OPTIONS = [
   { value: ProjectRole.Viewer, label: 'Viewer — sees the project' },
 ];
 
-/** Who the project is shared with (D2, D4): invited by their account's exact e-mail. */
+/**
+ * Who the project is shared with: accounts invited by their exact e-mail
+ * (D2, D4), and public links for anyone else (D3).
+ */
 export const ShareModal = (p: ShareModalProps) => {
   const styles = useStyles();
   const shared = useProjectStyles();
@@ -167,6 +171,8 @@ export const ShareModal = (p: ShareModalProps) => {
         {project.members.length === 0 ? <span style={shared.muted}>Only you, so far.</span> : null}
       </div>
 
+      {owns ? <ShareLinks projectId={project.id} /> : null}
+
       {owns ? (
         <Switch
           checked={project.viewersCanCheck}
@@ -214,7 +220,7 @@ const PersonLabel = ({ name, email }: { name: string; email: string }) => {
 };
 
 const useStyles = mkUseStyles((t) => ({
-  container: { gap: t.spacing.l, width: 'min(480px, 90vw)' },
+  container: { gap: t.spacing.l, width: 'min(560px, 90vw)' },
   invite: { gap: t.spacing.s },
   section: { gap: t.spacing.s },
   roleSelect: { width: 110, height: 32, fontSize: 13 },

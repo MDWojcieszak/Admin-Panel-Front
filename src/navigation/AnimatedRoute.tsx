@@ -32,11 +32,7 @@ export const AnimatedRoute = ({ children, bare }: AnimatedRouteProps) => {
       exit={{ scale: 0.98 }}
       transition={{ duration: 0.2 }}
     >
-      {bare ? (
-        inner
-      ) : (
-        <GlassCard style={isMobile ? styles.mobileContent : styles.contentContainer}>{inner}</GlassCard>
-      )}
+      {bare ? inner : <GlassCard style={isMobile ? styles.mobileContent : styles.contentContainer}>{inner}</GlassCard>}
     </motion.div>
   );
 };

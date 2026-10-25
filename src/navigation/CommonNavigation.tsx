@@ -11,6 +11,7 @@ import { ResetPassword } from '~/routes/Auth/ResetPassword';
 import { SignIn } from '~/routes/Auth/SignIn';
 import { UserRegister } from '~/routes/Auth/UserRegister';
 import { NotFound } from '~/routes/NotFound';
+import { SharedProject } from '~/routes/Shared/SharedProject';
 
 import { Welcome } from '~/routes/Welcome';
 import { mkUseStyles } from '~/utils/theme';
@@ -28,6 +29,9 @@ const commonRoutes: CommonRouteType[] = [
   // Device-flow landing page. Public so an unauthenticated user reaches it and
   // gets bounced through login with the code intact, rather than losing it.
   { path: CommonNavigationRoute.ACTIVATE, label: 'Activate', component: <Activate /> },
+
+  // A project opened from a public link: no account, nothing else of the panel.
+  { path: CommonNavigationRoute.SHARED, label: 'Shared project', component: <SharedProject /> },
 
   { path: CommonNavigationRoute.MAIN_NAVIGATION, label: 'Dashboard', component: <MainNavigation /> },
   { path: CommonNavigationRoute.NOT_FOUND, label: 'Not Found', component: <NotFound /> },
