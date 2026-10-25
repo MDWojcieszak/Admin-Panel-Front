@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **dueDate** | **string** |  | [optional] [default to undefined]
 **reminderAt** | **string** |  | [optional] [default to undefined]
 **repeat** | [**RepeatType**](RepeatType.md) |  | [optional] [default to undefined]
+**repeatCustom** | **string** |  | [optional] [default to undefined]
 **quantity** | **number** |  | [optional] [default to undefined]
 **unit** | **string** |  | [optional] [default to undefined]
 **assigneeId** | **string** |  | [optional] [default to undefined]
@@ -30,6 +31,7 @@ const instance: CreateTaskDto = {
     dueDate,
     reminderAt,
     repeat,
+    repeatCustom,
     quantity,
     unit,
     assigneeId,

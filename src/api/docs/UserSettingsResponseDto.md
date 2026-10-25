@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **photoMediaEmailNotifications** | **boolean** |  | [default to undefined]
 **tripEmailNotifications** | **boolean** |  | [default to undefined]
 **inquiryEmailNotifications** | **boolean** |  | [default to undefined]
+**taskEmailNotifications** | **boolean** |  | [default to undefined]
 
 ## Example
 
@@ -30,6 +31,7 @@ const instance: UserSettingsResponseDto = {
     photoMediaEmailNotifications,
     tripEmailNotifications,
     inquiryEmailNotifications,
+    taskEmailNotifications,
 };
 ```
 

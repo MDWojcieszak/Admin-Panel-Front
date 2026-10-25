@@ -5207,6 +5207,12 @@ export interface CreateTaskDto {
     'repeat'?: RepeatType;
     /**
      * 
+     * @type {string}
+     * @memberof CreateTaskDto
+     */
+    'repeatCustom'?: string | null;
+    /**
+     * 
      * @type {number}
      * @memberof CreateTaskDto
      */
@@ -12778,6 +12784,12 @@ export interface PatchUserSettingsDto {
      * @memberof PatchUserSettingsDto
      */
     'inquiryEmailNotifications'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'taskEmailNotifications'?: boolean;
 }
 /**
  * 
@@ -21457,6 +21469,12 @@ export interface TaskDetailResponse {
     'repeat': RepeatType;
     /**
      * 
+     * @type {string}
+     * @memberof TaskDetailResponse
+     */
+    'repeatCustom'?: string | null;
+    /**
+     * 
      * @type {number}
      * @memberof TaskDetailResponse
      */
@@ -21710,6 +21728,12 @@ export interface TaskResponse {
      * @memberof TaskResponse
      */
     'repeat': RepeatType;
+    /**
+     * 
+     * @type {string}
+     * @memberof TaskResponse
+     */
+    'repeatCustom'?: string | null;
     /**
      * 
      * @type {number}
@@ -22847,6 +22871,12 @@ export interface UpdateTaskDto {
     'repeat'?: RepeatType;
     /**
      * 
+     * @type {string}
+     * @memberof UpdateTaskDto
+     */
+    'repeatCustom'?: string | null;
+    /**
+     * 
      * @type {number}
      * @memberof UpdateTaskDto
      */
@@ -23431,6 +23461,12 @@ export interface UserSettingsResponseDto {
      * @memberof UserSettingsResponseDto
      */
     'inquiryEmailNotifications': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'taskEmailNotifications': boolean;
 }
 /**
  * 

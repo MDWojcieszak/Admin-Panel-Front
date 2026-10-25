@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **photoMediaEmailNotifications** | **boolean** |  | [optional] [default to undefined]
 **tripEmailNotifications** | **boolean** |  | [optional] [default to undefined]
 **inquiryEmailNotifications** | **boolean** |  | [optional] [default to undefined]
+**taskEmailNotifications** | **boolean** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -28,6 +29,7 @@ const instance: PatchUserSettingsDto = {
     photoMediaEmailNotifications,
     tripEmailNotifications,
     inquiryEmailNotifications,
+    taskEmailNotifications,
 };
 ```
 

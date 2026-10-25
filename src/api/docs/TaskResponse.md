@@ -16,6 +16,7 @@ Name | Type | Description | Notes
 **dueDate** | **string** |  | [optional] [default to undefined]
 **reminderAt** | **string** |  | [optional] [default to undefined]
 **repeat** | [**RepeatType**](RepeatType.md) |  | [default to undefined]
+**repeatCustom** | **string** |  | [optional] [default to undefined]
 **quantity** | **number** |  | [optional] [default to undefined]
 **unit** | **string** |  | [optional] [default to undefined]
 **order** | **number** |  | [default to undefined]
@@ -49,6 +50,7 @@ const instance: TaskResponse = {
     dueDate,
     reminderAt,
     repeat,
+    repeatCustom,
     quantity,
     unit,
     order,
