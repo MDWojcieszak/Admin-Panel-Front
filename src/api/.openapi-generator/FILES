@@ -93,7 +93,11 @@ docs/BlogVersioningApi.md
 docs/BomCostResponse.md
 docs/BomGearResponse.md
 docs/BomItemResponse.md
+docs/BomPartKind.md
+docs/BomPhotoResponse.md
 docs/BomResponse.md
+docs/BomShoppingListDto.md
+docs/BomShoppingListResponse.md
 docs/BomStatus.md
 docs/BomSummaryResponse.md
 docs/BuildMode.md
@@ -353,7 +357,9 @@ docs/MilkyWayCoreResponse.md
 docs/MonthlyPointDto.md
 docs/MoonResponse.md
 docs/MoveTaskDto.md
+docs/MoveTaskToProjectDto.md
 docs/MoveToGitDto.md
+docs/MovedTaskResponse.md
 docs/MultiUploadResponseDto.md
 docs/MyPermissionsResponseDto.md
 docs/MyTasksView.md
@@ -607,6 +613,7 @@ docs/SessionApi.md
 docs/SessionListResponseDto.md
 docs/SessionResponseDto.md
 docs/SetBlogAlbumItemsDto.md
+docs/SetBomPhotoDto.md
 docs/SetBomStatusDto.md
 docs/SetGalleryItemsDto.md
 docs/SetHeroDto.md

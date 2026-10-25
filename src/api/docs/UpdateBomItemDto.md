@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **string** |  | [optional] [default to undefined]
+**kind** | [**BomPartKind**](BomPartKind.md) |  | [optional] [default to undefined]
 **quantity** | **number** |  | [optional] [default to undefined]
 **unit** | **string** |  | [optional] [default to undefined]
 **status** | [**BomStatus**](BomStatus.md) |  | [optional] [default to undefined]
@@ -23,6 +24,7 @@ import { UpdateBomItemDto } from './api';
 
 const instance: UpdateBomItemDto = {
     name,
+    kind,
     quantity,
     unit,
     status,

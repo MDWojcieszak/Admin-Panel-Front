@@ -7,6 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** |  | [default to undefined]
 **name** | **string** |  | [default to undefined]
+**kind** | [**BomPartKind**](BomPartKind.md) |  | [default to undefined]
 **quantity** | **number** |  | [default to undefined]
 **unit** | **string** |  | [optional] [default to undefined]
 **status** | [**BomStatus**](BomStatus.md) |  | [default to undefined]
@@ -17,9 +18,11 @@ Name | Type | Description | Notes
 **url** | **string** |  | [optional] [default to undefined]
 **note** | **string** |  | [optional] [default to undefined]
 **gearItem** | [**BomGearResponse**](BomGearResponse.md) |  | [optional] [default to undefined]
+**photo** | [**BomPhotoResponse**](BomPhotoResponse.md) |  | [optional] [default to undefined]
 **order** | **number** |  | [default to undefined]
 **commentCount** | **number** |  | [default to undefined]
 **documentCount** | **number** |  | [default to undefined]
+**onShoppingList** | **boolean** |  | [default to undefined]
 
 ## Example
 
@@ -29,6 +32,7 @@ import { BomItemResponse } from './api';
 const instance: BomItemResponse = {
     id,
     name,
+    kind,
     quantity,
     unit,
     status,
@@ -39,9 +43,11 @@ const instance: BomItemResponse = {
     url,
     note,
     gearItem,
+    photo,
     order,
     commentCount,
     documentCount,
+    onShoppingList,
 };
 ```
 

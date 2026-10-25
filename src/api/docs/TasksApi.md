@@ -8,6 +8,7 @@ All URIs are relative to *http://localhost*
 |[**taskControllerGet**](#taskcontrollerget) | **GET** /tasks/{id} | |
 |[**taskControllerMine**](#taskcontrollermine) | **GET** /tasks/mine | |
 |[**taskControllerMove**](#taskcontrollermove) | **POST** /tasks/{id}/move | |
+|[**taskControllerMoveToProject**](#taskcontrollermovetoproject) | **POST** /tasks/{id}/move-to-project | |
 |[**taskControllerRemove**](#taskcontrollerremove) | **DELETE** /tasks/{id} | |
 |[**taskControllerRemoveChecklistItem**](#taskcontrollerremovechecklistitem) | **DELETE** /tasks/{id}/checklist/{itemId} | |
 |[**taskControllerReorderChecklist**](#taskcontrollerreorderchecklist) | **PUT** /tasks/{id}/checklist/order | |
@@ -205,6 +206,60 @@ const { status, data } = await apiInstance.taskControllerMove(
 ### Return type
 
 **TaskDetailResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **taskControllerMoveToProject**
+> MovedTaskResponse taskControllerMoveToProject(moveTaskToProjectDto)
+
+
+### Example
+
+```typescript
+import {
+    TasksApi,
+    Configuration,
+    MoveTaskToProjectDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new TasksApi(configuration);
+
+let id: string; // (default to undefined)
+let moveTaskToProjectDto: MoveTaskToProjectDto; //
+
+const { status, data } = await apiInstance.taskControllerMoveToProject(
+    id,
+    moveTaskToProjectDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **moveTaskToProjectDto** | **MoveTaskToProjectDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**MovedTaskResponse**
 
 ### Authorization
 

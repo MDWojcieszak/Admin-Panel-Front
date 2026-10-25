@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **name** | **string** |  | [default to undefined]
+**kind** | [**BomPartKind**](BomPartKind.md) |  | [optional] [default to undefined]
 **quantity** | **number** |  | [optional] [default to undefined]
 **unit** | **string** |  | [optional] [default to undefined]
 **status** | [**BomStatus**](BomStatus.md) |  | [optional] [default to undefined]
@@ -23,6 +24,7 @@ import { CreateBomItemDto } from './api';
 
 const instance: CreateBomItemDto = {
     name,
+    kind,
     quantity,
     unit,
     status,

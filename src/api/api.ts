@@ -2142,6 +2142,12 @@ export interface BomItemResponse {
     'name': string;
     /**
      * 
+     * @type {BomPartKind}
+     * @memberof BomItemResponse
+     */
+    'kind': BomPartKind;
+    /**
+     * 
      * @type {number}
      * @memberof BomItemResponse
      */
@@ -2202,6 +2208,12 @@ export interface BomItemResponse {
     'gearItem'?: BomGearResponse | null;
     /**
      * 
+     * @type {BomPhotoResponse}
+     * @memberof BomItemResponse
+     */
+    'photo'?: BomPhotoResponse | null;
+    /**
+     * 
      * @type {number}
      * @memberof BomItemResponse
      */
@@ -2218,9 +2230,146 @@ export interface BomItemResponse {
      * @memberof BomItemResponse
      */
     'documentCount': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BomItemResponse
+     */
+    'onShoppingList': boolean;
 }
 
 
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const BomPartKind = {
+    Screw: 'SCREW',
+    Bolt: 'BOLT',
+    Nut: 'NUT',
+    Washer: 'WASHER',
+    ThreadedInsert: 'THREADED_INSERT',
+    Rivet: 'RIVET',
+    Standoff: 'STANDOFF',
+    Pin: 'PIN',
+    Clip: 'CLIP',
+    Anchor: 'ANCHOR',
+    Enclosure: 'ENCLOSURE',
+    Bracket: 'BRACKET',
+    Plate: 'PLATE',
+    Profile: 'PROFILE',
+    Tube: 'TUBE',
+    Rod: 'ROD',
+    Shaft: 'SHAFT',
+    Bearing: 'BEARING',
+    Bushing: 'BUSHING',
+    Gear: 'GEAR',
+    Belt: 'BELT',
+    Pulley: 'PULLEY',
+    Spring: 'SPRING',
+    Hinge: 'HINGE',
+    Handle: 'HANDLE',
+    Knob: 'KNOB',
+    Foot: 'FOOT',
+    Seal: 'SEAL',
+    Motor: 'MOTOR',
+    StepperMotor: 'STEPPER_MOTOR',
+    Servo: 'SERVO',
+    LinearActuator: 'LINEAR_ACTUATOR',
+    Leadscrew: 'LEADSCREW',
+    LinearRail: 'LINEAR_RAIL',
+    Coupler: 'COUPLER',
+    Pcb: 'PCB',
+    Microcontroller: 'MICROCONTROLLER',
+    Module: 'MODULE',
+    Sensor: 'SENSOR',
+    MotorDriver: 'MOTOR_DRIVER',
+    PowerSupply: 'POWER_SUPPLY',
+    Battery: 'BATTERY',
+    Charger: 'CHARGER',
+    Connector: 'CONNECTOR',
+    Cable: 'CABLE',
+    Wire: 'WIRE',
+    Switch: 'SWITCH',
+    Button: 'BUTTON',
+    Relay: 'RELAY',
+    Fuse: 'FUSE',
+    Led: 'LED',
+    Display: 'DISPLAY',
+    Resistor: 'RESISTOR',
+    Capacitor: 'CAPACITOR',
+    Inductor: 'INDUCTOR',
+    Diode: 'DIODE',
+    Transistor: 'TRANSISTOR',
+    Ic: 'IC',
+    Crystal: 'CRYSTAL',
+    Antenna: 'ANTENNA',
+    Heatsink: 'HEATSINK',
+    Fan: 'FAN',
+    Heater: 'HEATER',
+    Lens: 'LENS',
+    Filter: 'FILTER',
+    Mirror: 'MIRROR',
+    Prism: 'PRISM',
+    Camera: 'CAMERA',
+    CameraAccessory: 'CAMERA_ACCESSORY',
+    Filament: 'FILAMENT',
+    Resin: 'RESIN',
+    PrintedPart: 'PRINTED_PART',
+    Wood: 'WOOD',
+    MetalStock: 'METAL_STOCK',
+    PlasticStock: 'PLASTIC_STOCK',
+    Glass: 'GLASS',
+    Foam: 'FOAM',
+    Rubber: 'RUBBER',
+    Fabric: 'FABRIC',
+    Leather: 'LEATHER',
+    Adhesive: 'ADHESIVE',
+    Tape: 'TAPE',
+    Paint: 'PAINT',
+    Lubricant: 'LUBRICANT',
+    Solder: 'SOLDER',
+    Flux: 'FLUX',
+    HeatShrink: 'HEAT_SHRINK',
+    CableTie: 'CABLE_TIE',
+    Sandpaper: 'SANDPAPER',
+    Tool: 'TOOL',
+    ToolBit: 'TOOL_BIT',
+    Software: 'SOFTWARE',
+    Service: 'SERVICE',
+    Other: 'OTHER'
+} as const;
+
+export type BomPartKind = typeof BomPartKind[keyof typeof BomPartKind];
+
+
+/**
+ * 
+ * @export
+ * @interface BomPhotoResponse
+ */
+export interface BomPhotoResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BomPhotoResponse
+     */
+    'documentId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomPhotoResponse
+     */
+    'thumbUrl': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomPhotoResponse
+     */
+    'previewUrl': string;
+}
 /**
  * 
  * @export
@@ -2239,6 +2388,50 @@ export interface BomResponse {
      * @memberof BomResponse
      */
     'summary': BomSummaryResponse;
+}
+/**
+ * 
+ * @export
+ * @interface BomShoppingListDto
+ */
+export interface BomShoppingListDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof BomShoppingListDto
+     */
+    'targetProjectId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomShoppingListDto
+     */
+    'title'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface BomShoppingListResponse
+ */
+export interface BomShoppingListResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BomShoppingListResponse
+     */
+    'projectId': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomShoppingListResponse
+     */
+    'added': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomShoppingListResponse
+     */
+    'alreadyListed': number;
 }
 /**
  * 
@@ -3705,6 +3898,12 @@ export interface CreateBomItemDto {
      * @memberof CreateBomItemDto
      */
     'name': string;
+    /**
+     * 
+     * @type {BomPartKind}
+     * @memberof CreateBomItemDto
+     */
+    'kind'?: BomPartKind;
     /**
      * 
      * @type {number}
@@ -11113,6 +11312,25 @@ export interface MoveTaskDto {
 /**
  * 
  * @export
+ * @interface MoveTaskToProjectDto
+ */
+export interface MoveTaskToProjectDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof MoveTaskToProjectDto
+     */
+    'projectId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MoveTaskToProjectDto
+     */
+    'statusId'?: string;
+}
+/**
+ * 
+ * @export
  * @interface MoveToGitDto
  */
 export interface MoveToGitDto {
@@ -11155,6 +11373,25 @@ export interface MoveToGitDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface MovedTaskResponse
+ */
+export interface MovedTaskResponse {
+    /**
+     * 
+     * @type {TaskDetailResponse}
+     * @memberof MovedTaskResponse
+     */
+    'task': TaskDetailResponse;
+    /**
+     * 
+     * @type {number}
+     * @memberof MovedTaskResponse
+     */
+    'droppedDocuments': number;
+}
 /**
  * 
  * @export
@@ -20468,6 +20705,19 @@ export interface SetBlogAlbumItemsDto {
 /**
  * 
  * @export
+ * @interface SetBomPhotoDto
+ */
+export interface SetBomPhotoDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof SetBomPhotoDto
+     */
+    'documentId': string;
+}
+/**
+ * 
+ * @export
  * @interface SetBomStatusDto
  */
 export interface SetBomStatusDto {
@@ -22199,6 +22449,12 @@ export interface UpdateBomItemDto {
      * @memberof UpdateBomItemDto
      */
     'name'?: string;
+    /**
+     * 
+     * @type {BomPartKind}
+     * @memberof UpdateBomItemDto
+     */
+    'kind'?: BomPartKind;
     /**
      * 
      * @type {number}
@@ -38572,6 +38828,55 @@ export const BuildsApiAxiosParamCreator = function (configuration?: Configuratio
     return {
         /**
          * 
+         * @summary Upload a part\'s photo
+         * @param {string} itemId 
+         * @param {File} file 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        bomPhotoControllerUpload: async (itemId: string, file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('bomPhotoControllerUpload', 'itemId', itemId)
+            // verify required parameter 'file' is not null or undefined
+            assertParamExists('bomPhotoControllerUpload', 'file', file)
+            const localVarPath = `/bom/{itemId}/photo`
+                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {CreateBomItemDto} createBomItemDto 
          * @param {*} [options] Override http request option.
@@ -38650,6 +38955,43 @@ export const BuildsApiAxiosParamCreator = function (configuration?: Configuratio
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(createJournalEntryDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} itemId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerClearBomPhoto: async (itemId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('buildControllerClearBomPhoto', 'itemId', itemId)
+            const localVarPath = `/bom/{itemId}/photo`
+                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -38850,6 +39192,49 @@ export const BuildsApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * 
          * @param {string} itemId 
+         * @param {SetBomPhotoDto} setBomPhotoDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerSetBomPhoto: async (itemId: string, setBomPhotoDto: SetBomPhotoDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('buildControllerSetBomPhoto', 'itemId', itemId)
+            // verify required parameter 'setBomPhotoDto' is not null or undefined
+            assertParamExists('buildControllerSetBomPhoto', 'setBomPhotoDto', setBomPhotoDto)
+            const localVarPath = `/bom/{itemId}/photo`
+                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setBomPhotoDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} itemId 
          * @param {SetBomStatusDto} setBomStatusDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -38884,6 +39269,49 @@ export const BuildsApiAxiosParamCreator = function (configuration?: Configuratio
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(setBomStatusDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {BomShoppingListDto} bomShoppingListDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerToShoppingList: async (id: string, bomShoppingListDto: BomShoppingListDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('buildControllerToShoppingList', 'id', id)
+            // verify required parameter 'bomShoppingListDto' is not null or undefined
+            assertParamExists('buildControllerToShoppingList', 'bomShoppingListDto', bomShoppingListDto)
+            const localVarPath = `/projects/{id}/bom/shopping-list`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(bomShoppingListDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -38988,6 +39416,20 @@ export const BuildsApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Upload a part\'s photo
+         * @param {string} itemId 
+         * @param {File} file 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async bomPhotoControllerUpload(itemId: string, file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.bomPhotoControllerUpload(itemId, file, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.bomPhotoControllerUpload']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {CreateBomItemDto} createBomItemDto 
          * @param {*} [options] Override http request option.
@@ -39010,6 +39452,18 @@ export const BuildsApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerAddJournalEntry(id, createJournalEntryDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerAddJournalEntry']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} itemId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerClearBomPhoto(itemId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerClearBomPhoto(itemId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerClearBomPhoto']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -39076,6 +39530,19 @@ export const BuildsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} itemId 
+         * @param {SetBomPhotoDto} setBomPhotoDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerSetBomPhoto(itemId: string, setBomPhotoDto: SetBomPhotoDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerSetBomPhoto(itemId, setBomPhotoDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerSetBomPhoto']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} itemId 
          * @param {SetBomStatusDto} setBomStatusDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -39084,6 +39551,19 @@ export const BuildsApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerSetBomStatus(itemId, setBomStatusDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerSetBomStatus']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {BomShoppingListDto} bomShoppingListDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerToShoppingList(id: string, bomShoppingListDto: BomShoppingListDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomShoppingListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerToShoppingList(id, bomShoppingListDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerToShoppingList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -39124,6 +39604,16 @@ export const BuildsApiFactory = function (configuration?: Configuration, basePat
     return {
         /**
          * 
+         * @summary Upload a part\'s photo
+         * @param {BuildsApiBomPhotoControllerUploadRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        bomPhotoControllerUpload(requestParameters: BuildsApiBomPhotoControllerUploadRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
+            return localVarFp.bomPhotoControllerUpload(requestParameters.itemId, requestParameters.file, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {BuildsApiBuildControllerAddBomItemRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -39139,6 +39629,15 @@ export const BuildsApiFactory = function (configuration?: Configuration, basePat
          */
         buildControllerAddJournalEntry(requestParameters: BuildsApiBuildControllerAddJournalEntryRequest, options?: RawAxiosRequestConfig): AxiosPromise<JournalEntryResponse> {
             return localVarFp.buildControllerAddJournalEntry(requestParameters.id, requestParameters.createJournalEntryDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerClearBomPhotoRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerClearBomPhoto(requestParameters: BuildsApiBuildControllerClearBomPhotoRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
+            return localVarFp.buildControllerClearBomPhoto(requestParameters.itemId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -39187,12 +39686,30 @@ export const BuildsApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @param {BuildsApiBuildControllerSetBomPhotoRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerSetBomPhoto(requestParameters: BuildsApiBuildControllerSetBomPhotoRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
+            return localVarFp.buildControllerSetBomPhoto(requestParameters.itemId, requestParameters.setBomPhotoDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {BuildsApiBuildControllerSetBomStatusRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         buildControllerSetBomStatus(requestParameters: BuildsApiBuildControllerSetBomStatusRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
             return localVarFp.buildControllerSetBomStatus(requestParameters.itemId, requestParameters.setBomStatusDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerToShoppingListRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerToShoppingList(requestParameters: BuildsApiBuildControllerToShoppingListRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomShoppingListResponse> {
+            return localVarFp.buildControllerToShoppingList(requestParameters.id, requestParameters.bomShoppingListDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -39214,6 +39731,27 @@ export const BuildsApiFactory = function (configuration?: Configuration, basePat
         },
     };
 };
+
+/**
+ * Request parameters for bomPhotoControllerUpload operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBomPhotoControllerUploadRequest
+ */
+export interface BuildsApiBomPhotoControllerUploadRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBomPhotoControllerUpload
+     */
+    readonly itemId: string
+
+    /**
+     * 
+     * @type {File}
+     * @memberof BuildsApiBomPhotoControllerUpload
+     */
+    readonly file: File
+}
 
 /**
  * Request parameters for buildControllerAddBomItem operation in BuildsApi.
@@ -39255,6 +39793,20 @@ export interface BuildsApiBuildControllerAddJournalEntryRequest {
      * @memberof BuildsApiBuildControllerAddJournalEntry
      */
     readonly createJournalEntryDto: CreateJournalEntryDto
+}
+
+/**
+ * Request parameters for buildControllerClearBomPhoto operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerClearBomPhotoRequest
+ */
+export interface BuildsApiBuildControllerClearBomPhotoRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerClearBomPhoto
+     */
+    readonly itemId: string
 }
 
 /**
@@ -39335,6 +39887,27 @@ export interface BuildsApiBuildControllerReorderBomRequest {
 }
 
 /**
+ * Request parameters for buildControllerSetBomPhoto operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerSetBomPhotoRequest
+ */
+export interface BuildsApiBuildControllerSetBomPhotoRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerSetBomPhoto
+     */
+    readonly itemId: string
+
+    /**
+     * 
+     * @type {SetBomPhotoDto}
+     * @memberof BuildsApiBuildControllerSetBomPhoto
+     */
+    readonly setBomPhotoDto: SetBomPhotoDto
+}
+
+/**
  * Request parameters for buildControllerSetBomStatus operation in BuildsApi.
  * @export
  * @interface BuildsApiBuildControllerSetBomStatusRequest
@@ -39353,6 +39926,27 @@ export interface BuildsApiBuildControllerSetBomStatusRequest {
      * @memberof BuildsApiBuildControllerSetBomStatus
      */
     readonly setBomStatusDto: SetBomStatusDto
+}
+
+/**
+ * Request parameters for buildControllerToShoppingList operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerToShoppingListRequest
+ */
+export interface BuildsApiBuildControllerToShoppingListRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerToShoppingList
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {BomShoppingListDto}
+     * @memberof BuildsApiBuildControllerToShoppingList
+     */
+    readonly bomShoppingListDto: BomShoppingListDto
 }
 
 /**
@@ -39406,6 +40000,18 @@ export interface BuildsApiBuildControllerUpdateJournalEntryRequest {
 export class BuildsApi extends BaseAPI {
     /**
      * 
+     * @summary Upload a part\'s photo
+     * @param {BuildsApiBomPhotoControllerUploadRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public bomPhotoControllerUpload(requestParameters: BuildsApiBomPhotoControllerUploadRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).bomPhotoControllerUpload(requestParameters.itemId, requestParameters.file, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {BuildsApiBuildControllerAddBomItemRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -39424,6 +40030,17 @@ export class BuildsApi extends BaseAPI {
      */
     public buildControllerAddJournalEntry(requestParameters: BuildsApiBuildControllerAddJournalEntryRequest, options?: RawAxiosRequestConfig) {
         return BuildsApiFp(this.configuration).buildControllerAddJournalEntry(requestParameters.id, requestParameters.createJournalEntryDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerClearBomPhotoRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerClearBomPhoto(requestParameters: BuildsApiBuildControllerClearBomPhotoRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerClearBomPhoto(requestParameters.itemId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -39483,6 +40100,17 @@ export class BuildsApi extends BaseAPI {
 
     /**
      * 
+     * @param {BuildsApiBuildControllerSetBomPhotoRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerSetBomPhoto(requestParameters: BuildsApiBuildControllerSetBomPhotoRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerSetBomPhoto(requestParameters.itemId, requestParameters.setBomPhotoDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {BuildsApiBuildControllerSetBomStatusRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -39490,6 +40118,17 @@ export class BuildsApi extends BaseAPI {
      */
     public buildControllerSetBomStatus(requestParameters: BuildsApiBuildControllerSetBomStatusRequest, options?: RawAxiosRequestConfig) {
         return BuildsApiFp(this.configuration).buildControllerSetBomStatus(requestParameters.itemId, requestParameters.setBomStatusDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerToShoppingListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerToShoppingList(requestParameters: BuildsApiBuildControllerToShoppingListRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerToShoppingList(requestParameters.id, requestParameters.bomShoppingListDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -64969,6 +65608,49 @@ export const TasksApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} id 
+         * @param {MoveTaskToProjectDto} moveTaskToProjectDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        taskControllerMoveToProject: async (id: string, moveTaskToProjectDto: MoveTaskToProjectDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('taskControllerMoveToProject', 'id', id)
+            // verify required parameter 'moveTaskToProjectDto' is not null or undefined
+            assertParamExists('taskControllerMoveToProject', 'moveTaskToProjectDto', moveTaskToProjectDto)
+            const localVarPath = `/tasks/{id}/move-to-project`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(moveTaskToProjectDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -65277,6 +65959,19 @@ export const TasksApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
+         * @param {MoveTaskToProjectDto} moveTaskToProjectDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async taskControllerMoveToProject(id: string, moveTaskToProjectDto: MoveTaskToProjectDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MovedTaskResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.taskControllerMoveToProject(id, moveTaskToProjectDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TasksApi.taskControllerMoveToProject']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -65396,6 +66091,15 @@ export const TasksApiFactory = function (configuration?: Configuration, basePath
          */
         taskControllerMove(requestParameters: TasksApiTaskControllerMoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<TaskDetailResponse> {
             return localVarFp.taskControllerMove(requestParameters.id, requestParameters.moveTaskDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {TasksApiTaskControllerMoveToProjectRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        taskControllerMoveToProject(requestParameters: TasksApiTaskControllerMoveToProjectRequest, options?: RawAxiosRequestConfig): AxiosPromise<MovedTaskResponse> {
+            return localVarFp.taskControllerMoveToProject(requestParameters.id, requestParameters.moveTaskToProjectDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -65522,6 +66226,27 @@ export interface TasksApiTaskControllerMoveRequest {
      * @memberof TasksApiTaskControllerMove
      */
     readonly moveTaskDto: MoveTaskDto
+}
+
+/**
+ * Request parameters for taskControllerMoveToProject operation in TasksApi.
+ * @export
+ * @interface TasksApiTaskControllerMoveToProjectRequest
+ */
+export interface TasksApiTaskControllerMoveToProjectRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof TasksApiTaskControllerMoveToProject
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {MoveTaskToProjectDto}
+     * @memberof TasksApiTaskControllerMoveToProject
+     */
+    readonly moveTaskToProjectDto: MoveTaskToProjectDto
 }
 
 /**
@@ -65692,6 +66417,17 @@ export class TasksApi extends BaseAPI {
      */
     public taskControllerMove(requestParameters: TasksApiTaskControllerMoveRequest, options?: RawAxiosRequestConfig) {
         return TasksApiFp(this.configuration).taskControllerMove(requestParameters.id, requestParameters.moveTaskDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {TasksApiTaskControllerMoveToProjectRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TasksApi
+     */
+    public taskControllerMoveToProject(requestParameters: TasksApiTaskControllerMoveToProjectRequest, options?: RawAxiosRequestConfig) {
+        return TasksApiFp(this.configuration).taskControllerMoveToProject(requestParameters.id, requestParameters.moveTaskToProjectDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
