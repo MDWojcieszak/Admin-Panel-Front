@@ -33,23 +33,29 @@ export const ModalManagerProvider = ({ children }: PropsWithChildren) => {
     (id, props) =>
       new Promise((resolve, reject) => {
         setCollection((prev) => {
-          if (!prev.find((modal) => modal.id === id)) reject(ERRORS.MODAL_NOT_FOUND);
+          if (!prev.find((modal) => modal.id === id)) {
+            reject(ERRORS.MODAL_NOT_FOUND);
+            return prev;
+          }
           if (prev.find((modal) => modal.id === id && modal.visible)) {
             resolve();
             return prev;
           }
-          if (prev.some((modal) => modal.visible)) {
-            reject(ERRORS.MODAL_ALREADY_SHOWN);
-            return prev;
-          }
           resolveShowRef.current.push({ resolve, id });
-          return prev.map((item) => ({
-            ...item,
-            visible: item.id === id,
-            // From the defaults, not the last opening: an Add after an Edit kept the
-            // edited item and silently saved over it.
-            props: item.id === id ? { ...defaultsRef.current[id], ...props } : item.props,
-          }));
+          // Modals stack: one opened from inside another (a picker or a confirm
+          // inside a side panel) goes on top, and closing it uncovers the first.
+          // Refusing it, as before, left those buttons silently doing nothing.
+          const opened = prev.find((item) => item.id === id)!;
+          return [
+            ...prev.filter((item) => item.id !== id),
+            {
+              ...opened,
+              visible: true,
+              // From the defaults, not the last opening: an Add after an Edit kept the
+              // edited item and silently saved over it.
+              props: { ...defaultsRef.current[id], ...props },
+            },
+          ];
         });
       }),
     [],
