@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { FiCompass, FiList, FiTool, FiTrello } from 'react-icons/fi';
 import { ProjectSummaryResponse, ProjectType } from '~/api/api';
 import { Button } from '~/components/Button';
-import { CardSelect } from '~/components/CardSelect';
+import { DateField, SelectField, TextAreaField, TextField } from '~/components/ControlledFields';
+import { OptionCards } from '~/components/OptionCards';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
-import { Field, PlainSelect, useProjectStyles } from '~/routes/Projects/components/shared';
+import { useProjectStyles } from '~/routes/Projects/components/shared';
 import { fromDateInput, toDateInput, TYPE_DESCRIPTION, TYPE_LABEL } from '~/routes/Projects/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles } from '~/utils/theme';
@@ -83,91 +84,67 @@ export const CreateProjectModal = (p: CreateProjectModalProps) => {
     }
   };
 
+  const placeholder = template
+    ? template.title
+    : type === ProjectType.List
+      ? 'Groceries'
+      : type === ProjectType.Diy
+        ? 'Astro mount'
+        : 'Project';
+
   return (
     <div style={styles.container}>
       {templates.length ? (
-        <Field label='Start from'>
-          <PlainSelect
-            value={templateId}
-            options={[
-              { value: '', label: 'A blank project' },
-              ...templates.map((t) => ({ value: t.id, label: `Template: ${t.title}` })),
-            ]}
-            onChange={setTemplateId}
-          />
-        </Field>
+        <SelectField
+          label='Start from'
+          value={templateId}
+          options={[
+            { value: '', label: 'A blank project' },
+            ...templates.map((t) => ({ value: t.id, label: `Template: ${t.title}` })),
+          ]}
+          onChange={setTemplateId}
+        />
       ) : null}
       {template ? null : (
-        <CardSelect
-          items={Object.values(ProjectType).map((value) => ({
+        <OptionCards
+          options={Object.values(ProjectType).map((value) => ({
             value,
-            label: `${TYPE_LABEL[value]} — ${TYPE_DESCRIPTION[value]}`,
+            label: TYPE_LABEL[value],
+            description: TYPE_DESCRIPTION[value],
             icon: TYPE_ICON[value],
           }))}
           selected={type}
-          handleSelect={(value) => setType(value as ProjectType)}
+          onSelect={(value) => setType(value as ProjectType)}
         />
       )}
-      <Field label='Title'>
-        <input
-          autoFocus
-          style={shared.textInput}
-          value={title}
-          placeholder={
-            template
-              ? template.title
-              : type === ProjectType.List
-                ? 'Groceries'
-                : type === ProjectType.Diy
-                  ? 'Astro mount'
-                  : 'Project'
-          }
-          onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && save()}
-        />
-      </Field>
+      <TextField
+        label='Title'
+        autoFocus
+        value={title}
+        placeholder={placeholder}
+        onChange={setTitle}
+        onEnter={() => save()}
+      />
       {template ? (
         <>
-          <Field label='Start'>
-            <input
-              type='date'
-              style={shared.textInput}
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </Field>
+          <DateField label='Start' value={startDate} onChange={setStartDate} />
           <span style={shared.muted}>
             Tasks, checklists and parts come from the template, nothing ticked; its dates move with this start.
           </span>
         </>
       ) : (
         <>
-          <Field label='Description'>
-            <textarea
-              style={shared.textArea}
-              rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </Field>
+          <TextAreaField label='Description' rows={3} value={description} onChange={setDescription} />
           <div style={shared.fieldGrid}>
-            <Field label='Key'>
-              <input
-                style={{ ...shared.textInput, ...shared.mono }}
-                value={key}
-                maxLength={6}
-                placeholder='From the title'
-                onChange={(e) => setKey(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
-              />
-            </Field>
-            <Field label='Due'>
-              <input
-                type='date'
-                style={shared.textInput}
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-              />
-            </Field>
+            <TextField
+              label='Key'
+              value={key}
+              maxLength={6}
+              placeholder='From the title'
+              transform={(value) => value.toUpperCase().replace(/[^A-Z0-9]/g, '')}
+              onChange={setKey}
+            />
+            <DateField label='Due' value={dueDate} onChange={setDueDate} />
           </div>
           <span style={shared.muted}>
             Tasks are numbered with the key: {key || 'KEY'}-1, {key || 'KEY'}-2…
@@ -180,5 +157,5 @@ export const CreateProjectModal = (p: CreateProjectModalProps) => {
 };
 
 const useStyles = mkUseStyles((t) => ({
-  container: { gap: t.spacing.m, width: 'min(520px, 90vw)' },
+  container: { gap: t.spacing.m, width: 'min(560px, 90vw)' },
 }));

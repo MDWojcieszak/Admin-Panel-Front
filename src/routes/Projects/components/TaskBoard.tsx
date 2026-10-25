@@ -22,6 +22,7 @@ type TaskBoardProps = {
 /** One column per status, in workflow order; drag a card to change its status or place. */
 export const TaskBoard = (p: TaskBoardProps) => {
   const styles = useStyles();
+  const shared = useProjectStyles();
   const [dragging, setDragging] = useState<string>();
   const [target, setTarget] = useState<DropTarget>();
   const [addingTo, setAddingTo] = useState<string>();
@@ -72,7 +73,7 @@ export const TaskBoard = (p: TaskBoardProps) => {
                 <button
                   type='button'
                   title='Add a task here'
-                  style={styles.addButton}
+                  style={{ ...shared.iconButton, ...styles.addButton }}
                   onClick={() => setAddingTo(addingTo === status.id ? undefined : status.id)}
                 >
                   <FiPlus size={15} />
@@ -187,7 +188,8 @@ const useStyles = mkUseStyles((t) => ({
     minHeight: 0,
   },
   column: {
-    flex: '0 0 280px',
+    // Narrower than the screen on a phone, so the next column peeks in.
+    flex: '0 0 min(280px, 85vw)',
     maxHeight: '100%',
     minHeight: 0,
     gap: t.spacing.s,
@@ -218,19 +220,7 @@ const useStyles = mkUseStyles((t) => ({
     whiteSpace: 'nowrap',
   },
   count: { fontSize: 12, color: t.colors.dark05 },
-  addButton: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 26,
-    height: 26,
-    padding: 0,
-    border: 'none',
-    borderRadius: 6,
-    cursor: 'pointer',
-    color: t.colors.dark05,
-    backgroundColor: 'transparent',
-  },
+  addButton: { width: 32, height: 32 },
   cards: { gap: t.spacing.s, overflowY: 'auto', minHeight: 40 },
   slot: { gap: t.spacing.s },
   card: {

@@ -1,7 +1,8 @@
-import { DragEvent, ReactNode, useRef, useState } from 'react';
-import { FiUpload } from 'react-icons/fi';
+import { CSSProperties, DragEvent, ReactNode, useRef, useState } from 'react';
+import { FiSearch, FiUpload, FiX } from 'react-icons/fi';
 import { DocumentResponse } from '~/api/api';
 import { Button } from '~/components/Button';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { useProjectStyles } from '~/routes/Projects/components/shared';
 import { useDocumentUpload, UploadTarget } from '~/routes/Documents/hooks/useDocumentUpload';
 import { apiUrl, formatSize, KIND_LABEL, KindIcon } from '~/routes/Documents/utils';
@@ -24,6 +25,7 @@ export const DocumentGrid = (p: DocumentGridProps) => {
   const styles = useStyles();
   const shared = useProjectStyles();
   const theme = useTheme();
+  const isMobile = useIsMobile();
   const input = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const { upload, progress } = useDocumentUpload(p.upload?.target);
@@ -80,7 +82,8 @@ export const DocumentGrid = (p: DocumentGridProps) => {
           ) : null}
           {p.actions}
           {progress ? <span style={{ ...shared.muted, ...shared.ellipsis }}>{progress.name}</span> : null}
-          {p.upload && !progress ? <span style={shared.muted}>or drop files here</span> : null}
+          {/* Nothing to drag from on a phone. */}
+          {p.upload && !progress && !isMobile ? <span style={shared.muted}>or drop files here</span> : null}
         </div>
       ) : null}
 
@@ -94,10 +97,12 @@ export const DocumentGrid = (p: DocumentGridProps) => {
                 {doc.thumbUrl ? (
                   <img src={apiUrl(doc.thumbUrl)} alt='' style={styles.img} loading='lazy' />
                 ) : (
-                  <span style={styles.kind}>
-                    <KindIcon kind={doc.kind} size={p.compact ? 22 : 30} color={theme.colors.blue04} />
+                  <>
+                    <span style={{ ...styles.kind, ...(p.compact ? styles.kindCompact : {}) }}>
+                      <KindIcon kind={doc.kind} size={p.compact ? 20 : 26} color={theme.colors.blue04} />
+                    </span>
                     {doc.extension ? <span style={styles.ext}>{doc.extension}</span> : null}
-                  </span>
+                  </>
                 )}
               </div>
               <div style={styles.caption}>
@@ -105,7 +110,7 @@ export const DocumentGrid = (p: DocumentGridProps) => {
                   {doc.title}
                 </span>
                 {p.compact ? null : (
-                  <span style={{ ...shared.muted, fontSize: 12 }}>
+                  <span style={{ ...shared.muted, ...shared.ellipsis, fontSize: 12 }}>
                     {KIND_LABEL[doc.kind]} · {formatSize(doc.sizeBytes)}
                   </span>
                 )}
@@ -115,6 +120,42 @@ export const DocumentGrid = (p: DocumentGridProps) => {
         </div>
       )}
     </div>
+  );
+};
+
+/** The library's search box, filled like the panel's toolbar search. */
+export const DocumentSearch = ({
+  value,
+  onChange,
+  placeholder,
+  autoFocus,
+  style,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  autoFocus?: boolean;
+  style?: CSSProperties;
+}) => {
+  const styles = useStyles();
+  const isMobile = useIsMobile();
+  return (
+    <label style={{ ...styles.searchBox, ...style }}>
+      <FiSearch size={16} style={{ flexShrink: 0 }} />
+      <input
+        autoFocus={autoFocus}
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+        // 16px keeps iOS from zooming the page in when the field takes focus.
+        style={isMobile ? { ...styles.searchInput, fontSize: 16 } : styles.searchInput}
+      />
+      {value ? (
+        <button type='button' aria-label='Clear search' style={styles.clearSearch} onClick={() => onChange('')}>
+          <FiX size={14} />
+        </button>
+      ) : null}
+    </label>
   );
 };
 
@@ -129,22 +170,24 @@ const useStyles = mkUseStyles((t) => ({
     borderColor: t.colors.blue + t.colorOpacity(0.6),
     backgroundColor: t.colors.blue + t.colorOpacity(0.05),
   },
+  // Two tiles a row even on a phone: the minimum gives way to half the width.
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(min(170px, 100%), 1fr))',
+    gridTemplateColumns: `repeat(auto-fill, minmax(min(180px, calc(50% - ${t.spacing.m / 2}px)), 1fr))`,
     gap: t.spacing.m,
   },
   compactGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(min(110px, 100%), 1fr))',
+    gridTemplateColumns: `repeat(auto-fill, minmax(min(110px, calc(50% - ${t.spacing.s / 2}px)), 1fr))`,
     gap: t.spacing.s,
   },
   tile: {
     display: 'flex',
     flexDirection: 'column',
+    minWidth: 0,
     padding: 0,
     border: 'none',
-    borderRadius: t.borderRadius.default,
+    borderRadius: t.borderRadius.large,
     overflow: 'hidden',
     cursor: 'pointer',
     textAlign: 'left',
@@ -153,21 +196,84 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
   },
   thumb: {
+    position: 'relative',
     aspectRatio: '4 / 3',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: t.colors.gray04 + t.colorOpacity(0.8),
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.5),
     overflow: 'hidden',
   },
   thumbCompact: { aspectRatio: '1 / 1' },
   img: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
-  kind: { alignItems: 'center', gap: t.spacing.xs },
+  // A file without a picture: its kind in a tinted circle, the extension as a badge.
+  kind: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 56,
+    height: 56,
+    borderRadius: '50%',
+    backgroundColor: t.colors.blue03 + t.colorOpacity(0.22),
+  },
+  kindCompact: { width: 40, height: 40 },
   ext: {
+    position: 'absolute',
+    top: t.spacing.s,
+    right: t.spacing.s,
+    maxWidth: `calc(100% - ${t.spacing.s * 2}px)`,
+    padding: '2px 6px',
+    borderRadius: t.borderRadius.small,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
     fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
-    fontSize: 11,
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: 0.4,
     textTransform: 'uppercase',
-    color: t.colors.dark05,
+    color: t.colors.blue04,
+    backgroundColor: t.colors.gray03 + t.colorOpacity(0.85),
   },
   caption: { gap: 2, padding: `${t.spacing.s}px ${t.spacing.sm}px`, minWidth: 0 },
+  searchBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.s,
+    minWidth: 0,
+    height: 44,
+    padding: `0 ${t.spacing.m}px`,
+    boxSizing: 'border-box',
+    borderRadius: t.borderRadius.default,
+    color: t.colors.dark05,
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.5),
+    cursor: 'text',
+  },
+  searchInput: {
+    flex: 1,
+    minWidth: 0,
+    height: '100%',
+    border: 'none',
+    outline: 'none',
+    background: 'transparent',
+    color: t.colors.white,
+    fontSize: 14,
+    padding: 0,
+  },
+  clearSearch: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+    width: 32,
+    height: 32,
+    marginRight: -t.spacing.s,
+    padding: 0,
+    border: 'none',
+    borderRadius: t.borderRadius.default,
+    background: 'transparent',
+    color: t.colors.dark05,
+    cursor: 'pointer',
+  },
 }));

@@ -76,7 +76,7 @@ export const Comments = ({ target, projectId }: { target: CommentTarget; project
           <Avatar user={comment.author} size={28} />
           <div style={styles.main}>
             <div style={{ ...shared.row, justifyContent: 'space-between', flexWrap: 'nowrap' }}>
-              <span style={{ ...shared.row, gap: 6 }}>
+              <span style={{ ...shared.row, gap: 6, minWidth: 0 }}>
                 <span style={styles.author}>{userName(comment.author)}</span>
                 <span style={{ ...shared.muted, fontSize: 12 }}>
                   {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
@@ -88,7 +88,7 @@ export const Comments = ({ target, projectId }: { target: CommentTarget; project
                   <button
                     type='button'
                     title='Edit'
-                    style={shared.iconButton}
+                    style={{ ...shared.iconButton, ...styles.iconButton }}
                     onClick={() => setEditing({ id: comment.id, body: comment.body })}
                   >
                     <FiEdit2 size={13} />
@@ -98,7 +98,7 @@ export const Comments = ({ target, projectId }: { target: CommentTarget; project
                   <button
                     type='button'
                     title='Delete'
-                    style={shared.iconButton}
+                    style={{ ...shared.iconButton, ...styles.iconButton }}
                     onClick={() =>
                       commentsApi &&
                       run(() => commentsApi.projectCommentControllerRemove({ id: comment.id }), 'Could not delete it.')
@@ -169,5 +169,7 @@ const useStyles = mkUseStyles((t) => ({
   main: { flex: 1, minWidth: 0, gap: 2 },
   author: { fontSize: 13, fontWeight: 700, color: t.colors.white },
   editor: { gap: t.spacing.s },
+  // A touch target a finger can hit.
+  iconButton: { width: 32, height: 32 },
   markdown: { background: 'transparent', fontSize: 14, color: t.colors.white },
 }));

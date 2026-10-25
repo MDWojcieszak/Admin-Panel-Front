@@ -3,6 +3,7 @@ import { FiLogOut, FiX } from 'react-icons/fi';
 import { ProjectDetailResponse, ProjectRole } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
+import { TextField } from '~/components/ControlledFields';
 import { Loader } from '~/components/Loader';
 import { Switch } from '~/components/Switch';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
@@ -90,19 +91,23 @@ export const ShareModal = (p: ShareModalProps) => {
       {owns ? (
         <div style={styles.invite}>
           <span style={shared.fieldLabel}>Invite by e-mail</span>
-          <input
-            style={shared.textInput}
-            type='email'
-            value={email}
-            placeholder='Their account e-mail'
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && invite()}
-          />
-          <div style={{ ...shared.row, flexWrap: 'nowrap' }}>
-            <PlainSelect value={role} options={ROLE_OPTIONS} onChange={(v) => setRole(v as ProjectRole)} />
+          <div style={shared.fieldGrid}>
+            <TextField
+              label='E-mail'
+              type='email'
+              value={email}
+              placeholder='Their account e-mail'
+              onChange={setEmail}
+              onEnter={() => invite()}
+            />
+            <PlainSelect label='Role' value={role} options={ROLE_OPTIONS} onChange={(v) => setRole(v as ProjectRole)} />
+          </div>
+          <div style={{ ...shared.row, justifyContent: 'space-between' }}>
+            <span style={{ ...shared.muted, flex: '1 1 240px' }}>
+              They need an account here; the project shows up in their list right away.
+            </span>
             <Button label='Share' onClick={invite} loading={busy} disabled={!email.trim()} />
           </div>
-          <span style={shared.muted}>They need an account here; the project shows up in their list right away.</span>
         </div>
       ) : null}
 
@@ -146,7 +151,7 @@ export const ShareModal = (p: ShareModalProps) => {
                     <button
                       type='button'
                       title='Remove from the project'
-                      style={shared.iconButton}
+                      style={{ ...shared.iconButton, ...styles.iconButton }}
                       onClick={() =>
                         run(
                           () =>
@@ -223,7 +228,10 @@ const PersonLabel = ({ name, email }: { name: string; email: string }) => {
 
 const useStyles = mkUseStyles((t) => ({
   container: { gap: t.spacing.l, width: 'min(560px, 90vw)' },
-  invite: { gap: t.spacing.s },
+  invite: { gap: t.spacing.sm },
   section: { gap: t.spacing.s },
-  roleSelect: { width: 110, height: 32, fontSize: 13 },
+  // The compact select: wide enough for "Viewer" beside its chevron.
+  roleSelect: { width: 120, flexShrink: 0 },
+  // A touch target a finger can hit.
+  iconButton: { width: 32, height: 32 },
 }));

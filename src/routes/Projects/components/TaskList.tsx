@@ -67,7 +67,7 @@ export const TaskList = (p: TaskListProps) => {
                         {task.title}
                       </span>
                       {p.shopping ? null : <span style={shared.key}>{task.key}</span>}
-                      <TaskMeta task={task} hideQuantity={p.shopping} />
+                      <TaskMeta task={task} hideQuantity={p.shopping} style={styles.meta} />
                     </div>
                   );
                 })}
@@ -96,7 +96,9 @@ const useStyles = mkUseStyles((t) => ({
     width: 'fit-content',
   },
   groupTitle: { fontSize: 13, fontWeight: 700, letterSpacing: 0.4, textTransform: 'uppercase', color: t.colors.white },
-  row: { cursor: 'pointer' },
+  // Wraps: on a narrow screen the facts drop under the title, to the right.
+  row: { cursor: 'pointer', flexWrap: 'wrap' },
   amount: { fontSize: 14, fontWeight: 700, color: t.colors.blue04, whiteSpace: 'nowrap' },
-  title: { flex: 1, minWidth: 0, fontSize: 14, wordBreak: 'break-word' },
+  title: { flex: '1 1 160px', minWidth: 0, fontSize: 14, wordBreak: 'break-word' },
+  meta: { marginLeft: 'auto', justifyContent: 'flex-end' },
 }));

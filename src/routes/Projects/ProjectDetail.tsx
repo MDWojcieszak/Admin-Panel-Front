@@ -13,7 +13,14 @@ import {
   FiSettings,
   FiUsers,
 } from 'react-icons/fi';
-import { CreateTaskDto, ProjectDetailResponse, ProjectRole, ProjectType, TaskResponse } from '~/api/api';
+import {
+  CreateTaskDto,
+  ProjectDetailResponse,
+  ProjectRole,
+  ProjectType,
+  StatusCategory,
+  TaskResponse,
+} from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
 import { EmptyState } from '~/components/EmptyState';
@@ -32,12 +39,13 @@ import { Comments } from '~/routes/Projects/components/Comments';
 import { Journal } from '~/routes/Projects/components/Journal';
 import { ProjectDocuments } from '~/routes/Projects/components/ProjectDocuments';
 import { QuickAdd } from '~/routes/Projects/components/QuickAdd';
-import { Avatar, ProjectsPage, useProjectStyles } from '~/routes/Projects/components/shared';
+import { Avatar, COMPACT_FIELD_HEIGHT, ProjectsPage, useProjectStyles } from '~/routes/Projects/components/shared';
 import { TaskBoard } from '~/routes/Projects/components/TaskBoard';
 import { TripPacking } from '~/routes/Projects/components/TripPacking';
 import { TaskList } from '~/routes/Projects/components/TaskList';
 import { useProjectEvents } from '~/routes/Projects/hooks/useProjectEvents';
 import { DuplicateProjectModal } from '~/routes/Projects/modals/DuplicateProjectModal';
+import { InboxTriageModal } from '~/routes/Projects/modals/InboxTriageModal';
 import { ProjectSettingsModal } from '~/routes/Projects/modals/ProjectSettingsModal';
 import { ShareModal } from '~/routes/Projects/modals/ShareModal';
 import { TaskPanel } from '~/routes/Projects/modals/TaskPanel';
@@ -129,6 +137,7 @@ export const ProjectDetail = () => {
   const shareModal = useModal('project-share', ShareModal, { title: 'Share' });
   const settingsModal = useModal('project-settings', ProjectSettingsModal, { title: 'Project settings', type: 'side' });
   const useTemplateModal = useModal('project-from-template', DuplicateProjectModal, { title: 'New from template' });
+  const triageModal = useModal('project-inbox-triage', InboxTriageModal, { title: 'Process inbox' });
   const can = useCan();
 
   const openTask = (taskId: string) => setParams((prev) => ({ ...Object.fromEntries(prev), task: taskId }));
@@ -243,11 +252,33 @@ export const ProjectDetail = () => {
     }, 'Could not move the task.');
   };
 
-  const toggleTask = (task: TaskResponse) =>
-    run(async () => {
+  /**
+   * Ticked on screen at once, as the server will do it (first Done or first
+   * To do status); the reload after the call settles it, or puts it back.
+   * In a shop with one bar of signal the tick must not wait for the network.
+   */
+  const toggleTask = (task: TaskResponse) => {
+    const done = task.status.category === StatusCategory.Done;
+    const next = project.statuses.find((s) => s.category === (done ? StatusCategory.Todo : StatusCategory.Done));
+    if (next) {
+      tasksQuery.setData(
+        (prev) =>
+          prev?.map((t) =>
+            t.id === task.id
+              ? {
+                  ...t,
+                  status: { id: next.id, name: next.name, color: next.color, category: next.category },
+                  completedAt: done ? null : new Date().toISOString(),
+                }
+              : t,
+          ),
+      );
+    }
+    return run(async () => {
       if (!tasksApi) return;
       await tasksApi.taskControllerToggle({ id: task.id });
     }, 'Could not change the task.');
+  };
 
   const { progress } = project;
   // The owner comes first in `members`.
@@ -289,7 +320,7 @@ export const ProjectDetail = () => {
 
   return (
     <ProjectsPage
-      scroll={view !== View.BOARD}
+      scroll={view !== View.BOARD && (isMobile || view !== View.PARTS)}
       header={
         <>
           <PageHeader
@@ -326,8 +357,27 @@ export const ProjectDetail = () => {
             ]
               .filter(Boolean)
               .join(' · ')}
+            aside={
+              progress.total ? (
+                <div style={styles.progress} title={`${progress.done} of ${progress.total} done`}>
+                  <div style={styles.bar}>
+                    <div style={{ ...styles.barFill, width: `${donePercent(progress)}%` }} />
+                  </div>
+                  <span style={styles.percent}>{donePercent(progress)}%</span>
+                </div>
+              ) : undefined
+            }
             actions={
               <>
+                {project.isInbox && editable && progress.total - progress.done > 0 ? (
+                  <Button
+                    label={isMobile ? '' : 'Process inbox'}
+                    title='Process inbox'
+                    variant='secondary'
+                    icon={<FiInbox size={14} />}
+                    onClick={() => triageModal.show({ inboxId: project.id })}
+                  />
+                ) : null}
                 {project.isInbox ? null : (
                   <button
                     type='button'
@@ -340,11 +390,12 @@ export const ProjectDetail = () => {
                     ) : (
                       <FiUsers size={16} />
                     )}
-                    <span>Share</span>
+                    {isMobile ? null : <span>Share</span>}
                   </button>
                 )}
                 <Button
                   label={isMobile ? '' : 'Settings'}
+                  title='Project settings'
                   variant='secondary'
                   icon={<FiSettings size={14} />}
                   onClick={() =>
@@ -379,30 +430,32 @@ export const ProjectDetail = () => {
           {project.description ? (
             <span style={{ ...shared.muted, ...styles.description }}>{project.description}</span>
           ) : null}
-          <div style={styles.bar}>
-            <div style={{ ...styles.barFill, width: `${donePercent(progress)}%` }} />
-          </div>
-          <div style={styles.toolbar}>
-            {view !== View.BOARD && view !== View.LIST ? (
-              <span style={{ ...shared.muted, flex: 1 }}>{VIEW_HINT[view]}</span>
-            ) : editable ? (
-              <div style={styles.quickAdd}>
-                <QuickAdd
-                  placeholder={QUICK_ADD_PLACEHOLDER[project.type]}
-                  withQuantity={shopping}
-                  onAdd={(dto) => addTask(dto)}
-                />
-              </div>
-            ) : (
-              <span style={{ ...shared.muted, flex: 1 }}>
-                {checkable ? 'You can tick things off here.' : 'You can look, not change.'}
-              </span>
-            )}
+          <div style={isMobile ? styles.toolbarMobile : styles.toolbar}>
+            {/* Always present and always taking the rest of the line, whatever it
+                holds, so the tabs beside it never move between views. */}
+            <div style={styles.toolbarStart}>
+              {view !== View.BOARD && view !== View.LIST ? (
+                <span style={shared.muted}>{VIEW_HINT[view]}</span>
+              ) : editable ? (
+                <div style={styles.quickAdd}>
+                  <QuickAdd
+                    placeholder={QUICK_ADD_PLACEHOLDER[project.type]}
+                    withQuantity={shopping}
+                    onAdd={(dto) => addTask(dto)}
+                  />
+                </div>
+              ) : (
+                <span style={shared.muted}>
+                  {checkable ? 'You can tick things off here.' : 'You can look, not change.'}
+                </span>
+              )}
+            </div>
             <SegmentedTabs
               items={tabs}
               selected={view}
               handleSelect={(value) => setView(value as View)}
               layoutId='project-view'
+              style={isMobile ? undefined : styles.tabs}
             />
           </div>
         </>
@@ -415,15 +468,28 @@ export const ProjectDetail = () => {
 
 const useStyles = mkUseStyles((t) => ({
   description: { maxWidth: 720, whiteSpace: 'pre-wrap', marginTop: -t.spacing.s },
+  // Compact, beside the actions: how far the project has got at a glance.
+  progress: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, width: 180, maxWidth: '100%' },
   bar: {
-    height: 4,
-    borderRadius: 2,
+    flex: 1,
+    height: 6,
+    borderRadius: 3,
     overflow: 'hidden',
-    backgroundColor: t.colors.white + t.colorOpacity(0.06),
+    backgroundColor: t.colors.white + t.colorOpacity(0.08),
   },
-  barFill: { height: '100%', backgroundColor: t.colors.lightGreen, transition: 'width 0.3s ease' },
-  toolbar: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m, flexWrap: 'wrap' },
-  quickAdd: { flex: '1 1 280px', maxWidth: 640 },
+  barFill: { height: '100%', borderRadius: 3, backgroundColor: t.colors.lightGreen, transition: 'width 0.3s ease' },
+  percent: { fontSize: 13, fontWeight: 700, color: t.colors.white, minWidth: 36, textAlign: 'right' },
+  // One line on a desktop: the start takes what the tabs leave, the tabs keep
+  // their own width at the right edge. On a phone the tabs get their own line.
+  toolbar: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m, flexWrap: 'nowrap' },
+  toolbarMobile: { gap: t.spacing.sm },
+  // As tall as the quick-add field whether it holds that field or a one-line
+  // hint, so the row — and the tabs and content under it — keep their place.
+  toolbarStart: { flex: '1 1 0px', minWidth: 0, minHeight: COMPACT_FIELD_HEIGHT, justifyContent: 'center' },
+  quickAdd: { width: '100%', maxWidth: 640 },
+  // Always at the right edge, whether the add field, a hint or nothing sits
+  // on its left: switching views must not move the tabs under the cursor.
+  tabs: { marginLeft: 'auto', flexShrink: 0 },
   comments: { maxWidth: 760 },
   template: {
     flexDirection: 'row',
@@ -439,14 +505,14 @@ const useStyles = mkUseStyles((t) => ({
   people: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 4,
-    height: 36,
-    padding: `0 ${t.spacing.sm}px 0 ${t.spacing.xs}px`,
+    gap: t.spacing.xs,
+    // Matches the panel Button next to it: 12px padding around a 24px line.
+    height: 48,
+    padding: `0 ${t.spacing.sm}px 0 ${t.spacing.s}px`,
     border: 'none',
-    borderRadius: t.borderRadius.default,
+    borderRadius: t.borderRadius.large,
     cursor: 'pointer',
-    fontSize: 14,
-    fontWeight: 600,
+    fontSize: 16,
     color: t.colors.white,
     backgroundColor: t.colors.gray01 + t.colorOpacity(0.6),
   },

@@ -11,6 +11,7 @@ import { Scrollbar } from '~/components/Scrollbar';
 import { Checkbox, StatusDot, useProjectStyles } from '~/routes/Projects/components/shared';
 import { donePercent, dueLabel, quantityLabel, TYPE_LABEL } from '~/routes/Projects/utils';
 import { mkUseStyles, useTheme } from '~/utils/theme';
+import { TextField } from '~/components/ControlledFields';
 
 const API_URL = import.meta.env.VITE_API_URL as string;
 const RELOAD_DELAY = 250;
@@ -95,7 +96,27 @@ export const SharedProject = () => {
     };
   }, [ready, load]);
 
+  /**
+   * Ticked on screen at once, as the server will do it (first Done or first
+   * To do status): in a shop the tick must not wait for the signal. The
+   * answer settles it; a failure reloads the truth.
+   */
   const toggle = async (task: SharedTaskResponse) => {
+    if (busy === task.id || state.kind !== 'ready') return;
+    const { statuses } = state.project;
+    const isDone = statuses.find((x) => x.id === task.statusId)?.category === StatusCategory.Done;
+    const next = statuses.find((x) => x.category === (isDone ? StatusCategory.Todo : StatusCategory.Done));
+    if (next) {
+      setState({
+        kind: 'ready',
+        project: {
+          ...state.project,
+          tasks: state.project.tasks.map((t) =>
+            t.id === task.id ? { ...t, statusId: next.id, completedAt: isDone ? null : new Date().toISOString() } : t,
+          ),
+        },
+      });
+    }
     setBusy(task.id);
     try {
       const { data } = await api.sharedControllerToggle({ token, taskId: task.id, xSharePassword: password });
@@ -130,13 +151,14 @@ export const SharedProject = () => {
         <FiLock size={26} color={theme.colors.blue04} />
         <span style={styles.title}>This link has a password</span>
         {state.wrong ? <span style={shared.error}>That password is not right.</span> : null}
-        <input
-          autoFocus
+        <TextField
+          label='Password'
           type='password'
-          style={{ ...shared.textInput, maxWidth: 320 }}
+          autoFocus
+          style={{ width: 'min(320px, 100%)' }}
           value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && submit()}
+          onChange={setDraft}
+          onEnter={submit}
         />
         <Button label='Open' onClick={submit} disabled={!draft} />
       </div>
@@ -192,7 +214,6 @@ export const SharedProject = () => {
                 doneStatusIds={project.statuses.filter((s) => s.category === StatusCategory.Done).map((s) => s.id)}
                 shopping={shopping}
                 checkable={checkable}
-                busy={busy}
                 onToggle={toggle}
               />
             ))}
@@ -239,7 +260,6 @@ const SharedTaskRow = ({
   doneStatusIds,
   shopping,
   checkable,
-  busy,
   onToggle,
 }: {
   task: SharedTaskResponse;
@@ -248,7 +268,6 @@ const SharedTaskRow = ({
   doneStatusIds: string[];
   shopping: boolean;
   checkable: boolean;
-  busy?: string;
   onToggle: (task: SharedTaskResponse) => void;
 }) => {
   const styles = useStyles();
@@ -264,7 +283,7 @@ const SharedTaskRow = ({
         style={{ ...shared.listRow, cursor: hasDetails ? 'pointer' : 'default' }}
         onClick={() => hasDetails && setOpen(!open)}
       >
-        <Checkbox checked={done} disabled={!checkable || busy === task.id} onChange={() => onToggle(task)} />
+        <Checkbox checked={done} disabled={!checkable} onChange={() => onToggle(task)} />
         {amount ? <span style={styles.amount}>{amount}</span> : null}
         <span
           style={{
@@ -295,7 +314,7 @@ const SharedTaskRow = ({
             <span key={sub.id} style={{ ...shared.row, flexWrap: 'nowrap', fontSize: 14 }}>
               <Checkbox
                 checked={doneStatusIds.includes(sub.statusId)}
-                disabled={!checkable || busy === sub.id}
+                disabled={!checkable}
                 size={18}
                 onChange={() => onToggle(sub)}
               />

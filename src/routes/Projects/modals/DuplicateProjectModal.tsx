@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Button } from '~/components/Button';
+import { DateField, TextField } from '~/components/ControlledFields';
 import { Switch } from '~/components/Switch';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
-import { Field, useProjectStyles } from '~/routes/Projects/components/shared';
+import { useProjectStyles } from '~/routes/Projects/components/shared';
 import { fromDateInput, toDateInput } from '~/routes/Projects/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles } from '~/utils/theme';
@@ -68,19 +69,15 @@ export const DuplicateProjectModal = (p: DuplicateProjectModalProps) => {
   return (
     <div style={styles.container}>
       <span style={shared.muted}>{INTRO[p.mode]}</span>
-      <Field label='Title'>
-        <input
-          autoFocus
-          style={shared.textInput}
-          value={title}
-          placeholder='New project'
-          onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && save()}
-        />
-      </Field>
-      <Field label='Start'>
-        <input type='date' style={shared.textInput} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-      </Field>
+      <TextField
+        label='Title'
+        autoFocus
+        value={title}
+        placeholder='New project'
+        onChange={setTitle}
+        onEnter={() => save()}
+      />
+      <DateField label='Start' value={startDate} onChange={setStartDate} />
       {p.mode === 'copy' ? (
         <Switch checked={asTemplate} onChange={setAsTemplate} label='Keep it as a template' />
       ) : null}

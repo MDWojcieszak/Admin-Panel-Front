@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FiArchive, FiArrowDown, FiArrowUp, FiCopy, FiLayers, FiPlus, FiTrash2, FiX } from 'react-icons/fi';
+import { FiArchive, FiArrowDown, FiArrowUp, FiCopy, FiLayers, FiPlus, FiTrash2 } from 'react-icons/fi';
 import {
   ProjectDetailResponse,
   ProjectRole,
@@ -9,6 +9,8 @@ import {
   StatusCategory,
 } from '~/api/api';
 import { Button } from '~/components/Button';
+import { ColorSwatches } from '~/components/ColorSwatches';
+import { DateField, TextAreaField, TextField } from '~/components/ControlledFields';
 import { ConfirmModal } from '~/components/ConfirmModal';
 import { Loader } from '~/components/Loader';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
@@ -16,11 +18,12 @@ import { useApi } from '~/hooks/useApi';
 import { useModal } from '~/hooks/useModal';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
+import { PanelScroll } from '~/routes/Projects/components/PanelScroll';
 import { Field, PlainSelect, useProjectStyles } from '~/routes/Projects/components/shared';
 import { DuplicateMode, DuplicateProjectModal } from '~/routes/Projects/modals/DuplicateProjectModal';
 import { CATEGORY_LABEL, fromDateInput, STATUS_LABEL, toDateInput, TYPE_LABEL } from '~/routes/Projects/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
-import { mkUseStyles } from '~/utils/theme';
+import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type ProjectSettingsModalProps = {
   projectId: string;
@@ -84,85 +87,89 @@ export const ProjectSettingsModal = (p: ProjectSettingsModalProps) => {
   };
 
   return (
-    <div style={styles.container}>
-      <DetailsForm project={project} owns={owns} onSaved={setProject} />
-      <Workflow project={project} run={run} />
+    <PanelScroll>
+      <div style={styles.container}>
+        <DetailsForm project={project} owns={owns} onSaved={setProject} />
+        <Workflow project={project} run={run} />
 
-      {project.isInbox ? null : (
-        <div style={styles.section}>
-          <span style={shared.fieldLabel}>Copies</span>
-          <span style={shared.muted}>The plan without its history: no ticks, people, links, journal or comments.</span>
-          <div style={shared.row}>
-            {project.isTemplate ? (
-              <Button label='New project from it' icon={<FiCopy size={14} />} onClick={() => copy('fromTemplate')} />
-            ) : (
-              <>
-                <Button
-                  label='Duplicate'
-                  variant='secondary'
-                  icon={<FiCopy size={14} />}
-                  onClick={() => copy('copy')}
-                />
-                <Button
-                  label='Save as template'
-                  variant='secondary'
-                  icon={<FiLayers size={14} />}
-                  onClick={() => copy('template')}
-                />
-              </>
-            )}
+        {project.isInbox ? null : (
+          <div style={styles.section}>
+            <span style={shared.fieldLabel}>Copies</span>
+            <span style={shared.muted}>
+              The plan without its history: no ticks, people, links, journal or comments.
+            </span>
+            <div style={shared.row}>
+              {project.isTemplate ? (
+                <Button label='New project from it' icon={<FiCopy size={14} />} onClick={() => copy('fromTemplate')} />
+              ) : (
+                <>
+                  <Button
+                    label='Duplicate'
+                    variant='secondary'
+                    icon={<FiCopy size={14} />}
+                    onClick={() => copy('copy')}
+                  />
+                  <Button
+                    label='Save as template'
+                    variant='secondary'
+                    icon={<FiLayers size={14} />}
+                    onClick={() => copy('template')}
+                  />
+                </>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {owns && !project.isInbox ? (
-        <div style={styles.section}>
-          <span style={shared.fieldLabel}>Project</span>
-          <div style={shared.row}>
-            <Button
-              label={project.archivedAt ? 'Restore from archive' : 'Archive'}
-              variant='secondary'
-              icon={<FiArchive size={14} />}
-              onClick={() =>
-                run(async () => {
-                  if (!projectsApi) return;
-                  await projectsApi.projectControllerUpdate({
-                    id: project.id,
-                    updateProjectDto: { archived: !project.archivedAt },
-                  });
-                  if (!project.archivedAt) {
-                    toast('Archived. Find it under Projects → Archived.', 'success');
-                  }
-                }, 'Could not archive the project.')
-              }
-            />
-            <Button
-              label='Delete project'
-              variant='danger'
-              icon={<FiTrash2 size={14} />}
-              onClick={() =>
-                confirmModal.show({
-                  message: `Delete ${project.title}?`,
-                  description: `All ${project.progress.total} tasks go with it, for everyone it is shared with. This cannot be undone.`,
-                  confirmLabel: 'Delete',
-                  danger: true,
-                  onConfirm: async () => {
+        {owns && !project.isInbox ? (
+          <div style={styles.section}>
+            <span style={shared.fieldLabel}>Project</span>
+            <div style={shared.row}>
+              <Button
+                label={project.archivedAt ? 'Restore from archive' : 'Archive'}
+                variant='secondary'
+                icon={<FiArchive size={14} />}
+                onClick={() =>
+                  run(async () => {
                     if (!projectsApi) return;
-                    try {
-                      await projectsApi.projectControllerRemove({ id: project.id });
-                      p.handleClose?.();
-                      p.onGone?.();
-                    } catch (e) {
-                      toast(getApiErrorMessage(e, 'Could not delete the project.'), 'error');
+                    await projectsApi.projectControllerUpdate({
+                      id: project.id,
+                      updateProjectDto: { archived: !project.archivedAt },
+                    });
+                    if (!project.archivedAt) {
+                      toast('Archived. Find it under Projects → Archived.', 'success');
                     }
-                  },
-                })
-              }
-            />
+                  }, 'Could not archive the project.')
+                }
+              />
+              <Button
+                label='Delete project'
+                variant='danger'
+                icon={<FiTrash2 size={14} />}
+                onClick={() =>
+                  confirmModal.show({
+                    message: `Delete ${project.title}?`,
+                    description: `All ${project.progress.total} tasks go with it, for everyone it is shared with. This cannot be undone.`,
+                    confirmLabel: 'Delete',
+                    danger: true,
+                    onConfirm: async () => {
+                      if (!projectsApi) return;
+                      try {
+                        await projectsApi.projectControllerRemove({ id: project.id });
+                        p.handleClose?.();
+                        p.onGone?.();
+                      } catch (e) {
+                        toast(getApiErrorMessage(e, 'Could not delete the project.'), 'error');
+                      }
+                    },
+                  })
+                }
+              />
+            </div>
           </div>
-        </div>
-      ) : null}
-    </div>
+        ) : null}
+      </div>
+    </PanelScroll>
   );
 };
 
@@ -240,108 +247,75 @@ const DetailsForm = ({
   return (
     <div style={styles.section}>
       <span style={shared.fieldLabel}>Details</span>
-      <Field label='Title'>
-        <input
-          style={shared.textInput}
-          disabled={!editable}
-          value={form.title}
-          onChange={(e) => set('title', e.target.value)}
-        />
-      </Field>
-      <Field label='Description'>
-        <textarea
-          style={shared.textArea}
-          rows={3}
-          disabled={!editable}
-          value={form.description}
-          onChange={(e) => set('description', e.target.value)}
-        />
-      </Field>
+      <TextField label='Title' disabled={!editable} value={form.title} onChange={(value) => set('title', value)} />
+      <TextAreaField
+        label='Description'
+        rows={3}
+        disabled={!editable}
+        value={form.description}
+        onChange={(value) => set('description', value)}
+      />
       <div style={shared.fieldGrid}>
         {project.isInbox ? null : (
           <>
-            <Field label='Status'>
-              <PlainSelect
-                value={form.status}
-                disabled={!editable}
-                options={Object.values(ProjectStatus).map((value) => ({ value, label: STATUS_LABEL[value] }))}
-                onChange={(value) => set('status', value as ProjectStatus)}
-              />
-            </Field>
-            <Field label='Type'>
-              <PlainSelect
-                value={form.type}
-                disabled={!editable}
-                options={Object.values(ProjectType).map((value) => ({ value, label: TYPE_LABEL[value] }))}
-                onChange={(value) => set('type', value as ProjectType)}
-              />
-            </Field>
-            <Field label='Key'>
-              <input
-                style={{ ...shared.textInput, ...shared.mono }}
-                disabled={!owns}
-                maxLength={6}
-                value={form.key}
-                title={owns ? 'Renames every task key: ASTRO-3 becomes NEW-3' : 'Only the owner changes the key'}
-                onChange={(e) => set('key', e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
-              />
-            </Field>
+            <PlainSelect
+              label='Status'
+              value={form.status}
+              disabled={!editable}
+              options={Object.values(ProjectStatus).map((value) => ({ value, label: STATUS_LABEL[value] }))}
+              onChange={(value) => set('status', value as ProjectStatus)}
+            />
+            <PlainSelect
+              label='Type'
+              value={form.type}
+              disabled={!editable}
+              options={Object.values(ProjectType).map((value) => ({ value, label: TYPE_LABEL[value] }))}
+              onChange={(value) => set('type', value as ProjectType)}
+            />
+            <TextField
+              label='Key'
+              disabled={!owns}
+              maxLength={6}
+              value={form.key}
+              description={owns ? 'Renames every task key: ASTRO-3 becomes NEW-3' : 'Only the owner changes the key'}
+              transform={(value) => value.toUpperCase().replace(/[^A-Z0-9]/g, '')}
+              onChange={(value) => set('key', value)}
+            />
           </>
         )}
-        <Field label='Start'>
-          <input
-            type='date'
-            style={shared.textInput}
-            disabled={!editable}
-            value={form.startDate}
-            onChange={(e) => set('startDate', e.target.value)}
-          />
-        </Field>
-        <Field label='Due'>
-          <input
-            type='date'
-            style={shared.textInput}
-            disabled={!editable}
-            value={form.dueDate}
-            onChange={(e) => set('dueDate', e.target.value)}
-          />
-        </Field>
+        <DateField
+          label='Start'
+          disabled={!editable}
+          value={form.startDate}
+          onChange={(value) => set('startDate', value)}
+        />
+        <DateField
+          label='Due'
+          disabled={!editable}
+          value={form.dueDate}
+          min={form.startDate || undefined}
+          onChange={(value) => set('dueDate', value)}
+        />
         {pickShoot ? (
-          <Field label='Shoot'>
-            <PlainSelect
-              value={form.photoEntryId}
-              options={[
-                { value: '', label: 'No shoot' },
-                ...(project.photoEntry && !shoots.some((s) => s.id === project.photoEntry!.id)
-                  ? [{ value: project.photoEntry.id, label: project.photoEntry.name }]
-                  : []),
-                ...shoots.map((s) => ({ value: s.id, label: s.name })),
-              ]}
-              onChange={(value) => set('photoEntryId', value)}
-            />
-          </Field>
+          <PlainSelect
+            label='Shoot'
+            value={form.photoEntryId}
+            options={[
+              { value: '', label: 'No shoot' },
+              ...(project.photoEntry && !shoots.some((s) => s.id === project.photoEntry!.id)
+                ? [{ value: project.photoEntry.id, label: project.photoEntry.name }]
+                : []),
+              ...shoots.map((s) => ({ value: s.id, label: s.name })),
+            ]}
+            onChange={(value) => set('photoEntryId', value)}
+          />
         ) : project.photoEntry ? (
-          <Field label='Shoot'>
-            <span style={{ fontSize: 14, lineHeight: '38px' }}>{project.photoEntry.name}</span>
-          </Field>
+          <TextField label='Shoot' disabled value={project.photoEntry.name} />
         ) : null}
-        <Field label='Colour'>
-          <div style={{ ...shared.row, flexWrap: 'nowrap' }}>
-            <input
-              type='color'
-              style={styles.color}
-              disabled={!editable}
-              value={form.color || '#447596'}
-              onChange={(e) => set('color', e.target.value)}
-            />
-            {form.color ? (
-              <button type='button' title='No colour' style={shared.iconButton} onClick={() => set('color', '')}>
-                <FiX size={14} />
-              </button>
-            ) : null}
-          </div>
-        </Field>
       </div>
+      <Field label='Colour'>
+        <ColorSwatches allowNone disabled={!editable} value={form.color} onChange={(value) => set('color', value)} />
+      </Field>
       {editable ? <Button label='Save details' onClick={save} loading={saving} disabled={!form.title.trim()} /> : null}
     </div>
   );
@@ -365,6 +339,8 @@ const Workflow = ({
   const [name, setName] = useState('');
   const [category, setCategory] = useState<StatusCategory>(StatusCategory.InProgress);
   const [removing, setRemoving] = useState<string>();
+  const [painting, setPainting] = useState<string>();
+  const theme = useTheme();
   const [moveTo, setMoveTo] = useState('');
   const editable = project.role !== ProjectRole.Viewer;
   const statuses = project.statuses;
@@ -406,33 +382,32 @@ const Workflow = ({
         {statuses.map((status, index) => (
           <div key={status.id} style={styles.statusBlock}>
             <div style={{ ...shared.listRow, ...styles.statusRow }}>
-              <input
-                key={status.color ?? ''}
-                type='color'
-                style={styles.color}
+              <button
+                type='button'
+                title='Colour'
                 disabled={!editable}
-                defaultValue={status.color || '#92A4B1'}
-                onBlur={(e) => e.target.value !== status.color && update(status, { color: e.target.value })}
+                style={{ ...styles.colorDot, backgroundColor: status.color || theme.colors.dark05 }}
+                onClick={() => setPainting(painting === status.id ? undefined : status.id)}
               />
-              <input
-                key={status.name}
-                style={{ ...shared.textInput, flex: 1, minWidth: 100 }}
+              <TextField
+                label='Name'
                 disabled={!editable}
-                defaultValue={status.name}
-                onBlur={(e) => {
-                  const value = e.target.value.trim();
-                  if (value && value !== status.name) update(status, { name: value });
-                  else e.target.value = status.name;
+                style={styles.statusName}
+                value={status.name}
+                onCommit={(value) => {
+                  const name = value.trim();
+                  if (name && name !== status.name) update(status, { name });
                 }}
               />
               <PlainSelect
+                label='Counts as'
                 value={status.category}
                 disabled={!editable}
                 style={styles.category}
                 options={CATEGORY_OPTIONS}
                 onChange={(value) => update(status, { category: value as StatusCategory })}
               />
-              <span style={{ ...shared.muted, width: 28, textAlign: 'right' }} title='Tasks in this status'>
+              <span style={styles.taskCount} title='Tasks in this status'>
                 {status.taskCount}
               </span>
               {editable ? (
@@ -469,14 +444,24 @@ const Workflow = ({
                 </span>
               ) : null}
             </div>
+            {painting === status.id ? (
+              <div style={{ ...shared.listRow, ...styles.subRow }}>
+                <ColorSwatches
+                  size={24}
+                  value={status.color}
+                  onChange={(color) => {
+                    setPainting(undefined);
+                    if (color && color !== status.color) update(status, { color });
+                  }}
+                />
+              </div>
+            ) : null}
             {removing === status.id ? (
-              <div style={{ ...shared.listRow, ...styles.removeRow }}>
-                <span style={shared.muted}>
-                  {status.taskCount ? `Move its ${status.taskCount} tasks to` : 'Delete it; new tasks would go to'}
-                </span>
+              <div style={{ ...shared.listRow, ...styles.subRow }}>
                 <PlainSelect
+                  label={status.taskCount ? `Move its ${status.taskCount} tasks to` : 'New tasks would go to'}
                   value={moveTo}
-                  style={{ width: 'auto', flex: 1 }}
+                  style={{ flex: '1 1 200px', minWidth: 0 }}
                   options={[
                     { value: '', label: 'Choose a status' },
                     ...statuses.filter((s) => s.id !== status.id).map((s) => ({ value: s.id, label: s.name })),
@@ -508,14 +493,16 @@ const Workflow = ({
         ))}
       </div>
       {editable ? (
-        <div style={{ ...shared.row, flexWrap: 'nowrap' }}>
-          <input
-            style={{ ...shared.textInput, flex: 1 }}
+        <div style={styles.addRow}>
+          <TextField
+            label='New status'
+            style={styles.statusName}
             value={name}
-            placeholder='New status, e.g. Waiting for parts'
-            onChange={(e) => setName(e.target.value)}
+            placeholder='e.g. Waiting for parts'
+            onChange={setName}
           />
           <PlainSelect
+            label='Counts as'
             value={category}
             style={styles.category}
             options={CATEGORY_OPTIONS}
@@ -549,17 +536,19 @@ const useStyles = mkUseStyles((t) => ({
   container: { gap: t.spacing.xl, paddingBottom: t.spacing.l },
   section: { gap: t.spacing.sm },
   statusBlock: { gap: 1 },
-  statusRow: { gap: t.spacing.s, flexWrap: 'wrap' },
-  removeRow: { gap: t.spacing.s, flexWrap: 'wrap', backgroundColor: 'transparent' },
-  category: { width: 130 },
-  color: {
-    width: 34,
-    height: 30,
-    padding: 0,
-    border: 'none',
-    borderRadius: 6,
-    background: 'none',
-    cursor: 'pointer',
+  statusRow: { gap: t.spacing.s, flexWrap: 'wrap', paddingTop: t.spacing.s, paddingBottom: t.spacing.s },
+  subRow: { gap: t.spacing.s, flexWrap: 'wrap', backgroundColor: 'transparent' },
+  addRow: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, flexWrap: 'wrap' },
+  statusName: { flex: '1 1 180px', minWidth: 0 },
+  category: { flex: '0 1 170px', minWidth: 140 },
+  taskCount: { width: 28, textAlign: 'right', fontSize: 13, color: t.colors.dark05 },
+  colorDot: {
+    width: 22,
+    height: 22,
     flexShrink: 0,
+    padding: 0,
+    border: `2px solid ${t.colors.white + t.colorOpacity(0.15)}`,
+    borderRadius: '50%',
+    cursor: 'pointer',
   },
 }));

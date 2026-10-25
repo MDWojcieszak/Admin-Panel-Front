@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { FiCornerLeftUp, FiTrash2, FiX } from 'react-icons/fi';
+import { FiCornerLeftUp, FiCornerUpRight, FiTrash2, FiX } from 'react-icons/fi';
 import {
   ProjectDetailResponse,
+  ProjectRole,
+  ProjectSummaryResponse,
   ProjectType,
   RepeatType,
   StatusCategory,
@@ -12,16 +14,18 @@ import {
 } from '~/api/api';
 import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
+import { DateField, DateTimeField, TextAreaField, TextField } from '~/components/ControlledFields';
 import { Loader } from '~/components/Loader';
 import { useSidePanelReady } from '~/components/Modal';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
+import { PanelScroll } from '~/routes/Projects/components/PanelScroll';
 import { Comments } from '~/routes/Projects/components/Comments';
 import { ProjectDocuments } from '~/routes/Projects/components/ProjectDocuments';
 import { QuickAdd } from '~/routes/Projects/components/QuickAdd';
-import { Checkbox, Field, PlainSelect, StatusDot, useProjectStyles } from '~/routes/Projects/components/shared';
+import { Checkbox, PlainSelect, StatusDot, useProjectStyles } from '~/routes/Projects/components/shared';
 import { TaskMeta } from '~/routes/Projects/components/TaskMeta';
 import { useProjectEvents } from '~/routes/Projects/hooks/useProjectEvents';
 import { canCheck, canEdit, fromDateInput, PRIORITY_LABEL, toDateInput, userName } from '~/routes/Projects/utils';
@@ -33,13 +37,6 @@ type TaskPanelProps = {
   /** Called however the panel closes, including from inside (a deleted task). */
   onClose?: () => void;
 } & Partial<InternalModalProps>;
-
-/** An ISO time as `<input type="datetime-local">` wants it: local, to the minute. */
-const toLocalInput = (iso: string) => {
-  const date = new Date(iso);
-  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-  return date.toISOString().slice(0, 16);
-};
 
 const REPEAT_LABEL: Record<RepeatType, string> = {
   NONE: 'Does not repeat',
@@ -170,74 +167,80 @@ export const TaskPanel = (p: TaskPanelProps) => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={{ ...shared.row, justifyContent: 'space-between' }}>
-        <span style={shared.row}>
-          <span style={shared.key}>{task.key}</span>
-          <span style={shared.muted}>· {task.project.isInbox ? 'Inbox' : task.project.title}</span>
-        </span>
-        {task.parent ? (
-          <button type='button' style={styles.link} onClick={() => setTaskId(task.parent!.id)}>
-            <FiCornerLeftUp size={13} />
-            {task.parent.key} {task.parent.title}
-          </button>
-        ) : null}
-      </div>
+    <PanelScroll>
+      <div style={styles.container}>
+        <div style={{ ...shared.row, justifyContent: 'space-between' }}>
+          <span style={shared.row}>
+            <span style={shared.key}>{task.key}</span>
+            <span style={shared.muted}>· {task.project.isInbox ? 'Inbox' : task.project.title}</span>
+          </span>
+          {task.parent ? (
+            <button type='button' style={styles.link} onClick={() => setTaskId(task.parent!.id)}>
+              <FiCornerLeftUp size={13} />
+              {task.parent.key} {task.parent.title}
+            </button>
+          ) : null}
+        </div>
 
-      <div style={styles.titleRow}>
-        <Checkbox checked={done} disabled={!checkable} size={24} onChange={() => toggle(task.id)} />
-        <textarea
-          style={styles.title}
-          rows={Math.max(1, Math.ceil(title.length / 34))}
-          value={title}
-          disabled={!editable}
-          onChange={(e) => setTitle(e.target.value.replace(/\n/g, ''))}
-          onBlur={() => title.trim() && title.trim() !== task.title && update({ title: title.trim() })}
-          onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLTextAreaElement).blur()}
-        />
-      </div>
+        <div style={styles.titleRow}>
+          <Checkbox checked={done} disabled={!checkable} size={24} onChange={() => toggle(task.id)} />
+          <textarea
+            style={styles.title}
+            rows={Math.max(1, Math.ceil(title.length / 34))}
+            value={title}
+            disabled={!editable}
+            onChange={(e) => setTitle(e.target.value.replace(/\n/g, ''))}
+            onBlur={() => title.trim() && title.trim() !== task.title && update({ title: title.trim() })}
+            onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLTextAreaElement).blur()}
+          />
+        </div>
 
-      <div style={shared.fieldGrid}>
-        <Field label='Status'>
+        <div style={shared.fieldGrid}>
           <PlainSelect
+            label='Status'
             value={task.status.id}
             disabled={!editable}
             options={project.statuses.map((s) => ({ value: s.id, label: s.name }))}
             onChange={(statusId) => update({ statusId })}
           />
-        </Field>
-        <Field label='Assignee'>
           <PlainSelect
+            label='Assignee'
             value={task.assignee?.id ?? ''}
             disabled={!editable}
             options={[{ value: '', label: 'Nobody' }, ...people.map((u) => ({ value: u.id, label: userName(u) }))]}
             onChange={(assigneeId) => update({ assigneeId: assigneeId || null })}
           />
-        </Field>
-        <Field label='Due'>
-          <input
-            type='date'
-            style={shared.textInput}
+          <PlainSelect
+            label='Priority'
+            value={task.priority}
+            disabled={!editable}
+            options={Object.values(TaskPriority).map((value) => ({ value, label: PRIORITY_LABEL[value] }))}
+            onChange={(priority) => update({ priority: priority as TaskPriority })}
+          />
+          <DateField
+            label='Due'
             disabled={!editable}
             value={toDateInput(task.dueDate)}
-            onChange={(e) => update({ dueDate: fromDateInput(e.target.value) })}
+            onChange={(value) => update({ dueDate: fromDateInput(value) })}
           />
-        </Field>
-        <Field label='Remind me'>
-          <input
-            type='datetime-local'
-            style={shared.textInput}
+        </div>
+
+        {/* Fields that come in pairs get wider cells of their own. */}
+        <div style={styles.pairGrid}>
+          <DateTimeField
+            dateLabel='Remind me'
+            timeLabel='At'
             disabled={!editable}
-            title='An email when the time comes, to whoever the task is on'
-            value={task.reminderAt ? toLocalInput(task.reminderAt) : ''}
-            onChange={(e) => update({ reminderAt: e.target.value ? new Date(e.target.value).toISOString() : null })}
+            description='An email when the time comes, to whoever the task is on'
+            value={task.reminderAt}
+            onChange={(reminderAt) => update({ reminderAt })}
           />
-        </Field>
-        <Field label='Repeat'>
-          <div style={{ ...shared.row, flexWrap: 'nowrap' }}>
+          <div style={styles.pair}>
             <PlainSelect
+              label='Repeat'
               value={task.repeat}
               disabled={!editable}
+              style={{ flex: 2, minWidth: 0 }}
               options={Object.values(RepeatType).map((value) => ({ value, label: REPEAT_LABEL[value] }))}
               onChange={(repeat) =>
                 update(
@@ -248,14 +251,15 @@ export const TaskPanel = (p: TaskPanelProps) => {
               }
             />
             {task.repeat === RepeatType.Custom ? (
-              <input
-                style={{ ...shared.textInput, ...shared.mono, width: 70, flexShrink: 0 }}
+              <TextField
+                label='Every'
                 disabled={!editable}
+                style={{ flex: 1, minWidth: 0 }}
                 value={repeatCustom}
-                title='Every: 3d, 2w, 6m, 1y'
-                onChange={(e) => setRepeatCustom(e.target.value)}
-                onBlur={() => {
-                  const value = repeatCustom.trim().toLowerCase();
+                placeholder='3d, 2w, 6m, 1y'
+                onChange={setRepeatCustom}
+                onCommit={(raw) => {
+                  const value = raw.trim().toLowerCase();
                   if (value === task.repeatCustom) return;
                   if (/^[1-9]\d{0,2}\s*[dwmy]$/.test(value)) update({ repeatCustom: value });
                   else setRepeatCustom(task.repeatCustom ?? '');
@@ -263,221 +267,300 @@ export const TaskPanel = (p: TaskPanelProps) => {
               />
             ) : null}
           </div>
-        </Field>
-        <Field label='Priority'>
-          <PlainSelect
-            value={task.priority}
-            disabled={!editable}
-            options={Object.values(TaskPriority).map((value) => ({ value, label: PRIORITY_LABEL[value] }))}
-            onChange={(priority) => update({ priority: priority as TaskPriority })}
-          />
-        </Field>
-        <Field label='Quantity'>
-          <div style={{ ...shared.row, flexWrap: 'nowrap' }}>
-            <input
-              style={{ ...shared.textInput, flex: 2 }}
+          <div style={styles.pair}>
+            <TextField
+              label='Quantity'
               inputMode='decimal'
               disabled={!editable}
+              style={{ flex: 2, minWidth: 0 }}
               value={quantity}
-              placeholder={project.type === ProjectType.List ? '2' : '—'}
-              onChange={(e) => setQuantity(e.target.value)}
-              onBlur={saveQuantity}
+              placeholder={project.type === ProjectType.List ? '2' : ''}
+              onChange={setQuantity}
+              onCommit={saveQuantity}
             />
-            <input
-              style={{ ...shared.textInput, flex: 1 }}
+            <TextField
+              label='Unit'
               disabled={!editable}
+              style={{ flex: 1, minWidth: 0 }}
               value={unit}
-              placeholder='unit'
-              onChange={(e) => setUnit(e.target.value)}
-              onBlur={saveQuantity}
+              placeholder='kg, pcs'
+              onChange={setUnit}
+              onCommit={saveQuantity}
             />
           </div>
-        </Field>
-      </div>
+        </div>
 
-      <Field label='Notes'>
-        <textarea
-          style={shared.textArea}
-          rows={5}
+        <TextAreaField
+          label='Notes'
+          rows={4}
           disabled={!editable}
           value={notes}
           placeholder={editable ? 'Details, links, measurements…' : ''}
-          onChange={(e) => setNotes(e.target.value)}
-          onBlur={() => notes !== (task.notes ?? '') && update({ notes: notes || null })}
+          onChange={setNotes}
+          onCommit={(value) => value !== (task.notes ?? '') && update({ notes: value || null })}
         />
-      </Field>
 
-      <div style={styles.section}>
-        <span style={shared.fieldLabel}>
-          Checklist{task.checklist.total ? ` · ${task.checklist.done}/${task.checklist.total}` : ''}
-        </span>
-        {task.checklistItems.length ? (
-          <div style={shared.list}>
-            {task.checklistItems.map((item) => (
-              <div key={item.id} style={shared.listRow}>
-                <Checkbox
-                  checked={item.done}
-                  disabled={!checkable}
-                  size={18}
-                  onChange={() =>
-                    run(async () => {
-                      if (!tasksApi) return;
-                      const { data } = await tasksApi.taskControllerUpdateChecklistItem({
-                        id: task.id,
-                        itemId: item.id,
-                        updateChecklistItemDto: { done: !item.done },
-                      });
-                      setChecklist(data);
-                    }, 'Could not tick the item.')
-                  }
-                />
-                <span
-                  style={{
-                    flex: 1,
-                    fontSize: 14,
-                    color: item.done ? theme.colors.dark05 : theme.colors.white,
-                    textDecoration: item.done ? 'line-through' : undefined,
-                  }}
-                >
-                  {item.content}
-                </span>
-                {editable ? (
-                  <button
-                    type='button'
-                    title='Remove'
-                    style={shared.iconButton}
-                    onClick={() =>
-                      run(async () => {
-                        if (!tasksApi) return;
-                        const { data } = await tasksApi.taskControllerRemoveChecklistItem({
-                          id: task.id,
-                          itemId: item.id,
-                        });
-                        setChecklist(data);
-                      }, 'Could not remove the item.')
-                    }
-                  >
-                    <FiX size={14} />
-                  </button>
-                ) : null}
-              </div>
-            ))}
-          </div>
-        ) : null}
-        {editable ? (
-          <input
-            style={shared.textInput}
-            value={newItem}
-            placeholder='Add an item, Enter to save'
-            onChange={(e) => setNewItem(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key !== 'Enter' || !newItem.trim()) return;
-              const content = newItem.trim();
-              setNewItem('');
-              run(async () => {
-                if (!tasksApi) return;
-                const { data } = await tasksApi.taskControllerAddChecklistItem({
-                  id: task.id,
-                  createChecklistItemDto: { content },
-                });
-                setChecklist(data);
-              }, 'Could not add the item.');
-            }}
-          />
-        ) : null}
-      </div>
-
-      {task.parentTaskId ? null : (
         <div style={styles.section}>
-          <span style={shared.fieldLabel}>Subtasks{task.subtasks.length ? ` · ${task.subtasks.length}` : ''}</span>
-          {task.subtasks.length ? (
+          <span style={shared.fieldLabel}>
+            Checklist{task.checklist.total ? ` · ${task.checklist.done}/${task.checklist.total}` : ''}
+          </span>
+          {task.checklistItems.length ? (
             <div style={shared.list}>
-              {task.subtasks.map((sub) => (
-                <div key={sub.id} style={{ ...shared.listRow, cursor: 'pointer' }} onClick={() => setTaskId(sub.id)}>
+              {task.checklistItems.map((item) => (
+                <div key={item.id} style={shared.listRow}>
                   <Checkbox
-                    checked={sub.status.category === StatusCategory.Done}
+                    checked={item.done}
                     disabled={!checkable}
                     size={18}
-                    onChange={() => toggle(sub.id)}
+                    onChange={() =>
+                      run(async () => {
+                        if (!tasksApi) return;
+                        const { data } = await tasksApi.taskControllerUpdateChecklistItem({
+                          id: task.id,
+                          itemId: item.id,
+                          updateChecklistItemDto: { done: !item.done },
+                        });
+                        setChecklist(data);
+                      }, 'Could not tick the item.')
+                    }
                   />
-                  <StatusDot color={sub.status.color} />
-                  <span style={{ flex: 1, fontSize: 14, color: theme.colors.white, minWidth: 0 }}>{sub.title}</span>
-                  <span style={shared.key}>{sub.key}</span>
-                  <TaskMeta task={sub} />
+                  <span
+                    style={{
+                      flex: 1,
+                      fontSize: 14,
+                      color: item.done ? theme.colors.dark05 : theme.colors.white,
+                      textDecoration: item.done ? 'line-through' : undefined,
+                    }}
+                  >
+                    {item.content}
+                  </span>
+                  {editable ? (
+                    <button
+                      type='button'
+                      title='Remove'
+                      style={shared.iconButton}
+                      onClick={() =>
+                        run(async () => {
+                          if (!tasksApi) return;
+                          const { data } = await tasksApi.taskControllerRemoveChecklistItem({
+                            id: task.id,
+                            itemId: item.id,
+                          });
+                          setChecklist(data);
+                        }, 'Could not remove the item.')
+                      }
+                    >
+                      <FiX size={14} />
+                    </button>
+                  ) : null}
                 </div>
               ))}
             </div>
           ) : null}
           {editable ? (
-            <QuickAdd
-              placeholder='Add a subtask'
-              onAdd={(dto) =>
+            <input
+              style={shared.textInput}
+              value={newItem}
+              placeholder='Add an item, Enter to save'
+              onChange={(e) => setNewItem(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key !== 'Enter' || !newItem.trim()) return;
+                const content = newItem.trim();
+                setNewItem('');
                 run(async () => {
-                  if (!projectsApi) return;
-                  await projectsApi.projectControllerCreateTask({
-                    id: task.project.id,
-                    createTaskDto: { ...dto, parentTaskId: task.id },
+                  if (!tasksApi) return;
+                  const { data } = await tasksApi.taskControllerAddChecklistItem({
+                    id: task.id,
+                    createChecklistItemDto: { content },
                   });
-                  await load();
-                }, 'Could not add the subtask.')
+                  setChecklist(data);
+                }, 'Could not add the item.');
+              }}
+            />
+          ) : null}
+        </div>
+
+        {task.parentTaskId ? null : (
+          <div style={styles.section}>
+            <span style={shared.fieldLabel}>Subtasks{task.subtasks.length ? ` · ${task.subtasks.length}` : ''}</span>
+            {task.subtasks.length ? (
+              <div style={shared.list}>
+                {task.subtasks.map((sub) => (
+                  <div key={sub.id} style={{ ...shared.listRow, cursor: 'pointer' }} onClick={() => setTaskId(sub.id)}>
+                    <Checkbox
+                      checked={sub.status.category === StatusCategory.Done}
+                      disabled={!checkable}
+                      size={18}
+                      onChange={() => toggle(sub.id)}
+                    />
+                    <StatusDot color={sub.status.color} />
+                    <span style={{ flex: 1, fontSize: 14, color: theme.colors.white, minWidth: 0 }}>{sub.title}</span>
+                    <span style={shared.key}>{sub.key}</span>
+                    <TaskMeta task={sub} />
+                  </div>
+                ))}
+              </div>
+            ) : null}
+            {editable ? (
+              <QuickAdd
+                placeholder='Add a subtask'
+                onAdd={(dto) =>
+                  run(async () => {
+                    if (!projectsApi) return;
+                    await projectsApi.projectControllerCreateTask({
+                      id: task.project.id,
+                      createTaskDto: { ...dto, parentTaskId: task.id },
+                    });
+                    await load();
+                  }, 'Could not add the subtask.')
+                }
+              />
+            ) : null}
+          </div>
+        )}
+
+        <div style={styles.section}>
+          <span style={shared.fieldLabel}>Files</span>
+          <ProjectDocuments compact target={{ taskId: task.id }} projectId={task.project.id} editable={editable} />
+        </div>
+
+        <div style={styles.section}>
+          <span style={shared.fieldLabel}>Comments</span>
+          <Comments target={{ taskId: task.id }} projectId={task.project.id} />
+        </div>
+
+        {editable ? (
+          <MoveToProject
+            task={task}
+            onMoved={(message) => {
+              toast(message, 'success');
+              close();
+            }}
+          />
+        ) : null}
+
+        <div style={styles.footer}>
+          <span style={shared.muted}>
+            {task.createdBy ? `Created by ${userName(task.createdBy)} · ` : ''}
+            {format(new Date(task.createdAt), 'd MMM yyyy')}
+            {task.completedAt
+              ? ` · done ${format(new Date(task.completedAt), 'd MMM')}${
+                  task.completedBy ? ` by ${userName(task.completedBy)}` : ''
+                }`
+              : ''}
+          </span>
+          {editable ? (
+            <Button
+              label='Delete'
+              variant='danger'
+              icon={<FiTrash2 size={14} />}
+              onClick={() =>
+                deleteModal.show({
+                  message: `Delete ${task.key}?`,
+                  description: task.subtasks.length
+                    ? `Its ${task.subtasks.length} subtasks and the checklist go with it.`
+                    : 'The checklist goes with it.',
+                  confirmLabel: 'Delete',
+                  danger: true,
+                  onConfirm: async () => {
+                    await run(async () => {
+                      if (!tasksApi) return;
+                      await tasksApi.taskControllerRemove({ id: task.id });
+                      if (task.parentTaskId) setTaskId(task.parentTaskId);
+                      else close();
+                    }, 'Could not delete the task.');
+                  },
+                })
               }
             />
           ) : null}
         </div>
-      )}
-
-      <div style={styles.section}>
-        <span style={shared.fieldLabel}>Files</span>
-        <ProjectDocuments compact target={{ taskId: task.id }} projectId={task.project.id} editable={editable} />
       </div>
+    </PanelScroll>
+  );
+};
 
-      <div style={styles.section}>
-        <span style={shared.fieldLabel}>Comments</span>
-        <Comments target={{ taskId: task.id }} projectId={task.project.id} />
+/**
+ * Into another project you can edit: the inbox's way out, or a task that was
+ * put in the wrong place. Subtasks, checklist and comments go along.
+ */
+const MoveToProject = ({ task, onMoved }: { task: TaskDetailResponse; onMoved: (message: string) => void }) => {
+  const styles = useStyles();
+  const shared = useProjectStyles();
+  const toast = useToast();
+  const { projectsApi, tasksApi } = useApi();
+  const [targets, setTargets] = useState<ProjectSummaryResponse[]>();
+  const [target, setTarget] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!projectsApi) return;
+    projectsApi
+      .projectControllerList({ archived: false })
+      .then(({ data }) => setTargets(data.filter((p) => p.id !== task.project.id && p.role !== ProjectRole.Viewer)))
+      .catch(() => setTargets([]));
+  }, [projectsApi, task.project.id]);
+
+  if (!targets?.length) return null;
+
+  const move = async () => {
+    if (!tasksApi || !target) return;
+    setBusy(true);
+    try {
+      const { data } = await tasksApi.taskControllerMoveToProject({
+        id: task.id,
+        moveTaskToProjectDto: { projectId: target },
+      });
+      const where = data.task.project.isInbox ? 'the inbox' : data.task.project.title;
+      onMoved(
+        `Moved to ${where} as ${data.task.key}.` +
+          (data.droppedDocuments
+            ? ` ${data.droppedDocuments} file${data.droppedDocuments === 1 ? '' : 's'} pinned by others stayed behind.`
+            : ''),
+      );
+    } catch (e) {
+      toast(getApiErrorMessage(e, 'Could not move the task.'), 'error');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div style={styles.section}>
+      <span style={shared.fieldLabel}>Move to another project</span>
+      <div style={styles.moveRow}>
+        <PlainSelect
+          value={target}
+          options={[
+            { value: '', label: 'Choose a project…' },
+            ...targets.map((p) => ({ value: p.id, label: p.isInbox ? 'Inbox' : `${p.key} · ${p.title}` })),
+          ]}
+          onChange={setTarget}
+          style={styles.moveSelect}
+        />
+        <Button
+          label='Move'
+          variant='secondary'
+          icon={<FiCornerUpRight size={14} />}
+          disabled={!target || busy}
+          loading={busy}
+          onClick={move}
+        />
       </div>
-
-      <div style={styles.footer}>
+      {task.subtasks.length ? (
         <span style={shared.muted}>
-          {task.createdBy ? `Created by ${userName(task.createdBy)} · ` : ''}
-          {format(new Date(task.createdAt), 'd MMM yyyy')}
-          {task.completedAt
-            ? ` · done ${format(new Date(task.completedAt), 'd MMM')}${
-                task.completedBy ? ` by ${userName(task.completedBy)}` : ''
-              }`
-            : ''}
+          Its {task.subtasks.length} subtask{task.subtasks.length === 1 ? '' : 's'} go along.
         </span>
-        {editable ? (
-          <Button
-            label='Delete'
-            variant='danger'
-            icon={<FiTrash2 size={14} />}
-            onClick={() =>
-              deleteModal.show({
-                message: `Delete ${task.key}?`,
-                description: task.subtasks.length
-                  ? `Its ${task.subtasks.length} subtasks and the checklist go with it.`
-                  : 'The checklist goes with it.',
-                confirmLabel: 'Delete',
-                danger: true,
-                onConfirm: async () => {
-                  await run(async () => {
-                    if (!tasksApi) return;
-                    await tasksApi.taskControllerRemove({ id: task.id });
-                    if (task.parentTaskId) setTaskId(task.parentTaskId);
-                    else close();
-                  }, 'Could not delete the task.');
-                },
-              })
-            }
-          />
-        ) : null}
-      </div>
+      ) : null}
     </div>
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
   container: { gap: t.spacing.l, paddingBottom: t.spacing.l },
+  // Stretch: the Move button takes the select's height instead of sitting short beside it.
+  moveRow: { flexDirection: 'row', alignItems: 'stretch', gap: t.spacing.s },
+  moveSelect: { flex: 1, minWidth: 0 },
   titleRow: { flexDirection: 'row', alignItems: 'flex-start', gap: t.spacing.sm },
   title: {
     flex: 1,
@@ -493,6 +576,14 @@ const useStyles = mkUseStyles((t) => ({
     lineHeight: 1.3,
   },
   section: { gap: t.spacing.s },
+  // Two fields sharing one cell of the grid: repeat + its interval, quantity + unit.
+  pair: { flexDirection: 'row', gap: t.spacing.s, minWidth: 0 },
+  pairGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))',
+    gap: t.spacing.sm,
+    marginTop: -t.spacing.s,
+  },
   link: {
     display: 'inline-flex',
     alignItems: 'center',

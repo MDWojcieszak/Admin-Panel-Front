@@ -1,3 +1,4 @@
+import { CSSProperties } from 'react';
 import { FiCalendar, FiCheckSquare, FiGitBranch, FiMessageSquare, FiPaperclip } from 'react-icons/fi';
 import { StatusCategory, TaskPriority, TaskResponse } from '~/api/api';
 import { Badge } from '~/components/Badge';
@@ -6,14 +7,22 @@ import { dueLabel, PRIORITY_LABEL, PRIORITY_TONE, quantityLabel } from '~/routes
 import { useTheme } from '~/utils/theme';
 
 /** The small facts under a task's title: due, checklist, subtasks, priority, who. */
-export const TaskMeta = ({ task, hideQuantity }: { task: TaskResponse; hideQuantity?: boolean }) => {
+export const TaskMeta = ({
+  task,
+  hideQuantity,
+  style,
+}: {
+  task: TaskResponse;
+  hideQuantity?: boolean;
+  style?: CSSProperties;
+}) => {
   const shared = useProjectStyles();
   const theme = useTheme();
   const done = task.status.category === StatusCategory.Done;
   const quantity = quantityLabel(task.quantity, task.unit);
 
   return (
-    <span style={{ ...shared.row, gap: theme.spacing.sm, ...shared.muted, fontSize: 12 }}>
+    <span style={{ ...shared.row, gap: theme.spacing.sm, ...shared.muted, fontSize: 12, ...style }}>
       {quantity && !hideQuantity ? (
         <span style={{ color: theme.colors.blue04, fontWeight: 600 }}>{quantity}</span>
       ) : null}

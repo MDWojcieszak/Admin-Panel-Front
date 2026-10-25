@@ -54,7 +54,7 @@ export const TripPacking = ({ entry }: { entry: ProjectPhotoEntryResponse }) => 
       ) : (
         <div style={shared.list}>
           {items.map((item) => (
-            <div key={item.gear.id} style={shared.listRow}>
+            <div key={item.gear.id} style={{ ...shared.listRow, ...styles.row }}>
               <Checkbox
                 checked={item.packed}
                 disabled={!manage}
@@ -73,10 +73,10 @@ export const TripPacking = ({ entry }: { entry: ProjectPhotoEntryResponse }) => 
                   }
                 }}
               />
-              <span style={{ flex: 1, fontSize: 14 }}>
+              <span style={styles.name}>
                 {item.gear.brand} {item.gear.model}
               </span>
-              {item.note ? <span style={{ ...shared.muted, fontSize: 12 }}>{item.note}</span> : null}
+              {item.note ? <span style={{ ...shared.muted, ...styles.note }}>{item.note}</span> : null}
             </div>
           ))}
         </div>
@@ -87,4 +87,8 @@ export const TripPacking = ({ entry }: { entry: ProjectPhotoEntryResponse }) => 
 
 const useStyles = mkUseStyles((t) => ({
   container: { gap: t.spacing.m, maxWidth: 760 },
+  // A long note drops under the name instead of squeezing it.
+  row: { flexWrap: 'wrap' },
+  name: { flex: '1 1 160px', minWidth: 0, fontSize: 14, color: t.colors.white, wordBreak: 'break-word' },
+  note: { fontSize: 12, marginLeft: 'auto', wordBreak: 'break-word' },
 }));

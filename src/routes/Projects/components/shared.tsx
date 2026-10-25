@@ -1,6 +1,7 @@
 import { CSSProperties, ReactNode } from 'react';
 import { FiCheck } from 'react-icons/fi';
 import { ProjectUserResponse } from '~/api/api';
+import { SelectField } from '~/components/ControlledFields';
 import { Scrollbar } from '~/components/Scrollbar';
 import { initials, userName } from '~/routes/Projects/utils';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -120,36 +121,35 @@ export const StatusDot = ({ color, size = 8 }: { color?: string | null; size?: n
   );
 };
 
-/** A native select in the panel's input style, for inline edits outside a form. */
+/**
+ * The panel's select for an edit outside a form: with a label it is the
+ * floating-label field, without one the compact variant for a row.
+ */
 export const PlainSelect = ({
   value,
   options,
   onChange,
   disabled,
+  label,
   style,
 }: {
   value: string;
   options: { value: string; label: string }[];
   onChange: (value: string) => void;
   disabled?: boolean;
+  label?: string;
   style?: CSSProperties;
-}) => {
-  const shared = useProjectStyles();
-  return (
-    <select
-      value={value}
-      disabled={disabled}
-      onChange={(e) => onChange(e.target.value)}
-      style={{ ...shared.textInput, ...shared.select, ...style }}
-    >
-      {options.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
-        </option>
-      ))}
-    </select>
-  );
-};
+}) => (
+  <SelectField
+    label={label ?? ''}
+    bare={!label}
+    value={value}
+    options={options}
+    disabled={disabled}
+    onChange={onChange}
+    style={style}
+  />
+);
 
 /** A labelled field for plain inputs. */
 export const Field = ({ label, children, style }: { label: string; children: ReactNode; style?: CSSProperties }) => {
@@ -161,6 +161,13 @@ export const Field = ({ label, children, style }: { label: string; children: Rea
     </label>
   );
 };
+
+/**
+ * Height of a compact field in a row (quick add, a new item): that of the
+ * panel's compact Select, so a row of both lines up. Toolbars that sometimes
+ * hold such a field keep this height when they don't.
+ */
+export const COMPACT_FIELD_HEIGHT = 52;
 
 export const useProjectStyles = mkUseStyles((t) => ({
   muted: { fontSize: 13, color: t.colors.dark05 },
@@ -187,31 +194,33 @@ export const useProjectStyles = mkUseStyles((t) => ({
     textTransform: 'uppercase',
     color: t.colors.dark05,
   },
+  // Compact fields in rows (quick add, search, a new item): the panel's
+  // filled field without a floating label.
   textInput: {
     width: '100%',
-    height: 38,
-    padding: `0 ${t.spacing.sm}px`,
+    height: COMPACT_FIELD_HEIGHT,
+    padding: `0 ${t.spacing.m}px`,
     boxSizing: 'border-box',
     borderRadius: t.borderRadius.default,
-    border: `1px solid ${t.colors.white + t.colorOpacity(0.1)}`,
-    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
-    color: t.colors.white,
-    fontSize: 14,
-    outline: 'none',
-    colorScheme: 'dark',
-  },
-  select: { cursor: 'pointer', appearance: 'auto' },
-  textArea: {
-    width: '100%',
-    padding: t.spacing.sm,
-    boxSizing: 'border-box',
-    borderRadius: t.borderRadius.default,
-    border: `1px solid ${t.colors.white + t.colorOpacity(0.1)}`,
+    border: 'none',
     backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
     color: t.colors.white,
     fontFamily: 'inherit',
-    fontSize: 14,
-    lineHeight: 1.5,
+    fontSize: 15,
+    outline: 'none',
+    colorScheme: 'dark',
+  },
+  textArea: {
+    width: '100%',
+    padding: t.spacing.m,
+    boxSizing: 'border-box',
+    borderRadius: t.borderRadius.default,
+    border: 'none',
+    backgroundColor: t.colors.gray02 + t.colorOpacity(0.6),
+    color: t.colors.white,
+    fontFamily: 'inherit',
+    fontSize: 15,
+    lineHeight: 1.45,
     outline: 'none',
     resize: 'vertical',
   },

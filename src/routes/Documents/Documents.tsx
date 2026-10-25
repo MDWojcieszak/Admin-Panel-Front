@@ -5,11 +5,12 @@ import { PageHeader } from '~/components/PageHeader';
 import { SegmentedTabs } from '~/components/SegmentedTabs';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { useModal } from '~/hooks/useModal';
-import { DocumentGrid } from '~/routes/Documents/components/DocumentGrid';
+import { DocumentGrid, DocumentSearch } from '~/routes/Documents/components/DocumentGrid';
 import { DocumentPanel } from '~/routes/Documents/modals/DocumentPanel';
 import { KIND_LABEL } from '~/routes/Documents/utils';
-import { ProjectsPage, useProjectStyles } from '~/routes/Projects/components/shared';
+import { ProjectsPage } from '~/routes/Projects/components/shared';
 import { mkUseStyles } from '~/utils/theme';
 
 const ALL = 'all';
@@ -28,7 +29,7 @@ const KIND_TABS = [
  */
 export const Documents = () => {
   const styles = useStyles();
-  const shared = useProjectStyles();
+  const isMobile = useIsMobile();
   const { documentsApi } = useApi();
   const [q, setQ] = useState('');
   const [kind, setKind] = useState<string>(ALL);
@@ -54,11 +55,11 @@ export const Documents = () => {
         <>
           <PageHeader title='Documents' meta={documents.length ? `${documents.length} files` : undefined} />
           <div style={styles.toolbar}>
-            <input
-              style={{ ...shared.textInput, ...styles.search }}
+            <DocumentSearch
               value={q}
+              onChange={setQ}
               placeholder='Search titles, descriptions, file names'
-              onChange={(e) => setQ(e.target.value)}
+              style={isMobile ? styles.searchMobile : styles.search}
             />
             <SegmentedTabs items={KIND_TABS} selected={kind} handleSelect={setKind} layoutId='documents-kind' />
           </div>
@@ -85,5 +86,6 @@ export const Documents = () => {
 
 const useStyles = mkUseStyles((t) => ({
   toolbar: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m, flexWrap: 'wrap' },
-  search: { flex: '1 1 260px', maxWidth: 480 },
+  search: { flex: '1 1 260px', maxWidth: 420 },
+  searchMobile: { flex: '1 1 100%' },
 }));

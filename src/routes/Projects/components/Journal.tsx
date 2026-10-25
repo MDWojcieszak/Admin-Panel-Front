@@ -4,15 +4,17 @@ import { FiEdit2, FiMessageSquare, FiPaperclip, FiPlus, FiTrash2 } from 'react-i
 import { JournalEntryResponse, ProjectDetailResponse } from '~/api/api';
 import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
+import { DateField, TextField } from '~/components/ControlledFields';
 import { Loader } from '~/components/Loader';
 import { MarkdownEditor } from '~/components/MarkdownEditor';
 import { useApi } from '~/hooks/useApi';
 import { useAsync } from '~/hooks/useAsync';
+import { useIsMobile } from '~/hooks/useBreakpoint';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
 import { Comments, RichText } from '~/routes/Projects/components/Comments';
 import { ProjectDocuments } from '~/routes/Projects/components/ProjectDocuments';
-import { Avatar, Field, useProjectStyles } from '~/routes/Projects/components/shared';
+import { Avatar, useProjectStyles } from '~/routes/Projects/components/shared';
 import { useProjectEvents } from '~/routes/Projects/hooks/useProjectEvents';
 import { canEdit, fromDateInput, toDateInput, userName } from '~/routes/Projects/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
@@ -82,23 +84,18 @@ export const Journal = ({ project }: { project: ProjectDetailResponse }) => {
   const composer = composing ? (
     <div style={styles.composer}>
       <div style={shared.fieldGrid}>
-        <Field label='Title'>
-          <input
-            autoFocus
-            style={shared.textInput}
-            value={composing.draft.title}
-            placeholder='Cut the base plate'
-            onChange={(e) => setComposing({ ...composing, draft: { ...composing.draft, title: e.target.value } })}
-          />
-        </Field>
-        <Field label='Day'>
-          <input
-            type='date'
-            style={shared.textInput}
-            value={composing.draft.date}
-            onChange={(e) => setComposing({ ...composing, draft: { ...composing.draft, date: e.target.value } })}
-          />
-        </Field>
+        <TextField
+          label='Title'
+          autoFocus
+          value={composing.draft.title}
+          placeholder='Cut the base plate'
+          onChange={(title) => setComposing({ ...composing, draft: { ...composing.draft, title } })}
+        />
+        <DateField
+          label='Day'
+          value={composing.draft.date}
+          onChange={(date) => setComposing({ ...composing, draft: { ...composing.draft, date } })}
+        />
       </div>
       <MarkdownEditor
         value={composing.draft.body}
@@ -189,14 +186,15 @@ const Entry = ({
   const styles = useStyles();
   const shared = useProjectStyles();
   const theme = useTheme();
+  const isMobile = useIsMobile();
   const editable = canEdit(project.role);
   const [showFiles, setShowFiles] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const filesOpen = showFiles || entry.documentCount > 0;
 
   return (
-    <div style={styles.entry}>
-      <div style={styles.date}>
+    <div style={{ ...styles.entry, ...(isMobile ? styles.entryMobile : null) }}>
+      <div style={{ ...styles.date, ...(isMobile ? styles.dateMobile : null) }}>
         <span style={styles.day}>{format(new Date(entry.happenedAt), 'd')}</span>
         <span style={shared.muted}>{format(new Date(entry.happenedAt), 'MMM yyyy')}</span>
       </div>
@@ -209,10 +207,10 @@ const Entry = ({
           </span>
           {entry.canEdit ? (
             <span style={{ ...shared.row, gap: 0, flexWrap: 'nowrap' }}>
-              <button type='button' title='Edit' style={shared.iconButton} onClick={onEdit}>
+              <button type='button' title='Edit' style={{ ...shared.iconButton, ...styles.touch }} onClick={onEdit}>
                 <FiEdit2 size={14} />
               </button>
-              <button type='button' title='Delete' style={shared.iconButton} onClick={onDelete}>
+              <button type='button' title='Delete' style={{ ...shared.iconButton, ...styles.touch }} onClick={onDelete}>
                 <FiTrash2 size={14} />
               </button>
             </span>
@@ -254,14 +252,19 @@ const useStyles = mkUseStyles((t) => ({
     borderRadius: t.borderRadius.large,
     backgroundColor: t.colors.gray03 + t.colorOpacity(0.7),
   },
+  entryMobile: { gap: t.spacing.sm, padding: t.spacing.sm },
   date: { width: 64, flexShrink: 0, alignItems: 'center', gap: 0 },
+  dateMobile: { width: 44 },
   day: { fontSize: 26, fontWeight: 700, lineHeight: 1.1, color: t.colors.white },
   body: { flex: 1, minWidth: 0, gap: t.spacing.sm },
-  title: { fontSize: 16, fontWeight: 700, color: t.colors.white },
+  title: { fontSize: 16, fontWeight: 700, color: t.colors.white, wordBreak: 'break-word' },
+  // shared.iconButton, a finger's width.
+  touch: { width: 32, height: 32 },
   link: {
     display: 'inline-flex',
     alignItems: 'center',
     gap: 5,
+    minHeight: 32,
     padding: 0,
     border: 'none',
     background: 'none',

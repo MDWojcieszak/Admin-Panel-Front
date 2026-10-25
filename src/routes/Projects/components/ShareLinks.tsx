@@ -4,9 +4,10 @@ import { FiCheck, FiCopy, FiLink, FiLock } from 'react-icons/fi';
 import { CreatedShareLinkResponse, ShareLinkAccess, ShareLinkResponse } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
+import { DateField, TextField } from '~/components/ControlledFields';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
-import { Field, PlainSelect, useProjectStyles } from '~/routes/Projects/components/shared';
+import { PlainSelect, useProjectStyles } from '~/routes/Projects/components/shared';
 import { dueLabel } from '~/routes/Projects/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
@@ -113,7 +114,7 @@ export const ShareLinks = ({ projectId }: { projectId: string }) => {
           <div style={{ ...shared.row, flexWrap: 'nowrap' }}>
             <input
               readOnly
-              style={{ ...shared.textInput, ...shared.mono }}
+              style={{ ...shared.textInput, ...shared.mono, ...styles.url }}
               value={shareUrl(created.token)}
               onFocus={(e) => e.target.select()}
             />
@@ -129,36 +130,15 @@ export const ShareLinks = ({ projectId }: { projectId: string }) => {
       {creating ? (
         <div style={styles.form}>
           <div style={shared.fieldGrid}>
-            <Field label='For'>
-              <input
-                autoFocus
-                style={shared.textInput}
-                value={label}
-                placeholder='Kasia — groceries'
-                onChange={(e) => setLabel(e.target.value)}
-              />
-            </Field>
-            <Field label='They'>
-              <PlainSelect value={access} options={ACCESS_OPTIONS} onChange={(v) => setAccess(v as ShareLinkAccess)} />
-            </Field>
-            <Field label='Until'>
-              <input
-                type='date'
-                style={shared.textInput}
-                value={expiresAt}
-                onChange={(e) => setExpiresAt(e.target.value)}
-              />
-            </Field>
-            <Field label='Password'>
-              <input
-                type='password'
-                autoComplete='new-password'
-                style={shared.textInput}
-                value={password}
-                placeholder='None'
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Field>
+            <TextField label='For' autoFocus value={label} placeholder='Kasia — groceries' onChange={setLabel} />
+            <PlainSelect
+              label='They'
+              value={access}
+              options={ACCESS_OPTIONS}
+              onChange={(v) => setAccess(v as ShareLinkAccess)}
+            />
+            <DateField label='Until' value={expiresAt} onChange={setExpiresAt} />
+            <TextField label='Password' type='password' value={password} placeholder='None' onChange={setPassword} />
           </div>
           <div style={shared.row}>
             <Button label='Create link' onClick={create} loading={busy} disabled={!!password && password.length < 4} />
@@ -226,5 +206,6 @@ const useStyles = mkUseStyles((t) => ({
     border: `1px solid ${t.colors.lightGreen + t.colorOpacity(0.35)}`,
     backgroundColor: t.colors.lightGreen + t.colorOpacity(0.06),
   },
+  url: { flex: 1, minWidth: 0 },
   linkText: { flex: 1, minWidth: 0, gap: 2 },
 }));
