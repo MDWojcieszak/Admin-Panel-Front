@@ -224,6 +224,8 @@ docs/DocumentListItemInputDto.md
 docs/DocumentResponse.md
 docs/DocumentVariant.md
 docs/DocumentsApi.md
+docs/DuplicateProjectDto.md
+docs/DuplicateProjectResponse.md
 docs/EclipseContactsResponse.md
 docs/EcosystemAccessGrantsApi.md
 docs/EcosystemAppDevicesApi.md
@@ -505,6 +507,7 @@ docs/ProcessStatusDto.md
 docs/ProjectCommentResponse.md
 docs/ProjectDetailResponse.md
 docs/ProjectMemberResponse.md
+docs/ProjectPhotoEntryResponse.md
 docs/ProjectProgressResponse.md
 docs/ProjectRole.md
 docs/ProjectStatus.md

@@ -18,6 +18,7 @@ Name | Type | Description | Notes
 **isInbox** | **boolean** |  | [default to undefined]
 **isTemplate** | **boolean** |  | [default to undefined]
 **viewersCanCheck** | **boolean** |  | [default to undefined]
+**photoEntry** | [**ProjectPhotoEntryResponse**](ProjectPhotoEntryResponse.md) |  | [optional] [default to undefined]
 **archivedAt** | **string** |  | [optional] [default to undefined]
 **role** | [**ProjectRole**](ProjectRole.md) |  | [default to undefined]
 **owner** | [**ProjectUserResponse**](ProjectUserResponse.md) |  | [default to undefined]
@@ -47,6 +48,7 @@ const instance: ProjectDetailResponse = {
     isInbox,
     isTemplate,
     viewersCanCheck,
+    photoEntry,
     archivedAt,
     role,
     owner,

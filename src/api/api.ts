@@ -4856,6 +4856,12 @@ export interface CreateProjectDto {
      * @memberof CreateProjectDto
      */
     'viewersCanCheck'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateProjectDto
+     */
+    'photoEntryId'?: string | null;
 }
 
 
@@ -6910,6 +6916,50 @@ export const DocumentVariant = {
 export type DocumentVariant = typeof DocumentVariant[keyof typeof DocumentVariant];
 
 
+/**
+ * 
+ * @export
+ * @interface DuplicateProjectDto
+ */
+export interface DuplicateProjectDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof DuplicateProjectDto
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DuplicateProjectDto
+     */
+    'startDate'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DuplicateProjectDto
+     */
+    'asTemplate'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface DuplicateProjectResponse
+ */
+export interface DuplicateProjectResponse {
+    /**
+     * 
+     * @type {ProjectDetailResponse}
+     * @memberof DuplicateProjectResponse
+     */
+    'project': ProjectDetailResponse;
+    /**
+     * 
+     * @type {number}
+     * @memberof DuplicateProjectResponse
+     */
+    'skippedDocuments': number;
+}
 /**
  * 
  * @export
@@ -16761,6 +16811,12 @@ export interface ProjectDetailResponse {
     'viewersCanCheck': boolean;
     /**
      * 
+     * @type {ProjectPhotoEntryResponse}
+     * @memberof ProjectDetailResponse
+     */
+    'photoEntry'?: ProjectPhotoEntryResponse | null;
+    /**
+     * 
      * @type {string}
      * @memberof ProjectDetailResponse
      */
@@ -16843,6 +16899,37 @@ export interface ProjectMemberResponse {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface ProjectPhotoEntryResponse
+ */
+export interface ProjectPhotoEntryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectPhotoEntryResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectPhotoEntryResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectPhotoEntryResponse
+     */
+    'startDate'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectPhotoEntryResponse
+     */
+    'endDate'?: string | null;
+}
 /**
  * 
  * @export
@@ -17041,6 +17128,12 @@ export interface ProjectSummaryResponse {
      * @memberof ProjectSummaryResponse
      */
     'viewersCanCheck': boolean;
+    /**
+     * 
+     * @type {ProjectPhotoEntryResponse}
+     * @memberof ProjectSummaryResponse
+     */
+    'photoEntry'?: ProjectPhotoEntryResponse | null;
     /**
      * 
      * @type {string}
@@ -22647,6 +22740,12 @@ export interface UpdateProjectDto {
      * @memberof UpdateProjectDto
      */
     'viewersCanCheck'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProjectDto
+     */
+    'photoEntryId'?: string | null;
     /**
      * 
      * @type {boolean}
@@ -59388,6 +59487,49 @@ export const ProjectsApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @param {string} id 
+         * @param {DuplicateProjectDto} duplicateProjectDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectControllerDuplicate: async (id: string, duplicateProjectDto: DuplicateProjectDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('projectControllerDuplicate', 'id', id)
+            // verify required parameter 'duplicateProjectDto' is not null or undefined
+            assertParamExists('projectControllerDuplicate', 'duplicateProjectDto', duplicateProjectDto)
+            const localVarPath = `/projects/{id}/duplicate`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(duplicateProjectDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -59461,10 +59603,11 @@ export const ProjectsApiAxiosParamCreator = function (configuration?: Configurat
          * @param {ProjectType} [type] 
          * @param {string} [q] 
          * @param {boolean} [archived] 
+         * @param {boolean} [templates] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        projectControllerList: async (status?: ProjectStatus, type?: ProjectType, q?: string, archived?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        projectControllerList: async (status?: ProjectStatus, type?: ProjectType, q?: string, archived?: boolean, templates?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/projects`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -59495,6 +59638,10 @@ export const ProjectsApiAxiosParamCreator = function (configuration?: Configurat
 
             if (archived !== undefined) {
                 localVarQueryParameter['archived'] = archived;
+            }
+
+            if (templates !== undefined) {
+                localVarQueryParameter['templates'] = templates;
             }
 
 
@@ -60068,6 +60215,19 @@ export const ProjectsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
+         * @param {DuplicateProjectDto} duplicateProjectDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async projectControllerDuplicate(id: string, duplicateProjectDto: DuplicateProjectDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DuplicateProjectResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectControllerDuplicate(id, duplicateProjectDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProjectsApi.projectControllerDuplicate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -60094,11 +60254,12 @@ export const ProjectsApiFp = function(configuration?: Configuration) {
          * @param {ProjectType} [type] 
          * @param {string} [q] 
          * @param {boolean} [archived] 
+         * @param {boolean} [templates] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async projectControllerList(status?: ProjectStatus, type?: ProjectType, q?: string, archived?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProjectSummaryResponse>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.projectControllerList(status, type, q, archived, options);
+        async projectControllerList(status?: ProjectStatus, type?: ProjectType, q?: string, archived?: boolean, templates?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProjectSummaryResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectControllerList(status, type, q, archived, templates, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProjectsApi.projectControllerList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -60307,6 +60468,15 @@ export const ProjectsApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @param {ProjectsApiProjectControllerDuplicateRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectControllerDuplicate(requestParameters: ProjectsApiProjectControllerDuplicateRequest, options?: RawAxiosRequestConfig): AxiosPromise<DuplicateProjectResponse> {
+            return localVarFp.projectControllerDuplicate(requestParameters.id, requestParameters.duplicateProjectDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {ProjectsApiProjectControllerGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -60329,7 +60499,7 @@ export const ProjectsApiFactory = function (configuration?: Configuration, baseP
          * @throws {RequiredError}
          */
         projectControllerList(requestParameters: ProjectsApiProjectControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProjectSummaryResponse>> {
-            return localVarFp.projectControllerList(requestParameters.status, requestParameters.type, requestParameters.q, requestParameters.archived, options).then((request) => request(axios, basePath));
+            return localVarFp.projectControllerList(requestParameters.status, requestParameters.type, requestParameters.q, requestParameters.archived, requestParameters.templates, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -60532,6 +60702,27 @@ export interface ProjectsApiProjectControllerCreateTaskRequest {
 }
 
 /**
+ * Request parameters for projectControllerDuplicate operation in ProjectsApi.
+ * @export
+ * @interface ProjectsApiProjectControllerDuplicateRequest
+ */
+export interface ProjectsApiProjectControllerDuplicateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectsApiProjectControllerDuplicate
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {DuplicateProjectDto}
+     * @memberof ProjectsApiProjectControllerDuplicate
+     */
+    readonly duplicateProjectDto: DuplicateProjectDto
+}
+
+/**
  * Request parameters for projectControllerGet operation in ProjectsApi.
  * @export
  * @interface ProjectsApiProjectControllerGetRequest
@@ -60578,6 +60769,13 @@ export interface ProjectsApiProjectControllerListRequest {
      * @memberof ProjectsApiProjectControllerList
      */
     readonly archived?: boolean
+
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ProjectsApiProjectControllerList
+     */
+    readonly templates?: boolean
 }
 
 /**
@@ -60903,6 +61101,17 @@ export class ProjectsApi extends BaseAPI {
 
     /**
      * 
+     * @param {ProjectsApiProjectControllerDuplicateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProjectsApi
+     */
+    public projectControllerDuplicate(requestParameters: ProjectsApiProjectControllerDuplicateRequest, options?: RawAxiosRequestConfig) {
+        return ProjectsApiFp(this.configuration).projectControllerDuplicate(requestParameters.id, requestParameters.duplicateProjectDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {ProjectsApiProjectControllerGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -60930,7 +61139,7 @@ export class ProjectsApi extends BaseAPI {
      * @memberof ProjectsApi
      */
     public projectControllerList(requestParameters: ProjectsApiProjectControllerListRequest = {}, options?: RawAxiosRequestConfig) {
-        return ProjectsApiFp(this.configuration).projectControllerList(requestParameters.status, requestParameters.type, requestParameters.q, requestParameters.archived, options).then((request) => request(this.axios, this.basePath));
+        return ProjectsApiFp(this.configuration).projectControllerList(requestParameters.status, requestParameters.type, requestParameters.q, requestParameters.archived, requestParameters.templates, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -9,6 +9,7 @@ All URIs are relative to *http://localhost*
 |[**projectControllerCreateLink**](#projectcontrollercreatelink) | **POST** /projects/{id}/links | |
 |[**projectControllerCreateStatus**](#projectcontrollercreatestatus) | **POST** /projects/{id}/statuses | |
 |[**projectControllerCreateTask**](#projectcontrollercreatetask) | **POST** /projects/{id}/tasks | |
+|[**projectControllerDuplicate**](#projectcontrollerduplicate) | **POST** /projects/{id}/duplicate | |
 |[**projectControllerGet**](#projectcontrollerget) | **GET** /projects/{id} | |
 |[**projectControllerInbox**](#projectcontrollerinbox) | **GET** /projects/inbox | |
 |[**projectControllerList**](#projectcontrollerlist) | **GET** /projects | |
@@ -291,6 +292,60 @@ const { status, data } = await apiInstance.projectControllerCreateTask(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **projectControllerDuplicate**
+> DuplicateProjectResponse projectControllerDuplicate(duplicateProjectDto)
+
+
+### Example
+
+```typescript
+import {
+    ProjectsApi,
+    Configuration,
+    DuplicateProjectDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ProjectsApi(configuration);
+
+let id: string; // (default to undefined)
+let duplicateProjectDto: DuplicateProjectDto; //
+
+const { status, data } = await apiInstance.projectControllerDuplicate(
+    id,
+    duplicateProjectDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **duplicateProjectDto** | **DuplicateProjectDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**DuplicateProjectResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **projectControllerGet**
 > ProjectDetailResponse projectControllerGet()
 
@@ -403,12 +458,14 @@ let status: ProjectStatus; // (optional) (default to undefined)
 let type: ProjectType; // (optional) (default to undefined)
 let q: string; // (optional) (default to undefined)
 let archived: boolean; // (optional) (default to undefined)
+let templates: boolean; // (optional) (default to undefined)
 
 const { status, data } = await apiInstance.projectControllerList(
     status,
     type,
     q,
-    archived
+    archived,
+    templates
 );
 ```
 
@@ -420,6 +477,7 @@ const { status, data } = await apiInstance.projectControllerList(
 | **type** | **ProjectType** |  | (optional) defaults to undefined|
 | **q** | [**string**] |  | (optional) defaults to undefined|
 | **archived** | [**boolean**] |  | (optional) defaults to undefined|
+| **templates** | [**boolean**] |  | (optional) defaults to undefined|
 
 
 ### Return type

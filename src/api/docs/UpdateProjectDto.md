@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **color** | **string** |  | [optional] [default to undefined]
 **icon** | **string** |  | [optional] [default to undefined]
 **viewersCanCheck** | **boolean** |  | [optional] [default to undefined]
+**photoEntryId** | **string** |  | [optional] [default to undefined]
 **archived** | **boolean** |  | [optional] [default to undefined]
 
 ## Example
@@ -33,6 +34,7 @@ const instance: UpdateProjectDto = {
     color,
     icon,
     viewersCanCheck,
+    photoEntryId,
     archived,
 };
 ```
