@@ -327,7 +327,7 @@ const { status, data } = await apiInstance.taskControllerRemoveChecklistItem(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **taskControllerReorderChecklist**
-> Array<ChecklistItemResponse> taskControllerReorderChecklist(reorderDto)
+> Array<ChecklistItemResponse> taskControllerReorderChecklist(reorderIdsDto)
 
 
 ### Example
@@ -336,18 +336,18 @@ const { status, data } = await apiInstance.taskControllerRemoveChecklistItem(
 import {
     TasksApi,
     Configuration,
-    ReorderDto
+    ReorderIdsDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new TasksApi(configuration);
 
 let id: string; // (default to undefined)
-let reorderDto: ReorderDto; //
+let reorderIdsDto: ReorderIdsDto; //
 
 const { status, data } = await apiInstance.taskControllerReorderChecklist(
     id,
-    reorderDto
+    reorderIdsDto
 );
 ```
 
@@ -355,7 +355,7 @@ const { status, data } = await apiInstance.taskControllerReorderChecklist(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **reorderDto** | **ReorderDto**|  | |
+| **reorderIdsDto** | **ReorderIdsDto**|  | |
 | **id** | [**string**] |  | defaults to undefined|
 
 

@@ -2067,6 +2067,241 @@ export type BlogSectionType = typeof BlogSectionType[keyof typeof BlogSectionTyp
 /**
  * 
  * @export
+ * @interface BomCostResponse
+ */
+export interface BomCostResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BomCostResponse
+     */
+    'currency'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomCostResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomCostResponse
+     */
+    'toBuy': number;
+}
+/**
+ * 
+ * @export
+ * @interface BomGearResponse
+ */
+export interface BomGearResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BomGearResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {GearCategory}
+     * @memberof BomGearResponse
+     */
+    'category': GearCategory;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomGearResponse
+     */
+    'brand': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomGearResponse
+     */
+    'model': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface BomItemResponse
+ */
+export interface BomItemResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof BomItemResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomItemResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomItemResponse
+     */
+    'quantity': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomItemResponse
+     */
+    'unit'?: string | null;
+    /**
+     * 
+     * @type {BomStatus}
+     * @memberof BomItemResponse
+     */
+    'status': BomStatus;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomItemResponse
+     */
+    'unitPrice'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomItemResponse
+     */
+    'currency'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomItemResponse
+     */
+    'cost'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomItemResponse
+     */
+    'supplier'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomItemResponse
+     */
+    'url'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BomItemResponse
+     */
+    'note'?: string | null;
+    /**
+     * 
+     * @type {BomGearResponse}
+     * @memberof BomItemResponse
+     */
+    'gearItem'?: BomGearResponse | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomItemResponse
+     */
+    'order': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomItemResponse
+     */
+    'commentCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomItemResponse
+     */
+    'documentCount': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface BomResponse
+ */
+export interface BomResponse {
+    /**
+     * 
+     * @type {Array<BomItemResponse>}
+     * @memberof BomResponse
+     */
+    'items': Array<BomItemResponse>;
+    /**
+     * 
+     * @type {BomSummaryResponse}
+     * @memberof BomResponse
+     */
+    'summary': BomSummaryResponse;
+}
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const BomStatus = {
+    Needed: 'NEEDED',
+    Ordered: 'ORDERED',
+    Have: 'HAVE',
+    Used: 'USED'
+} as const;
+
+export type BomStatus = typeof BomStatus[keyof typeof BomStatus];
+
+
+/**
+ * 
+ * @export
+ * @interface BomSummaryResponse
+ */
+export interface BomSummaryResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof BomSummaryResponse
+     */
+    'total': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomSummaryResponse
+     */
+    'needed': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomSummaryResponse
+     */
+    'ordered': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomSummaryResponse
+     */
+    'have': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BomSummaryResponse
+     */
+    'used': number;
+    /**
+     * 
+     * @type {Array<BomCostResponse>}
+     * @memberof BomSummaryResponse
+     */
+    'costs': Array<BomCostResponse>;
+}
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
@@ -3461,6 +3696,75 @@ export interface CreateBlogCountryDto {
 /**
  * 
  * @export
+ * @interface CreateBomItemDto
+ */
+export interface CreateBomItemDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBomItemDto
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateBomItemDto
+     */
+    'quantity'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBomItemDto
+     */
+    'unit'?: string | null;
+    /**
+     * 
+     * @type {BomStatus}
+     * @memberof CreateBomItemDto
+     */
+    'status'?: BomStatus;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreateBomItemDto
+     */
+    'unitPrice'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBomItemDto
+     */
+    'currency'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBomItemDto
+     */
+    'supplier'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBomItemDto
+     */
+    'url'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBomItemDto
+     */
+    'note'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateBomItemDto
+     */
+    'gearItemId'?: string | null;
+}
+
+
+/**
+ * 
+ * @export
  * @interface CreateChecklistItemDto
  */
 export interface CreateChecklistItemDto {
@@ -3665,6 +3969,18 @@ export interface CreateDocumentLinkDto {
      * @memberof CreateDocumentLinkDto
      */
     'taskId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateDocumentLinkDto
+     */
+    'bomItemId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateDocumentLinkDto
+     */
+    'journalEntryId'?: string;
 }
 /**
  * 
@@ -4060,6 +4376,31 @@ export interface CreateIntegrationTokenDto {
 /**
  * 
  * @export
+ * @interface CreateJournalEntryDto
+ */
+export interface CreateJournalEntryDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateJournalEntryDto
+     */
+    'title'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateJournalEntryDto
+     */
+    'body': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateJournalEntryDto
+     */
+    'happenedAt'?: string;
+}
+/**
+ * 
+ * @export
  * @interface CreatePermissionGroupDto
  */
 export interface CreatePermissionGroupDto {
@@ -4412,6 +4753,43 @@ export interface CreatePostDto {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface CreateProjectCommentDto
+ */
+export interface CreateProjectCommentDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateProjectCommentDto
+     */
+    'projectId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateProjectCommentDto
+     */
+    'taskId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateProjectCommentDto
+     */
+    'bomItemId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateProjectCommentDto
+     */
+    'journalEntryId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateProjectCommentDto
+     */
+    'body': string;
+}
 /**
  * 
  * @export
@@ -6235,6 +6613,50 @@ export interface DocumentLeafBlockDto {
 /**
  * 
  * @export
+ * @interface DocumentLinkBomItemResponse
+ */
+export interface DocumentLinkBomItemResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkBomItemResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkBomItemResponse
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface DocumentLinkJournalEntryResponse
+ */
+export interface DocumentLinkJournalEntryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkJournalEntryResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkJournalEntryResponse
+     */
+    'title'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentLinkJournalEntryResponse
+     */
+    'happenedAt': string;
+}
+/**
+ * 
+ * @export
  * @interface DocumentLinkProjectResponse
  */
 export interface DocumentLinkProjectResponse {
@@ -6281,6 +6703,18 @@ export interface DocumentLinkResponse {
      * @memberof DocumentLinkResponse
      */
     'task'?: DocumentLinkTaskResponse | null;
+    /**
+     * 
+     * @type {DocumentLinkBomItemResponse}
+     * @memberof DocumentLinkResponse
+     */
+    'bomItem'?: DocumentLinkBomItemResponse | null;
+    /**
+     * 
+     * @type {DocumentLinkJournalEntryResponse}
+     * @memberof DocumentLinkResponse
+     */
+    'journalEntry'?: DocumentLinkJournalEntryResponse | null;
     /**
      * 
      * @type {ProjectUserResponse}
@@ -10266,6 +10700,73 @@ export interface InteractionStateResponse {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface JournalEntryResponse
+ */
+export interface JournalEntryResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof JournalEntryResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof JournalEntryResponse
+     */
+    'title'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof JournalEntryResponse
+     */
+    'body': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof JournalEntryResponse
+     */
+    'happenedAt': string;
+    /**
+     * 
+     * @type {ProjectUserResponse}
+     * @memberof JournalEntryResponse
+     */
+    'author': ProjectUserResponse;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof JournalEntryResponse
+     */
+    'canEdit': boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof JournalEntryResponse
+     */
+    'commentCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof JournalEntryResponse
+     */
+    'documentCount': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof JournalEntryResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof JournalEntryResponse
+     */
+    'updatedAt': string;
+}
 /**
  * 
  * @export
@@ -16128,6 +16629,55 @@ export interface ProcessStatusDto {
 /**
  * 
  * @export
+ * @interface ProjectCommentResponse
+ */
+export interface ProjectCommentResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectCommentResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectCommentResponse
+     */
+    'body': string;
+    /**
+     * 
+     * @type {ProjectUserResponse}
+     * @memberof ProjectCommentResponse
+     */
+    'author': ProjectUserResponse;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ProjectCommentResponse
+     */
+    'canEdit': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ProjectCommentResponse
+     */
+    'canDelete': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectCommentResponse
+     */
+    'editedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectCommentResponse
+     */
+    'createdAt': string;
+}
+/**
+ * 
+ * @export
  * @interface ProjectDetailResponse
  */
 export interface ProjectDetailResponse {
@@ -17691,10 +18241,10 @@ export interface ReorderCollectionItemsDto {
 export interface ReorderDto {
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<OrderItemDto>}
      * @memberof ReorderDto
      */
-    'ids': Array<string>;
+    'items': Array<OrderItemDto>;
 }
 /**
  * 
@@ -17719,6 +18269,19 @@ export interface ReorderGearDto {
      * 
      * @type {Array<string>}
      * @memberof ReorderGearDto
+     */
+    'ids': Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface ReorderIdsDto
+ */
+export interface ReorderIdsDto {
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ReorderIdsDto
      */
     'ids': Array<string>;
 }
@@ -19800,6 +20363,21 @@ export interface SetBlogAlbumItemsDto {
 /**
  * 
  * @export
+ * @interface SetBomStatusDto
+ */
+export interface SetBomStatusDto {
+    /**
+     * 
+     * @type {BomStatus}
+     * @memberof SetBomStatusDto
+     */
+    'status': BomStatus;
+}
+
+
+/**
+ * 
+ * @export
  * @interface SetGalleryItemsDto
  */
 export interface SetGalleryItemsDto {
@@ -20846,6 +21424,18 @@ export interface TaskDetailResponse {
     'subtaskCount': number;
     /**
      * 
+     * @type {number}
+     * @memberof TaskDetailResponse
+     */
+    'commentCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TaskDetailResponse
+     */
+    'documentCount': number;
+    /**
+     * 
      * @type {boolean}
      * @memberof TaskDetailResponse
      */
@@ -21087,6 +21677,18 @@ export interface TaskResponse {
      * @memberof TaskResponse
      */
     'subtaskCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TaskResponse
+     */
+    'commentCount': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TaskResponse
+     */
+    'documentCount': number;
     /**
      * 
      * @type {boolean}
@@ -21471,6 +22073,75 @@ export interface UpdateApplicationDto {
 /**
  * 
  * @export
+ * @interface UpdateBomItemDto
+ */
+export interface UpdateBomItemDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateBomItemDto
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateBomItemDto
+     */
+    'quantity'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateBomItemDto
+     */
+    'unit'?: string | null;
+    /**
+     * 
+     * @type {BomStatus}
+     * @memberof UpdateBomItemDto
+     */
+    'status'?: BomStatus;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdateBomItemDto
+     */
+    'unitPrice'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateBomItemDto
+     */
+    'currency'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateBomItemDto
+     */
+    'supplier'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateBomItemDto
+     */
+    'url'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateBomItemDto
+     */
+    'note'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateBomItemDto
+     */
+    'gearItemId'?: string | null;
+}
+
+
+/**
+ * 
+ * @export
  * @interface UpdateChecklistItemDto
  */
 export interface UpdateChecklistItemDto {
@@ -21819,6 +22490,31 @@ export interface UpdateGearSystemDto {
 /**
  * 
  * @export
+ * @interface UpdateJournalEntryDto
+ */
+export interface UpdateJournalEntryDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateJournalEntryDto
+     */
+    'title'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateJournalEntryDto
+     */
+    'body'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateJournalEntryDto
+     */
+    'happenedAt'?: string;
+}
+/**
+ * 
+ * @export
  * @interface UpdatePermissionGroupDto
  */
 export interface UpdatePermissionGroupDto {
@@ -21871,6 +22567,19 @@ export interface UpdatePortfolioSettingsDto {
      * @memberof UpdatePortfolioSettingsDto
      */
     'galleryPageSize'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface UpdateProjectCommentDto
+ */
+export interface UpdateProjectCommentDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProjectCommentDto
+     */
+    'body': string;
 }
 /**
  * 
@@ -37721,6 +38430,1386 @@ export class BlogVersioningApi extends BaseAPI {
 
 
 /**
+ * BuildsApi - axios parameter creator
+ * @export
+ */
+export const BuildsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} id 
+         * @param {CreateBomItemDto} createBomItemDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerAddBomItem: async (id: string, createBomItemDto: CreateBomItemDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('buildControllerAddBomItem', 'id', id)
+            // verify required parameter 'createBomItemDto' is not null or undefined
+            assertParamExists('buildControllerAddBomItem', 'createBomItemDto', createBomItemDto)
+            const localVarPath = `/projects/{id}/bom`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createBomItemDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {CreateJournalEntryDto} createJournalEntryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerAddJournalEntry: async (id: string, createJournalEntryDto: CreateJournalEntryDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('buildControllerAddJournalEntry', 'id', id)
+            // verify required parameter 'createJournalEntryDto' is not null or undefined
+            assertParamExists('buildControllerAddJournalEntry', 'createJournalEntryDto', createJournalEntryDto)
+            const localVarPath = `/projects/{id}/journal`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createJournalEntryDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerListBom: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('buildControllerListBom', 'id', id)
+            const localVarPath = `/projects/{id}/bom`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerListJournal: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('buildControllerListJournal', 'id', id)
+            const localVarPath = `/projects/{id}/journal`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} itemId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerRemoveBomItem: async (itemId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('buildControllerRemoveBomItem', 'itemId', itemId)
+            const localVarPath = `/bom/{itemId}`
+                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} entryId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerRemoveJournalEntry: async (entryId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'entryId' is not null or undefined
+            assertParamExists('buildControllerRemoveJournalEntry', 'entryId', entryId)
+            const localVarPath = `/journal/{entryId}`
+                .replace(`{${"entryId"}}`, encodeURIComponent(String(entryId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {ReorderIdsDto} reorderIdsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerReorderBom: async (id: string, reorderIdsDto: ReorderIdsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('buildControllerReorderBom', 'id', id)
+            // verify required parameter 'reorderIdsDto' is not null or undefined
+            assertParamExists('buildControllerReorderBom', 'reorderIdsDto', reorderIdsDto)
+            const localVarPath = `/projects/{id}/bom/order`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(reorderIdsDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} itemId 
+         * @param {SetBomStatusDto} setBomStatusDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerSetBomStatus: async (itemId: string, setBomStatusDto: SetBomStatusDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('buildControllerSetBomStatus', 'itemId', itemId)
+            // verify required parameter 'setBomStatusDto' is not null or undefined
+            assertParamExists('buildControllerSetBomStatus', 'setBomStatusDto', setBomStatusDto)
+            const localVarPath = `/bom/{itemId}/status`
+                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setBomStatusDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} itemId 
+         * @param {UpdateBomItemDto} updateBomItemDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerUpdateBomItem: async (itemId: string, updateBomItemDto: UpdateBomItemDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemId' is not null or undefined
+            assertParamExists('buildControllerUpdateBomItem', 'itemId', itemId)
+            // verify required parameter 'updateBomItemDto' is not null or undefined
+            assertParamExists('buildControllerUpdateBomItem', 'updateBomItemDto', updateBomItemDto)
+            const localVarPath = `/bom/{itemId}`
+                .replace(`{${"itemId"}}`, encodeURIComponent(String(itemId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateBomItemDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} entryId 
+         * @param {UpdateJournalEntryDto} updateJournalEntryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerUpdateJournalEntry: async (entryId: string, updateJournalEntryDto: UpdateJournalEntryDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'entryId' is not null or undefined
+            assertParamExists('buildControllerUpdateJournalEntry', 'entryId', entryId)
+            // verify required parameter 'updateJournalEntryDto' is not null or undefined
+            assertParamExists('buildControllerUpdateJournalEntry', 'updateJournalEntryDto', updateJournalEntryDto)
+            const localVarPath = `/journal/{entryId}`
+                .replace(`{${"entryId"}}`, encodeURIComponent(String(entryId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateJournalEntryDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BuildsApi - functional programming interface
+ * @export
+ */
+export const BuildsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BuildsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} id 
+         * @param {CreateBomItemDto} createBomItemDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerAddBomItem(id: string, createBomItemDto: CreateBomItemDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerAddBomItem(id, createBomItemDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerAddBomItem']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {CreateJournalEntryDto} createJournalEntryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerAddJournalEntry(id: string, createJournalEntryDto: CreateJournalEntryDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JournalEntryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerAddJournalEntry(id, createJournalEntryDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerAddJournalEntry']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerListBom(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerListBom(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerListBom']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerListJournal(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<JournalEntryResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerListJournal(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerListJournal']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} itemId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerRemoveBomItem(itemId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerRemoveBomItem(itemId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerRemoveBomItem']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} entryId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerRemoveJournalEntry(entryId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerRemoveJournalEntry(entryId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerRemoveJournalEntry']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {ReorderIdsDto} reorderIdsDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerReorderBom(id: string, reorderIdsDto: ReorderIdsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerReorderBom(id, reorderIdsDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerReorderBom']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} itemId 
+         * @param {SetBomStatusDto} setBomStatusDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerSetBomStatus(itemId: string, setBomStatusDto: SetBomStatusDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerSetBomStatus(itemId, setBomStatusDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerSetBomStatus']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} itemId 
+         * @param {UpdateBomItemDto} updateBomItemDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerUpdateBomItem(itemId: string, updateBomItemDto: UpdateBomItemDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BomResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerUpdateBomItem(itemId, updateBomItemDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerUpdateBomItem']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} entryId 
+         * @param {UpdateJournalEntryDto} updateJournalEntryDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async buildControllerUpdateJournalEntry(entryId: string, updateJournalEntryDto: UpdateJournalEntryDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<JournalEntryResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.buildControllerUpdateJournalEntry(entryId, updateJournalEntryDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildsApi.buildControllerUpdateJournalEntry']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * BuildsApi - factory interface
+ * @export
+ */
+export const BuildsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BuildsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {BuildsApiBuildControllerAddBomItemRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerAddBomItem(requestParameters: BuildsApiBuildControllerAddBomItemRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
+            return localVarFp.buildControllerAddBomItem(requestParameters.id, requestParameters.createBomItemDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerAddJournalEntryRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerAddJournalEntry(requestParameters: BuildsApiBuildControllerAddJournalEntryRequest, options?: RawAxiosRequestConfig): AxiosPromise<JournalEntryResponse> {
+            return localVarFp.buildControllerAddJournalEntry(requestParameters.id, requestParameters.createJournalEntryDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerListBomRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerListBom(requestParameters: BuildsApiBuildControllerListBomRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
+            return localVarFp.buildControllerListBom(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerListJournalRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerListJournal(requestParameters: BuildsApiBuildControllerListJournalRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<JournalEntryResponse>> {
+            return localVarFp.buildControllerListJournal(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerRemoveBomItemRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerRemoveBomItem(requestParameters: BuildsApiBuildControllerRemoveBomItemRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
+            return localVarFp.buildControllerRemoveBomItem(requestParameters.itemId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerRemoveJournalEntryRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerRemoveJournalEntry(requestParameters: BuildsApiBuildControllerRemoveJournalEntryRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.buildControllerRemoveJournalEntry(requestParameters.entryId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerReorderBomRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerReorderBom(requestParameters: BuildsApiBuildControllerReorderBomRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
+            return localVarFp.buildControllerReorderBom(requestParameters.id, requestParameters.reorderIdsDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerSetBomStatusRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerSetBomStatus(requestParameters: BuildsApiBuildControllerSetBomStatusRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
+            return localVarFp.buildControllerSetBomStatus(requestParameters.itemId, requestParameters.setBomStatusDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerUpdateBomItemRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerUpdateBomItem(requestParameters: BuildsApiBuildControllerUpdateBomItemRequest, options?: RawAxiosRequestConfig): AxiosPromise<BomResponse> {
+            return localVarFp.buildControllerUpdateBomItem(requestParameters.itemId, requestParameters.updateBomItemDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildsApiBuildControllerUpdateJournalEntryRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        buildControllerUpdateJournalEntry(requestParameters: BuildsApiBuildControllerUpdateJournalEntryRequest, options?: RawAxiosRequestConfig): AxiosPromise<JournalEntryResponse> {
+            return localVarFp.buildControllerUpdateJournalEntry(requestParameters.entryId, requestParameters.updateJournalEntryDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for buildControllerAddBomItem operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerAddBomItemRequest
+ */
+export interface BuildsApiBuildControllerAddBomItemRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerAddBomItem
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {CreateBomItemDto}
+     * @memberof BuildsApiBuildControllerAddBomItem
+     */
+    readonly createBomItemDto: CreateBomItemDto
+}
+
+/**
+ * Request parameters for buildControllerAddJournalEntry operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerAddJournalEntryRequest
+ */
+export interface BuildsApiBuildControllerAddJournalEntryRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerAddJournalEntry
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {CreateJournalEntryDto}
+     * @memberof BuildsApiBuildControllerAddJournalEntry
+     */
+    readonly createJournalEntryDto: CreateJournalEntryDto
+}
+
+/**
+ * Request parameters for buildControllerListBom operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerListBomRequest
+ */
+export interface BuildsApiBuildControllerListBomRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerListBom
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for buildControllerListJournal operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerListJournalRequest
+ */
+export interface BuildsApiBuildControllerListJournalRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerListJournal
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for buildControllerRemoveBomItem operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerRemoveBomItemRequest
+ */
+export interface BuildsApiBuildControllerRemoveBomItemRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerRemoveBomItem
+     */
+    readonly itemId: string
+}
+
+/**
+ * Request parameters for buildControllerRemoveJournalEntry operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerRemoveJournalEntryRequest
+ */
+export interface BuildsApiBuildControllerRemoveJournalEntryRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerRemoveJournalEntry
+     */
+    readonly entryId: string
+}
+
+/**
+ * Request parameters for buildControllerReorderBom operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerReorderBomRequest
+ */
+export interface BuildsApiBuildControllerReorderBomRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerReorderBom
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {ReorderIdsDto}
+     * @memberof BuildsApiBuildControllerReorderBom
+     */
+    readonly reorderIdsDto: ReorderIdsDto
+}
+
+/**
+ * Request parameters for buildControllerSetBomStatus operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerSetBomStatusRequest
+ */
+export interface BuildsApiBuildControllerSetBomStatusRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerSetBomStatus
+     */
+    readonly itemId: string
+
+    /**
+     * 
+     * @type {SetBomStatusDto}
+     * @memberof BuildsApiBuildControllerSetBomStatus
+     */
+    readonly setBomStatusDto: SetBomStatusDto
+}
+
+/**
+ * Request parameters for buildControllerUpdateBomItem operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerUpdateBomItemRequest
+ */
+export interface BuildsApiBuildControllerUpdateBomItemRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerUpdateBomItem
+     */
+    readonly itemId: string
+
+    /**
+     * 
+     * @type {UpdateBomItemDto}
+     * @memberof BuildsApiBuildControllerUpdateBomItem
+     */
+    readonly updateBomItemDto: UpdateBomItemDto
+}
+
+/**
+ * Request parameters for buildControllerUpdateJournalEntry operation in BuildsApi.
+ * @export
+ * @interface BuildsApiBuildControllerUpdateJournalEntryRequest
+ */
+export interface BuildsApiBuildControllerUpdateJournalEntryRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildsApiBuildControllerUpdateJournalEntry
+     */
+    readonly entryId: string
+
+    /**
+     * 
+     * @type {UpdateJournalEntryDto}
+     * @memberof BuildsApiBuildControllerUpdateJournalEntry
+     */
+    readonly updateJournalEntryDto: UpdateJournalEntryDto
+}
+
+/**
+ * BuildsApi - object-oriented interface
+ * @export
+ * @class BuildsApi
+ * @extends {BaseAPI}
+ */
+export class BuildsApi extends BaseAPI {
+    /**
+     * 
+     * @param {BuildsApiBuildControllerAddBomItemRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerAddBomItem(requestParameters: BuildsApiBuildControllerAddBomItemRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerAddBomItem(requestParameters.id, requestParameters.createBomItemDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerAddJournalEntryRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerAddJournalEntry(requestParameters: BuildsApiBuildControllerAddJournalEntryRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerAddJournalEntry(requestParameters.id, requestParameters.createJournalEntryDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerListBomRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerListBom(requestParameters: BuildsApiBuildControllerListBomRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerListBom(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerListJournalRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerListJournal(requestParameters: BuildsApiBuildControllerListJournalRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerListJournal(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerRemoveBomItemRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerRemoveBomItem(requestParameters: BuildsApiBuildControllerRemoveBomItemRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerRemoveBomItem(requestParameters.itemId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerRemoveJournalEntryRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerRemoveJournalEntry(requestParameters: BuildsApiBuildControllerRemoveJournalEntryRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerRemoveJournalEntry(requestParameters.entryId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerReorderBomRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerReorderBom(requestParameters: BuildsApiBuildControllerReorderBomRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerReorderBom(requestParameters.id, requestParameters.reorderIdsDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerSetBomStatusRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerSetBomStatus(requestParameters: BuildsApiBuildControllerSetBomStatusRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerSetBomStatus(requestParameters.itemId, requestParameters.setBomStatusDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerUpdateBomItemRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerUpdateBomItem(requestParameters: BuildsApiBuildControllerUpdateBomItemRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerUpdateBomItem(requestParameters.itemId, requestParameters.updateBomItemDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildsApiBuildControllerUpdateJournalEntryRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildsApi
+     */
+    public buildControllerUpdateJournalEntry(requestParameters: BuildsApiBuildControllerUpdateJournalEntryRequest, options?: RawAxiosRequestConfig) {
+        return BuildsApiFp(this.configuration).buildControllerUpdateJournalEntry(requestParameters.entryId, requestParameters.updateJournalEntryDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * CommentsApi - axios parameter creator
+ * @export
+ */
+export const CommentsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CreateProjectCommentDto} createProjectCommentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectCommentControllerCreate: async (createProjectCommentDto: CreateProjectCommentDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createProjectCommentDto' is not null or undefined
+            assertParamExists('projectCommentControllerCreate', 'createProjectCommentDto', createProjectCommentDto)
+            const localVarPath = `/comments`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createProjectCommentDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [projectId] 
+         * @param {string} [taskId] 
+         * @param {string} [bomItemId] 
+         * @param {string} [journalEntryId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectCommentControllerList: async (projectId?: string, taskId?: string, bomItemId?: string, journalEntryId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/comments`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (projectId !== undefined) {
+                localVarQueryParameter['projectId'] = projectId;
+            }
+
+            if (taskId !== undefined) {
+                localVarQueryParameter['taskId'] = taskId;
+            }
+
+            if (bomItemId !== undefined) {
+                localVarQueryParameter['bomItemId'] = bomItemId;
+            }
+
+            if (journalEntryId !== undefined) {
+                localVarQueryParameter['journalEntryId'] = journalEntryId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectCommentControllerRemove: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('projectCommentControllerRemove', 'id', id)
+            const localVarPath = `/comments/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateProjectCommentDto} updateProjectCommentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectCommentControllerUpdate: async (id: string, updateProjectCommentDto: UpdateProjectCommentDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('projectCommentControllerUpdate', 'id', id)
+            // verify required parameter 'updateProjectCommentDto' is not null or undefined
+            assertParamExists('projectCommentControllerUpdate', 'updateProjectCommentDto', updateProjectCommentDto)
+            const localVarPath = `/comments/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updateProjectCommentDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CommentsApi - functional programming interface
+ * @export
+ */
+export const CommentsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CommentsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CreateProjectCommentDto} createProjectCommentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async projectCommentControllerCreate(createProjectCommentDto: CreateProjectCommentDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProjectCommentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectCommentControllerCreate(createProjectCommentDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CommentsApi.projectCommentControllerCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} [projectId] 
+         * @param {string} [taskId] 
+         * @param {string} [bomItemId] 
+         * @param {string} [journalEntryId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async projectCommentControllerList(projectId?: string, taskId?: string, bomItemId?: string, journalEntryId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProjectCommentResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectCommentControllerList(projectId, taskId, bomItemId, journalEntryId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CommentsApi.projectCommentControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async projectCommentControllerRemove(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectCommentControllerRemove(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CommentsApi.projectCommentControllerRemove']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {UpdateProjectCommentDto} updateProjectCommentDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async projectCommentControllerUpdate(id: string, updateProjectCommentDto: UpdateProjectCommentDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProjectCommentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectCommentControllerUpdate(id, updateProjectCommentDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CommentsApi.projectCommentControllerUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * CommentsApi - factory interface
+ * @export
+ */
+export const CommentsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CommentsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {CommentsApiProjectCommentControllerCreateRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectCommentControllerCreate(requestParameters: CommentsApiProjectCommentControllerCreateRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProjectCommentResponse> {
+            return localVarFp.projectCommentControllerCreate(requestParameters.createProjectCommentDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CommentsApiProjectCommentControllerListRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectCommentControllerList(requestParameters: CommentsApiProjectCommentControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProjectCommentResponse>> {
+            return localVarFp.projectCommentControllerList(requestParameters.projectId, requestParameters.taskId, requestParameters.bomItemId, requestParameters.journalEntryId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CommentsApiProjectCommentControllerRemoveRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectCommentControllerRemove(requestParameters: CommentsApiProjectCommentControllerRemoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.projectCommentControllerRemove(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CommentsApiProjectCommentControllerUpdateRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectCommentControllerUpdate(requestParameters: CommentsApiProjectCommentControllerUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<ProjectCommentResponse> {
+            return localVarFp.projectCommentControllerUpdate(requestParameters.id, requestParameters.updateProjectCommentDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for projectCommentControllerCreate operation in CommentsApi.
+ * @export
+ * @interface CommentsApiProjectCommentControllerCreateRequest
+ */
+export interface CommentsApiProjectCommentControllerCreateRequest {
+    /**
+     * 
+     * @type {CreateProjectCommentDto}
+     * @memberof CommentsApiProjectCommentControllerCreate
+     */
+    readonly createProjectCommentDto: CreateProjectCommentDto
+}
+
+/**
+ * Request parameters for projectCommentControllerList operation in CommentsApi.
+ * @export
+ * @interface CommentsApiProjectCommentControllerListRequest
+ */
+export interface CommentsApiProjectCommentControllerListRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentsApiProjectCommentControllerList
+     */
+    readonly projectId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentsApiProjectCommentControllerList
+     */
+    readonly taskId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentsApiProjectCommentControllerList
+     */
+    readonly bomItemId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentsApiProjectCommentControllerList
+     */
+    readonly journalEntryId?: string
+}
+
+/**
+ * Request parameters for projectCommentControllerRemove operation in CommentsApi.
+ * @export
+ * @interface CommentsApiProjectCommentControllerRemoveRequest
+ */
+export interface CommentsApiProjectCommentControllerRemoveRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentsApiProjectCommentControllerRemove
+     */
+    readonly id: string
+}
+
+/**
+ * Request parameters for projectCommentControllerUpdate operation in CommentsApi.
+ * @export
+ * @interface CommentsApiProjectCommentControllerUpdateRequest
+ */
+export interface CommentsApiProjectCommentControllerUpdateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentsApiProjectCommentControllerUpdate
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {UpdateProjectCommentDto}
+     * @memberof CommentsApiProjectCommentControllerUpdate
+     */
+    readonly updateProjectCommentDto: UpdateProjectCommentDto
+}
+
+/**
+ * CommentsApi - object-oriented interface
+ * @export
+ * @class CommentsApi
+ * @extends {BaseAPI}
+ */
+export class CommentsApi extends BaseAPI {
+    /**
+     * 
+     * @param {CommentsApiProjectCommentControllerCreateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentsApi
+     */
+    public projectCommentControllerCreate(requestParameters: CommentsApiProjectCommentControllerCreateRequest, options?: RawAxiosRequestConfig) {
+        return CommentsApiFp(this.configuration).projectCommentControllerCreate(requestParameters.createProjectCommentDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CommentsApiProjectCommentControllerListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentsApi
+     */
+    public projectCommentControllerList(requestParameters: CommentsApiProjectCommentControllerListRequest = {}, options?: RawAxiosRequestConfig) {
+        return CommentsApiFp(this.configuration).projectCommentControllerList(requestParameters.projectId, requestParameters.taskId, requestParameters.bomItemId, requestParameters.journalEntryId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CommentsApiProjectCommentControllerRemoveRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentsApi
+     */
+    public projectCommentControllerRemove(requestParameters: CommentsApiProjectCommentControllerRemoveRequest, options?: RawAxiosRequestConfig) {
+        return CommentsApiFp(this.configuration).projectCommentControllerRemove(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CommentsApiProjectCommentControllerUpdateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentsApi
+     */
+    public projectCommentControllerUpdate(requestParameters: CommentsApiProjectCommentControllerUpdateRequest, options?: RawAxiosRequestConfig) {
+        return CommentsApiFp(this.configuration).projectCommentControllerUpdate(requestParameters.id, requestParameters.updateProjectCommentDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * DashboardApi - axios parameter creator
  * @export
  */
@@ -42216,15 +44305,15 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerFile: async (id: string, variant: DocumentVariant, exp: string, sig: string, download?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        documentLibraryControllerFile: async (id: string, variant: DocumentVariant, exp: string, sig: string, download?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('documentControllerFile', 'id', id)
+            assertParamExists('documentLibraryControllerFile', 'id', id)
             // verify required parameter 'variant' is not null or undefined
-            assertParamExists('documentControllerFile', 'variant', variant)
+            assertParamExists('documentLibraryControllerFile', 'variant', variant)
             // verify required parameter 'exp' is not null or undefined
-            assertParamExists('documentControllerFile', 'exp', exp)
+            assertParamExists('documentLibraryControllerFile', 'exp', exp)
             // verify required parameter 'sig' is not null or undefined
-            assertParamExists('documentControllerFile', 'sig', sig)
+            assertParamExists('documentLibraryControllerFile', 'sig', sig)
             const localVarPath = `/documents/{id}/file`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -42271,9 +44360,9 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerGet: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        documentLibraryControllerGet: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('documentControllerGet', 'id', id)
+            assertParamExists('documentLibraryControllerGet', 'id', id)
             const localVarPath = `/documents/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -42309,11 +44398,11 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerLink: async (id: string, createDocumentLinkDto: CreateDocumentLinkDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        documentLibraryControllerLink: async (id: string, createDocumentLinkDto: CreateDocumentLinkDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('documentControllerLink', 'id', id)
+            assertParamExists('documentLibraryControllerLink', 'id', id)
             // verify required parameter 'createDocumentLinkDto' is not null or undefined
-            assertParamExists('documentControllerLink', 'createDocumentLinkDto', createDocumentLinkDto)
+            assertParamExists('documentLibraryControllerLink', 'createDocumentLinkDto', createDocumentLinkDto)
             const localVarPath = `/documents/{id}/links`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -42349,12 +44438,14 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
          * 
          * @param {string} [projectId] 
          * @param {string} [taskId] 
+         * @param {string} [bomItemId] 
+         * @param {string} [journalEntryId] 
          * @param {string} [q] 
          * @param {DocumentKind} [kind] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerList: async (projectId?: string, taskId?: string, q?: string, kind?: DocumentKind, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        documentLibraryControllerList: async (projectId?: string, taskId?: string, bomItemId?: string, journalEntryId?: string, q?: string, kind?: DocumentKind, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/documents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -42377,6 +44468,14 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
 
             if (taskId !== undefined) {
                 localVarQueryParameter['taskId'] = taskId;
+            }
+
+            if (bomItemId !== undefined) {
+                localVarQueryParameter['bomItemId'] = bomItemId;
+            }
+
+            if (journalEntryId !== undefined) {
+                localVarQueryParameter['journalEntryId'] = journalEntryId;
             }
 
             if (q !== undefined) {
@@ -42404,9 +44503,9 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerRemove: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        documentLibraryControllerRemove: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('documentControllerRemove', 'id', id)
+            assertParamExists('documentLibraryControllerRemove', 'id', id)
             const localVarPath = `/documents/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -42442,11 +44541,11 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerUnlink: async (id: string, linkId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        documentLibraryControllerUnlink: async (id: string, linkId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('documentControllerUnlink', 'id', id)
+            assertParamExists('documentLibraryControllerUnlink', 'id', id)
             // verify required parameter 'linkId' is not null or undefined
-            assertParamExists('documentControllerUnlink', 'linkId', linkId)
+            assertParamExists('documentLibraryControllerUnlink', 'linkId', linkId)
             const localVarPath = `/documents/{id}/links/{linkId}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)))
                 .replace(`{${"linkId"}}`, encodeURIComponent(String(linkId)));
@@ -42483,11 +44582,11 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerUpdate: async (id: string, updateDocumentDto: UpdateDocumentDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        documentLibraryControllerUpdate: async (id: string, updateDocumentDto: UpdateDocumentDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('documentControllerUpdate', 'id', id)
+            assertParamExists('documentLibraryControllerUpdate', 'id', id)
             // verify required parameter 'updateDocumentDto' is not null or undefined
-            assertParamExists('documentControllerUpdate', 'updateDocumentDto', updateDocumentDto)
+            assertParamExists('documentLibraryControllerUpdate', 'updateDocumentDto', updateDocumentDto)
             const localVarPath = `/documents/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -42527,12 +44626,14 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
          * @param {string} [description] 
          * @param {string} [projectId] 
          * @param {string} [taskId] 
+         * @param {string} [bomItemId] 
+         * @param {string} [journalEntryId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerUpload: async (file: File, title?: string, description?: string, projectId?: string, taskId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        documentLibraryControllerUpload: async (file: File, title?: string, description?: string, projectId?: string, taskId?: string, bomItemId?: string, journalEntryId?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'file' is not null or undefined
-            assertParamExists('documentControllerUpload', 'file', file)
+            assertParamExists('documentLibraryControllerUpload', 'file', file)
             const localVarPath = `/documents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -42571,6 +44672,14 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
                 localVarFormParams.append('taskId', taskId as any);
             }
     
+            if (bomItemId !== undefined) { 
+                localVarFormParams.append('bomItemId', bomItemId as any);
+            }
+    
+            if (journalEntryId !== undefined) { 
+                localVarFormParams.append('journalEntryId', journalEntryId as any);
+            }
+    
     
             localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
     
@@ -42605,10 +44714,10 @@ export const DocumentsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentControllerFile(id: string, variant: DocumentVariant, exp: string, sig: string, download?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerFile(id, variant, exp, sig, download, options);
+        async documentLibraryControllerFile(id: string, variant: DocumentVariant, exp: string, sig: string, download?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentLibraryControllerFile(id, variant, exp, sig, download, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerFile']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentLibraryControllerFile']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -42617,10 +44726,10 @@ export const DocumentsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentControllerGet(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerGet(id, options);
+        async documentLibraryControllerGet(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentLibraryControllerGet(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentLibraryControllerGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -42630,25 +44739,27 @@ export const DocumentsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentControllerLink(id: string, createDocumentLinkDto: CreateDocumentLinkDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerLink(id, createDocumentLinkDto, options);
+        async documentLibraryControllerLink(id: string, createDocumentLinkDto: CreateDocumentLinkDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentLibraryControllerLink(id, createDocumentLinkDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerLink']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentLibraryControllerLink']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
          * @param {string} [projectId] 
          * @param {string} [taskId] 
+         * @param {string} [bomItemId] 
+         * @param {string} [journalEntryId] 
          * @param {string} [q] 
          * @param {DocumentKind} [kind] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentControllerList(projectId?: string, taskId?: string, q?: string, kind?: DocumentKind, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DocumentResponse>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerList(projectId, taskId, q, kind, options);
+        async documentLibraryControllerList(projectId?: string, taskId?: string, bomItemId?: string, journalEntryId?: string, q?: string, kind?: DocumentKind, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DocumentResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentLibraryControllerList(projectId, taskId, bomItemId, journalEntryId, q, kind, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerList']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentLibraryControllerList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -42657,10 +44768,10 @@ export const DocumentsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentControllerRemove(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerRemove(id, options);
+        async documentLibraryControllerRemove(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentLibraryControllerRemove(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerRemove']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentLibraryControllerRemove']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -42670,10 +44781,10 @@ export const DocumentsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentControllerUnlink(id: string, linkId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerUnlink(id, linkId, options);
+        async documentLibraryControllerUnlink(id: string, linkId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentLibraryControllerUnlink(id, linkId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerUnlink']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentLibraryControllerUnlink']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -42683,10 +44794,10 @@ export const DocumentsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentControllerUpdate(id: string, updateDocumentDto: UpdateDocumentDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerUpdate(id, updateDocumentDto, options);
+        async documentLibraryControllerUpdate(id: string, updateDocumentDto: UpdateDocumentDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentLibraryControllerUpdate(id, updateDocumentDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerUpdate']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentLibraryControllerUpdate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -42697,13 +44808,15 @@ export const DocumentsApiFp = function(configuration?: Configuration) {
          * @param {string} [description] 
          * @param {string} [projectId] 
          * @param {string} [taskId] 
+         * @param {string} [bomItemId] 
+         * @param {string} [journalEntryId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentControllerUpload(file: File, title?: string, description?: string, projectId?: string, taskId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadDocumentResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentControllerUpload(file, title, description, projectId, taskId, options);
+        async documentLibraryControllerUpload(file: File, title?: string, description?: string, projectId?: string, taskId?: string, bomItemId?: string, journalEntryId?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadDocumentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentLibraryControllerUpload(file, title, description, projectId, taskId, bomItemId, journalEntryId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentControllerUpload']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.documentLibraryControllerUpload']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -42719,288 +44832,316 @@ export const DocumentsApiFactory = function (configuration?: Configuration, base
         /**
          * Do not build this URL: take fileUrl / thumbUrl / previewUrl from the document.
          * @summary A document file or preview (signed URL)
-         * @param {DocumentsApiDocumentControllerFileRequest} requestParameters Request parameters.
+         * @param {DocumentsApiDocumentLibraryControllerFileRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerFile(requestParameters: DocumentsApiDocumentControllerFileRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.documentControllerFile(requestParameters.id, requestParameters.variant, requestParameters.exp, requestParameters.sig, requestParameters.download, options).then((request) => request(axios, basePath));
+        documentLibraryControllerFile(requestParameters: DocumentsApiDocumentLibraryControllerFileRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.documentLibraryControllerFile(requestParameters.id, requestParameters.variant, requestParameters.exp, requestParameters.sig, requestParameters.download, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {DocumentsApiDocumentControllerGetRequest} requestParameters Request parameters.
+         * @param {DocumentsApiDocumentLibraryControllerGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerGet(requestParameters: DocumentsApiDocumentControllerGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
-            return localVarFp.documentControllerGet(requestParameters.id, options).then((request) => request(axios, basePath));
+        documentLibraryControllerGet(requestParameters: DocumentsApiDocumentLibraryControllerGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
+            return localVarFp.documentLibraryControllerGet(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {DocumentsApiDocumentControllerLinkRequest} requestParameters Request parameters.
+         * @param {DocumentsApiDocumentLibraryControllerLinkRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerLink(requestParameters: DocumentsApiDocumentControllerLinkRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
-            return localVarFp.documentControllerLink(requestParameters.id, requestParameters.createDocumentLinkDto, options).then((request) => request(axios, basePath));
+        documentLibraryControllerLink(requestParameters: DocumentsApiDocumentLibraryControllerLinkRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
+            return localVarFp.documentLibraryControllerLink(requestParameters.id, requestParameters.createDocumentLinkDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {DocumentsApiDocumentControllerListRequest} requestParameters Request parameters.
+         * @param {DocumentsApiDocumentLibraryControllerListRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerList(requestParameters: DocumentsApiDocumentControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<DocumentResponse>> {
-            return localVarFp.documentControllerList(requestParameters.projectId, requestParameters.taskId, requestParameters.q, requestParameters.kind, options).then((request) => request(axios, basePath));
+        documentLibraryControllerList(requestParameters: DocumentsApiDocumentLibraryControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<DocumentResponse>> {
+            return localVarFp.documentLibraryControllerList(requestParameters.projectId, requestParameters.taskId, requestParameters.bomItemId, requestParameters.journalEntryId, requestParameters.q, requestParameters.kind, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {DocumentsApiDocumentControllerRemoveRequest} requestParameters Request parameters.
+         * @param {DocumentsApiDocumentLibraryControllerRemoveRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerRemove(requestParameters: DocumentsApiDocumentControllerRemoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.documentControllerRemove(requestParameters.id, options).then((request) => request(axios, basePath));
+        documentLibraryControllerRemove(requestParameters: DocumentsApiDocumentLibraryControllerRemoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.documentLibraryControllerRemove(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {DocumentsApiDocumentControllerUnlinkRequest} requestParameters Request parameters.
+         * @param {DocumentsApiDocumentLibraryControllerUnlinkRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerUnlink(requestParameters: DocumentsApiDocumentControllerUnlinkRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
-            return localVarFp.documentControllerUnlink(requestParameters.id, requestParameters.linkId, options).then((request) => request(axios, basePath));
+        documentLibraryControllerUnlink(requestParameters: DocumentsApiDocumentLibraryControllerUnlinkRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
+            return localVarFp.documentLibraryControllerUnlink(requestParameters.id, requestParameters.linkId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {DocumentsApiDocumentControllerUpdateRequest} requestParameters Request parameters.
+         * @param {DocumentsApiDocumentLibraryControllerUpdateRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerUpdate(requestParameters: DocumentsApiDocumentControllerUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
-            return localVarFp.documentControllerUpdate(requestParameters.id, requestParameters.updateDocumentDto, options).then((request) => request(axios, basePath));
+        documentLibraryControllerUpdate(requestParameters: DocumentsApiDocumentLibraryControllerUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<DocumentResponse> {
+            return localVarFp.documentLibraryControllerUpdate(requestParameters.id, requestParameters.updateDocumentDto, options).then((request) => request(axios, basePath));
         },
         /**
          * Optionally pinned to a project or task at once. The same file uploaded again returns the document you already have (duplicate: true).
          * @summary Upload any file to your library
-         * @param {DocumentsApiDocumentControllerUploadRequest} requestParameters Request parameters.
+         * @param {DocumentsApiDocumentLibraryControllerUploadRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentControllerUpload(requestParameters: DocumentsApiDocumentControllerUploadRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadDocumentResponse> {
-            return localVarFp.documentControllerUpload(requestParameters.file, requestParameters.title, requestParameters.description, requestParameters.projectId, requestParameters.taskId, options).then((request) => request(axios, basePath));
+        documentLibraryControllerUpload(requestParameters: DocumentsApiDocumentLibraryControllerUploadRequest, options?: RawAxiosRequestConfig): AxiosPromise<UploadDocumentResponse> {
+            return localVarFp.documentLibraryControllerUpload(requestParameters.file, requestParameters.title, requestParameters.description, requestParameters.projectId, requestParameters.taskId, requestParameters.bomItemId, requestParameters.journalEntryId, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * Request parameters for documentControllerFile operation in DocumentsApi.
+ * Request parameters for documentLibraryControllerFile operation in DocumentsApi.
  * @export
- * @interface DocumentsApiDocumentControllerFileRequest
+ * @interface DocumentsApiDocumentLibraryControllerFileRequest
  */
-export interface DocumentsApiDocumentControllerFileRequest {
+export interface DocumentsApiDocumentLibraryControllerFileRequest {
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerFile
+     * @memberof DocumentsApiDocumentLibraryControllerFile
      */
     readonly id: string
 
     /**
      * 
      * @type {DocumentVariant}
-     * @memberof DocumentsApiDocumentControllerFile
+     * @memberof DocumentsApiDocumentLibraryControllerFile
      */
     readonly variant: DocumentVariant
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerFile
+     * @memberof DocumentsApiDocumentLibraryControllerFile
      */
     readonly exp: string
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerFile
+     * @memberof DocumentsApiDocumentLibraryControllerFile
      */
     readonly sig: string
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerFile
+     * @memberof DocumentsApiDocumentLibraryControllerFile
      */
     readonly download?: string
 }
 
 /**
- * Request parameters for documentControllerGet operation in DocumentsApi.
+ * Request parameters for documentLibraryControllerGet operation in DocumentsApi.
  * @export
- * @interface DocumentsApiDocumentControllerGetRequest
+ * @interface DocumentsApiDocumentLibraryControllerGetRequest
  */
-export interface DocumentsApiDocumentControllerGetRequest {
+export interface DocumentsApiDocumentLibraryControllerGetRequest {
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerGet
+     * @memberof DocumentsApiDocumentLibraryControllerGet
      */
     readonly id: string
 }
 
 /**
- * Request parameters for documentControllerLink operation in DocumentsApi.
+ * Request parameters for documentLibraryControllerLink operation in DocumentsApi.
  * @export
- * @interface DocumentsApiDocumentControllerLinkRequest
+ * @interface DocumentsApiDocumentLibraryControllerLinkRequest
  */
-export interface DocumentsApiDocumentControllerLinkRequest {
+export interface DocumentsApiDocumentLibraryControllerLinkRequest {
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerLink
+     * @memberof DocumentsApiDocumentLibraryControllerLink
      */
     readonly id: string
 
     /**
      * 
      * @type {CreateDocumentLinkDto}
-     * @memberof DocumentsApiDocumentControllerLink
+     * @memberof DocumentsApiDocumentLibraryControllerLink
      */
     readonly createDocumentLinkDto: CreateDocumentLinkDto
 }
 
 /**
- * Request parameters for documentControllerList operation in DocumentsApi.
+ * Request parameters for documentLibraryControllerList operation in DocumentsApi.
  * @export
- * @interface DocumentsApiDocumentControllerListRequest
+ * @interface DocumentsApiDocumentLibraryControllerListRequest
  */
-export interface DocumentsApiDocumentControllerListRequest {
+export interface DocumentsApiDocumentLibraryControllerListRequest {
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerList
+     * @memberof DocumentsApiDocumentLibraryControllerList
      */
     readonly projectId?: string
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerList
+     * @memberof DocumentsApiDocumentLibraryControllerList
      */
     readonly taskId?: string
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerList
+     * @memberof DocumentsApiDocumentLibraryControllerList
+     */
+    readonly bomItemId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentLibraryControllerList
+     */
+    readonly journalEntryId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentLibraryControllerList
      */
     readonly q?: string
 
     /**
      * 
      * @type {DocumentKind}
-     * @memberof DocumentsApiDocumentControllerList
+     * @memberof DocumentsApiDocumentLibraryControllerList
      */
     readonly kind?: DocumentKind
 }
 
 /**
- * Request parameters for documentControllerRemove operation in DocumentsApi.
+ * Request parameters for documentLibraryControllerRemove operation in DocumentsApi.
  * @export
- * @interface DocumentsApiDocumentControllerRemoveRequest
+ * @interface DocumentsApiDocumentLibraryControllerRemoveRequest
  */
-export interface DocumentsApiDocumentControllerRemoveRequest {
+export interface DocumentsApiDocumentLibraryControllerRemoveRequest {
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerRemove
+     * @memberof DocumentsApiDocumentLibraryControllerRemove
      */
     readonly id: string
 }
 
 /**
- * Request parameters for documentControllerUnlink operation in DocumentsApi.
+ * Request parameters for documentLibraryControllerUnlink operation in DocumentsApi.
  * @export
- * @interface DocumentsApiDocumentControllerUnlinkRequest
+ * @interface DocumentsApiDocumentLibraryControllerUnlinkRequest
  */
-export interface DocumentsApiDocumentControllerUnlinkRequest {
+export interface DocumentsApiDocumentLibraryControllerUnlinkRequest {
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerUnlink
+     * @memberof DocumentsApiDocumentLibraryControllerUnlink
      */
     readonly id: string
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerUnlink
+     * @memberof DocumentsApiDocumentLibraryControllerUnlink
      */
     readonly linkId: string
 }
 
 /**
- * Request parameters for documentControllerUpdate operation in DocumentsApi.
+ * Request parameters for documentLibraryControllerUpdate operation in DocumentsApi.
  * @export
- * @interface DocumentsApiDocumentControllerUpdateRequest
+ * @interface DocumentsApiDocumentLibraryControllerUpdateRequest
  */
-export interface DocumentsApiDocumentControllerUpdateRequest {
+export interface DocumentsApiDocumentLibraryControllerUpdateRequest {
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerUpdate
+     * @memberof DocumentsApiDocumentLibraryControllerUpdate
      */
     readonly id: string
 
     /**
      * 
      * @type {UpdateDocumentDto}
-     * @memberof DocumentsApiDocumentControllerUpdate
+     * @memberof DocumentsApiDocumentLibraryControllerUpdate
      */
     readonly updateDocumentDto: UpdateDocumentDto
 }
 
 /**
- * Request parameters for documentControllerUpload operation in DocumentsApi.
+ * Request parameters for documentLibraryControllerUpload operation in DocumentsApi.
  * @export
- * @interface DocumentsApiDocumentControllerUploadRequest
+ * @interface DocumentsApiDocumentLibraryControllerUploadRequest
  */
-export interface DocumentsApiDocumentControllerUploadRequest {
+export interface DocumentsApiDocumentLibraryControllerUploadRequest {
     /**
      * 
      * @type {File}
-     * @memberof DocumentsApiDocumentControllerUpload
+     * @memberof DocumentsApiDocumentLibraryControllerUpload
      */
     readonly file: File
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerUpload
+     * @memberof DocumentsApiDocumentLibraryControllerUpload
      */
     readonly title?: string
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerUpload
+     * @memberof DocumentsApiDocumentLibraryControllerUpload
      */
     readonly description?: string
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerUpload
+     * @memberof DocumentsApiDocumentLibraryControllerUpload
      */
     readonly projectId?: string
 
     /**
      * 
      * @type {string}
-     * @memberof DocumentsApiDocumentControllerUpload
+     * @memberof DocumentsApiDocumentLibraryControllerUpload
      */
     readonly taskId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentLibraryControllerUpload
+     */
+    readonly bomItemId?: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentsApiDocumentLibraryControllerUpload
+     */
+    readonly journalEntryId?: string
 }
 
 /**
@@ -43013,91 +45154,91 @@ export class DocumentsApi extends BaseAPI {
     /**
      * Do not build this URL: take fileUrl / thumbUrl / previewUrl from the document.
      * @summary A document file or preview (signed URL)
-     * @param {DocumentsApiDocumentControllerFileRequest} requestParameters Request parameters.
+     * @param {DocumentsApiDocumentLibraryControllerFileRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public documentControllerFile(requestParameters: DocumentsApiDocumentControllerFileRequest, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).documentControllerFile(requestParameters.id, requestParameters.variant, requestParameters.exp, requestParameters.sig, requestParameters.download, options).then((request) => request(this.axios, this.basePath));
+    public documentLibraryControllerFile(requestParameters: DocumentsApiDocumentLibraryControllerFileRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentLibraryControllerFile(requestParameters.id, requestParameters.variant, requestParameters.exp, requestParameters.sig, requestParameters.download, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {DocumentsApiDocumentControllerGetRequest} requestParameters Request parameters.
+     * @param {DocumentsApiDocumentLibraryControllerGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public documentControllerGet(requestParameters: DocumentsApiDocumentControllerGetRequest, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).documentControllerGet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    public documentLibraryControllerGet(requestParameters: DocumentsApiDocumentLibraryControllerGetRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentLibraryControllerGet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {DocumentsApiDocumentControllerLinkRequest} requestParameters Request parameters.
+     * @param {DocumentsApiDocumentLibraryControllerLinkRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public documentControllerLink(requestParameters: DocumentsApiDocumentControllerLinkRequest, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).documentControllerLink(requestParameters.id, requestParameters.createDocumentLinkDto, options).then((request) => request(this.axios, this.basePath));
+    public documentLibraryControllerLink(requestParameters: DocumentsApiDocumentLibraryControllerLinkRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentLibraryControllerLink(requestParameters.id, requestParameters.createDocumentLinkDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {DocumentsApiDocumentControllerListRequest} requestParameters Request parameters.
+     * @param {DocumentsApiDocumentLibraryControllerListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public documentControllerList(requestParameters: DocumentsApiDocumentControllerListRequest = {}, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).documentControllerList(requestParameters.projectId, requestParameters.taskId, requestParameters.q, requestParameters.kind, options).then((request) => request(this.axios, this.basePath));
+    public documentLibraryControllerList(requestParameters: DocumentsApiDocumentLibraryControllerListRequest = {}, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentLibraryControllerList(requestParameters.projectId, requestParameters.taskId, requestParameters.bomItemId, requestParameters.journalEntryId, requestParameters.q, requestParameters.kind, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {DocumentsApiDocumentControllerRemoveRequest} requestParameters Request parameters.
+     * @param {DocumentsApiDocumentLibraryControllerRemoveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public documentControllerRemove(requestParameters: DocumentsApiDocumentControllerRemoveRequest, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).documentControllerRemove(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    public documentLibraryControllerRemove(requestParameters: DocumentsApiDocumentLibraryControllerRemoveRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentLibraryControllerRemove(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {DocumentsApiDocumentControllerUnlinkRequest} requestParameters Request parameters.
+     * @param {DocumentsApiDocumentLibraryControllerUnlinkRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public documentControllerUnlink(requestParameters: DocumentsApiDocumentControllerUnlinkRequest, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).documentControllerUnlink(requestParameters.id, requestParameters.linkId, options).then((request) => request(this.axios, this.basePath));
+    public documentLibraryControllerUnlink(requestParameters: DocumentsApiDocumentLibraryControllerUnlinkRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentLibraryControllerUnlink(requestParameters.id, requestParameters.linkId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {DocumentsApiDocumentControllerUpdateRequest} requestParameters Request parameters.
+     * @param {DocumentsApiDocumentLibraryControllerUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public documentControllerUpdate(requestParameters: DocumentsApiDocumentControllerUpdateRequest, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).documentControllerUpdate(requestParameters.id, requestParameters.updateDocumentDto, options).then((request) => request(this.axios, this.basePath));
+    public documentLibraryControllerUpdate(requestParameters: DocumentsApiDocumentLibraryControllerUpdateRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentLibraryControllerUpdate(requestParameters.id, requestParameters.updateDocumentDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Optionally pinned to a project or task at once. The same file uploaded again returns the document you already have (duplicate: true).
      * @summary Upload any file to your library
-     * @param {DocumentsApiDocumentControllerUploadRequest} requestParameters Request parameters.
+     * @param {DocumentsApiDocumentLibraryControllerUploadRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public documentControllerUpload(requestParameters: DocumentsApiDocumentControllerUploadRequest, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).documentControllerUpload(requestParameters.file, requestParameters.title, requestParameters.description, requestParameters.projectId, requestParameters.taskId, options).then((request) => request(this.axios, this.basePath));
+    public documentLibraryControllerUpload(requestParameters: DocumentsApiDocumentLibraryControllerUploadRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).documentLibraryControllerUpload(requestParameters.file, requestParameters.title, requestParameters.description, requestParameters.projectId, requestParameters.taskId, requestParameters.bomItemId, requestParameters.journalEntryId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -57632,15 +59773,15 @@ export const ProjectsApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @param {string} id 
-         * @param {ReorderDto} reorderDto 
+         * @param {ReorderIdsDto} reorderIdsDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        projectControllerReorderStatuses: async (id: string, reorderDto: ReorderDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        projectControllerReorderStatuses: async (id: string, reorderIdsDto: ReorderIdsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('projectControllerReorderStatuses', 'id', id)
-            // verify required parameter 'reorderDto' is not null or undefined
-            assertParamExists('projectControllerReorderStatuses', 'reorderDto', reorderDto)
+            // verify required parameter 'reorderIdsDto' is not null or undefined
+            assertParamExists('projectControllerReorderStatuses', 'reorderIdsDto', reorderIdsDto)
             const localVarPath = `/projects/{id}/statuses/order`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -57665,7 +59806,7 @@ export const ProjectsApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(reorderDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(reorderIdsDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -58045,12 +60186,12 @@ export const ProjectsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
-         * @param {ReorderDto} reorderDto 
+         * @param {ReorderIdsDto} reorderIdsDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async projectControllerReorderStatuses(id: string, reorderDto: ReorderDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProjectStatusResponse>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.projectControllerReorderStatuses(id, reorderDto, options);
+        async projectControllerReorderStatuses(id: string, reorderIdsDto: ReorderIdsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProjectStatusResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectControllerReorderStatuses(id, reorderIdsDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProjectsApi.projectControllerReorderStatuses']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -58251,7 +60392,7 @@ export const ProjectsApiFactory = function (configuration?: Configuration, baseP
          * @throws {RequiredError}
          */
         projectControllerReorderStatuses(requestParameters: ProjectsApiProjectControllerReorderStatusesRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProjectStatusResponse>> {
-            return localVarFp.projectControllerReorderStatuses(requestParameters.id, requestParameters.reorderDto, options).then((request) => request(axios, basePath));
+            return localVarFp.projectControllerReorderStatuses(requestParameters.id, requestParameters.reorderIdsDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -58594,10 +60735,10 @@ export interface ProjectsApiProjectControllerReorderStatusesRequest {
 
     /**
      * 
-     * @type {ReorderDto}
+     * @type {ReorderIdsDto}
      * @memberof ProjectsApiProjectControllerReorderStatuses
      */
-    readonly reorderDto: ReorderDto
+    readonly reorderIdsDto: ReorderIdsDto
 }
 
 /**
@@ -58866,7 +61007,7 @@ export class ProjectsApi extends BaseAPI {
      * @memberof ProjectsApi
      */
     public projectControllerReorderStatuses(requestParameters: ProjectsApiProjectControllerReorderStatusesRequest, options?: RawAxiosRequestConfig) {
-        return ProjectsApiFp(this.configuration).projectControllerReorderStatuses(requestParameters.id, requestParameters.reorderDto, options).then((request) => request(this.axios, this.basePath));
+        return ProjectsApiFp(this.configuration).projectControllerReorderStatuses(requestParameters.id, requestParameters.reorderIdsDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -62661,15 +64802,15 @@ export const TasksApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} id 
-         * @param {ReorderDto} reorderDto 
+         * @param {ReorderIdsDto} reorderIdsDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        taskControllerReorderChecklist: async (id: string, reorderDto: ReorderDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        taskControllerReorderChecklist: async (id: string, reorderIdsDto: ReorderIdsDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('taskControllerReorderChecklist', 'id', id)
-            // verify required parameter 'reorderDto' is not null or undefined
-            assertParamExists('taskControllerReorderChecklist', 'reorderDto', reorderDto)
+            // verify required parameter 'reorderIdsDto' is not null or undefined
+            assertParamExists('taskControllerReorderChecklist', 'reorderIdsDto', reorderIdsDto)
             const localVarPath = `/tasks/{id}/checklist/order`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -62694,7 +64835,7 @@ export const TasksApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(reorderDto, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(reorderIdsDto, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -62916,12 +65057,12 @@ export const TasksApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
-         * @param {ReorderDto} reorderDto 
+         * @param {ReorderIdsDto} reorderIdsDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async taskControllerReorderChecklist(id: string, reorderDto: ReorderDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ChecklistItemResponse>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.taskControllerReorderChecklist(id, reorderDto, options);
+        async taskControllerReorderChecklist(id: string, reorderIdsDto: ReorderIdsDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ChecklistItemResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.taskControllerReorderChecklist(id, reorderIdsDto, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TasksApi.taskControllerReorderChecklist']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -63036,7 +65177,7 @@ export const TasksApiFactory = function (configuration?: Configuration, basePath
          * @throws {RequiredError}
          */
         taskControllerReorderChecklist(requestParameters: TasksApiTaskControllerReorderChecklistRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<ChecklistItemResponse>> {
-            return localVarFp.taskControllerReorderChecklist(requestParameters.id, requestParameters.reorderDto, options).then((request) => request(axios, basePath));
+            return localVarFp.taskControllerReorderChecklist(requestParameters.id, requestParameters.reorderIdsDto, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -63188,10 +65329,10 @@ export interface TasksApiTaskControllerReorderChecklistRequest {
 
     /**
      * 
-     * @type {ReorderDto}
+     * @type {ReorderIdsDto}
      * @memberof TasksApiTaskControllerReorderChecklist
      */
-    readonly reorderDto: ReorderDto
+    readonly reorderIdsDto: ReorderIdsDto
 }
 
 /**
@@ -63338,7 +65479,7 @@ export class TasksApi extends BaseAPI {
      * @memberof TasksApi
      */
     public taskControllerReorderChecklist(requestParameters: TasksApiTaskControllerReorderChecklistRequest, options?: RawAxiosRequestConfig) {
-        return TasksApiFp(this.configuration).taskControllerReorderChecklist(requestParameters.id, requestParameters.reorderDto, options).then((request) => request(this.axios, this.basePath));
+        return TasksApiFp(this.configuration).taskControllerReorderChecklist(requestParameters.id, requestParameters.reorderIdsDto, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

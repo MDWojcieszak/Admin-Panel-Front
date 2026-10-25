@@ -7,6 +7,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **projectId** | **string** |  | [optional] [default to undefined]
 **taskId** | **string** |  | [optional] [default to undefined]
+**bomItemId** | **string** |  | [optional] [default to undefined]
+**journalEntryId** | **string** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -16,6 +18,8 @@ import { CreateDocumentLinkDto } from './api';
 const instance: CreateDocumentLinkDto = {
     projectId,
     taskId,
+    bomItemId,
+    journalEntryId,
 };
 ```
 

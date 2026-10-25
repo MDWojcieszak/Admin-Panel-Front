@@ -8,6 +8,8 @@ Name | Type | Description | Notes
 **id** | **string** |  | [default to undefined]
 **project** | [**DocumentLinkProjectResponse**](DocumentLinkProjectResponse.md) |  | [default to undefined]
 **task** | [**DocumentLinkTaskResponse**](DocumentLinkTaskResponse.md) |  | [optional] [default to undefined]
+**bomItem** | [**DocumentLinkBomItemResponse**](DocumentLinkBomItemResponse.md) |  | [optional] [default to undefined]
+**journalEntry** | [**DocumentLinkJournalEntryResponse**](DocumentLinkJournalEntryResponse.md) |  | [optional] [default to undefined]
 **addedBy** | [**ProjectUserResponse**](ProjectUserResponse.md) |  | [default to undefined]
 **createdAt** | **string** |  | [default to undefined]
 
@@ -20,6 +22,8 @@ const instance: DocumentLinkResponse = {
     id,
     project,
     task,
+    bomItem,
+    journalEntry,
     addedBy,
     createdAt,
 };

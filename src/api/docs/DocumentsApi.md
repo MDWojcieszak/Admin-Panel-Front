@@ -4,17 +4,17 @@ All URIs are relative to *http://localhost*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**documentControllerFile**](#documentcontrollerfile) | **GET** /documents/{id}/file | A document file or preview (signed URL)|
-|[**documentControllerGet**](#documentcontrollerget) | **GET** /documents/{id} | |
-|[**documentControllerLink**](#documentcontrollerlink) | **POST** /documents/{id}/links | |
-|[**documentControllerList**](#documentcontrollerlist) | **GET** /documents | |
-|[**documentControllerRemove**](#documentcontrollerremove) | **DELETE** /documents/{id} | |
-|[**documentControllerUnlink**](#documentcontrollerunlink) | **DELETE** /documents/{id}/links/{linkId} | |
-|[**documentControllerUpdate**](#documentcontrollerupdate) | **PATCH** /documents/{id} | |
-|[**documentControllerUpload**](#documentcontrollerupload) | **POST** /documents | Upload any file to your library|
+|[**documentLibraryControllerFile**](#documentlibrarycontrollerfile) | **GET** /documents/{id}/file | A document file or preview (signed URL)|
+|[**documentLibraryControllerGet**](#documentlibrarycontrollerget) | **GET** /documents/{id} | |
+|[**documentLibraryControllerLink**](#documentlibrarycontrollerlink) | **POST** /documents/{id}/links | |
+|[**documentLibraryControllerList**](#documentlibrarycontrollerlist) | **GET** /documents | |
+|[**documentLibraryControllerRemove**](#documentlibrarycontrollerremove) | **DELETE** /documents/{id} | |
+|[**documentLibraryControllerUnlink**](#documentlibrarycontrollerunlink) | **DELETE** /documents/{id}/links/{linkId} | |
+|[**documentLibraryControllerUpdate**](#documentlibrarycontrollerupdate) | **PATCH** /documents/{id} | |
+|[**documentLibraryControllerUpload**](#documentlibrarycontrollerupload) | **POST** /documents | Upload any file to your library|
 
-# **documentControllerFile**
-> documentControllerFile()
+# **documentLibraryControllerFile**
+> documentLibraryControllerFile()
 
 Do not build this URL: take fileUrl / thumbUrl / previewUrl from the document.
 
@@ -35,7 +35,7 @@ let exp: string; // (default to undefined)
 let sig: string; // (default to undefined)
 let download: string; // (optional) (default to undefined)
 
-const { status, data } = await apiInstance.documentControllerFile(
+const { status, data } = await apiInstance.documentLibraryControllerFile(
     id,
     variant,
     exp,
@@ -76,8 +76,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **documentControllerGet**
-> DocumentResponse documentControllerGet()
+# **documentLibraryControllerGet**
+> DocumentResponse documentLibraryControllerGet()
 
 
 ### Example
@@ -93,7 +93,7 @@ const apiInstance = new DocumentsApi(configuration);
 
 let id: string; // (default to undefined)
 
-const { status, data } = await apiInstance.documentControllerGet(
+const { status, data } = await apiInstance.documentLibraryControllerGet(
     id
 );
 ```
@@ -126,8 +126,8 @@ const { status, data } = await apiInstance.documentControllerGet(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **documentControllerLink**
-> DocumentResponse documentControllerLink(createDocumentLinkDto)
+# **documentLibraryControllerLink**
+> DocumentResponse documentLibraryControllerLink(createDocumentLinkDto)
 
 
 ### Example
@@ -145,7 +145,7 @@ const apiInstance = new DocumentsApi(configuration);
 let id: string; // (default to undefined)
 let createDocumentLinkDto: CreateDocumentLinkDto; //
 
-const { status, data } = await apiInstance.documentControllerLink(
+const { status, data } = await apiInstance.documentLibraryControllerLink(
     id,
     createDocumentLinkDto
 );
@@ -180,8 +180,8 @@ const { status, data } = await apiInstance.documentControllerLink(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **documentControllerList**
-> Array<DocumentResponse> documentControllerList()
+# **documentLibraryControllerList**
+> Array<DocumentResponse> documentLibraryControllerList()
 
 
 ### Example
@@ -197,12 +197,16 @@ const apiInstance = new DocumentsApi(configuration);
 
 let projectId: string; // (optional) (default to undefined)
 let taskId: string; // (optional) (default to undefined)
+let bomItemId: string; // (optional) (default to undefined)
+let journalEntryId: string; // (optional) (default to undefined)
 let q: string; // (optional) (default to undefined)
 let kind: DocumentKind; // (optional) (default to undefined)
 
-const { status, data } = await apiInstance.documentControllerList(
+const { status, data } = await apiInstance.documentLibraryControllerList(
     projectId,
     taskId,
+    bomItemId,
+    journalEntryId,
     q,
     kind
 );
@@ -214,6 +218,8 @@ const { status, data } = await apiInstance.documentControllerList(
 |------------- | ------------- | ------------- | -------------|
 | **projectId** | [**string**] |  | (optional) defaults to undefined|
 | **taskId** | [**string**] |  | (optional) defaults to undefined|
+| **bomItemId** | [**string**] |  | (optional) defaults to undefined|
+| **journalEntryId** | [**string**] |  | (optional) defaults to undefined|
 | **q** | [**string**] |  | (optional) defaults to undefined|
 | **kind** | **DocumentKind** |  | (optional) defaults to undefined|
 
@@ -239,8 +245,8 @@ const { status, data } = await apiInstance.documentControllerList(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **documentControllerRemove**
-> documentControllerRemove()
+# **documentLibraryControllerRemove**
+> documentLibraryControllerRemove()
 
 
 ### Example
@@ -256,7 +262,7 @@ const apiInstance = new DocumentsApi(configuration);
 
 let id: string; // (default to undefined)
 
-const { status, data } = await apiInstance.documentControllerRemove(
+const { status, data } = await apiInstance.documentLibraryControllerRemove(
     id
 );
 ```
@@ -289,8 +295,8 @@ void (empty response body)
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **documentControllerUnlink**
-> DocumentResponse documentControllerUnlink()
+# **documentLibraryControllerUnlink**
+> DocumentResponse documentLibraryControllerUnlink()
 
 
 ### Example
@@ -307,7 +313,7 @@ const apiInstance = new DocumentsApi(configuration);
 let id: string; // (default to undefined)
 let linkId: string; // (default to undefined)
 
-const { status, data } = await apiInstance.documentControllerUnlink(
+const { status, data } = await apiInstance.documentLibraryControllerUnlink(
     id,
     linkId
 );
@@ -342,8 +348,8 @@ const { status, data } = await apiInstance.documentControllerUnlink(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **documentControllerUpdate**
-> DocumentResponse documentControllerUpdate(updateDocumentDto)
+# **documentLibraryControllerUpdate**
+> DocumentResponse documentLibraryControllerUpdate(updateDocumentDto)
 
 
 ### Example
@@ -361,7 +367,7 @@ const apiInstance = new DocumentsApi(configuration);
 let id: string; // (default to undefined)
 let updateDocumentDto: UpdateDocumentDto; //
 
-const { status, data } = await apiInstance.documentControllerUpdate(
+const { status, data } = await apiInstance.documentLibraryControllerUpdate(
     id,
     updateDocumentDto
 );
@@ -396,8 +402,8 @@ const { status, data } = await apiInstance.documentControllerUpdate(
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **documentControllerUpload**
-> UploadDocumentResponse documentControllerUpload()
+# **documentLibraryControllerUpload**
+> UploadDocumentResponse documentLibraryControllerUpload()
 
 Optionally pinned to a project or task at once. The same file uploaded again returns the document you already have (duplicate: true).
 
@@ -417,13 +423,17 @@ let title: string; // (optional) (default to undefined)
 let description: string; // (optional) (default to undefined)
 let projectId: string; // (optional) (default to undefined)
 let taskId: string; // (optional) (default to undefined)
+let bomItemId: string; // (optional) (default to undefined)
+let journalEntryId: string; // (optional) (default to undefined)
 
-const { status, data } = await apiInstance.documentControllerUpload(
+const { status, data } = await apiInstance.documentLibraryControllerUpload(
     file,
     title,
     description,
     projectId,
-    taskId
+    taskId,
+    bomItemId,
+    journalEntryId
 );
 ```
 
@@ -436,6 +446,8 @@ const { status, data } = await apiInstance.documentControllerUpload(
 | **description** | [**string**] |  | (optional) defaults to undefined|
 | **projectId** | [**string**] |  | (optional) defaults to undefined|
 | **taskId** | [**string**] |  | (optional) defaults to undefined|
+| **bomItemId** | [**string**] |  | (optional) defaults to undefined|
+| **journalEntryId** | [**string**] |  | (optional) defaults to undefined|
 
 
 ### Return type

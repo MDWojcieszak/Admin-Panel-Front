@@ -90,7 +90,14 @@ docs/BlogSearchApi.md
 docs/BlogSectionType.md
 docs/BlogSectionsApi.md
 docs/BlogVersioningApi.md
+docs/BomCostResponse.md
+docs/BomGearResponse.md
+docs/BomItemResponse.md
+docs/BomResponse.md
+docs/BomStatus.md
+docs/BomSummaryResponse.md
 docs/BuildMode.md
+docs/BuildsApi.md
 docs/CalloutVariant.md
 docs/Category.md
 docs/CategoryKind.md
@@ -119,6 +126,7 @@ docs/CommandStatus.md
 docs/CommandType.md
 docs/CommentListResponse.md
 docs/CommentStage.md
+docs/CommentsApi.md
 docs/ComposeCheckResponse.md
 docs/ComposeTakeoverPreviewResponse.md
 docs/ComposeVariableResponse.md
@@ -138,6 +146,7 @@ docs/CreateAstroObjectDto.md
 docs/CreateBlogAlbumDto.md
 docs/CreateBlogCategoryDto.md
 docs/CreateBlogCountryDto.md
+docs/CreateBomItemDto.md
 docs/CreateChecklistItemDto.md
 docs/CreateCodeDto.md
 docs/CreateCollectionDto.md
@@ -153,11 +162,13 @@ docs/CreateGrantDto.md
 docs/CreateImmichAlbumDto.md
 docs/CreateInquiryDto.md
 docs/CreateIntegrationTokenDto.md
+docs/CreateJournalEntryDto.md
 docs/CreatePermissionGroupDto.md
 docs/CreatePhotoEntryCommentDto.md
 docs/CreatePhotoEntryDto.md
 docs/CreatePoiDto.md
 docs/CreatePostDto.md
+docs/CreateProjectCommentDto.md
 docs/CreateProjectDto.md
 docs/CreateProjectStatusDto.md
 docs/CreateReleaseDto.md
@@ -204,6 +215,8 @@ docs/DocumentBlockType.md
 docs/DocumentColumnDto.md
 docs/DocumentKind.md
 docs/DocumentLeafBlockDto.md
+docs/DocumentLinkBomItemResponse.md
+docs/DocumentLinkJournalEntryResponse.md
 docs/DocumentLinkProjectResponse.md
 docs/DocumentLinkResponse.md
 docs/DocumentLinkTaskResponse.md
@@ -327,6 +340,7 @@ docs/IntegrationTokenListResponse.md
 docs/IntegrationTokenResponse.md
 docs/IntegrationsApi.md
 docs/InteractionStateResponse.md
+docs/JournalEntryResponse.md
 docs/LicenseResponse.md
 docs/LikeToggleResponse.md
 docs/LocationCreateDto.md
@@ -488,6 +502,7 @@ docs/ProcessLogListResponseDto.md
 docs/ProcessPointDto.md
 docs/ProcessResponseDto.md
 docs/ProcessStatusDto.md
+docs/ProjectCommentResponse.md
 docs/ProjectDetailResponse.md
 docs/ProjectMemberResponse.md
 docs/ProjectProgressResponse.md
@@ -533,6 +548,7 @@ docs/ReorderCollectionItemsDto.md
 docs/ReorderDto.md
 docs/ReorderGalleriesDto.md
 docs/ReorderGearDto.md
+docs/ReorderIdsDto.md
 docs/ReorderPostsDto.md
 docs/RepeatType.md
 docs/ReprocessDto.md
@@ -588,6 +604,7 @@ docs/SessionApi.md
 docs/SessionListResponseDto.md
 docs/SessionResponseDto.md
 docs/SetBlogAlbumItemsDto.md
+docs/SetBomStatusDto.md
 docs/SetGalleryItemsDto.md
 docs/SetHeroDto.md
 docs/SetHomePinsDto.md
@@ -644,6 +661,7 @@ docs/TrendsRange.md
 docs/TrendsSeriesDto.md
 docs/UndeclaredEntryResponse.md
 docs/UpdateApplicationDto.md
+docs/UpdateBomItemDto.md
 docs/UpdateChecklistItemDto.md
 docs/UpdateCommandProgressMarkerDto.md
 docs/UpdateContactSettingsDto.md
@@ -652,8 +670,10 @@ docs/UpdateGalleryDto.md
 docs/UpdateGearDto.md
 docs/UpdateGearKitDto.md
 docs/UpdateGearSystemDto.md
+docs/UpdateJournalEntryDto.md
 docs/UpdatePermissionGroupDto.md
 docs/UpdatePortfolioSettingsDto.md
+docs/UpdateProjectCommentDto.md
 docs/UpdateProjectDto.md
 docs/UpdateProjectMemberDto.md
 docs/UpdateProjectStatusDto.md

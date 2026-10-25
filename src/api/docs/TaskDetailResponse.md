@@ -26,6 +26,8 @@ Name | Type | Description | Notes
 **parentTaskId** | **string** |  | [optional] [default to undefined]
 **checklist** | [**ChecklistCountResponse**](ChecklistCountResponse.md) |  | [default to undefined]
 **subtaskCount** | **number** |  | [default to undefined]
+**commentCount** | **number** |  | [default to undefined]
+**documentCount** | **number** |  | [default to undefined]
 **overdue** | **boolean** |  | [default to undefined]
 **createdAt** | **string** |  | [default to undefined]
 **updatedAt** | **string** |  | [default to undefined]
@@ -60,6 +62,8 @@ const instance: TaskDetailResponse = {
     parentTaskId,
     checklist,
     subtaskCount,
+    commentCount,
+    documentCount,
     overdue,
     createdAt,
     updatedAt,

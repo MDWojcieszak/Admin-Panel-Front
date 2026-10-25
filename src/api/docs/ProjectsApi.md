@@ -768,7 +768,7 @@ const { status, data } = await apiInstance.projectControllerRemoveStatus(
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **projectControllerReorderStatuses**
-> Array<ProjectStatusResponse> projectControllerReorderStatuses(reorderDto)
+> Array<ProjectStatusResponse> projectControllerReorderStatuses(reorderIdsDto)
 
 
 ### Example
@@ -777,18 +777,18 @@ const { status, data } = await apiInstance.projectControllerRemoveStatus(
 import {
     ProjectsApi,
     Configuration,
-    ReorderDto
+    ReorderIdsDto
 } from './api';
 
 const configuration = new Configuration();
 const apiInstance = new ProjectsApi(configuration);
 
 let id: string; // (default to undefined)
-let reorderDto: ReorderDto; //
+let reorderIdsDto: ReorderIdsDto; //
 
 const { status, data } = await apiInstance.projectControllerReorderStatuses(
     id,
-    reorderDto
+    reorderIdsDto
 );
 ```
 
@@ -796,7 +796,7 @@ const { status, data } = await apiInstance.projectControllerReorderStatuses(
 
 |Name | Type | Description  | Notes|
 |------------- | ------------- | ------------- | -------------|
-| **reorderDto** | **ReorderDto**|  | |
+| **reorderIdsDto** | **ReorderIdsDto**|  | |
 | **id** | [**string**] |  | defaults to undefined|
 
 
