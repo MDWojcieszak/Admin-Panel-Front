@@ -4724,6 +4724,39 @@ export interface CreateServerTransferDto {
 /**
  * 
  * @export
+ * @interface CreateShareLinkDto
+ */
+export interface CreateShareLinkDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateShareLinkDto
+     */
+    'label'?: string | null;
+    /**
+     * 
+     * @type {ShareLinkAccess}
+     * @memberof CreateShareLinkDto
+     */
+    'access': ShareLinkAccess;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateShareLinkDto
+     */
+    'expiresAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateShareLinkDto
+     */
+    'password'?: string | null;
+}
+
+
+/**
+ * 
+ * @export
  * @interface CreateTaskDto
  */
 export interface CreateTaskDto {
@@ -4815,6 +4848,87 @@ export interface CreatedBlockRefResponse {
      */
     'sectionId': string;
 }
+/**
+ * 
+ * @export
+ * @interface CreatedShareLinkResponse
+ */
+export interface CreatedShareLinkResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedShareLinkResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedShareLinkResponse
+     */
+    'label'?: string | null;
+    /**
+     * 
+     * @type {ShareLinkAccess}
+     * @memberof CreatedShareLinkResponse
+     */
+    'access': ShareLinkAccess;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CreatedShareLinkResponse
+     */
+    'hasPassword': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedShareLinkResponse
+     */
+    'expiresAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedShareLinkResponse
+     */
+    'revokedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedShareLinkResponse
+     */
+    'lastUsedAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreatedShareLinkResponse
+     */
+    'openCount': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CreatedShareLinkResponse
+     */
+    'active': boolean;
+    /**
+     * 
+     * @type {ProjectUserResponse}
+     * @memberof CreatedShareLinkResponse
+     */
+    'createdBy': ProjectUserResponse;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedShareLinkResponse
+     */
+    'createdAt': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedShareLinkResponse
+     */
+    'token': string;
+}
+
+
 /**
  * 
  * @export
@@ -19532,6 +19646,313 @@ export const SettingType = {
 export type SettingType = typeof SettingType[keyof typeof SettingType];
 
 
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ShareLinkAccess = {
+    View: 'VIEW',
+    Check: 'CHECK'
+} as const;
+
+export type ShareLinkAccess = typeof ShareLinkAccess[keyof typeof ShareLinkAccess];
+
+
+/**
+ * 
+ * @export
+ * @interface ShareLinkResponse
+ */
+export interface ShareLinkResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ShareLinkResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ShareLinkResponse
+     */
+    'label'?: string | null;
+    /**
+     * 
+     * @type {ShareLinkAccess}
+     * @memberof ShareLinkResponse
+     */
+    'access': ShareLinkAccess;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ShareLinkResponse
+     */
+    'hasPassword': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof ShareLinkResponse
+     */
+    'expiresAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ShareLinkResponse
+     */
+    'revokedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ShareLinkResponse
+     */
+    'lastUsedAt'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShareLinkResponse
+     */
+    'openCount': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ShareLinkResponse
+     */
+    'active': boolean;
+    /**
+     * 
+     * @type {ProjectUserResponse}
+     * @memberof ShareLinkResponse
+     */
+    'createdBy': ProjectUserResponse;
+    /**
+     * 
+     * @type {string}
+     * @memberof ShareLinkResponse
+     */
+    'createdAt': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface SharedChecklistItemResponse
+ */
+export interface SharedChecklistItemResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedChecklistItemResponse
+     */
+    'content': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SharedChecklistItemResponse
+     */
+    'done': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface SharedProjectResponse
+ */
+export interface SharedProjectResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedProjectResponse
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedProjectResponse
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {ProjectType}
+     * @memberof SharedProjectResponse
+     */
+    'type': ProjectType;
+    /**
+     * 
+     * @type {ProjectStatus}
+     * @memberof SharedProjectResponse
+     */
+    'status': ProjectStatus;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedProjectResponse
+     */
+    'key': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedProjectResponse
+     */
+    'color'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedProjectResponse
+     */
+    'dueDate'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedProjectResponse
+     */
+    'sharedBy'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedProjectResponse
+     */
+    'label'?: string | null;
+    /**
+     * 
+     * @type {ShareLinkAccess}
+     * @memberof SharedProjectResponse
+     */
+    'access': ShareLinkAccess;
+    /**
+     * 
+     * @type {ProjectProgressResponse}
+     * @memberof SharedProjectResponse
+     */
+    'progress': ProjectProgressResponse;
+    /**
+     * 
+     * @type {Array<SharedStatusResponse>}
+     * @memberof SharedProjectResponse
+     */
+    'statuses': Array<SharedStatusResponse>;
+    /**
+     * 
+     * @type {Array<SharedTaskResponse>}
+     * @memberof SharedProjectResponse
+     */
+    'tasks': Array<SharedTaskResponse>;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedProjectResponse
+     */
+    'liveToken': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface SharedStatusResponse
+ */
+export interface SharedStatusResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedStatusResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedStatusResponse
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedStatusResponse
+     */
+    'color'?: string | null;
+    /**
+     * 
+     * @type {StatusCategory}
+     * @memberof SharedStatusResponse
+     */
+    'category': StatusCategory;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface SharedTaskResponse
+ */
+export interface SharedTaskResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedTaskResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedTaskResponse
+     */
+    'key': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedTaskResponse
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedTaskResponse
+     */
+    'notes'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedTaskResponse
+     */
+    'statusId': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof SharedTaskResponse
+     */
+    'quantity'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedTaskResponse
+     */
+    'unit'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedTaskResponse
+     */
+    'dueDate'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedTaskResponse
+     */
+    'completedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedTaskResponse
+     */
+    'parentTaskId'?: string | null;
+    /**
+     * 
+     * @type {Array<SharedChecklistItemResponse>}
+     * @memberof SharedTaskResponse
+     */
+    'checklist': Array<SharedChecklistItemResponse>;
+}
 /**
  * 
  * @export
@@ -55486,6 +55907,49 @@ export const ProjectsApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @param {string} id 
+         * @param {CreateShareLinkDto} createShareLinkDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectControllerCreateLink: async (id: string, createShareLinkDto: CreateShareLinkDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('projectControllerCreateLink', 'id', id)
+            // verify required parameter 'createShareLinkDto' is not null or undefined
+            assertParamExists('projectControllerCreateLink', 'createShareLinkDto', createShareLinkDto)
+            const localVarPath = `/projects/{id}/links`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createShareLinkDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {CreateProjectStatusDto} createProjectStatusDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -55680,6 +56144,43 @@ export const ProjectsApiAxiosParamCreator = function (configuration?: Configurat
             if (archived !== undefined) {
                 localVarQueryParameter['archived'] = archived;
             }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectControllerListLinks: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('projectControllerListLinks', 'id', id)
+            const localVarPath = `/projects/{id}/links`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -55963,6 +56464,47 @@ export const ProjectsApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @param {string} id 
+         * @param {string} linkId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectControllerRevokeLink: async (id: string, linkId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('projectControllerRevokeLink', 'id', id)
+            // verify required parameter 'linkId' is not null or undefined
+            assertParamExists('projectControllerRevokeLink', 'linkId', linkId)
+            const localVarPath = `/projects/{id}/links/{linkId}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)))
+                .replace(`{${"linkId"}}`, encodeURIComponent(String(linkId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {UpdateProjectDto} updateProjectDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -56135,6 +56677,19 @@ export const ProjectsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
+         * @param {CreateShareLinkDto} createShareLinkDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async projectControllerCreateLink(id: string, createShareLinkDto: CreateShareLinkDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreatedShareLinkResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectControllerCreateLink(id, createShareLinkDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProjectsApi.projectControllerCreateLink']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {CreateProjectStatusDto} createProjectStatusDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -56194,6 +56749,18 @@ export const ProjectsApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.projectControllerList(status, type, q, archived, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ProjectsApi.projectControllerList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async projectControllerListLinks(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ShareLinkResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectControllerListLinks(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProjectsApi.projectControllerListLinks']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -56280,6 +56847,19 @@ export const ProjectsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id 
+         * @param {string} linkId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async projectControllerRevokeLink(id: string, linkId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShareLinkResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.projectControllerRevokeLink(id, linkId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProjectsApi.projectControllerRevokeLink']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id 
          * @param {UpdateProjectDto} updateProjectDto 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -56348,6 +56928,15 @@ export const ProjectsApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @param {ProjectsApiProjectControllerCreateLinkRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectControllerCreateLink(requestParameters: ProjectsApiProjectControllerCreateLinkRequest, options?: RawAxiosRequestConfig): AxiosPromise<CreatedShareLinkResponse> {
+            return localVarFp.projectControllerCreateLink(requestParameters.id, requestParameters.createShareLinkDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {ProjectsApiProjectControllerCreateStatusRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -56389,6 +56978,15 @@ export const ProjectsApiFactory = function (configuration?: Configuration, baseP
          */
         projectControllerList(requestParameters: ProjectsApiProjectControllerListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProjectSummaryResponse>> {
             return localVarFp.projectControllerList(requestParameters.status, requestParameters.type, requestParameters.q, requestParameters.archived, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ProjectsApiProjectControllerListLinksRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectControllerListLinks(requestParameters: ProjectsApiProjectControllerListLinksRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<ShareLinkResponse>> {
+            return localVarFp.projectControllerListLinks(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -56443,6 +57041,15 @@ export const ProjectsApiFactory = function (configuration?: Configuration, baseP
          */
         projectControllerReorderStatuses(requestParameters: ProjectsApiProjectControllerReorderStatusesRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProjectStatusResponse>> {
             return localVarFp.projectControllerReorderStatuses(requestParameters.id, requestParameters.reorderDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ProjectsApiProjectControllerRevokeLinkRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        projectControllerRevokeLink(requestParameters: ProjectsApiProjectControllerRevokeLinkRequest, options?: RawAxiosRequestConfig): AxiosPromise<ShareLinkResponse> {
+            return localVarFp.projectControllerRevokeLink(requestParameters.id, requestParameters.linkId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -56507,6 +57114,27 @@ export interface ProjectsApiProjectControllerCreateRequest {
      * @memberof ProjectsApiProjectControllerCreate
      */
     readonly createProjectDto: CreateProjectDto
+}
+
+/**
+ * Request parameters for projectControllerCreateLink operation in ProjectsApi.
+ * @export
+ * @interface ProjectsApiProjectControllerCreateLinkRequest
+ */
+export interface ProjectsApiProjectControllerCreateLinkRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectsApiProjectControllerCreateLink
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {CreateShareLinkDto}
+     * @memberof ProjectsApiProjectControllerCreateLink
+     */
+    readonly createShareLinkDto: CreateShareLinkDto
 }
 
 /**
@@ -56598,6 +57226,20 @@ export interface ProjectsApiProjectControllerListRequest {
      * @memberof ProjectsApiProjectControllerList
      */
     readonly archived?: boolean
+}
+
+/**
+ * Request parameters for projectControllerListLinks operation in ProjectsApi.
+ * @export
+ * @interface ProjectsApiProjectControllerListLinksRequest
+ */
+export interface ProjectsApiProjectControllerListLinksRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectsApiProjectControllerListLinks
+     */
+    readonly id: string
 }
 
 /**
@@ -56748,6 +57390,27 @@ export interface ProjectsApiProjectControllerReorderStatusesRequest {
 }
 
 /**
+ * Request parameters for projectControllerRevokeLink operation in ProjectsApi.
+ * @export
+ * @interface ProjectsApiProjectControllerRevokeLinkRequest
+ */
+export interface ProjectsApiProjectControllerRevokeLinkRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectsApiProjectControllerRevokeLink
+     */
+    readonly id: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof ProjectsApiProjectControllerRevokeLink
+     */
+    readonly linkId: string
+}
+
+/**
  * Request parameters for projectControllerUpdate operation in ProjectsApi.
  * @export
  * @interface ProjectsApiProjectControllerUpdateRequest
@@ -56855,6 +57518,17 @@ export class ProjectsApi extends BaseAPI {
 
     /**
      * 
+     * @param {ProjectsApiProjectControllerCreateLinkRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProjectsApi
+     */
+    public projectControllerCreateLink(requestParameters: ProjectsApiProjectControllerCreateLinkRequest, options?: RawAxiosRequestConfig) {
+        return ProjectsApiFp(this.configuration).projectControllerCreateLink(requestParameters.id, requestParameters.createShareLinkDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {ProjectsApiProjectControllerCreateStatusRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -56905,6 +57579,17 @@ export class ProjectsApi extends BaseAPI {
      */
     public projectControllerList(requestParameters: ProjectsApiProjectControllerListRequest = {}, options?: RawAxiosRequestConfig) {
         return ProjectsApiFp(this.configuration).projectControllerList(requestParameters.status, requestParameters.type, requestParameters.q, requestParameters.archived, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ProjectsApiProjectControllerListLinksRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProjectsApi
+     */
+    public projectControllerListLinks(requestParameters: ProjectsApiProjectControllerListLinksRequest, options?: RawAxiosRequestConfig) {
+        return ProjectsApiFp(this.configuration).projectControllerListLinks(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -56971,6 +57656,17 @@ export class ProjectsApi extends BaseAPI {
      */
     public projectControllerReorderStatuses(requestParameters: ProjectsApiProjectControllerReorderStatusesRequest, options?: RawAxiosRequestConfig) {
         return ProjectsApiFp(this.configuration).projectControllerReorderStatuses(requestParameters.id, requestParameters.reorderDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ProjectsApiProjectControllerRevokeLinkRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProjectsApi
+     */
+    public projectControllerRevokeLink(requestParameters: ProjectsApiProjectControllerRevokeLinkRequest, options?: RawAxiosRequestConfig) {
+        return ProjectsApiFp(this.configuration).projectControllerRevokeLink(requestParameters.id, requestParameters.linkId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -59672,6 +60368,252 @@ export class SessionApi extends BaseAPI {
      */
     public sessionControllerRevokeOwn(requestParameters: SessionApiSessionControllerRevokeOwnRequest, options?: RawAxiosRequestConfig) {
         return SessionApiFp(this.configuration).sessionControllerRevokeOwn(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * SharedApi - axios parameter creator
+ * @export
+ */
+export const SharedApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} token 
+         * @param {string} taskId 
+         * @param {string} [xSharePassword] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sharedControllerToggle: async (token: string, taskId: string, xSharePassword?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'token' is not null or undefined
+            assertParamExists('sharedControllerToggle', 'token', token)
+            // verify required parameter 'taskId' is not null or undefined
+            assertParamExists('sharedControllerToggle', 'taskId', taskId)
+            const localVarPath = `/shared/{token}/tasks/{taskId}/toggle`
+                .replace(`{${"token"}}`, encodeURIComponent(String(token)))
+                .replace(`{${"taskId"}}`, encodeURIComponent(String(taskId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            if (xSharePassword != null) {
+                localVarHeaderParameter['x-share-password'] = String(xSharePassword);
+            }
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {string} [xSharePassword] 
+         * @param {boolean} [reload] A refresh after a live change; not counted as a visit.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sharedControllerView: async (token: string, xSharePassword?: string, reload?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'token' is not null or undefined
+            assertParamExists('sharedControllerView', 'token', token)
+            const localVarPath = `/shared/{token}`
+                .replace(`{${"token"}}`, encodeURIComponent(String(token)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (reload !== undefined) {
+                localVarQueryParameter['reload'] = reload;
+            }
+
+
+    
+            if (xSharePassword != null) {
+                localVarHeaderParameter['x-share-password'] = String(xSharePassword);
+            }
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * SharedApi - functional programming interface
+ * @export
+ */
+export const SharedApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = SharedApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} token 
+         * @param {string} taskId 
+         * @param {string} [xSharePassword] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async sharedControllerToggle(token: string, taskId: string, xSharePassword?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SharedProjectResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sharedControllerToggle(token, taskId, xSharePassword, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SharedApi.sharedControllerToggle']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {string} [xSharePassword] 
+         * @param {boolean} [reload] A refresh after a live change; not counted as a visit.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async sharedControllerView(token: string, xSharePassword?: string, reload?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SharedProjectResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sharedControllerView(token, xSharePassword, reload, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SharedApi.sharedControllerView']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * SharedApi - factory interface
+ * @export
+ */
+export const SharedApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = SharedApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {SharedApiSharedControllerToggleRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sharedControllerToggle(requestParameters: SharedApiSharedControllerToggleRequest, options?: RawAxiosRequestConfig): AxiosPromise<SharedProjectResponse> {
+            return localVarFp.sharedControllerToggle(requestParameters.token, requestParameters.taskId, requestParameters.xSharePassword, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {SharedApiSharedControllerViewRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sharedControllerView(requestParameters: SharedApiSharedControllerViewRequest, options?: RawAxiosRequestConfig): AxiosPromise<SharedProjectResponse> {
+            return localVarFp.sharedControllerView(requestParameters.token, requestParameters.xSharePassword, requestParameters.reload, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for sharedControllerToggle operation in SharedApi.
+ * @export
+ * @interface SharedApiSharedControllerToggleRequest
+ */
+export interface SharedApiSharedControllerToggleRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedApiSharedControllerToggle
+     */
+    readonly token: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedApiSharedControllerToggle
+     */
+    readonly taskId: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedApiSharedControllerToggle
+     */
+    readonly xSharePassword?: string
+}
+
+/**
+ * Request parameters for sharedControllerView operation in SharedApi.
+ * @export
+ * @interface SharedApiSharedControllerViewRequest
+ */
+export interface SharedApiSharedControllerViewRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedApiSharedControllerView
+     */
+    readonly token: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedApiSharedControllerView
+     */
+    readonly xSharePassword?: string
+
+    /**
+     * A refresh after a live change; not counted as a visit.
+     * @type {boolean}
+     * @memberof SharedApiSharedControllerView
+     */
+    readonly reload?: boolean
+}
+
+/**
+ * SharedApi - object-oriented interface
+ * @export
+ * @class SharedApi
+ * @extends {BaseAPI}
+ */
+export class SharedApi extends BaseAPI {
+    /**
+     * 
+     * @param {SharedApiSharedControllerToggleRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SharedApi
+     */
+    public sharedControllerToggle(requestParameters: SharedApiSharedControllerToggleRequest, options?: RawAxiosRequestConfig) {
+        return SharedApiFp(this.configuration).sharedControllerToggle(requestParameters.token, requestParameters.taskId, requestParameters.xSharePassword, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {SharedApiSharedControllerViewRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SharedApi
+     */
+    public sharedControllerView(requestParameters: SharedApiSharedControllerViewRequest, options?: RawAxiosRequestConfig) {
+        return SharedApiFp(this.configuration).sharedControllerView(requestParameters.token, requestParameters.xSharePassword, requestParameters.reload, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

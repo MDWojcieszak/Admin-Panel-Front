@@ -6,17 +6,20 @@ All URIs are relative to *http://localhost*
 |------------- | ------------- | -------------|
 |[**projectControllerAddMember**](#projectcontrolleraddmember) | **POST** /projects/{id}/members | |
 |[**projectControllerCreate**](#projectcontrollercreate) | **POST** /projects | |
+|[**projectControllerCreateLink**](#projectcontrollercreatelink) | **POST** /projects/{id}/links | |
 |[**projectControllerCreateStatus**](#projectcontrollercreatestatus) | **POST** /projects/{id}/statuses | |
 |[**projectControllerCreateTask**](#projectcontrollercreatetask) | **POST** /projects/{id}/tasks | |
 |[**projectControllerGet**](#projectcontrollerget) | **GET** /projects/{id} | |
 |[**projectControllerInbox**](#projectcontrollerinbox) | **GET** /projects/inbox | |
 |[**projectControllerList**](#projectcontrollerlist) | **GET** /projects | |
+|[**projectControllerListLinks**](#projectcontrollerlistlinks) | **GET** /projects/{id}/links | |
 |[**projectControllerListMembers**](#projectcontrollerlistmembers) | **GET** /projects/{id}/members | |
 |[**projectControllerListTasks**](#projectcontrollerlisttasks) | **GET** /projects/{id}/tasks | |
 |[**projectControllerRemove**](#projectcontrollerremove) | **DELETE** /projects/{id} | |
 |[**projectControllerRemoveMember**](#projectcontrollerremovemember) | **DELETE** /projects/{id}/members/{userId} | |
 |[**projectControllerRemoveStatus**](#projectcontrollerremovestatus) | **DELETE** /projects/{id}/statuses/{statusId} | |
 |[**projectControllerReorderStatuses**](#projectcontrollerreorderstatuses) | **PUT** /projects/{id}/statuses/order | |
+|[**projectControllerRevokeLink**](#projectcontrollerrevokelink) | **DELETE** /projects/{id}/links/{linkId} | |
 |[**projectControllerUpdate**](#projectcontrollerupdate) | **PATCH** /projects/{id} | |
 |[**projectControllerUpdateMember**](#projectcontrollerupdatemember) | **PATCH** /projects/{id}/members/{userId} | |
 |[**projectControllerUpdateStatus**](#projectcontrollerupdatestatus) | **PATCH** /projects/{id}/statuses/{statusId} | |
@@ -108,6 +111,60 @@ const { status, data } = await apiInstance.projectControllerCreate(
 ### Return type
 
 **ProjectDetailResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **projectControllerCreateLink**
+> CreatedShareLinkResponse projectControllerCreateLink(createShareLinkDto)
+
+
+### Example
+
+```typescript
+import {
+    ProjectsApi,
+    Configuration,
+    CreateShareLinkDto
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ProjectsApi(configuration);
+
+let id: string; // (default to undefined)
+let createShareLinkDto: CreateShareLinkDto; //
+
+const { status, data } = await apiInstance.projectControllerCreateLink(
+    id,
+    createShareLinkDto
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **createShareLinkDto** | **CreateShareLinkDto**|  | |
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**CreatedShareLinkResponse**
 
 ### Authorization
 
@@ -368,6 +425,56 @@ const { status, data } = await apiInstance.projectControllerList(
 ### Return type
 
 **Array<ProjectSummaryResponse>**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **projectControllerListLinks**
+> Array<ShareLinkResponse> projectControllerListLinks()
+
+
+### Example
+
+```typescript
+import {
+    ProjectsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ProjectsApi(configuration);
+
+let id: string; // (default to undefined)
+
+const { status, data } = await apiInstance.projectControllerListLinks(
+    id
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**Array<ShareLinkResponse>**
 
 ### Authorization
 
@@ -704,6 +811,59 @@ const { status, data } = await apiInstance.projectControllerReorderStatuses(
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **projectControllerRevokeLink**
+> ShareLinkResponse projectControllerRevokeLink()
+
+
+### Example
+
+```typescript
+import {
+    ProjectsApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new ProjectsApi(configuration);
+
+let id: string; // (default to undefined)
+let linkId: string; // (default to undefined)
+
+const { status, data } = await apiInstance.projectControllerRevokeLink(
+    id,
+    linkId
+);
+```
+
+### Parameters
+
+|Name | Type | Description  | Notes|
+|------------- | ------------- | ------------- | -------------|
+| **id** | [**string**] |  | defaults to undefined|
+| **linkId** | [**string**] |  | defaults to undefined|
+
+
+### Return type
+
+**ShareLinkResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 

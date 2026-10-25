@@ -163,8 +163,10 @@ docs/CreateReleaseDto.md
 docs/CreateSectionDto.md
 docs/CreateServerCategoryDto.md
 docs/CreateServerTransferDto.md
+docs/CreateShareLinkDto.md
 docs/CreateTaskDto.md
 docs/CreatedBlockRefResponse.md
+docs/CreatedShareLinkResponse.md
 docs/DailyPointDto.md
 docs/DashboardApi.md
 docs/DashboardGalleryResponseDto.md
@@ -587,6 +589,13 @@ docs/SetPostAuthorsDto.md
 docs/SetPostCategoriesDto.md
 docs/SetUserGroupsDto.md
 docs/SettingType.md
+docs/ShareLinkAccess.md
+docs/ShareLinkResponse.md
+docs/SharedApi.md
+docs/SharedChecklistItemResponse.md
+docs/SharedProjectResponse.md
+docs/SharedStatusResponse.md
+docs/SharedTaskResponse.md
 docs/ShoppingListItemResponse.md
 docs/SignInDto.md
 docs/SkippedExportResponse.md
