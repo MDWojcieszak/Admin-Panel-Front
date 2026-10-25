@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**items** | [**Array&lt;OrderItemDto&gt;**](OrderItemDto.md) |  | [default to undefined]
+**ids** | **Array&lt;string&gt;** |  | [default to undefined]
 
 ## Example
 
@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 import { ReorderDto } from './api';
 
 const instance: ReorderDto = {
-    items,
+    ids,
 };
 ```
 
