@@ -59,7 +59,12 @@ export const CommandsTab = ({
     <div style={styles.container}>
       <div style={styles.toolbar}>
         {tabItems.length ? (
-          <SegmentedTabs layoutId='category-tabs' items={tabItems} selected={selectedValue ?? ''} handleSelect={setSelected} />
+          <SegmentedTabs
+            layoutId='category-tabs'
+            items={tabItems}
+            selected={selectedValue ?? ''}
+            handleSelect={setSelected}
+          />
         ) : (
           <span style={styles.empty}>No categories yet.</span>
         )}
@@ -70,7 +75,9 @@ export const CommandsTab = ({
                 label='Rename'
                 icon={<MdEdit size={16} />}
                 variant='secondary'
-                onClick={() => categoryModal.show({ category: selectedCategory, serverId: undefined, canManage: canManageCategory })}
+                onClick={() =>
+                  categoryModal.show({ category: selectedCategory, serverId: undefined, canManage: canManageCategory })
+                }
               />
             ) : null}
             <Button

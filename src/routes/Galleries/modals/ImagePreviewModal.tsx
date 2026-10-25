@@ -45,7 +45,11 @@ export const ImagePreviewModal = (p: ImagePreviewModalProps) => {
           </div>
         ) : null}
 
-        <div style={{ ...styles.infoBtn, ...(showInfo ? styles.infoBtnActive : {}) }} onClick={() => setShowInfo((v) => !v)} title='Details'>
+        <div
+          style={{ ...styles.infoBtn, ...(showInfo ? styles.infoBtnActive : {}) }}
+          onClick={() => setShowInfo((v) => !v)}
+          title='Details'
+        >
           <FiInfo size={16} />
         </div>
 

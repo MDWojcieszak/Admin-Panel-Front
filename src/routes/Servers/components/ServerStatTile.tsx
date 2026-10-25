@@ -13,7 +13,15 @@ type ServerStatTileProps = {
   coloredLabel?: boolean;
 };
 
-export const ServerStatTile = ({ icon, label, value, sub, accent = 'blue04', progress, coloredLabel }: ServerStatTileProps) => {
+export const ServerStatTile = ({
+  icon,
+  label,
+  value,
+  sub,
+  accent = 'blue04',
+  progress,
+  coloredLabel,
+}: ServerStatTileProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const clamped = progress === undefined ? undefined : Math.max(0, Math.min(100, progress));

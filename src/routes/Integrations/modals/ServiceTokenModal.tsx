@@ -65,8 +65,8 @@ export const ServiceTokenModal = (p: ServiceTokenModalProps) => {
     <FormProvider {...formMethods}>
       <div style={styles.container}>
         <span style={styles.hint}>
-          Stores an encrypted token for a service. Saving again for the same service overwrites the previous token.
-          Most services are placeholders today — the token is kept but not yet used.
+          Stores an encrypted token for a service. Saving again for the same service overwrites the previous token. Most
+          services are placeholders today — the token is kept but not yet used.
         </span>
 
         <Select name='service' label='Service' options={SERVICE_OPTIONS} />

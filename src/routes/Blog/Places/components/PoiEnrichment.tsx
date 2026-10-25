@@ -8,7 +8,15 @@ import { MediaThumb } from '~/routes/Blog/Editor/components/MediaThumb';
 import { mkUseStyles } from '~/utils/theme';
 
 /** ATTRACTION categories — multi-select chips. */
-export const PoiCategoriesField = ({ poiId, locale, current }: { poiId: string; locale: string; current: string[] }) => {
+export const PoiCategoriesField = ({
+  poiId,
+  locale,
+  current,
+}: {
+  poiId: string;
+  locale: string;
+  current: string[];
+}) => {
   const styles = useStyles();
   const { blogPoiApi } = useApi();
   const { categories } = useBlogCategories(CategoryKind.Attraction, locale);
@@ -33,7 +41,11 @@ export const PoiCategoriesField = ({ poiId, locale, current }: { poiId: string; 
           categories.map((c) => {
             const on = selected.includes(c.id);
             return (
-              <button key={c.id} style={{ ...styles.chip, ...(on ? styles.chipOn : null) }} onClick={() => toggle(c.id)}>
+              <button
+                key={c.id}
+                style={{ ...styles.chip, ...(on ? styles.chipOn : null) }}
+                onClick={() => toggle(c.id)}
+              >
                 {categoryLabel(c, locale)}
               </button>
             );
@@ -97,13 +109,24 @@ export const PoiHoursField = ({ poiId, current }: { poiId: string; current: PoiH
         <div key={d} style={styles.hourRow}>
           <span style={styles.day}>{d}</span>
           <label style={styles.closedLabel}>
-            <input type='checkbox' checked={rows[d].closed} onChange={(e) => set(d, { closed: e.target.checked })} /> closed
+            <input type='checkbox' checked={rows[d].closed} onChange={(e) => set(d, { closed: e.target.checked })} />{' '}
+            closed
           </label>
           {!rows[d].closed ? (
             <>
-              <input style={styles.time} type='time' value={rows[d].opensAt} onChange={(e) => set(d, { opensAt: e.target.value })} />
+              <input
+                style={styles.time}
+                type='time'
+                value={rows[d].opensAt}
+                onChange={(e) => set(d, { opensAt: e.target.value })}
+              />
               <span style={styles.dash}>–</span>
-              <input style={styles.time} type='time' value={rows[d].closesAt} onChange={(e) => set(d, { closesAt: e.target.value })} />
+              <input
+                style={styles.time}
+                type='time'
+                value={rows[d].closesAt}
+                onChange={(e) => set(d, { closesAt: e.target.value })}
+              />
             </>
           ) : null}
         </div>

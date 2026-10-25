@@ -78,9 +78,7 @@ export const ImmichCard = ({
               ) : null}
             </>
           ) : (
-            <span style={styles.muted}>
-              Connect your Immich server to enable album creation from photo entries.
-            </span>
+            <span style={styles.muted}>Connect your Immich server to enable album creation from photo entries.</span>
           )}
 
           <div style={styles.actions}>

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { FiArrowLeft, FiColumns, FiInbox, FiList, FiSettings, FiUsers } from 'react-icons/fi';
+import { FiArrowLeft, FiColumns, FiFolder, FiInbox, FiList, FiSettings, FiUsers } from 'react-icons/fi';
 import { CreateTaskDto, ProjectDetailResponse, ProjectRole, ProjectType, TaskResponse } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Button } from '~/components/Button';
@@ -14,6 +14,7 @@ import { useIsMobile } from '~/hooks/useBreakpoint';
 import { useModal } from '~/hooks/useModal';
 import { useToast } from '~/hooks/useToast';
 import { MainNavigationRoute } from '~/navigation/types';
+import { ProjectDocuments } from '~/routes/Projects/components/ProjectDocuments';
 import { QuickAdd } from '~/routes/Projects/components/QuickAdd';
 import { Avatar, ProjectsPage, useProjectStyles } from '~/routes/Projects/components/shared';
 import { TaskBoard } from '~/routes/Projects/components/TaskBoard';
@@ -40,6 +41,7 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 enum View {
   BOARD = 'board',
   LIST = 'list',
+  DOCS = 'docs',
 }
 
 const QUICK_ADD_PLACEHOLDER: Record<ProjectType, string> = {
@@ -200,7 +202,9 @@ export const ProjectDetail = () => {
   const people = [project.owner, ...project.members.map((m) => m.user)];
 
   const body =
-    view === View.BOARD ? (
+    view === View.DOCS ? (
+      <ProjectDocuments target={{ projectId: project.id }} projectId={project.id} editable={editable} />
+    ) : view === View.BOARD ? (
       <TaskBoard
         statuses={project.statuses}
         tasks={tasks}
@@ -223,7 +227,7 @@ export const ProjectDetail = () => {
 
   return (
     <ProjectsPage
-      scroll={view === View.LIST}
+      scroll={view !== View.BOARD}
       header={
         <>
           <PageHeader
@@ -292,7 +296,9 @@ export const ProjectDetail = () => {
             <div style={{ ...styles.barFill, width: `${donePercent(progress)}%` }} />
           </div>
           <div style={styles.toolbar}>
-            {editable ? (
+            {view === View.DOCS ? (
+              <span style={{ ...shared.muted, flex: 1 }}>Files pinned to the project and its tasks.</span>
+            ) : editable ? (
               <div style={styles.quickAdd}>
                 <QuickAdd
                   placeholder={QUICK_ADD_PLACEHOLDER[project.type]}
@@ -309,6 +315,7 @@ export const ProjectDetail = () => {
               items={[
                 { label: 'Board', value: View.BOARD, icon: <FiColumns size={14} /> },
                 { label: 'List', value: View.LIST, icon: <FiList size={14} /> },
+                { label: 'Docs', value: View.DOCS, icon: <FiFolder size={14} /> },
               ]}
               selected={view}
               handleSelect={(value) => setView(value as View)}

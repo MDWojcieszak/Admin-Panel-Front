@@ -75,7 +75,8 @@ export const BlogPosts = () => {
     () => ({
       onEdit: (id) => navigate('/blog/posts/' + id + '/edit'),
       onPublish: (id) => blogVersioningApi && runLifecycle(() => blogVersioningApi.versionControllerPublish({ id })),
-      onUnpublish: (id) => blogVersioningApi && runLifecycle(() => blogVersioningApi.versionControllerUnpublish({ id })),
+      onUnpublish: (id) =>
+        blogVersioningApi && runLifecycle(() => blogVersioningApi.versionControllerUnpublish({ id })),
       onArchive: (id) => blogVersioningApi && runLifecycle(() => blogVersioningApi.versionControllerArchive({ id })),
       onRestore: (id) => blogVersioningApi && runLifecycle(() => blogVersioningApi.versionControllerRestore({ id })),
       onSchedule: (id) => scheduleModal.show({ postId: id }),

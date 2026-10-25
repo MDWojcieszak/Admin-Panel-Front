@@ -20,13 +20,7 @@ import {
   FiStar,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
-import {
-  MediaStatus,
-  PhotoEntryPostStage,
-  PhotoEntryResponse,
-  PhotoEntryStatus,
-  PhotoEntryType,
-} from '~/api/api';
+import { MediaStatus, PhotoEntryPostStage, PhotoEntryResponse, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
 import { getKanbanColumnColors } from '~/routes/PhotoManagement/utils/colors';
 import { getEntryColumn, isOverduePlan } from '~/routes/PhotoManagement/utils/kanban';
 

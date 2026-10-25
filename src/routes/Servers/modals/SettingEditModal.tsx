@@ -27,7 +27,10 @@ export const SettingEditModal = (p: SettingEditModalProps) => {
     if (!serverApi || !p.settingId || !canManage) return;
     setSaving(true);
     try {
-      await serverApi.serverSettingsControllerPutCommand({ id: p.settingId, patchServerSettingDto: { name: data.name } });
+      await serverApi.serverSettingsControllerPutCommand({
+        id: p.settingId,
+        patchServerSettingDto: { name: data.name },
+      });
       p.handleClose?.();
     } catch (e) {
       console.error('Error renaming setting:', e);

@@ -83,7 +83,12 @@ export const Clocks = ({ cpuInfo = {} as CpuDto, memoryInfo = {} as MemoryDto, i
           </div>
           <div style={styles.value}>
             {renderData(
-              fixed(memoryInfo.total != null && memoryInfo.free != null ? gigabytes(memoryInfo.total - memoryInfo.free) : null, 1),
+              fixed(
+                memoryInfo.total != null && memoryInfo.free != null
+                  ? gigabytes(memoryInfo.total - memoryInfo.free)
+                  : null,
+                1,
+              ),
             ) + ' GB'}
           </div>
         </motion.div>

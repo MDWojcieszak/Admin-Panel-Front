@@ -19,10 +19,7 @@ type ServerHeaderProps = {
   onReboot?: F0;
 };
 
-const IN_PROGRESS_STATES: ServerStatusEnum[] = [
-  ServerStatusEnum.WakeInProgress,
-  ServerStatusEnum.ShutdownInProgress,
-];
+const IN_PROGRESS_STATES: ServerStatusEnum[] = [ServerStatusEnum.WakeInProgress, ServerStatusEnum.ShutdownInProgress];
 
 export const ServerHeader = ({ server, powerLoading, wakeTimeoutMs, onStart, onStop, onReboot }: ServerHeaderProps) => {
   const styles = useStyles();
@@ -76,9 +73,7 @@ export const ServerHeader = ({ server, powerLoading, wakeTimeoutMs, onStart, onS
 
         <div style={styles.statusBlock}>
           <ServerStatus isOnline={isOnline} status={status} />
-          {waking ? (
-            <WakeProgress since={server?.properties.statusChangedAt} wakeTimeoutMs={wakeTimeoutMs} />
-          ) : null}
+          {waking ? <WakeProgress since={server?.properties.statusChangedAt} wakeTimeoutMs={wakeTimeoutMs} /> : null}
           {wakeFailed ? <span style={styles.wakeFailed}>Wake failed — the server didn’t come up.</span> : null}
           {uptime ? <span style={styles.uptime}>up {uptime}</span> : null}
         </div>

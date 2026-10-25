@@ -76,7 +76,12 @@ export const CreatePostModal = (p: CreatePostModalProps) => {
       <div style={styles.container}>
         <Input name='title' label='Title' description='Working title (default locale)' disableAutofill={false} />
         <div onInput={() => setSlugEdited(true)}>
-          <Input name='slug' label='Slug' description='URL identifier, e.g. iceland-ring-road' disableAutofill={false} />
+          <Input
+            name='slug'
+            label='Slug'
+            description='URL identifier, e.g. iceland-ring-road'
+            disableAutofill={false}
+          />
         </div>
         {localeOptions.length ? (
           <Select name='locale' label='Locale' description='Initial content language' options={localeOptions} />

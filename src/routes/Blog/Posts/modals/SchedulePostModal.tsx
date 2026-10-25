@@ -45,12 +45,7 @@ export const SchedulePostModal = (p: SchedulePostModalProps) => {
   return (
     <div style={styles.container}>
       <label style={styles.label}>Publish at</label>
-      <input
-        style={styles.input}
-        type='datetime-local'
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
+      <input style={styles.input} type='datetime-local' value={value} onChange={(e) => setValue(e.target.value)} />
       {error ? <span style={styles.error}>{error}</span> : null}
       <Button label='Schedule' onClick={handleSchedule} loading={saving} />
     </div>

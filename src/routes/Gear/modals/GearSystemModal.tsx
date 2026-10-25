@@ -79,7 +79,13 @@ export const GearSystemModal = (p: GearSystemModalProps) => {
     <div style={styles.container}>
       <Input name='name' label='Name' description='e.g. Fujifilm X' type='text' control={form.control} />
       <Input name='label' label='Label' description='e.g. APS-C (optional)' type='text' control={form.control} />
-      <TextArea name='description' label='Description' description='Why this system (optional)' control={form.control} rows={3} />
+      <TextArea
+        name='description'
+        label='Description'
+        description='Why this system (optional)'
+        control={form.control}
+        rows={3}
+      />
       <GearImagePicker
         label='System image (optional)'
         coverUrl={coverUrl}
@@ -93,7 +99,11 @@ export const GearSystemModal = (p: GearSystemModalProps) => {
       </div>
       <div style={styles.actions}>
         <Button label='Cancel' variant='secondary' onClick={() => p.handleClose?.()} />
-        <Button label={p.system ? 'Save system' : 'Create system'} onClick={form.handleSubmit(submit)} loading={loading} />
+        <Button
+          label={p.system ? 'Save system' : 'Create system'}
+          onClick={form.handleSubmit(submit)}
+          loading={loading}
+        />
       </div>
     </div>
   );

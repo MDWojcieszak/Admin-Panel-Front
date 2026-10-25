@@ -17,6 +17,7 @@ export enum MainNavigationRoute {
   BLOG = 'blog',
   DEPLOY = 'deploy',
   PROJECTS = 'projects',
+  DOCUMENTS = 'documents',
 }
 
 export enum PhotoNavigationRoute {

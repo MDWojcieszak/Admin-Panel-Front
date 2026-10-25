@@ -2,12 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FiImage } from 'react-icons/fi';
-import {
-  ImmichAlbumPreviewResponse,
-  ImmichAlbumSource,
-  PhotoEntryResponse,
-  PhotoEntryType,
-} from '~/api/api';
+import { ImmichAlbumPreviewResponse, ImmichAlbumSource, PhotoEntryResponse, PhotoEntryType } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
 import { Loader } from '~/components/Loader';
@@ -50,7 +45,9 @@ const SOURCE_LABELS: Record<ImmichAlbumSource, string> = {
 };
 
 const immichError = (e: unknown, fallback: string): string =>
-  getApiErrorStatus(e) === 502 ? 'Immich is unreachable — check the integration configuration.' : getApiErrorMessage(e, fallback);
+  getApiErrorStatus(e) === 502
+    ? 'Immich is unreachable — check the integration configuration.'
+    : getApiErrorMessage(e, fallback);
 
 export const AlbumLinkModal = (p: AlbumLinkModalProps) => {
   const styles = useStyles();
@@ -103,9 +100,7 @@ export const AlbumLinkModal = (p: AlbumLinkModalProps) => {
       .photoEntryControllerGetById({ id: photoEntryId })
       .then((r) => {
         if (!active) return;
-        const ids = (r.data.astroObjects ?? [])
-          .map((a) => a.astroObjectId)
-          .filter((id): id is string => Boolean(id));
+        const ids = (r.data.astroObjects ?? []).map((a) => a.astroObjectId).filter((id): id is string => Boolean(id));
         setEntryAstroIds(ids);
       })
       .catch(() => active && setEntryAstroIds([]));
@@ -159,9 +154,16 @@ export const AlbumLinkModal = (p: AlbumLinkModalProps) => {
         if (!p.albumId) return;
         const { data: result } = await immichApi.immichControllerAttachEntry({
           albumId: p.albumId,
-          attachEntryDto: { photoEntryId: data.photoEntryId, source: data.source, astroObjectId: data.astroObjectId || undefined },
+          attachEntryDto: {
+            photoEntryId: data.photoEntryId,
+            source: data.source,
+            astroObjectId: data.astroObjectId || undefined,
+          },
         });
-        toast(`Added ${result.assetsAdded} photo${result.assetsAdded === 1 ? '' : 's'}`, result.assetsAdded ? 'success' : 'info');
+        toast(
+          `Added ${result.assetsAdded} photo${result.assetsAdded === 1 ? '' : 's'}`,
+          result.assetsAdded ? 'success' : 'info',
+        );
       }
       await p.onDone?.();
       await p.handleClose?.();
@@ -188,7 +190,13 @@ export const AlbumLinkModal = (p: AlbumLinkModalProps) => {
             <Select name='astroObjectId' label='Astro object' options={astroOptions} control={control} />
           ) : null}
           {p.mode === 'create' ? (
-            <Input name='albumName' label='Album name' description='Defaults to the entry name' type='text' control={control} />
+            <Input
+              name='albumName'
+              label='Album name'
+              description='Defaults to the entry name'
+              type='text'
+              control={control}
+            />
           ) : null}
         </div>
 

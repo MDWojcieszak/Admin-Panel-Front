@@ -64,10 +64,19 @@ export const BlogCollections = () => {
         <div style={styles.toolbarRight}>
           <div style={styles.search}>
             <MdSearch size={18} color={theme.colors.dark05} />
-            <input style={styles.searchInput} placeholder='Search…' value={search} onChange={(e) => setSearch(e.target.value)} />
+            <input
+              style={styles.searchInput}
+              placeholder='Search…'
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
           {canManage ? (
-            <Button label='New collection' icon={<FaPlus />} onClick={() => editor.show({ canManage, collection: undefined })} />
+            <Button
+              label='New collection'
+              icon={<FaPlus />}
+              onClick={() => editor.show({ canManage, collection: undefined })}
+            />
           ) : null}
         </div>
       </div>
@@ -87,13 +96,18 @@ export const BlogCollections = () => {
                   <div style={styles.info}>
                     <span style={styles.name}>{col.title || col.slug}</span>
                     <span style={styles.meta}>
-                      {[countryDisplay(col.country), col.region].filter(Boolean).join(' · ') || 'No scope'} · {col.itemCount} place(s)
+                      {[countryDisplay(col.country), col.region].filter(Boolean).join(' · ') || 'No scope'} ·{' '}
+                      {col.itemCount} place(s)
                     </span>
                   </div>
                   <Badge label={col.isPublic ? 'public' : 'private'} tone={col.isPublic ? 'green' : 'neutral'} />
                   {canManage ? (
                     <div style={styles.actions}>
-                      <button style={styles.iconBtn} title='Edit' onClick={() => editor.show({ collection: col, canManage })}>
+                      <button
+                        style={styles.iconBtn}
+                        title='Edit'
+                        onClick={() => editor.show({ collection: col, canManage })}
+                      >
                         <MdEdit size={18} color={theme.colors.blue04} />
                       </button>
                       <button style={styles.iconBtn} title='Delete' onClick={() => handleDelete(col.id)}>
@@ -127,7 +141,15 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
     border: `1px solid ${t.colors.white + t.colorOpacity(0.05)}`,
   },
-  searchInput: { width: 180, height: '100%', border: 0, outline: 'none', background: 'transparent', color: t.colors.white, fontSize: 14 },
+  searchInput: {
+    width: 180,
+    height: '100%',
+    border: 0,
+    outline: 'none',
+    background: 'transparent',
+    color: t.colors.white,
+    fontSize: 14,
+  },
   listWrap: { flex: 1, minHeight: 0, position: 'relative' },
   scroll: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   list: { gap: t.spacing.s, paddingRight: t.spacing.m },

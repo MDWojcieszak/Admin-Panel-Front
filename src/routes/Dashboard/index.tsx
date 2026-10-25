@@ -2,12 +2,7 @@ import { ReactNode } from 'react';
 import { format } from 'date-fns';
 import { FaServer } from 'react-icons/fa6';
 import { MdCategory, MdFlag, MdGroup, MdSwapHoriz, MdTerminal } from 'react-icons/md';
-import {
-  CountByDto,
-  DashboardRecentProcessDto,
-  PhotoEntryStatus,
-  PhotoEntryType,
-} from '~/api/api';
+import { CountByDto, DashboardRecentProcessDto, PhotoEntryStatus, PhotoEntryType } from '~/api/api';
 import { Badge, BadgeTone } from '~/components/Badge';
 import { Loader } from '~/components/Loader';
 import { Scrollbar } from '~/components/Scrollbar';
@@ -126,7 +121,12 @@ export const Dashboard = () => {
   const theme = useTheme();
   const { overview: data, gallery, loading, forbidden } = useDashboard();
 
-  if (loading) return <div style={styles.centered}><Loader /></div>;
+  if (loading)
+    return (
+      <div style={styles.centered}>
+        <Loader />
+      </div>
+    );
   if (forbidden)
     return <div style={styles.centered}>You don’t have access to the dashboard (requires dashboard.read).</div>;
   if (!data) return null;
@@ -137,71 +137,66 @@ export const Dashboard = () => {
   return (
     <Scrollbar style={styles.scrollArea}>
       <div style={styles.content}>
-      <div style={styles.stats}>
-        <StatCard
-          icon={<FaServer size={20} />}
-          label='Servers'
-          value={String(data.servers.total)}
-          sub={`${data.servers.online} online · ${data.servers.offline} offline`}
-          accent='lightGreen'
-        />
-        <StatCard
-          icon={<MdTerminal size={22} />}
-          label='Processes'
-          value={String(data.processes.total)}
-          sub={`${data.processes.running} running · ${data.processes.failed} failed`}
-          accent='blue'
-        />
-        <StatCard
-          icon={<MdGroup size={22} />}
-          label='Users'
-          value={String(data.users.total)}
-          accent='purple02'
-        />
-        <StatCard
-          icon={<MdSwapHoriz size={22} />}
-          label='Transfers'
-          value={String(data.transfers.total)}
-          sub={`${data.transfers.running} running · ${data.transfers.failed} failed`}
-          accent='blue04'
-        />
-      </div>
-
-      <AttentionCard />
-
-      <div style={styles.panels}>
-        <BreakdownCard
-          title='Sessions · by type'
-          icon={<MdCategory size={15} />}
-          total={data.photoEntries.total}
-          items={byType}
-          colorFor={(key) => typeColor(theme, key)}
-        />
-        <BreakdownCard
-          title='Sessions · by status'
-          icon={<MdFlag size={15} />}
-          total={data.photoEntries.total}
-          items={byStatus}
-          colorFor={(key) => getPhotoEntryStatusColors(key as PhotoEntryStatus).accent}
-        />
-      </div>
-
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>
-          <MdTerminal size={16} /> Recent processes
+        <div style={styles.stats}>
+          <StatCard
+            icon={<FaServer size={20} />}
+            label='Servers'
+            value={String(data.servers.total)}
+            sub={`${data.servers.online} online · ${data.servers.offline} offline`}
+            accent='lightGreen'
+          />
+          <StatCard
+            icon={<MdTerminal size={22} />}
+            label='Processes'
+            value={String(data.processes.total)}
+            sub={`${data.processes.running} running · ${data.processes.failed} failed`}
+            accent='blue'
+          />
+          <StatCard icon={<MdGroup size={22} />} label='Users' value={String(data.users.total)} accent='purple02' />
+          <StatCard
+            icon={<MdSwapHoriz size={22} />}
+            label='Transfers'
+            value={String(data.transfers.total)}
+            sub={`${data.transfers.running} running · ${data.transfers.failed} failed`}
+            accent='blue04'
+          />
         </div>
-        <div style={styles.processList}>
-          {data.processes.recent.length ? (
-            data.processes.recent.map((p) => <RecentProcessRow key={p.id} process={p} />)
-          ) : (
-            <span style={styles.muted}>No recent processes.</span>
-          )}
+
+        <AttentionCard />
+
+        <div style={styles.panels}>
+          <BreakdownCard
+            title='Sessions · by type'
+            icon={<MdCategory size={15} />}
+            total={data.photoEntries.total}
+            items={byType}
+            colorFor={(key) => typeColor(theme, key)}
+          />
+          <BreakdownCard
+            title='Sessions · by status'
+            icon={<MdFlag size={15} />}
+            total={data.photoEntries.total}
+            items={byStatus}
+            colorFor={(key) => getPhotoEntryStatusColors(key as PhotoEntryStatus).accent}
+          />
         </div>
-      </div>
 
-      {gallery ? <GallerySection gallery={gallery} /> : null}
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>
+            <MdTerminal size={16} /> Recent processes
+          </div>
+          <div style={styles.processList}>
+            {data.processes.recent.length ? (
+              data.processes.recent.map((p) => <RecentProcessRow key={p.id} process={p} />)
+            ) : (
+              <span style={styles.muted}>No recent processes.</span>
+            )}
+          </div>
+        </div>
 
-      <TrendsSection />
+        {gallery ? <GallerySection gallery={gallery} /> : null}
+
+        <TrendsSection />
       </div>
     </Scrollbar>
   );

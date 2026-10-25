@@ -135,7 +135,13 @@ export const BlogMediaPanel = ({ open, pickMode, onClose, onPick }: BlogMediaPan
         </button>
       </div>
 
-      <input ref={fileRef} type='file' accept='image/*' style={{ display: 'none' }} onChange={(e) => handleUpload(e.target.files?.[0])} />
+      <input
+        ref={fileRef}
+        type='file'
+        accept='image/*'
+        style={{ display: 'none' }}
+        onChange={(e) => handleUpload(e.target.files?.[0])}
+      />
       <div
         className={`blog-upload-zone${dragOver ? ' over' : ''}`}
         style={{ ...styles.uploadZone, ...(uploading ? { cursor: 'default' } : null) }}

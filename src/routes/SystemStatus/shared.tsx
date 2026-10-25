@@ -38,8 +38,7 @@ const SUBSYSTEM: Record<string, { label: string; icon: ReactNode }> = {
   rabbitmq: { label: 'RabbitMQ', icon: <MdQueue size={22} /> },
 };
 
-export const subsystemMeta = (name: string) =>
-  SUBSYSTEM[name] || { label: name, icon: <MdDeviceHub size={20} /> };
+export const subsystemMeta = (name: string) => SUBSYSTEM[name] || { label: name, icon: <MdDeviceHub size={20} /> };
 
 // Real connectivity latency → a "ping quality" rating + how many signal bars to light.
 export const latencyQuality = (ms: number): Descriptor & { level: number } => {

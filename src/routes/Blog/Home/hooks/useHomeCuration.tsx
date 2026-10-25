@@ -16,7 +16,10 @@ export const useHomeCuration = () => {
     if (!blogHomeApi) return;
     setLoading(true);
     try {
-      const [cfg, pinsRes] = await Promise.all([blogHomeApi.homeControllerGetConfig(), blogHomeApi.homeControllerGetPins()]);
+      const [cfg, pinsRes] = await Promise.all([
+        blogHomeApi.homeControllerGetConfig(),
+        blogHomeApi.homeControllerGetPins(),
+      ]);
       setConfig(cfg.data);
       setPins([...pinsRes.data.pins].sort((a, b) => a.position - b.position));
     } catch (e) {

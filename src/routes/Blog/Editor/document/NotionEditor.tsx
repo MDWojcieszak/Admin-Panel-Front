@@ -6,8 +6,21 @@ import { filterSuggestionItems } from '@blocknote/core';
 import { BlockNoteView } from '@blocknote/mantine';
 import { en as enDictionary } from '@blocknote/core/locales';
 import { SuggestionMenuController, getDefaultReactSlashMenuItems, useCreateBlockNote } from '@blocknote/react';
-import { getMultiColumnSlashMenuItems, locales as multiColumnLocales, multiColumnDropCursor } from '@blocknote/xl-multi-column';
-import { MdCollectionsBookmark, MdHorizontalRule, MdImage, MdLink, MdMap, MdPhotoLibrary, MdPlace, MdWarningAmber } from 'react-icons/md';
+import {
+  getMultiColumnSlashMenuItems,
+  locales as multiColumnLocales,
+  multiColumnDropCursor,
+} from '@blocknote/xl-multi-column';
+import {
+  MdCollectionsBookmark,
+  MdHorizontalRule,
+  MdImage,
+  MdLink,
+  MdMap,
+  MdPhotoLibrary,
+  MdPlace,
+  MdWarningAmber,
+} from 'react-icons/md';
 import { useApi } from '~/hooks/useApi';
 import { useBlogDraft } from '~/routes/Blog/Editor/hooks/useBlogDraft';
 import { BlogEditorBridge, BlogEditorBridgeContext } from '~/routes/Blog/Editor/document/bridge';
@@ -41,13 +54,33 @@ export type SaveState = 'idle' | 'saving' | 'saved';
 
 const slashItems = (editor: BlogEditor) => [
   { title: 'Image', group: 'Blog', icon: <MdImage size={18} />, onItemClick: () => insertBlock(editor, 'blogImage') },
-  { title: 'Gallery', group: 'Blog', icon: <MdPhotoLibrary size={18} />, onItemClick: () => insertBlock(editor, 'blogGallery') },
-  { title: 'Callout', group: 'Blog', icon: <MdWarningAmber size={18} />, onItemClick: () => insertBlock(editor, 'blogCallout') },
+  {
+    title: 'Gallery',
+    group: 'Blog',
+    icon: <MdPhotoLibrary size={18} />,
+    onItemClick: () => insertBlock(editor, 'blogGallery'),
+  },
+  {
+    title: 'Callout',
+    group: 'Blog',
+    icon: <MdWarningAmber size={18} />,
+    onItemClick: () => insertBlock(editor, 'blogCallout'),
+  },
   { title: 'Embed', group: 'Blog', icon: <MdLink size={18} />, onItemClick: () => insertBlock(editor, 'blogEmbed') },
   { title: 'Map', group: 'Blog', icon: <MdMap size={18} />, onItemClick: () => insertBlock(editor, 'blogMap') },
   { title: 'Place', group: 'Blog', icon: <MdPlace size={18} />, onItemClick: () => insertBlock(editor, 'blogPlace') },
-  { title: 'Collection', group: 'Blog', icon: <MdCollectionsBookmark size={18} />, onItemClick: () => insertBlock(editor, 'blogCollection') },
-  { title: 'Divider', group: 'Blog', icon: <MdHorizontalRule size={18} />, onItemClick: () => insertBlock(editor, 'divider') },
+  {
+    title: 'Collection',
+    group: 'Blog',
+    icon: <MdCollectionsBookmark size={18} />,
+    onItemClick: () => insertBlock(editor, 'blogCollection'),
+  },
+  {
+    title: 'Divider',
+    group: 'Blog',
+    icon: <MdHorizontalRule size={18} />,
+    onItemClick: () => insertBlock(editor, 'divider'),
+  },
 ];
 
 export const NotionEditor = ({
@@ -253,7 +286,10 @@ export const NotionEditor = ({
               const defaults = getDefaultReactSlashMenuItems(editor).filter(
                 (i) => !denied.some((d) => i.title.toLowerCase().includes(d)),
               );
-              return filterSuggestionItems([...defaults, ...slashItems(editor), ...getMultiColumnSlashMenuItems(editor)], query);
+              return filterSuggestionItems(
+                [...defaults, ...slashItems(editor), ...getMultiColumnSlashMenuItems(editor)],
+                query,
+              );
             }}
           />
         </BlockNoteView>

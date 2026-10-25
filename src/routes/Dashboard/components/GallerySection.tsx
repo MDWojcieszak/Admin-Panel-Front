@@ -121,9 +121,7 @@ export const GallerySection = ({ gallery }: { gallery: DashboardGalleryResponseD
                 <GalleryThumb imageId={r.imageId} />
                 <div style={styles.recentInfo}>
                   <span style={styles.recentTitle}>{r.title || 'Untitled'}</span>
-                  <span style={styles.recentMeta}>
-                    {[r.localization, r.author].filter(Boolean).join(' · ')}
-                  </span>
+                  <span style={styles.recentMeta}>{[r.localization, r.author].filter(Boolean).join(' · ')}</span>
                   <span style={styles.recentDate}>{format(new Date(r.dateTaken), 'd MMM y')}</span>
                 </div>
               </div>

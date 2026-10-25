@@ -54,7 +54,11 @@ export const BlogCountries = () => {
       <div style={styles.toolbar}>
         <h2 style={styles.title}>Countries</h2>
         {canManage ? (
-          <Button label='New country' icon={<FaPlus />} onClick={() => editor.show({ country: undefined, canManage })} />
+          <Button
+            label='New country'
+            icon={<FaPlus />}
+            onClick={() => editor.show({ country: undefined, canManage })}
+          />
         ) : null}
       </div>
 
@@ -80,7 +84,11 @@ export const BlogCountries = () => {
                   </span>
                   {canManage ? (
                     <div style={styles.actions}>
-                      <button style={styles.iconBtn} title='Edit' onClick={() => editor.show({ country: c, canManage })}>
+                      <button
+                        style={styles.iconBtn}
+                        title='Edit'
+                        onClick={() => editor.show({ country: c, canManage })}
+                      >
                         <MdEdit size={18} color={theme.colors.blue04} />
                       </button>
                       <button

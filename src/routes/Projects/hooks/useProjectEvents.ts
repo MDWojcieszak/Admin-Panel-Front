@@ -3,7 +3,7 @@ import useWebSocket from '~/hooks/useWebSocket';
 
 export type ProjectChangedEvent = {
   projectId: string;
-  kind: 'project' | 'status' | 'member' | 'task';
+  kind: 'project' | 'status' | 'member' | 'task' | 'document';
   taskId?: string;
   actorId: string;
 };

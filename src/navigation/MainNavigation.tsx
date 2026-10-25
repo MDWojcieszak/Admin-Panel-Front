@@ -12,6 +12,7 @@ import { ProtectedRoute } from '~/navigation/ProtectedRoute';
 import { ServerNavigation } from '~/navigation/ServerNavigation';
 import { DeployNavigation } from '~/navigation/DeployNavigation';
 import { ProjectsNavigation } from '~/navigation/ProjectsNavigation';
+import { Documents } from '~/routes/Documents/Documents';
 import {
   BlogNavigationRoute,
   DeployNavigationRoute,
@@ -110,6 +111,12 @@ export const mainNavigationRoutes: MainRouteType[] = [
       { path: ProjectsNavigationRoute.PROJECTS, label: 'Projects' },
       { path: ProjectsNavigationRoute.MY_WORK, label: 'My work' },
     ],
+  },
+  {
+    path: MainNavigationRoute.DOCUMENTS,
+    label: 'Documents',
+    component: <Documents />,
+    // No ACL gate: your own files, and those pinned in your projects.
   },
   {
     path: MainNavigationRoute.DEPLOY,

@@ -81,8 +81,16 @@ export const CollectionEditorModal = (p: CollectionEditorModalProps) => {
         if (tr.title) title[tr.locale] = tr.title;
         if (tr.description) description[tr.locale] = tr.description;
       });
-      reset({ slug: p.collection.slug, region: p.collection.region ?? '', countryId: getValues('countryId'), title, description });
-      setItems([...data.items].sort((a, b) => a.rank - b.rank).map((i) => ({ id: i.id, poiId: i.poiId, poiName: i.poiName })));
+      reset({
+        slug: p.collection.slug,
+        region: p.collection.region ?? '',
+        countryId: getValues('countryId'),
+        title,
+        description,
+      });
+      setItems(
+        [...data.items].sort((a, b) => a.rank - b.rank).map((i) => ({ id: i.id, poiId: i.poiId, poiName: i.poiName })),
+      );
     } catch (e) {
       console.error('Error loading collection:', e);
     }
@@ -170,7 +178,12 @@ export const CollectionEditorModal = (p: CollectionEditorModalProps) => {
       if (isEdit && p.collection) {
         await blogCollectionsApi.collectionControllerPatch({
           id: p.collection.id,
-          patchCollectionDto: { slug: data.slug, countryId: data.countryId || null, region: data.region || null, isPublic },
+          patchCollectionDto: {
+            slug: data.slug,
+            countryId: data.countryId || null,
+            region: data.region || null,
+            isPublic,
+          },
         });
       } else {
         const res = await blogCollectionsApi.collectionControllerCreate({
@@ -260,7 +273,14 @@ export const CollectionEditorModal = (p: CollectionEditorModalProps) => {
 
       <div style={styles.row}>
         <Select label='Country' name='countryId' control={control} options={countryOptions} style={styles.flex} />
-        <Input name='region' label='Region' description='Optional' control={control} style={styles.flex} disableAutofill={false} />
+        <Input
+          name='region'
+          label='Region'
+          description='Optional'
+          control={control}
+          style={styles.flex}
+          disableAutofill={false}
+        />
       </div>
 
       <div style={styles.publicRow}>
@@ -289,7 +309,12 @@ export const CollectionEditorModal = (p: CollectionEditorModalProps) => {
         <PoiPicker onPick={addItem} />
       </div>
 
-      <Button label={isEdit ? 'Save collection' : 'Create collection'} onClick={handleSave} loading={saving} disabled={!canManage} />
+      <Button
+        label={isEdit ? 'Save collection' : 'Create collection'}
+        onClick={handleSave}
+        loading={saving}
+        disabled={!canManage}
+      />
     </div>
   );
 };

@@ -57,8 +57,20 @@ export const CreateGalleryModal = (p: CreateGalleryModalProps) => {
   return (
     <div style={styles.container}>
       <Input name='title' label='Title' description='Gallery title' type='text' control={formMethods.control} />
-      <Input name='slug' label='Slug' description='URL slug (optional — auto from title)' type='text' control={formMethods.control} />
-      <Input name='description' label='Description' description='Optional description' type='text' control={formMethods.control} />
+      <Input
+        name='slug'
+        label='Slug'
+        description='URL slug (optional — auto from title)'
+        type='text'
+        control={formMethods.control}
+      />
+      <Input
+        name='description'
+        label='Description'
+        description='Optional description'
+        type='text'
+        control={formMethods.control}
+      />
       <div style={styles.actions}>
         <Button label='Cancel' variant='secondary' onClick={() => p.handleClose?.()} />
         <Button label='Create gallery' onClick={formMethods.handleSubmit(submit)} loading={loading} />

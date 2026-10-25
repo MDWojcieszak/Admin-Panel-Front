@@ -28,7 +28,15 @@ const authorName = (c: EditorialCommentResponse) =>
 
 const estimateHeight = (count: number, composing: boolean) => 54 + count * 64 + (composing ? 96 : 0);
 
-export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, onClearCompose, onCompose }: CommentsLayerProps) => {
+export const CommentsLayer = ({
+  open,
+  postId,
+  editor,
+  sectionMap,
+  composeFor,
+  onClearCompose,
+  onCompose,
+}: CommentsLayerProps) => {
   const styles = useStyles();
   const { blogCommentsApi } = useApi();
   const auth = useAuth();
@@ -167,7 +175,11 @@ export const CommentsLayer = ({ open, postId, editor, sectionMap, composeFor, on
           <span style={styles.body}>{c.body}</span>
           {auth.userData?.id === c.authorId ? (
             <div style={styles.actions}>
-              <button style={styles.actionBtn} onMouseDown={(e) => e.preventDefault()} onClick={() => setEditing({ id: c.id, body: c.body })}>
+              <button
+                style={styles.actionBtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setEditing({ id: c.id, body: c.body })}
+              >
                 <MdEdit size={13} /> Edit
               </button>
               <button style={styles.actionBtn} onMouseDown={(e) => e.preventDefault()} onClick={() => remove(c.id)}>
@@ -263,7 +275,12 @@ const Composer = ({ value, onChange, onSubmit, onCancel, placeholder, autoFocus 
             <MdClose size={15} />
           </button>
         ) : null}
-        <button style={styles.sendBtn} onMouseDown={(e) => e.preventDefault()} onClick={onSubmit} disabled={!value.trim()}>
+        <button
+          style={styles.sendBtn}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={onSubmit}
+          disabled={!value.trim()}
+        >
           <MdSend size={14} color={theme.colors.white} />
         </button>
       </div>
@@ -293,7 +310,13 @@ const useStyles = mkUseStyles((t) => ({
     border: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
     pointerEvents: 'auto',
   },
-  globalTitle: { fontSize: 12, fontWeight: 700, color: t.colors.blue04, textTransform: 'uppercase', letterSpacing: 0.5 },
+  globalTitle: {
+    fontSize: 12,
+    fontWeight: 700,
+    color: t.colors.blue04,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
   sectionCard: {
     position: 'absolute',
     left: t.spacing.s,

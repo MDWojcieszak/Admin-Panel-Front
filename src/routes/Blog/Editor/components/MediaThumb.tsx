@@ -45,7 +45,5 @@ export const MediaThumb = ({ imageId, res = 'low', fit = 'cover', focalX, focalY
           display: 'block',
         };
 
-  return (
-    <div style={{ overflow: 'hidden', ...style }}>{url ? <img src={url} alt='' style={imgStyle} /> : null}</div>
-  );
+  return <div style={{ overflow: 'hidden', ...style }}>{url ? <img src={url} alt='' style={imgStyle} /> : null}</div>;
 };

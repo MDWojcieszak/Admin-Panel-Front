@@ -18,13 +18,16 @@ type StatusDescriptor = {
 const describeStatus = (status: ServerStatusEnum | undefined, isOnline?: boolean): StatusDescriptor => {
   // Transitional states animate; everything else is a steady dot.
   if (status === ServerStatusEnum.WakeInProgress) return { label: 'Waking up…', color: 'yellow', spinner: true };
-  if (status === ServerStatusEnum.ShutdownInProgress) return { label: 'Shutting down…', color: 'yellow', spinner: true };
+  if (status === ServerStatusEnum.ShutdownInProgress)
+    return { label: 'Shutting down…', color: 'yellow', spinner: true };
   if (status === ServerStatusEnum.Error) return { label: 'Error', color: 'red', spinner: false };
   if (status === ServerStatusEnum.Maintenance) return { label: 'Maintenance', color: 'blue', spinner: false };
 
   // isOnline is authoritative for the offline state (avoids a spinning "Online" on a dead box).
-  if (status === ServerStatusEnum.Offline || isOnline === false) return { label: 'Offline', color: 'dark05', spinner: false };
-  if (status === ServerStatusEnum.Online || isOnline === true) return { label: 'Online', color: 'lightGreen', spinner: false };
+  if (status === ServerStatusEnum.Offline || isOnline === false)
+    return { label: 'Offline', color: 'dark05', spinner: false };
+  if (status === ServerStatusEnum.Online || isOnline === true)
+    return { label: 'Online', color: 'lightGreen', spinner: false };
   return { label: 'Unknown', color: 'dark05', spinner: false };
 };
 

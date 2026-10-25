@@ -20,9 +20,7 @@ export const useBlogCountries = () => {
     setLoading(true);
     try {
       const { data } = await blogCountriesApi.countryControllerList();
-      setCountries(
-        [...data.countries].sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.slug.localeCompare(b.slug)),
-      );
+      setCountries([...data.countries].sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.slug.localeCompare(b.slug)));
     } catch (e) {
       console.error('Error loading countries:', e);
     } finally {

@@ -21,7 +21,10 @@ export const CollectionPicker = ({ onPick }: CollectionPickerProps) => {
     if (!blogCollectionsApi) return;
     const handle = setTimeout(async () => {
       try {
-        const { data } = await blogCollectionsApi.collectionControllerList({ search: query.trim() || undefined, take: 8 });
+        const { data } = await blogCollectionsApi.collectionControllerList({
+          search: query.trim() || undefined,
+          take: 8,
+        });
         setResults(data.collections);
       } catch (e) {
         console.error('Error searching collections:', e);

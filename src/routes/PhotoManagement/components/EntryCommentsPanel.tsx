@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FiAlertTriangle, FiCheckSquare, FiEdit2, FiMessageSquare, FiRotateCcw, FiStar, FiTrash2 } from 'react-icons/fi';
+import {
+  FiAlertTriangle,
+  FiCheckSquare,
+  FiEdit2,
+  FiMessageSquare,
+  FiRotateCcw,
+  FiStar,
+  FiTrash2,
+} from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import {
   CommentStage,
@@ -152,10 +160,7 @@ export const EntryCommentsPanel = ({ entryId, onChanged }: EntryCommentsPanelPro
     );
   };
 
-  const totalComments = useMemo(
-    () => data?.groups.reduce((sum, group) => sum + group.comments.length, 0) ?? 0,
-    [data],
-  );
+  const totalComments = useMemo(() => data?.groups.reduce((sum, group) => sum + group.comments.length, 0) ?? 0, [data]);
 
   if (loading && !data) return <Loader />;
 
@@ -191,9 +196,7 @@ export const EntryCommentsPanel = ({ entryId, onChanged }: EntryCommentsPanelPro
         <div style={styles.composerFooter}>
           {/* The stage is stamped by the backend from the entry's current state — it
               is neither sent nor editable, so saying where it will land avoids surprise. */}
-          <span style={styles.hint}>
-            Will be pinned to: {data ? STAGE_LABELS[data.currentStage] : '—'}
-          </span>
+          <span style={styles.hint}>Will be pinned to: {data ? STAGE_LABELS[data.currentStage] : '—'}</span>
           <Button label='Add' onClick={addComment} loading={saving} disabled={!body.trim()} />
         </div>
       </div>

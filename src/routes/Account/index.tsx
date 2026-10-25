@@ -38,39 +38,39 @@ export const Account = () => {
   return (
     <CenteredCard maxWidth={560}>
       <div style={styles.profile}>
-          <div style={styles.avatar}>{(email[0] ?? '?').toUpperCase()}</div>
-          <div style={styles.profileInfo}>
-            <span style={styles.email}>{email || '—'}</span>
-            <Badge label={role ?? '—'} tone={roleTone(role)} />
+        <div style={styles.avatar}>{(email[0] ?? '?').toUpperCase()}</div>
+        <div style={styles.profileInfo}>
+          <span style={styles.email}>{email || '—'}</span>
+          <Badge label={role ?? '—'} tone={roleTone(role)} />
+        </div>
+      </div>
+
+      <div style={styles.section}>
+        <span style={styles.sectionTitle}>
+          Access {isOwner ? '· owner has full access' : `· ${permissions.length} permissions`}
+        </span>
+        {isOwner ? (
+          <span style={styles.ownerNote}>You are an OWNER and have access to everything.</span>
+        ) : permissions.length ? (
+          <div style={styles.permChips}>
+            {permissions.map((perm) => (
+              <span key={perm} style={styles.permChip}>
+                {perm}
+              </span>
+            ))}
           </div>
-        </div>
-
-        <div style={styles.section}>
-          <span style={styles.sectionTitle}>
-            Access {isOwner ? '· owner has full access' : `· ${permissions.length} permissions`}
-          </span>
-          {isOwner ? (
-            <span style={styles.ownerNote}>You are an OWNER and have access to everything.</span>
-          ) : permissions.length ? (
-            <div style={styles.permChips}>
-              {permissions.map((perm) => (
-                <span key={perm} style={styles.permChip}>
-                  {perm}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <span style={styles.muted}>No permissions assigned yet.</span>
-          )}
-        </div>
-
-        {resetSent ? (
-          <span style={styles.resetOk}>Password reset link sent to {email}.</span>
         ) : (
-          <Button label='Reset password' variant='secondary' onClick={sendReset} />
+          <span style={styles.muted}>No permissions assigned yet.</span>
         )}
+      </div>
 
-        <Button label='Log out' variant='danger' icon={<MdLogout size={18} />} onClick={handleLogout} />
+      {resetSent ? (
+        <span style={styles.resetOk}>Password reset link sent to {email}.</span>
+      ) : (
+        <Button label='Reset password' variant='secondary' onClick={sendReset} />
+      )}
+
+      <Button label='Log out' variant='danger' icon={<MdLogout size={18} />} onClick={handleLogout} />
     </CenteredCard>
   );
 };

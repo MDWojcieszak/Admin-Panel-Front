@@ -116,11 +116,29 @@ export const TransferModal = (p: TransferModalProps) => {
         ) : null}
 
         <div style={styles.row}>
-          <Input name='bwLimitKbps' label='Bandwidth limit (Kbps)' description='Optional' type='number' style={styles.field} />
+          <Input
+            name='bwLimitKbps'
+            label='Bandwidth limit (Kbps)'
+            description='Optional'
+            type='number'
+            style={styles.field}
+          />
           {!isEdit ? (
             <>
-              <Input name='secondsStart' label='Start (s)' description='Delay before start' type='number' style={styles.field} />
-              <Input name='secondsStop' label='Stop (s)' description='Auto-stop after' type='number' style={styles.field} />
+              <Input
+                name='secondsStart'
+                label='Start (s)'
+                description='Delay before start'
+                type='number'
+                style={styles.field}
+              />
+              <Input
+                name='secondsStop'
+                label='Stop (s)'
+                description='Auto-stop after'
+                type='number'
+                style={styles.field}
+              />
             </>
           ) : null}
         </div>

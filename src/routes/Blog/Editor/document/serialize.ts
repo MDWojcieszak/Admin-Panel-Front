@@ -10,7 +10,12 @@ import {
   ResolvedSectionResponse,
 } from '~/api/api';
 import { BlogBlock, BlogEditor, BlogPartialBlock, CUSTOM_BLOCK_TYPES } from '~/routes/Blog/Editor/document/schema';
-import { blocksToMarkdown, inlineToMarkdown, markdownToBlocks, parseInline } from '~/routes/Blog/Editor/document/markdown';
+import {
+  blocksToMarkdown,
+  inlineToMarkdown,
+  markdownToBlocks,
+  parseInline,
+} from '~/routes/Blog/Editor/document/markdown';
 
 const clampLevel = (lvl?: number | null): 1 | 2 | 3 => (lvl === 1 ? 1 : lvl === 3 ? 3 : 2);
 const undef = (v?: string | null): string | undefined => v || undefined;
@@ -30,7 +35,13 @@ const buildBlocks = (s: ResolvedSectionResponse, keepSectionId: boolean): BlogPa
     case BlogSectionType.Paragraph:
       return markdownToBlocks(s.body || '');
     case BlogSectionType.Heading:
-      return [{ type: 'heading', props: { level: clampLevel(s.headingLevel) }, content: parseInline(s.title || s.body || '') } as BlogPartialBlock];
+      return [
+        {
+          type: 'heading',
+          props: { level: clampLevel(s.headingLevel) },
+          content: parseInline(s.title || s.body || ''),
+        } as BlogPartialBlock,
+      ];
     case BlogSectionType.Quote:
       return [{ type: 'quote', content: parseInline(s.body || '') } as BlogPartialBlock];
     case BlogSectionType.List:
@@ -86,7 +97,10 @@ const buildBlocks = (s: ResolvedSectionResponse, keepSectionId: boolean): BlogPa
       return [
         {
           type: 'blogMap',
-          props: { sectionId: sid, poiIds: JSON.stringify([...s.pois].sort((a, b) => a.order - b.order).map((p) => p.poiId)) },
+          props: {
+            sectionId: sid,
+            poiIds: JSON.stringify([...s.pois].sort((a, b) => a.order - b.order).map((p) => p.poiId)),
+          },
         },
       ];
     case BlogSectionType.Place:
@@ -110,7 +124,7 @@ export const sectionsToBlocks = async (
   // Give a block an explicit id and record its backend section (works at any nesting depth — columns
   // map their column/leaf children too, so the shared structure's ids are reused on save and per-locale
   // text lands on the right section instead of churning).
-  const mark = <T,>(blk: T, sectionId: string): T => {
+  const mark = <T>(blk: T, sectionId: string): T => {
     const id = `bsec-${blockIdSeq++}`;
     (blk as { id?: string }).id = id;
     sectionMap[id] = sectionId;
@@ -135,7 +149,9 @@ export const sectionsToBlocks = async (
       // The library keeps column `width` averaging 1 (sum ≈ column count) and clamps each to ≥ 0.5, so it
       // resizes correctly. Backend stores shares (sum 1); scale them by the count to match the convention.
       const n = columnSecs.length || 1;
-      const shares = columnSecs.map((c) => (typeof c.columnWidth === 'number' && c.columnWidth > 0 ? c.columnWidth : 1 / n));
+      const shares = columnSecs.map((c) =>
+        typeof c.columnWidth === 'number' && c.columnWidth > 0 ? c.columnWidth : 1 / n,
+      );
       const shareSum = shares.reduce((acc, v) => acc + v, 0) || 1;
       // Map the columnList id BEFORE its columns/leaves so the comment gutter (which stops at the first
       // mapped block whose Y-span holds the cursor) resolves column content to the WHOLE columns block —
@@ -147,7 +163,10 @@ export const sectionsToBlocks = async (
         // keepSectionId=true + mark() each leaf so column content reuses its section (shared structure,
         // per-locale text), and mark() the column itself for the COLUMN section.
         const children = leaves.flatMap((l) => buildBlocks(l, true).map((blk) => mark(blk, l.id)));
-        return mark({ type: 'column', props: { width: (shares[ci] / shareSum) * n }, children } as unknown as BlogPartialBlock, colSec.id);
+        return mark(
+          { type: 'column', props: { width: (shares[ci] / shareSum) * n }, children } as unknown as BlogPartialBlock,
+          colSec.id,
+        );
       });
       blocks.push({ id: colListId, type: 'columnList', children: columns } as unknown as BlogPartialBlock);
     } else {
@@ -191,7 +210,9 @@ function customToDoc(b: BlogBlock, sectionMap?: Record<string, string>): Documen
         overlayPosition: undef(b.props.overlayPosition) as DocumentBlockDto['overlayPosition'],
         overlayText: undef(b.props.overlayText),
         overlayTheme: b.props.overlayText ? (b.props.overlayTheme as DocumentBlockDto['overlayTheme']) : undefined,
-        overlayBackdrop: b.props.overlayText ? (b.props.overlayBackdrop as DocumentBlockDto['overlayBackdrop']) : undefined,
+        overlayBackdrop: b.props.overlayText
+          ? (b.props.overlayBackdrop as DocumentBlockDto['overlayBackdrop'])
+          : undefined,
         caption: undef(b.props.caption),
         alt: undef(b.props.alt),
         focalX: b.props.focalX,
@@ -243,7 +264,11 @@ function customToDoc(b: BlogBlock, sectionMap?: Record<string, string>): Documen
       return { ...ref(b.props.sectionId, b.id), type: DocumentBlockType.Place, poiId: b.props.poiId };
     case 'blogCollection':
       if (!b.props.collectionId) return null;
-      return { ...ref(b.props.sectionId, b.id), type: DocumentBlockType.Collection, collectionId: b.props.collectionId };
+      return {
+        ...ref(b.props.sectionId, b.id),
+        type: DocumentBlockType.Collection,
+        collectionId: b.props.collectionId,
+      };
     case 'blogCallout':
       return {
         ...ref(b.props.sectionId, b.id),
@@ -291,7 +316,12 @@ function serializeBlockList(blocks: BlogBlock[], sectionMap?: Record<string, str
     }
     i++;
     if (b.type === 'heading') {
-      out.push({ ...blockRef(b), type: DocumentBlockType.Heading, text: inlineToMarkdown(b.content), level: b.props.level });
+      out.push({
+        ...blockRef(b),
+        type: DocumentBlockType.Heading,
+        text: inlineToMarkdown(b.content),
+        level: b.props.level,
+      });
     } else if (b.type === 'quote') {
       out.push({ ...blockRef(b), type: DocumentBlockType.Quote, markdown: inlineToMarkdown(b.content) });
     } else if (b.type === 'paragraph') {

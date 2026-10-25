@@ -63,8 +63,14 @@ export const TrendsSection = () => {
         <span style={styles.muted}>No trend data.</span>
       ) : (
         <div style={styles.grid}>
-          <ChartCard title='Images added' icon={<BsImages size={14} />} total={sumBy(trends.series.imagesAdded, (p) => p.count)}>
-            <MiniLineChart series={[{ values: trends.series.imagesAdded.map((p) => p.count), color: theme.colors.blue, fill: true }]} />
+          <ChartCard
+            title='Images added'
+            icon={<BsImages size={14} />}
+            total={sumBy(trends.series.imagesAdded, (p) => p.count)}
+          >
+            <MiniLineChart
+              series={[{ values: trends.series.imagesAdded.map((p) => p.count), color: theme.colors.blue, fill: true }]}
+            />
           </ChartCard>
 
           <ChartCard
@@ -73,12 +79,26 @@ export const TrendsSection = () => {
             total={sumBy(trends.series.photoEntriesCreated, (p) => p.count)}
           >
             <MiniLineChart
-              series={[{ values: trends.series.photoEntriesCreated.map((p) => p.count), color: theme.colors.purple02, fill: true }]}
+              series={[
+                {
+                  values: trends.series.photoEntriesCreated.map((p) => p.count),
+                  color: theme.colors.purple02,
+                  fill: true,
+                },
+              ]}
             />
           </ChartCard>
 
-          <ChartCard title='New users' icon={<MdGroup size={15} />} total={sumBy(trends.series.newUsers, (p) => p.count)}>
-            <MiniLineChart series={[{ values: trends.series.newUsers.map((p) => p.count), color: theme.colors.lightGreen, fill: true }]} />
+          <ChartCard
+            title='New users'
+            icon={<MdGroup size={15} />}
+            total={sumBy(trends.series.newUsers, (p) => p.count)}
+          >
+            <MiniLineChart
+              series={[
+                { values: trends.series.newUsers.map((p) => p.count), color: theme.colors.lightGreen, fill: true },
+              ]}
+            />
           </ChartCard>
 
           <ChartCard

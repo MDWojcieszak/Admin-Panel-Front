@@ -118,7 +118,10 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
   const saveSeo = useCallback(
     async (value: string) => {
       if (!blogPostsApi) return;
-      const list = value.split(',').map((k) => k.trim()).filter(Boolean);
+      const list = value
+        .split(',')
+        .map((k) => k.trim())
+        .filter(Boolean);
       try {
         await blogPostsApi.postControllerUpsertTranslation({
           id: p.postId,
@@ -166,7 +169,9 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
 
   const addAuthor = (userId: string) => {
     if (!userId || authors.some((a) => a.userId === userId)) return;
-    const role = authors.some((a) => a.role === BlogAuthorRole.Author) ? BlogAuthorRole.CoAuthor : BlogAuthorRole.Author;
+    const role = authors.some((a) => a.role === BlogAuthorRole.Author)
+      ? BlogAuthorRole.CoAuthor
+      : BlogAuthorRole.Author;
     saveAuthors([...authors, { userId, role }]);
   };
 
@@ -300,7 +305,10 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
                   <div key={a.userId} style={styles.authorRow}>
                     <div style={styles.authorTop}>
                       <span style={styles.authorEmail}>{userName(a.userId)}</span>
-                      <button style={styles.removeAuthor} onClick={() => saveAuthors(authors.filter((x) => x.userId !== a.userId))}>
+                      <button
+                        style={styles.removeAuthor}
+                        onClick={() => saveAuthors(authors.filter((x) => x.userId !== a.userId))}
+                      >
                         <MdClose size={14} />
                       </button>
                     </div>
@@ -310,7 +318,9 @@ export const PostSettingsPanel = (p: PostSettingsPanelProps) => {
                           key={r}
                           className={`blog-chip sm${a.role === r ? ' is-active' : ''}`}
                           onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => saveAuthors(authors.map((x) => (x.userId === a.userId ? { ...x, role: r } : x)))}
+                          onClick={() =>
+                            saveAuthors(authors.map((x) => (x.userId === a.userId ? { ...x, role: r } : x)))
+                          }
                         >
                           {titleCase(r)}
                         </button>

@@ -126,9 +126,7 @@ export const GenerateTokenModal = (p: GenerateTokenModalProps) => {
           />
         </div>
 
-        {expires ? (
-          <DateInput name='expiresAt' label='Expires at' description='Token expiry date' />
-        ) : null}
+        {expires ? <DateInput name='expiresAt' label='Expires at' description='Token expiry date' /> : null}
 
         <div style={styles.actions}>
           <Button label='Cancel' variant='secondary' onClick={() => p.handleClose?.()} />

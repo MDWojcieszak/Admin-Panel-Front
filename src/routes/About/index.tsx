@@ -6,9 +6,21 @@ import { CenteredCard } from '~/components/CenteredCard';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 const FEATURES: { icon: ReactNode; title: string; text: string }[] = [
-  { icon: <FaServer size={18} />, title: 'Servers', text: 'Power, live process terminals, commands, settings & transfers.' },
-  { icon: <BsImages size={18} />, title: 'Photography', text: 'Plan astro, work and general photo sessions and folders.' },
-  { icon: <MdGroup size={20} />, title: 'Users & Access', text: 'Permission groups, sessions and fine-grained gating.' },
+  {
+    icon: <FaServer size={18} />,
+    title: 'Servers',
+    text: 'Power, live process terminals, commands, settings & transfers.',
+  },
+  {
+    icon: <BsImages size={18} />,
+    title: 'Photography',
+    text: 'Plan astro, work and general photo sessions and folders.',
+  },
+  {
+    icon: <MdGroup size={20} />,
+    title: 'Users & Access',
+    text: 'Permission groups, sessions and fine-grained gating.',
+  },
   { icon: <MdSpaceDashboard size={20} />, title: 'Dashboard', text: 'Overview, gallery insights and 7/30-day trends.' },
 ];
 
@@ -19,7 +31,10 @@ export const About = () => {
   const facts: { icon: ReactNode; text: string }[] = [
     { icon: <MdBolt size={15} color={theme.colors.yellow} />, text: 'Live logs & status stream over WebSockets' },
     { icon: <MdLock size={14} color={theme.colors.lightGreen} />, text: 'Permission-based access, OWNER bypasses all' },
-    { icon: <BsStars size={14} color={theme.colors.purple02} />, text: 'Astro sessions — deep-sky or just the open sky' },
+    {
+      icon: <BsStars size={14} color={theme.colors.purple02} />,
+      text: 'Astro sessions — deep-sky or just the open sky',
+    },
     { icon: <MdDarkMode size={15} color={theme.colors.blue04} />, text: 'Glassy dark UI, easy on the eyes' },
     { icon: <MdKeyboard size={16} color={theme.colors.blue} />, text: 'Fast, single-page, no full reloads' },
   ];

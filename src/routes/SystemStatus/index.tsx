@@ -51,7 +51,13 @@ export const SystemStatus = () => {
         <div style={styles.errorBox}>Couldn’t load system status. Try refreshing.</div>
       ) : data ? (
         <>
-          <div style={{ ...styles.aggregate, borderColor: aggregateColor, backgroundColor: aggregateColor + theme.colorOpacity(0.1) }}>
+          <div
+            style={{
+              ...styles.aggregate,
+              borderColor: aggregateColor,
+              backgroundColor: aggregateColor + theme.colorOpacity(0.1),
+            }}
+          >
             <PingDot color={aggregateColor} pulse={data.status === 'ok'} size={14} />
             <div style={styles.aggregateText}>
               <span style={{ ...styles.aggregateLabel, color: aggregateColor }}>{aggregate.label}</span>
@@ -75,7 +81,13 @@ export const SystemStatus = () => {
               return (
                 <div key={check.name} style={styles.tile}>
                   <div style={styles.tileTop}>
-                    <div style={{ ...styles.iconWrap, color: statusColor, backgroundColor: statusColor + theme.colorOpacity(0.12) }}>
+                    <div
+                      style={{
+                        ...styles.iconWrap,
+                        color: statusColor,
+                        backgroundColor: statusColor + theme.colorOpacity(0.12),
+                      }}
+                    >
                       {meta.icon}
                     </div>
                     <div style={styles.tileHead}>

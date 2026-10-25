@@ -76,7 +76,9 @@ export const MediaPanel = ({ open, activeLabel, onClose, onPick }: MediaPanelPro
       </button>
 
       <span style={styles.hint}>
-        {activeLabel ? `Click an image to add it to the ${activeLabel} block.` : 'Select a media block, then click an image.'}
+        {activeLabel
+          ? `Click an image to add it to the ${activeLabel} block.`
+          : 'Select a media block, then click an image.'}
       </span>
 
       <div style={styles.gridWrap}>

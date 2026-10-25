@@ -20,6 +20,7 @@ import {
   DefaultApi,
   DeployApi,
   ProjectsApi,
+  DocumentsApi,
   TasksApi,
   FileApi,
   GalleriesApi,
@@ -58,6 +59,7 @@ type ApiContextType = {
   defaultApi: DefaultApi | false;
   deployApi: DeployApi | false;
   projectsApi: ProjectsApi | false;
+  documentsApi: DocumentsApi | false;
   tasksApi: TasksApi | false;
   dashboardApi: DashboardApi | false;
   blogPostsApi: BlogPostsApi | false;

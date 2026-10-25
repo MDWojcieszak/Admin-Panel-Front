@@ -52,7 +52,11 @@ export const GlobalComments = ({ postId }: GlobalCommentsProps) => {
   const saveEdit = async () => {
     if (!blogCommentsApi || !editing || !editing.body.trim()) return;
     try {
-      await blogCommentsApi.commentControllerPatch({ postId, commentId: editing.id, patchCommentDto: { body: editing.body.trim() } });
+      await blogCommentsApi.commentControllerPatch({
+        postId,
+        commentId: editing.id,
+        patchCommentDto: { body: editing.body.trim() },
+      });
       setEditing(null);
       await load();
     } catch (e) {
@@ -157,8 +161,23 @@ const useStyles = mkUseStyles((t) => ({
   time: { fontSize: 11, color: t.colors.dark05 },
   actions: { flexDirection: 'row', gap: t.spacing.m, marginLeft: 'auto' },
   body: { fontSize: 13, whiteSpace: 'pre-wrap', color: t.colors.white + t.colorOpacity(0.9) },
-  linkBtn: { border: 0, background: 'transparent', color: t.colors.dark05, cursor: 'pointer', fontSize: 11, padding: 0 },
-  linkBtnPrimary: { border: 0, background: 'transparent', color: t.colors.blue04, cursor: 'pointer', fontSize: 11, padding: 0, fontWeight: 700 },
+  linkBtn: {
+    border: 0,
+    background: 'transparent',
+    color: t.colors.dark05,
+    cursor: 'pointer',
+    fontSize: 11,
+    padding: 0,
+  },
+  linkBtnPrimary: {
+    border: 0,
+    background: 'transparent',
+    color: t.colors.blue04,
+    cursor: 'pointer',
+    fontSize: 11,
+    padding: 0,
+    fontWeight: 700,
+  },
   editBox: { gap: t.spacing.xs, marginTop: t.spacing.xs },
   editActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: t.spacing.m },
   composer: {

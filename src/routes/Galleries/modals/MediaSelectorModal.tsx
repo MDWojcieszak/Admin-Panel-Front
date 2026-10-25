@@ -106,7 +106,10 @@ export const MediaSelectorModal = (p: MediaSelectorModalProps) => {
   return (
     <div style={styles.container}>
       <div style={styles.tabs}>
-        <div style={{ ...styles.tab, ...(tab === 'library' ? styles.tabActive : {}) }} onClick={() => setTab('library')}>
+        <div
+          style={{ ...styles.tab, ...(tab === 'library' ? styles.tabActive : {}) }}
+          onClick={() => setTab('library')}
+        >
           Library
         </div>
         <div style={{ ...styles.tab, ...(tab === 'upload' ? styles.tabActive : {}) }} onClick={() => setTab('upload')}>
@@ -119,7 +122,9 @@ export const MediaSelectorModal = (p: MediaSelectorModalProps) => {
           <div style={styles.libraryHead}>
             <Switch checked={unassignedOnly} onChange={setUnassignedOnly} label='Unassigned only' />
             <span style={styles.count}>
-              {selected.size ? `${selected.size} selected` : `${images.length}${total > images.length ? ` / ${total}` : ''} images`}
+              {selected.size
+                ? `${selected.size} selected`
+                : `${images.length}${total > images.length ? ` / ${total}` : ''} images`}
             </span>
           </div>
 
@@ -157,7 +162,11 @@ export const MediaSelectorModal = (p: MediaSelectorModalProps) => {
                       onClick={() => !already && toggle(img.imageId)}
                       title={already ? 'Already in this gallery' : undefined}
                     >
-                      {url ? <img src={url} alt='' style={styles.img} loading='lazy' /> : <div style={styles.imgEmpty} />}
+                      {url ? (
+                        <img src={url} alt='' style={styles.img} loading='lazy' />
+                      ) : (
+                        <div style={styles.imgEmpty} />
+                      )}
                       {already ? <div style={styles.disabledOverlay} /> : null}
                       {already ? (
                         <div style={styles.flag}>
@@ -187,7 +196,12 @@ export const MediaSelectorModal = (p: MediaSelectorModalProps) => {
           </div>
 
           {images.length > 0 && images.length < total ? (
-            <Button label='Load more' variant='secondary' onClick={() => load(images.length, false)} loading={loading} />
+            <Button
+              label='Load more'
+              variant='secondary'
+              onClick={() => load(images.length, false)}
+              loading={loading}
+            />
           ) : null}
 
           <div style={styles.actions}>
@@ -217,7 +231,12 @@ export const MediaSelectorModal = (p: MediaSelectorModalProps) => {
           </div>
           <div style={styles.actions}>
             <Button label='Cancel' variant='secondary' onClick={() => p.handleClose?.()} />
-            <Button label='Choose files' icon={<FiUpload size={14} />} onClick={() => fileInputRef.current?.click()} loading={busy} />
+            <Button
+              label='Choose files'
+              icon={<FiUpload size={14} />}
+              onClick={() => fileInputRef.current?.click()}
+              loading={busy}
+            />
           </div>
         </div>
       )}

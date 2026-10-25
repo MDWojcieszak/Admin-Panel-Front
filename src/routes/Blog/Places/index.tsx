@@ -82,7 +82,11 @@ export const BlogPlaces = () => {
             />
           </div>
           {canManage ? (
-            <Button label='New place' icon={<FaPlus />} onClick={() => editor.show({ locale, canManage, poi: undefined })} />
+            <Button
+              label='New place'
+              icon={<FaPlus />}
+              onClick={() => editor.show({ locale, canManage, poi: undefined })}
+            />
           ) : null}
         </div>
       </div>
@@ -100,7 +104,11 @@ export const BlogPlaces = () => {
       <div style={styles.listWrap}>
         <Scrollbar style={styles.scroll}>
           {!pois ? null : pois.length === 0 ? (
-            <EmptyState icon={<MdPlace size={26} color={theme.colors.blue04} />} title='No places yet' description='Add a point of interest to reference it from posts.' />
+            <EmptyState
+              icon={<MdPlace size={26} color={theme.colors.blue04} />}
+              title='No places yet'
+              description='Add a point of interest to reference it from posts.'
+            />
           ) : (
             <div style={styles.list}>
               {pois.map((poi) => (
@@ -119,7 +127,11 @@ export const BlogPlaces = () => {
                   <Badge label={poi.status} tone={statusTone(poi.status)} />
                   {canManage ? (
                     <div style={styles.actions}>
-                      <button style={styles.iconBtn} title='Edit' onClick={() => editor.show({ poi, locale, canManage })}>
+                      <button
+                        style={styles.iconBtn}
+                        title='Edit'
+                        onClick={() => editor.show({ poi, locale, canManage })}
+                      >
                         <MdEdit size={18} color={theme.colors.blue04} />
                       </button>
                       <button style={styles.iconBtn} title='Delete' onClick={() => handleDelete(poi.id)}>

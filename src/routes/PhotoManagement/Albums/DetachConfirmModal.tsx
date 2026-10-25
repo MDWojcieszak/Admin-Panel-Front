@@ -35,7 +35,11 @@ export const DetachConfirmModal = (p: DetachConfirmModalProps) => {
       </span>
 
       <div style={styles.toggleRow}>
-        <Switch checked={removeAssets} onChange={setRemoveAssets} label='Also remove these photos from the Immich album' />
+        <Switch
+          checked={removeAssets}
+          onChange={setRemoveAssets}
+          label='Also remove these photos from the Immich album'
+        />
       </div>
       <span style={styles.description}>
         {removeAssets

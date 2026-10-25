@@ -51,7 +51,11 @@ const serializeInline = (nodes: unknown): string => {
     .join('');
 };
 
-const serializeBlock = (b: { type: string; props?: { level?: number; checked?: boolean }; content?: unknown }): string => {
+const serializeBlock = (b: {
+  type: string;
+  props?: { level?: number; checked?: boolean };
+  content?: unknown;
+}): string => {
   const c = serializeInline(b.content);
   switch (b.type) {
     case 'heading':
@@ -142,7 +146,9 @@ export const parseInline = (text: string, styles: Styles = {}): Inline[] => {
         const urlEnd = text.indexOf(')', close + 1);
         if (urlEnd !== -1) {
           flush();
-          const content = parseInline(text.slice(i + 1, close), styles).filter((n): n is InlineText => n.type === 'text');
+          const content = parseInline(text.slice(i + 1, close), styles).filter(
+            (n): n is InlineText => n.type === 'text',
+          );
           nodes.push({ type: 'link', href: text.slice(close + 2, urlEnd), content });
           i = urlEnd + 1;
           continue;
@@ -230,8 +236,10 @@ export const htmlToMarkdown = (html: string): string => {
     const tag = el.tagName.toLowerCase();
     if (/^h[1-3]$/.test(tag)) lines.push(`${'#'.repeat(Number(tag[1]))} ${inlineHtmlToMarkdown(el)}`);
     else if (tag === 'blockquote') lines.push(`> ${inlineHtmlToMarkdown(el)}`);
-    else if (tag === 'ul') el.querySelectorAll(':scope > li').forEach((li) => lines.push(`- ${inlineHtmlToMarkdown(li)}`));
-    else if (tag === 'ol') el.querySelectorAll(':scope > li').forEach((li) => lines.push(`1. ${inlineHtmlToMarkdown(li)}`));
+    else if (tag === 'ul')
+      el.querySelectorAll(':scope > li').forEach((li) => lines.push(`- ${inlineHtmlToMarkdown(li)}`));
+    else if (tag === 'ol')
+      el.querySelectorAll(':scope > li').forEach((li) => lines.push(`1. ${inlineHtmlToMarkdown(li)}`));
     else lines.push(inlineHtmlToMarkdown(el));
   });
   return lines.filter((l) => l.trim() !== '').join('\n\n');
@@ -285,7 +293,11 @@ export const markdownToBlocks = (md: string): BlogPartialBlock[] => {
     }
     let m: RegExpMatchArray | null;
     if ((m = line.match(/^(#{1,3})\s+(.*)$/))) {
-      blocks.push({ type: 'heading', props: { level: m[1].length as 1 | 2 | 3 }, content: parseInline(m[2]) } as BlogPartialBlock);
+      blocks.push({
+        type: 'heading',
+        props: { level: m[1].length as 1 | 2 | 3 },
+        content: parseInline(m[2]),
+      } as BlogPartialBlock);
       i++;
     } else if (line.match(/^>\s?/)) {
       const parts: string[] = [];
@@ -295,7 +307,11 @@ export const markdownToBlocks = (md: string): BlogPartialBlock[] => {
       }
       blocks.push({ type: 'quote', content: parseInline(parts.join('\n')) } as BlogPartialBlock);
     } else if ((m = line.match(/^[-*]\s+\[([ xX])\]\s+(.*)$/))) {
-      blocks.push({ type: 'checkListItem', props: { checked: m[1].toLowerCase() === 'x' }, content: parseInline(m[2]) } as BlogPartialBlock);
+      blocks.push({
+        type: 'checkListItem',
+        props: { checked: m[1].toLowerCase() === 'x' },
+        content: parseInline(m[2]),
+      } as BlogPartialBlock);
       i++;
     } else if ((m = line.match(/^[-*]\s+(.*)$/))) {
       blocks.push({ type: 'bulletListItem', content: parseInline(m[1]) } as BlogPartialBlock);

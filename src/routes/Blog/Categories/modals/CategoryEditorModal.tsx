@@ -68,7 +68,12 @@ export const CategoryEditorModal = (p: CategoryEditorModalProps) => {
       if (isEdit && p.category) {
         await blogCategoriesApi.categoryControllerPatch({
           id: p.category.id,
-          patchBlogCategoryDto: { key: isSystem ? undefined : data.key, icon: data.icon || null, color: color || null, order },
+          patchBlogCategoryDto: {
+            key: isSystem ? undefined : data.key,
+            icon: data.icon || null,
+            color: color || null,
+            order,
+          },
         });
       } else {
         const res = await blogCategoriesApi.categoryControllerCreate({
@@ -111,7 +116,12 @@ export const CategoryEditorModal = (p: CategoryEditorModalProps) => {
         {isSystem ? (
           <LockedField label='Key' value={p.category?.key} hint='System category — key is locked' />
         ) : (
-          <Input name='key' label='Key' description='Canonical, language-neutral key (e.g. food)' disableAutofill={false} />
+          <Input
+            name='key'
+            label='Key'
+            description='Canonical, language-neutral key (e.g. food)'
+            disableAutofill={false}
+          />
         )}
 
         {/* Localized label with in-modal language tabs */}
@@ -148,12 +158,23 @@ export const CategoryEditorModal = (p: CategoryEditorModalProps) => {
         </div>
 
         <div style={styles.row}>
-          <Input name='icon' label='Icon' description='Optional icon name' style={styles.flex} disableAutofill={false} />
+          <Input
+            name='icon'
+            label='Icon'
+            description='Optional icon name'
+            style={styles.flex}
+            disableAutofill={false}
+          />
           <Input name='order' label='Order' description='Sort order' type='number' style={styles.flex} />
         </div>
         <div style={styles.colorRow}>
           <span style={styles.colorLabel}>Color</span>
-          <input type='color' value={color || '#6b7686'} onChange={(e) => setColor(e.target.value)} style={styles.colorInput} />
+          <input
+            type='color'
+            value={color || '#6b7686'}
+            onChange={(e) => setColor(e.target.value)}
+            style={styles.colorInput}
+          />
           <button type='button' style={styles.clearColor} onClick={() => setColor('')}>
             clear
           </button>

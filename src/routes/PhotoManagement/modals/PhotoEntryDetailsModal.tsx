@@ -807,7 +807,11 @@ const useStyles = mkUseStyles((t) => ({
   },
   tabBody: { gap: t.spacing.m, minWidth: 0 },
   editWrap: { display: 'flex' },
-  targets: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, 100%), 1fr))', gap: t.spacing.s },
+  targets: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, 100%), 1fr))',
+    gap: t.spacing.s,
+  },
   target: {
     flexDirection: 'row',
     alignItems: 'center',

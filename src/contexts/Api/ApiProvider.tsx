@@ -20,6 +20,7 @@ import {
   DefaultApi,
   DeployApi,
   ProjectsApi,
+  DocumentsApi,
   TasksApi,
   FileApi,
   GalleriesApi,
@@ -85,6 +86,7 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
   const defaultApi = useMemo(() => config && new DefaultApi(config), [config]);
   const deployApi = useMemo(() => config && new DeployApi(config), [config]);
   const projectsApi = useMemo(() => config && new ProjectsApi(config), [config]);
+  const documentsApi = useMemo(() => config && new DocumentsApi(config), [config]);
   const tasksApi = useMemo(() => config && new TasksApi(config), [config]);
   const dashboardApi = useMemo(() => config && new DashboardApi(config), [config]);
   const blogPostsApi = useMemo(() => config && new BlogPostsApi(config), [config]);
@@ -124,6 +126,7 @@ export const ApiProvider = ({ children }: ApiProviderProps) => {
         defaultApi,
         deployApi,
         projectsApi,
+        documentsApi,
         tasksApi,
         dashboardApi,
         blogPostsApi,

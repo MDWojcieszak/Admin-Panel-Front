@@ -43,7 +43,13 @@ export const EmptyAlbumModal = (p: EmptyAlbumModalProps) => {
   return (
     <div style={styles.container}>
       <span style={styles.hint}>Creates an empty Immich album. You can attach photo entries to it afterwards.</span>
-      <Input name='albumName' label='Album name' description='Name of the new album' type='text' control={formMethods.control} />
+      <Input
+        name='albumName'
+        label='Album name'
+        description='Name of the new album'
+        type='text'
+        control={formMethods.control}
+      />
       <div style={styles.actions}>
         <Button label='Cancel' variant='secondary' onClick={() => p.handleClose?.()} />
         <Button label='Create album' onClick={formMethods.handleSubmit(submit)} loading={loading} />

@@ -27,8 +27,7 @@ export const useDashboard = () => {
       dashboardApi.dashboardControllerGetGallery(),
     ]).then((results) => {
       if (results[0].status === 'fulfilled') setOverview(results[0].value.data);
-      else if ((results[0].reason as { response?: { status?: number } })?.response?.status === 403)
-        setForbidden(true);
+      else if ((results[0].reason as { response?: { status?: number } })?.response?.status === 403) setForbidden(true);
       if (results[1].status === 'fulfilled') setGallery(results[1].value.data);
       setLoading(false);
     });

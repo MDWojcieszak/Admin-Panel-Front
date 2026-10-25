@@ -117,7 +117,11 @@ export const GroupsPanel = () => {
       <div style={styles.toolbar}>
         <h2 style={styles.title}>Permission groups</h2>
         {canManage ? (
-          <Button label='Create group' icon={<FaPlus />} onClick={() => editorModal.show({ canManage, group: undefined })} />
+          <Button
+            label='Create group'
+            icon={<FaPlus />}
+            onClick={() => editorModal.show({ canManage, group: undefined })}
+          />
         ) : null}
       </div>
       <Table table={table} hidePagination />

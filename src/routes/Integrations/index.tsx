@@ -164,64 +164,77 @@ export const Integrations = () => {
       <div style={styles.content}>
         <h2 style={styles.heading}>Integrations</h2>
 
-      <ConnectedApps />
+        <ConnectedApps />
 
-      {!canReadServices ? null : (
-        <>
-      <ImmichCard
-        status={immichStatusQuery.data}
-        loading={immichStatusQuery.loading}
-        checking={immichStatusQuery.loading}
-        canManage={canManage}
-        onConnect={openImmichConfig}
-        onCheck={() => immichStatusQuery.reload()}
-        onDisconnect={disconnectImmich}
-      />
+        {!canReadServices ? null : (
+          <>
+            <ImmichCard
+              status={immichStatusQuery.data}
+              loading={immichStatusQuery.loading}
+              checking={immichStatusQuery.loading}
+              canManage={canManage}
+              onConnect={openImmichConfig}
+              onCheck={() => immichStatusQuery.reload()}
+              onDisconnect={disconnectImmich}
+            />
 
-      {can('photoEntry.read') && immichStatusQuery.data?.connected ? <ImmichLibraries /> : null}
+            {can('photoEntry.read') && immichStatusQuery.data?.connected ? <ImmichLibraries /> : null}
 
-      <div style={styles.block}>
-        <div style={styles.blockHeader}>
-          <span style={styles.blockTitle}>Connected services</span>
-          {canManage ? (
-            <Button label='Add service token' variant='secondary' icon={<FiPlus size={14} />} onClick={openServiceToken} />
-          ) : null}
-        </div>
+            <div style={styles.block}>
+              <div style={styles.blockHeader}>
+                <span style={styles.blockTitle}>Connected services</span>
+                {canManage ? (
+                  <Button
+                    label='Add service token'
+                    variant='secondary'
+                    icon={<FiPlus size={14} />}
+                    onClick={openServiceToken}
+                  />
+                ) : null}
+              </div>
 
-        {tokensQuery.loading && !tokensQuery.data ? (
-          <Loader />
-        ) : serviceTokens.length === 0 ? (
-          <EmptyState
-            title='No service tokens'
-            description='Connect Immich above, or add a token for another service.'
-          />
-        ) : (
-          <div style={styles.tokenList}>
-            {serviceTokens.map((token) =>
-              renderTokenRow(token, { hideDelete: token.service === ConnectedServiceType.Immich }),
-            )}
-          </div>
+              {tokensQuery.loading && !tokensQuery.data ? (
+                <Loader />
+              ) : serviceTokens.length === 0 ? (
+                <EmptyState
+                  title='No service tokens'
+                  description='Connect Immich above, or add a token for another service.'
+                />
+              ) : (
+                <div style={styles.tokenList}>
+                  {serviceTokens.map((token) =>
+                    renderTokenRow(token, { hideDelete: token.service === ConnectedServiceType.Immich }),
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div style={styles.block}>
+              <div style={styles.blockHeader}>
+                <span style={styles.blockTitle}>Personal access tokens</span>
+                {canManage ? (
+                  <Button
+                    label='Generate token'
+                    variant='secondary'
+                    icon={<FiKey size={14} />}
+                    onClick={openGenerateToken}
+                  />
+                ) : null}
+              </div>
+
+              {tokensQuery.loading && !tokensQuery.data ? (
+                <Loader />
+              ) : personalTokens.length === 0 ? (
+                <EmptyState
+                  title='No personal tokens'
+                  description='Generate a write-once token for scripts or integrations.'
+                />
+              ) : (
+                <div style={styles.tokenList}>{personalTokens.map((token) => renderTokenRow(token))}</div>
+              )}
+            </div>
+          </>
         )}
-      </div>
-
-      <div style={styles.block}>
-        <div style={styles.blockHeader}>
-          <span style={styles.blockTitle}>Personal access tokens</span>
-          {canManage ? (
-            <Button label='Generate token' variant='secondary' icon={<FiKey size={14} />} onClick={openGenerateToken} />
-          ) : null}
-        </div>
-
-        {tokensQuery.loading && !tokensQuery.data ? (
-          <Loader />
-        ) : personalTokens.length === 0 ? (
-          <EmptyState title='No personal tokens' description='Generate a write-once token for scripts or integrations.' />
-        ) : (
-          <div style={styles.tokenList}>{personalTokens.map((token) => renderTokenRow(token))}</div>
-        )}
-        </div>
-        </>
-      )}
       </div>
     </div>
   );

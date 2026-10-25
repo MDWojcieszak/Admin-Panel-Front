@@ -34,7 +34,10 @@ export const CommandEditModal = (p: CommandEditModalProps) => {
     if (!serverApi || !p.commandId || !canManage) return;
     setSaving(true);
     try {
-      await serverApi.serverCommandsControllerPutCommand({ id: p.commandId, patchServerCommandDto: { name: data.name } });
+      await serverApi.serverCommandsControllerPutCommand({
+        id: p.commandId,
+        patchServerCommandDto: { name: data.name },
+      });
       p.handleClose?.();
     } catch (e) {
       console.error('Error renaming command:', e);
@@ -53,12 +56,7 @@ export const CommandEditModal = (p: CommandEditModalProps) => {
           type='text'
           disableAutofill={false}
         />
-        <Button
-          label='Save'
-          onClick={formMethods.handleSubmit(handleSave)}
-          loading={saving}
-          disabled={!canManage}
-        />
+        <Button label='Save' onClick={formMethods.handleSubmit(handleSave)} loading={saving} disabled={!canManage} />
       </div>
     </FormProvider>
   );

@@ -52,8 +52,8 @@ export const BlogHome = () => {
           <Scrollbar style={styles.scroll}>
             <div style={styles.body}>
               <p style={styles.intro}>
-                The home page shows a fixed list of posts: pinned posts hold their slot, the remaining slots fill with the
-                newest published posts.
+                The home page shows a fixed list of posts: pinned posts hold their slot, the remaining slots fill with
+                the newest published posts.
               </p>
 
               {/* Post count */}
@@ -184,7 +184,15 @@ const useStyles = mkUseStyles((t) => ({
     fontWeight: 700,
     flexShrink: 0,
   },
-  slug: { flex: 1, minWidth: 0, fontSize: 13, fontFamily: 'monospace', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+  slug: {
+    flex: 1,
+    minWidth: 0,
+    fontSize: 13,
+    fontFamily: 'monospace',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
   pinActions: { flexDirection: 'row', gap: 2, flexShrink: 0 },
   iconBtn: {
     width: 28,

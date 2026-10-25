@@ -108,7 +108,13 @@ export const CountryEditorModal = (p: CountryEditorModalProps) => {
     <FormProvider {...formMethods}>
       <div style={styles.container}>
         <div style={styles.row}>
-          <Input name='slug' label='Slug' description='URL key, unique (e.g. iceland)' style={styles.flex} disableAutofill={false} />
+          <Input
+            name='slug'
+            label='Slug'
+            description='URL key, unique (e.g. iceland)'
+            style={styles.flex}
+            disableAutofill={false}
+          />
           <Input name='code' label='Code' description='ISO (optional)' style={styles.flex} disableAutofill={false} />
         </div>
 

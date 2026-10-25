@@ -74,8 +74,8 @@ export const ImmichConfigModal = (p: ImmichConfigModalProps) => {
     <FormProvider {...formMethods}>
       <div style={styles.container}>
         <span style={styles.hint}>
-          Get the API key from Immich → Account Settings → API Keys. The key is encrypted and never shown again,
-          so it must be re-entered whenever you change the URL.
+          Get the API key from Immich → Account Settings → API Keys. The key is encrypted and never shown again, so it
+          must be re-entered whenever you change the URL.
         </span>
 
         <Input name='baseUrl' label='Server URL' description='e.g. https://photo.example.com/api' type='text' />

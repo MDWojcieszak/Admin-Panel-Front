@@ -36,7 +36,12 @@ type PhotoEntryLanesProps = {
  * carry the counts — and a card moves through its own "Move" button, offering
  * exactly the lanes the board would let it be dropped on.
  */
-export const PhotoEntryLanes = ({ entries, onRequestColumnChange, onForbiddenMove, onCardClick }: PhotoEntryLanesProps) => {
+export const PhotoEntryLanes = ({
+  entries,
+  onRequestColumnChange,
+  onForbiddenMove,
+  onCardClick,
+}: PhotoEntryLanesProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const [lane, setLane] = useState<KanbanColumnId>('AFTER_SHOOT');
@@ -291,7 +296,11 @@ const useStyles = mkUseStyles((t) => ({
     fontWeight: 600,
     cursor: 'pointer',
   },
-  moveButtonOn: { color: t.colors.white, borderColor: t.colors.blue, backgroundColor: t.colors.blue + t.colorOpacity(0.18) },
+  moveButtonOn: {
+    color: t.colors.white,
+    borderColor: t.colors.blue,
+    backgroundColor: t.colors.blue + t.colorOpacity(0.18),
+  },
   meta: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, fontSize: 13, color: t.colors.dark05 },
   row: { display: 'flex', flexDirection: 'row', alignItems: 'center' },
   ellipsis: { whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0 },

@@ -1,6 +1,14 @@
 import { CSSProperties, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { MdArrowBack, MdChatBubbleOutline, MdCheck, MdDarkMode, MdLightMode, MdPermMedia, MdTune } from 'react-icons/md';
+import {
+  MdArrowBack,
+  MdChatBubbleOutline,
+  MdCheck,
+  MdDarkMode,
+  MdLightMode,
+  MdPermMedia,
+  MdTune,
+} from 'react-icons/md';
 import { BlogPostStatus } from '~/api/api';
 import { ThemeProvider } from '~/contexts/Theme/ThemeProvider';
 import { useApi } from '~/hooks/useApi';
@@ -111,7 +119,9 @@ const BlogPostEditorInner = ({ mode, setMode }: { mode: ThemeMode; setMode: (m: 
   };
 
   return (
-    <div style={{ ...styles.screen, ['--blog-fg']: mode === 'light' ? '26, 29, 33' : '255, 255, 255' } as CSSProperties}>
+    <div
+      style={{ ...styles.screen, ['--blog-fg']: mode === 'light' ? '26, 29, 33' : '255, 255, 255' } as CSSProperties}
+    >
       <div style={styles.topbar}>
         <div style={styles.topLeft}>
           <button style={styles.iconBtn} title='Back to posts' onClick={() => navigate('/blog')}>
@@ -263,7 +273,9 @@ const BlogPostEditorInner = ({ mode, setMode }: { mode: ThemeMode; setMode: (m: 
             ) : (
               <>
                 {draft.untranslated ? (
-                  <span style={styles.untranslated}>Showing default language — not translated to {locale.toUpperCase()} yet.</span>
+                  <span style={styles.untranslated}>
+                    Showing default language — not translated to {locale.toUpperCase()} yet.
+                  </span>
                 ) : null}
                 <textarea
                   style={styles.titleInput}

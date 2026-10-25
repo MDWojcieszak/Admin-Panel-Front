@@ -27,7 +27,9 @@ const SOURCE_LABELS: Record<ImmichAlbumSource, string> = {
 };
 
 const immichError = (e: unknown, fallback: string): string =>
-  getApiErrorStatus(e) === 502 ? 'Immich is unreachable — check the integration configuration.' : getApiErrorMessage(e, fallback);
+  getApiErrorStatus(e) === 502
+    ? 'Immich is unreachable — check the integration configuration.'
+    : getApiErrorMessage(e, fallback);
 
 const formatDateTime = (value?: string | null): string => {
   if (!value) return '—';
@@ -109,7 +111,8 @@ export const ImmichAlbumsSection = ({ photoEntryId, onAddToAlbum }: ImmichAlbums
                   <FiExternalLink size={12} />
                 </a>
                 <span style={styles.rowMeta}>
-                  {SOURCE_LABELS[album.source]} · {album.lastAssetCount ?? 0} photos · synced {formatDateTime(album.lastSyncedAt)}
+                  {SOURCE_LABELS[album.source]} · {album.lastAssetCount ?? 0} photos · synced{' '}
+                  {formatDateTime(album.lastSyncedAt)}
                 </span>
               </div>
               {canManage ? (

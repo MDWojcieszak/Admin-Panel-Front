@@ -8,8 +8,7 @@ type PoiPickerProps = {
   onPick: (poiId: string, poiName: string) => void;
 };
 
-const poiLocation = (poi: PoiAdminResponse) =>
-  [poi.city, poi.region, poi.country].filter(Boolean).join(', ');
+const poiLocation = (poi: PoiAdminResponse) => [poi.city, poi.region, poi.country].filter(Boolean).join(', ');
 
 export const PoiPicker = ({ onPick }: PoiPickerProps) => {
   const styles = useStyles();

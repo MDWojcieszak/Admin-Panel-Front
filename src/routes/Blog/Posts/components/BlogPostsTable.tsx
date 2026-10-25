@@ -30,7 +30,17 @@ type BlogPostsTableProps = {
   actions: PostActionHandlers;
 };
 
-const IconButton = ({ title, color, onClick, children }: { title: string; color: string; onClick: () => void; children: ReactNode }) => (
+const IconButton = ({
+  title,
+  color,
+  onClick,
+  children,
+}: {
+  title: string;
+  color: string;
+  onClick: () => void;
+  children: ReactNode;
+}) => (
   <motion.button
     title={title}
     onClick={onClick}
@@ -140,7 +150,9 @@ export const BlogPostsTable = (p: BlogPostsTableProps) => {
       {
         header: 'Tier',
         accessorKey: 'accessTier',
-        cell: (info) => <Badge label={info.row.original.accessTier} tone={accessTierTone(info.row.original.accessTier)} />,
+        cell: (info) => (
+          <Badge label={info.row.original.accessTier} tone={accessTierTone(info.row.original.accessTier)} />
+        ),
         maxSize: 130,
       },
       {
@@ -183,5 +195,10 @@ export const BlogPostsTable = (p: BlogPostsTableProps) => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  return <Table table={table} emptyState={{ title: 'No posts yet', description: 'Create your first blog post to get started.' }} />;
+  return (
+    <Table
+      table={table}
+      emptyState={{ title: 'No posts yet', description: 'Create your first blog post to get started.' }}
+    />
+  );
 };

@@ -111,7 +111,15 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.blue,
     boxShadow: `0 0 0 2px ${t.colors.gray05}`,
   },
-  title: { flex: 1, minWidth: 0, fontSize: 18, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+  title: {
+    flex: 1,
+    minWidth: 0,
+    fontSize: 18,
+    fontWeight: 700,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
   logo: { width: 26, height: 26, objectFit: 'contain', opacity: 0.9 },
   tabs: {
     flexDirection: 'row',

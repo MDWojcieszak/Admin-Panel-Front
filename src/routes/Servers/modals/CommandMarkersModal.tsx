@@ -2,12 +2,7 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  CommandMatchType,
-  CommandRuntimeStatus,
-  CreateCommandProgressMarkerDto,
-  ProcessLogLevel,
-} from '~/api/api';
+import { CommandMatchType, CommandRuntimeStatus, CreateCommandProgressMarkerDto, ProcessLogLevel } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Input } from '~/components/Input';
 import { Loader } from '~/components/Loader';
@@ -161,8 +156,20 @@ export const CommandMarkersModal = (p: CommandMarkersModalProps) => {
             </div>
             <Input name='pattern' label='Pattern' description='Text or regex to match in the log line' />
             <div style={styles.row}>
-              <Input name='progress' label='Progress %' description='0–100 (optional)' type='number' style={styles.field} />
-              <Input name='order' label='Order' description='Sort order (optional)' type='number' style={styles.field} />
+              <Input
+                name='progress'
+                label='Progress %'
+                description='0–100 (optional)'
+                type='number'
+                style={styles.field}
+              />
+              <Input
+                name='order'
+                label='Order'
+                description='Sort order (optional)'
+                type='number'
+                style={styles.field}
+              />
             </div>
             <div style={styles.row}>
               <Select
@@ -172,7 +179,13 @@ export const CommandMarkersModal = (p: CommandMarkersModalProps) => {
                 options={runtimeStatusOptions}
                 style={styles.field}
               />
-              <Select name='level' label='Log level' description='Optional log level' options={levelOptions} style={styles.field} />
+              <Select
+                name='level'
+                label='Log level'
+                description='Optional log level'
+                options={levelOptions}
+                style={styles.field}
+              />
             </div>
             <div style={styles.row}>
               <Button

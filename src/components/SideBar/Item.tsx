@@ -3,7 +3,9 @@ import { mkUseStyles, useTheme } from '~/utils/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   MdArticle,
+  MdChecklist,
   MdCollections,
+  MdFolder,
   MdGroup,
   MdInbox,
   MdPhotoCamera,
@@ -55,6 +57,10 @@ export const Item = (p: SideBarItem) => {
         return <MdCollections {...iconProps} />;
       case MainNavigationRoute.INQUIRIES:
         return <MdInbox {...iconProps} />;
+      case MainNavigationRoute.PROJECTS:
+        return <MdChecklist {...iconProps} />;
+      case MainNavigationRoute.DOCUMENTS:
+        return <MdFolder {...iconProps} />;
       case MainNavigationRoute.BLOG:
         return <MdArticle {...iconProps} />;
       case MainNavigationRoute.ACCOUNTS:

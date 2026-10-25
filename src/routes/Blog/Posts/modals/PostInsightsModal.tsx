@@ -40,8 +40,18 @@ export const PostInsightsModal = (p: PostInsightsModalProps) => {
         { label: 'Views', value: data.viewCount, icon: <MdVisibility size={18} />, color: theme.colors.blue },
         { label: 'Unique', value: data.uniqueViewerCount, icon: <MdPeople size={18} />, color: theme.colors.blue04 },
         { label: 'Likes', value: data.likeCount, icon: <MdFavorite size={16} />, color: theme.colors.red },
-        { label: 'Helpful', value: data.helpfulCount, icon: <BsHandThumbsUp size={15} />, color: theme.colors.lightGreen },
-        { label: 'Not helpful', value: data.notHelpfulCount, icon: <BsHandThumbsDown size={15} />, color: theme.colors.yellow },
+        {
+          label: 'Helpful',
+          value: data.helpfulCount,
+          icon: <BsHandThumbsUp size={15} />,
+          color: theme.colors.lightGreen,
+        },
+        {
+          label: 'Not helpful',
+          value: data.notHelpfulCount,
+          icon: <BsHandThumbsDown size={15} />,
+          color: theme.colors.yellow,
+        },
       ]
     : [];
 

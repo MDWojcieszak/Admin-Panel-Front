@@ -148,7 +148,9 @@ export const PhotoEntryMonthAgenda = ({ entries, onEntryClick }: PhotoEntryMonth
                       style={{
                         ...styles.dot,
                         backgroundColor: state.planned ? 'transparent' : state.accent,
-                        border: `1px ${state.planned ? 'dashed' : 'solid'} ${state.planned ? state.border : state.accent}`,
+                        border: `1px ${state.planned ? 'dashed' : 'solid'} ${
+                          state.planned ? state.border : state.accent
+                        }`,
                       }}
                     />
                   );
@@ -177,7 +179,12 @@ export const PhotoEntryMonthAgenda = ({ entries, onEntryClick }: PhotoEntryMonth
           </span>
         ) : null}
         {selected ? (
-          <button type='button' aria-label='Show the whole month' style={styles.clear} onClick={() => setSelected(null)}>
+          <button
+            type='button'
+            aria-label='Show the whole month'
+            style={styles.clear}
+            onClick={() => setSelected(null)}
+          >
             <FiX size={15} />
           </button>
         ) : null}
@@ -204,9 +211,7 @@ export const PhotoEntryMonthAgenda = ({ entries, onEntryClick }: PhotoEntryMonth
                 }}
               >
                 <span style={styles.rowTop}>
-                  <span
-                    style={{ ...styles.rowName, textDecoration: state.cancelled ? 'line-through' : 'none' }}
-                  >
+                  <span style={{ ...styles.rowName, textDecoration: state.cancelled ? 'line-through' : 'none' }}>
                     {entry.name}
                   </span>
                   <EntryStatePill entry={entry} />
@@ -317,7 +322,14 @@ const useStyles = mkUseStyles((t) => ({
     flexShrink: 0,
   },
   agendaTitle: { flex: 1, fontSize: 15, fontWeight: 700, color: t.colors.white },
-  agendaMoon: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4, fontSize: 12, color: t.colors.dark05 },
+  agendaMoon: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    fontSize: 12,
+    color: t.colors.dark05,
+  },
   clear: {
     display: 'flex',
     alignItems: 'center',
@@ -348,5 +360,12 @@ const useStyles = mkUseStyles((t) => ({
   },
   rowTop: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: t.spacing.s },
   rowName: { flex: 1, minWidth: 0, fontSize: 14, fontWeight: 600, wordBreak: 'break-word' },
-  rowMeta: { display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 6, fontSize: 12, color: t.colors.dark05 },
+  rowMeta: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    fontSize: 12,
+    color: t.colors.dark05,
+  },
 }));

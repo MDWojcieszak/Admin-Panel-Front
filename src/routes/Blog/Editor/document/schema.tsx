@@ -141,13 +141,34 @@ const posAlign = (pos: string) => ({
 });
 
 /** Text overlay rendered on top of an image. */
-const OverlayLayer = ({ text, position, themeVal, backdrop }: { text: string; position: string; themeVal: string; backdrop: string }) => {
+const OverlayLayer = ({
+  text,
+  position,
+  themeVal,
+  backdrop,
+}: {
+  text: string;
+  position: string;
+  themeVal: string;
+  backdrop: string;
+}) => {
   if (!text) return null;
   const a = posAlign(position);
-  const layer: CSSProperties = { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: a.justifyContent, alignItems: a.alignItems, padding: 18, pointerEvents: 'none' };
+  const layer: CSSProperties = {
+    position: 'absolute',
+    inset: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: a.justifyContent,
+    alignItems: a.alignItems,
+    padding: 18,
+    pointerEvents: 'none',
+  };
   if (backdrop === BlogOverlayBackdrop.Scrim) layer.backgroundColor = 'rgba(0,0,0,0.35)';
   else if (backdrop === BlogOverlayBackdrop.Gradient)
-    layer.backgroundImage = `linear-gradient(${position.startsWith('TOP') ? 'to top' : 'to bottom'}, transparent 45%, rgba(0,0,0,0.65))`;
+    layer.backgroundImage = `linear-gradient(${
+      position.startsWith('TOP') ? 'to top' : 'to bottom'
+    }, transparent 45%, rgba(0,0,0,0.65))`;
   const dark = themeVal === BlogOverlayTheme.Dark;
   const glass = backdrop === BlogOverlayBackdrop.Glass;
   const textStyle: CSSProperties = {
@@ -162,7 +183,12 @@ const OverlayLayer = ({ text, position, themeVal, backdrop }: { text: string; po
     borderRadius: glass ? 8 : 0,
     backgroundColor: glass ? (dark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.28)') : 'transparent',
     backdropFilter: glass ? 'blur(8px)' : undefined,
-    textShadow: backdrop === BlogOverlayBackdrop.None ? (dark ? '0 1px 2px rgba(255,255,255,0.5)' : '0 1px 4px rgba(0,0,0,0.65)') : undefined,
+    textShadow:
+      backdrop === BlogOverlayBackdrop.None
+        ? dark
+          ? '0 1px 2px rgba(255,255,255,0.5)'
+          : '0 1px 4px rgba(0,0,0,0.65)'
+        : undefined,
   };
   return (
     <div style={layer}>
@@ -205,12 +231,27 @@ const BlogImage = createReactBlockSpec(
       const styles = useBlockStyles();
       const bridge = useBlogEditorBridge();
       const [open, setOpen] = useState(false);
-      const { imageId, aspectRatio, caption, alt, focalX, focalY, overlayText, overlayPosition, overlayTheme, overlayBackdrop } =
-        block.props;
+      const {
+        imageId,
+        aspectRatio,
+        caption,
+        alt,
+        focalX,
+        focalY,
+        overlayText,
+        overlayPosition,
+        overlayTheme,
+        overlayBackdrop,
+      } = block.props;
       const aspectCss = RATIOS.find((r) => r.value === aspectRatio)?.css;
       const setImage = (id: string) => editor.updateBlock(block, { props: { imageId: id } });
       const overlay = (
-        <OverlayLayer text={overlayText} position={overlayPosition} themeVal={overlayTheme} backdrop={overlayBackdrop} />
+        <OverlayLayer
+          text={overlayText}
+          position={overlayPosition}
+          themeVal={overlayTheme}
+          backdrop={overlayBackdrop}
+        />
       );
       const startFocalDrag = (e: ReactMouseEvent) => {
         e.preventDefault();
@@ -250,16 +291,32 @@ const BlogImage = createReactBlockSpec(
         </button>
       );
       return (
-        <div style={styles.mediaBlock} contentEditable={false}>          {imageId ? (
+        <div style={styles.mediaBlock} contentEditable={false}>
+          {' '}
+          {imageId ? (
             aspectCss ? (
               <div
-                style={{ ...styles.imageFrame, aspectRatio: aspectCss, position: 'relative', cursor: open ? 'move' : 'default' }}
+                style={{
+                  ...styles.imageFrame,
+                  aspectRatio: aspectCss,
+                  position: 'relative',
+                  cursor: open ? 'move' : 'default',
+                }}
                 title={open ? 'Drag to set the focal point (kept visible when cropped)' : undefined}
                 onMouseDown={open ? startFocalDrag : undefined}
               >
-                <MediaThumb imageId={imageId} res='cover' fit='cover' focalX={focalX} focalY={focalY} style={styles.fill} />
+                <MediaThumb
+                  imageId={imageId}
+                  res='cover'
+                  fit='cover'
+                  focalX={focalX}
+                  focalY={focalY}
+                  style={styles.fill}
+                />
                 {overlay}
-                {open ? <div style={{ ...styles.focalDot, left: `${focalX * 100}%`, top: `${focalY * 100}%` }} /> : null}
+                {open ? (
+                  <div style={{ ...styles.focalDot, left: `${focalX * 100}%`, top: `${focalY * 100}%` }} />
+                ) : null}
                 {gearBtn}
               </div>
             ) : (
@@ -290,7 +347,9 @@ const BlogImage = createReactBlockSpec(
                       <button
                         key={r.value}
                         type='button'
-                        className={`blog-ratio${(aspectRatio || BlogAspectRatio.Original) === r.value ? ' is-active' : ''}`}
+                        className={`blog-ratio${
+                          (aspectRatio || BlogAspectRatio.Original) === r.value ? ' is-active' : ''
+                        }`}
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => editor.updateBlock(block, { props: { aspectRatio: r.value } })}
                       >
@@ -351,19 +410,22 @@ const BlogImage = createReactBlockSpec(
                             {th === BlogOverlayTheme.Light ? 'Light' : 'Dark'}
                           </button>
                         ))}
-                        {[BlogOverlayBackdrop.None, BlogOverlayBackdrop.Scrim, BlogOverlayBackdrop.Gradient, BlogOverlayBackdrop.Glass].map(
-                          (bd) => (
-                            <button
-                              key={bd}
-                              type='button'
-                              className={`blog-ratio${overlayBackdrop === bd ? ' is-active' : ''}`}
-                              onMouseDown={(e) => e.preventDefault()}
-                              onClick={() => editor.updateBlock(block, { props: { overlayBackdrop: bd } })}
-                            >
-                              {bd.charAt(0) + bd.slice(1).toLowerCase()}
-                            </button>
-                          ),
-                        )}
+                        {[
+                          BlogOverlayBackdrop.None,
+                          BlogOverlayBackdrop.Scrim,
+                          BlogOverlayBackdrop.Gradient,
+                          BlogOverlayBackdrop.Glass,
+                        ].map((bd) => (
+                          <button
+                            key={bd}
+                            type='button'
+                            className={`blog-ratio${overlayBackdrop === bd ? ' is-active' : ''}`}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => editor.updateBlock(block, { props: { overlayBackdrop: bd } })}
+                          >
+                            {bd.charAt(0) + bd.slice(1).toLowerCase()}
+                          </button>
+                        ))}
                       </div>
                     </div>
                   ) : null}
@@ -398,7 +460,9 @@ const BlogGallery = createReactBlockSpec(
       const ids = parseIds(block.props.imageIds);
       const setIds = (next: string[]) => editor.updateBlock(block, { props: { imageIds: JSON.stringify(next) } });
       return (
-        <div style={styles.galleryBlock} contentEditable={false}>          <div style={styles.galleryGrid}>
+        <div style={styles.galleryBlock} contentEditable={false}>
+          {' '}
+          <div style={styles.galleryGrid}>
             {ids.map((id) => (
               <div key={id} style={styles.galleryTile}>
                 <MediaThumb imageId={id} style={styles.fill} />
@@ -420,7 +484,6 @@ const BlogGallery = createReactBlockSpec(
     },
   },
 )();
-
 
 const BlogEmbed = createReactBlockSpec(
   {
@@ -471,7 +534,9 @@ const BlogMap = createReactBlockSpec(
       const ids = parseIds(block.props.poiIds);
       const setIds = (next: string[]) => editor.updateBlock(block, { props: { poiIds: JSON.stringify(next) } });
       return (
-        <div style={styles.poiBlock} contentEditable={false}>          <span style={styles.poiBlockLabel}>Map — places</span>
+        <div style={styles.poiBlock} contentEditable={false}>
+          {' '}
+          <span style={styles.poiBlockLabel}>Map — places</span>
           <div style={styles.poiChips}>
             {ids.map((id) => (
               <PoiChip key={id} poiId={id} onRemove={() => setIds(ids.filter((x) => x !== id))} />
@@ -491,7 +556,9 @@ const BlogPlace = createReactBlockSpec(
       const styles = useBlockStyles();
       const { poiId } = block.props;
       return (
-        <div style={styles.poiBlock} contentEditable={false}>          <span style={styles.poiBlockLabel}>Place</span>
+        <div style={styles.poiBlock} contentEditable={false}>
+          {' '}
+          <span style={styles.poiBlockLabel}>Place</span>
           {poiId ? (
             <div style={styles.poiChips}>
               <PoiChip poiId={poiId} onRemove={() => editor.updateBlock(block, { props: { poiId: '' } })} />
@@ -506,7 +573,11 @@ const BlogPlace = createReactBlockSpec(
 )();
 
 const BlogCollection = createReactBlockSpec(
-  { type: 'blogCollection', propSchema: { sectionId: { default: '' }, collectionId: { default: '' } }, content: 'none' },
+  {
+    type: 'blogCollection',
+    propSchema: { sectionId: { default: '' }, collectionId: { default: '' } },
+    content: 'none',
+  },
   {
     render: ({ block, editor }) => {
       const styles = useBlockStyles();
@@ -515,7 +586,10 @@ const BlogCollection = createReactBlockSpec(
         <div style={styles.poiBlock} contentEditable={false}>
           <span style={styles.poiBlockLabel}>Collection</span>
           {collectionId ? (
-            <CollectionChip collectionId={collectionId} onRemove={() => editor.updateBlock(block, { props: { collectionId: '' } })} />
+            <CollectionChip
+              collectionId={collectionId}
+              onRemove={() => editor.updateBlock(block, { props: { collectionId: '' } })}
+            />
           ) : (
             <CollectionPicker onPick={(id) => editor.updateBlock(block, { props: { collectionId: id } })} />
           )}
@@ -549,7 +623,9 @@ const BlogCallout = createReactBlockSpec(
             backgroundColor: active.color + theme.colorOpacity(0.12),
             borderLeft: `3px solid ${active.color}`,
           }}
-        >          <div style={styles.calloutHeader} contentEditable={false}>
+        >
+          {' '}
+          <div style={styles.calloutHeader} contentEditable={false}>
             <span style={{ ...styles.calloutIcon, color: active.color }}>{active.icon}</span>
             <span style={{ ...styles.calloutVariantLabel, color: active.color }}>{active.value}</span>
             <div style={styles.calloutPills}>
@@ -559,7 +635,9 @@ const BlogCallout = createReactBlockSpec(
                   type='button'
                   title={v.value}
                   className={`blog-callout-pill${v.value === active.value ? ' is-active' : ''}`}
-                  style={{ ['--pill-color']: v.color, ['--pill-bg']: v.color + theme.colorOpacity(0.18) } as CSSProperties}
+                  style={
+                    { ['--pill-color']: v.color, ['--pill-bg']: v.color + theme.colorOpacity(0.18) } as CSSProperties
+                  }
                   onClick={() => editor.updateBlock(block, { props: { variant: v.value } })}
                 >
                   {v.icon}
@@ -674,7 +752,13 @@ const useBlockStyles = mkUseStyles((t) => ({
     padding: '2px 0',
   },
   overlaySection: { display: 'flex', flexDirection: 'column', gap: t.spacing.xs },
-  overlayControls: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: t.spacing.m },
+  overlayControls: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    gap: t.spacing.m,
+  },
   posGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2, width: 56, flexShrink: 0 },
   posCell: { width: 16, height: 16, padding: 0, borderRadius: 3 },
   overlayOpts: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 4 },
@@ -776,7 +860,13 @@ const useBlockStyles = mkUseStyles((t) => ({
   },
   galleryBlock: { padding: t.spacing.s },
   galleryGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: t.spacing.s },
-  galleryTile: { position: 'relative', aspectRatio: '1 / 1', borderRadius: t.borderRadius.default, overflow: 'hidden', backgroundColor: t.colors.gray05 },
+  galleryTile: {
+    position: 'relative',
+    aspectRatio: '1 / 1',
+    borderRadius: t.borderRadius.default,
+    overflow: 'hidden',
+    backgroundColor: t.colors.gray05,
+  },
   fill: { width: '100%', height: '100%' },
   tileRemove: {
     position: 'absolute',
@@ -949,7 +1039,12 @@ const useBlockStyles = mkUseStyles((t) => ({
     outline: 'none',
     fontSize: 14,
   },
-  poiBlock: { gap: t.spacing.s, padding: t.spacing.s, borderRadius: t.borderRadius.default, backgroundColor: t.colors.gray04 + t.colorOpacity(0.4) },
+  poiBlock: {
+    gap: t.spacing.s,
+    padding: t.spacing.s,
+    borderRadius: t.borderRadius.default,
+    backgroundColor: t.colors.gray04 + t.colorOpacity(0.4),
+  },
   poiBlockLabel: { fontSize: 11, fontWeight: 700, letterSpacing: 0.5, color: t.colors.blue04 },
   poiChips: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xs },
   poiChip: {
@@ -984,7 +1079,13 @@ const useBlockStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray04 + t.colorOpacity(0.6),
   },
   collectionInfo: { flex: 1, minWidth: 0, gap: 2 },
-  collectionTitle: { fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+  collectionTitle: {
+    fontSize: 14,
+    fontWeight: 600,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
   collectionMeta: { fontSize: 12, color: t.colors.dark05 },
   poiChipRemove: {
     width: 20,

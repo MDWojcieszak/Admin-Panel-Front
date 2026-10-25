@@ -27,7 +27,10 @@ export const useMarkers = (commandId?: string) => {
   const createMarker = useCallback(
     async (dto: CreateCommandProgressMarkerDto) => {
       if (!serverApi || !commandId) return;
-      await serverApi.serverCommandsControllerCreateProgressMarker({ id: commandId, createCommandProgressMarkerDto: dto });
+      await serverApi.serverCommandsControllerCreateProgressMarker({
+        id: commandId,
+        createCommandProgressMarkerDto: dto,
+      });
       await refresh();
     },
     [serverApi, commandId, refresh],

@@ -26,8 +26,14 @@ const numeric = z
 
 const Schema = z.object({
   name: z.string().min(1, 'Name is required'),
-  latitude: z.string().min(1, 'Latitude is required').refine((v) => !Number.isNaN(Number(v)), 'Must be a number'),
-  longitude: z.string().min(1, 'Longitude is required').refine((v) => !Number.isNaN(Number(v)), 'Must be a number'),
+  latitude: z
+    .string()
+    .min(1, 'Latitude is required')
+    .refine((v) => !Number.isNaN(Number(v)), 'Must be a number'),
+  longitude: z
+    .string()
+    .min(1, 'Longitude is required')
+    .refine((v) => !Number.isNaN(Number(v)), 'Must be a number'),
   address: z.string().optional(),
   countryId: z.string().optional(),
   region: z.string().optional(),
@@ -160,32 +166,57 @@ export const PoiEditorModal = (p: PoiEditorModalProps) => {
                 const match = countries.find(
                   (c) =>
                     (cc && c.code?.toUpperCase() === cc) ||
-                    (cn &&
-                      (c.slug.toLowerCase() === cn || c.translations.some((t) => t.name.toLowerCase() === cn))),
+                    (cn && (c.slug.toLowerCase() === cn || c.translations.some((t) => t.name.toLowerCase() === cn))),
                 );
                 if (match) formMethods.setValue('countryId', match.id);
               }}
             />
           </div>
         ) : (
-          <span style={styles.noKey}>Google Places disabled — set VITE_GOOGLE_MAPS_API_KEY to search. Enter coordinates manually.</span>
+          <span style={styles.noKey}>
+            Google Places disabled — set VITE_GOOGLE_MAPS_API_KEY to search. Enter coordinates manually.
+          </span>
         )}
 
         <Input name='name' label='Name' description='Canonical place name' disableAutofill={false} />
         <div style={styles.row}>
           <Input name='latitude' label='Latitude' description='-90…90' style={styles.flex} disableAutofill={false} />
-          <Input name='longitude' label='Longitude' description='-180…180' style={styles.flex} disableAutofill={false} />
+          <Input
+            name='longitude'
+            label='Longitude'
+            description='-180…180'
+            style={styles.flex}
+            disableAutofill={false}
+          />
         </div>
         <Input name='address' label='Address' description='Optional' disableAutofill={false} />
         <div style={styles.row}>
-          <Select label='Country' name='countryId' control={formMethods.control} options={countryOptions} style={styles.flex} />
+          <Select
+            label='Country'
+            name='countryId'
+            control={formMethods.control}
+            options={countryOptions}
+            style={styles.flex}
+          />
           <Input name='region' label='Region' description='' style={styles.flex} disableAutofill={false} />
         </div>
         <Input name='city' label='City' description='' disableAutofill={false} />
 
         <div style={styles.row}>
-          <Select label='Status' name='status' control={formMethods.control} options={STATUS_OPTIONS} style={styles.flex} />
-          <Select label='Rating' name='rating' control={formMethods.control} options={RATING_OPTIONS} style={styles.flex} />
+          <Select
+            label='Status'
+            name='status'
+            control={formMethods.control}
+            options={STATUS_OPTIONS}
+            style={styles.flex}
+          />
+          <Select
+            label='Rating'
+            name='rating'
+            control={formMethods.control}
+            options={RATING_OPTIONS}
+            style={styles.flex}
+          />
         </div>
         <div style={styles.row}>
           <Input name='visitDurationMin' label='Visit (min)' description='' type='number' style={styles.flex} />
@@ -212,7 +243,9 @@ export const PoiEditorModal = (p: PoiEditorModalProps) => {
             <PoiGalleryField poiId={p.poi.id} current={p.poi.images} />
           </>
         ) : (
-          <span style={styles.editHint}>Create the place first, then reopen it to add categories, hours and gallery.</span>
+          <span style={styles.editHint}>
+            Create the place first, then reopen it to add categories, hours and gallery.
+          </span>
         )}
 
         <Button
