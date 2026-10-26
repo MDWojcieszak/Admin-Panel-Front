@@ -20,6 +20,7 @@ import { FaCodeBranch, FaServer } from 'react-icons/fa6';
 import { FiMonitor } from 'react-icons/fi';
 
 const ICON_SIZE = 20;
+const COMPACT_HEIGHT = 40;
 
 export type SideBarItem = {
   label: string;
@@ -30,6 +31,8 @@ export type SideBarItem = {
   badge?: number;
   /** Marks a section that only shows "open it on a computer" on this device. */
   desktopHint?: boolean;
+  /** Shorter rows, for a screen too low to show the whole menu at full size. */
+  compact?: boolean;
 };
 
 export const Item = (p: SideBarItem) => {
@@ -73,7 +76,7 @@ export const Item = (p: SideBarItem) => {
   };
   return (
     <motion.div
-      style={styles.container}
+      style={p.compact ? { ...styles.container, height: COMPACT_HEIGHT } : styles.container}
       onClick={handlePress}
       initial={false}
       whileHover={{ backgroundColor: theme.colors.white + theme.colorOpacity(0.05) }}

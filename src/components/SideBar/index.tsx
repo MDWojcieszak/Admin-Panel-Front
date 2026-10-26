@@ -4,6 +4,7 @@ import { MdHub, MdMonitorHeart, MdSettings } from 'react-icons/md';
 import { GlassCard } from '~/components/GlassCard';
 import { Item } from '~/components/SideBar/Item';
 import { useAuth } from '~/hooks/useAuth';
+import { useMediaQuery } from '~/hooks/useBreakpoint';
 import { useInquiryUnread } from '~/hooks/useInquiryUnread';
 import { useCan, usePermissions } from '~/hooks/usePermissions';
 import { hasAccess } from '~/acl/permissions';
@@ -38,15 +39,18 @@ export const SideBar = ({ items, variant = 'rail' }: SideBarProps) => {
   const systemStatusActive = current === MainNavigationRoute.SYSTEM_STATUS;
   const integrationsActive = current === MainNavigationRoute.INTEGRATIONS;
   const canSystemStatus = can('system.read');
+  // A low window (a laptop at 125%, a browser with toolbars) gets the tighter
+  // menu; whatever still does not fit scrolls, the footer stays in view.
+  const compact = useMediaQuery('(max-height: 1000px)');
 
   return (
     <GlassCard style={variant === 'drawer' ? { ...styles.container, ...styles.drawer } : styles.container}>
-      <div style={styles.top}>
+      <div style={compact ? { ...styles.top, ...styles.topCompact } : styles.top} className='no-scrollbar'>
         <img
           src='/full_logo.png'
           alt='Applogy'
           title='About Applogy'
-          style={styles.logo}
+          style={compact ? { ...styles.logo, ...styles.logoCompact } : styles.logo}
           onClick={() => navigate('/' + MainNavigationRoute.ABOUT)}
         />
         <div style={styles.itemContainer}>
@@ -66,6 +70,7 @@ export const SideBar = ({ items, variant = 'rail' }: SideBarProps) => {
                   isActive={active}
                   badge={item.path === MainNavigationRoute.INQUIRIES ? unreadInquiries : undefined}
                   desktopHint={variant === 'drawer' && item.desktopOnly}
+                  compact={compact}
                 />
                 <AnimatePresence initial={false}>
                   {active && subs.length > 1 ? (
@@ -104,7 +109,7 @@ export const SideBar = ({ items, variant = 'rail' }: SideBarProps) => {
         </div>
       </div>
 
-      <div style={styles.footer}>
+      <div style={compact ? { ...styles.footer, ...styles.footerCompact } : styles.footer}>
         {canSystemStatus ? (
           <div
             style={{ ...styles.settingsRow, color: systemStatusActive ? theme.colors.blue : theme.colors.dark05 }}
@@ -170,9 +175,17 @@ const useStyles = mkUseStyles((t) => ({
     paddingTop: 'env(safe-area-inset-top, 0px)',
     paddingBottom: 'env(safe-area-inset-bottom, 0px)',
   },
+  // The part that scrolls when the window is too low for every item.
   top: {
     gap: t.spacing.l,
+    flex: 1,
+    minHeight: 0,
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    scrollbarWidth: 'none',
   },
+  topCompact: { gap: t.spacing.s },
+  logoCompact: { width: 110, marginTop: t.spacing.s, marginBottom: 0 },
   logo: {
     display: 'block',
     width: 150,
@@ -207,7 +220,11 @@ const useStyles = mkUseStyles((t) => ({
   footer: {
     gap: t.spacing.s,
     padding: t.spacing.m,
+    flexShrink: 0,
+    // Separates it from the list scrolling above.
+    borderTop: `1px solid ${t.colors.white + t.colorOpacity(0.06)}`,
   },
+  footerCompact: { gap: 2, paddingTop: t.spacing.s, paddingBottom: t.spacing.s },
   settingsRow: {
     flexDirection: 'row',
     alignItems: 'center',
