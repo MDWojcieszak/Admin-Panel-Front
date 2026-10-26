@@ -2510,6 +2510,68 @@ export type BuildMode = typeof BuildMode[keyof typeof BuildMode];
 /**
  * 
  * @export
+ * @interface CalendarFeedDto
+ */
+export interface CalendarFeedDto {
+    /**
+     * 
+     * @type {CalendarScope}
+     * @memberof CalendarFeedDto
+     */
+    'scope'?: CalendarScope;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface CalendarFeedResponse
+ */
+export interface CalendarFeedResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CalendarFeedResponse
+     */
+    'enabled': boolean;
+    /**
+     * 
+     * @type {CalendarScope}
+     * @memberof CalendarFeedResponse
+     */
+    'scope': CalendarScope;
+    /**
+     * 
+     * @type {string}
+     * @memberof CalendarFeedResponse
+     */
+    'lastUsedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CalendarFeedResponse
+     */
+    'createdAt'?: string | null;
+}
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const CalendarScope = {
+    Mine: 'MINE',
+    All: 'ALL'
+} as const;
+
+export type CalendarScope = typeof CalendarScope[keyof typeof CalendarScope];
+
+
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
@@ -5456,6 +5518,45 @@ export interface CreatedBlockRefResponse {
      */
     'sectionId': string;
 }
+/**
+ * 
+ * @export
+ * @interface CreatedCalendarFeedResponse
+ */
+export interface CreatedCalendarFeedResponse {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CreatedCalendarFeedResponse
+     */
+    'enabled': boolean;
+    /**
+     * 
+     * @type {CalendarScope}
+     * @memberof CreatedCalendarFeedResponse
+     */
+    'scope': CalendarScope;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedCalendarFeedResponse
+     */
+    'lastUsedAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedCalendarFeedResponse
+     */
+    'createdAt'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreatedCalendarFeedResponse
+     */
+    'token': string;
+}
+
+
 /**
  * 
  * @export
@@ -40151,6 +40252,422 @@ export class BuildsApi extends BaseAPI {
      */
     public buildControllerUpdateJournalEntry(requestParameters: BuildsApiBuildControllerUpdateJournalEntryRequest, options?: RawAxiosRequestConfig) {
         return BuildsApiFp(this.configuration).buildControllerUpdateJournalEntry(requestParameters.entryId, requestParameters.updateJournalEntryDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * CalendarApi - axios parameter creator
+ * @export
+ */
+export const CalendarApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary The iCal feed behind a calendar address
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerFeed: async (token: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'token' is not null or undefined
+            assertParamExists('calendarControllerFeed', 'token', token)
+            const localVarPath = `/calendar/{token}.ics`
+                .replace(`{${"token"}}`, encodeURIComponent(String(token)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/calendar/feed`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerRemove: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/calendar/feed`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CalendarFeedDto} calendarFeedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerRotate: async (calendarFeedDto: CalendarFeedDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'calendarFeedDto' is not null or undefined
+            assertParamExists('calendarControllerRotate', 'calendarFeedDto', calendarFeedDto)
+            const localVarPath = `/calendar/feed`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(calendarFeedDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CalendarFeedDto} calendarFeedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerUpdate: async (calendarFeedDto: CalendarFeedDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'calendarFeedDto' is not null or undefined
+            assertParamExists('calendarControllerUpdate', 'calendarFeedDto', calendarFeedDto)
+            const localVarPath = `/calendar/feed`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(calendarFeedDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CalendarApi - functional programming interface
+ * @export
+ */
+export const CalendarApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CalendarApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary The iCal feed behind a calendar address
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async calendarControllerFeed(token: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.calendarControllerFeed(token, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CalendarApi.calendarControllerFeed']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async calendarControllerGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CalendarFeedResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.calendarControllerGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CalendarApi.calendarControllerGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async calendarControllerRemove(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.calendarControllerRemove(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CalendarApi.calendarControllerRemove']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CalendarFeedDto} calendarFeedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async calendarControllerRotate(calendarFeedDto: CalendarFeedDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreatedCalendarFeedResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.calendarControllerRotate(calendarFeedDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CalendarApi.calendarControllerRotate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CalendarFeedDto} calendarFeedDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async calendarControllerUpdate(calendarFeedDto: CalendarFeedDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CalendarFeedResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.calendarControllerUpdate(calendarFeedDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CalendarApi.calendarControllerUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * CalendarApi - factory interface
+ * @export
+ */
+export const CalendarApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CalendarApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary The iCal feed behind a calendar address
+         * @param {CalendarApiCalendarControllerFeedRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerFeed(requestParameters: CalendarApiCalendarControllerFeedRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.calendarControllerFeed(requestParameters.token, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerGet(options?: RawAxiosRequestConfig): AxiosPromise<CalendarFeedResponse> {
+            return localVarFp.calendarControllerGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerRemove(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.calendarControllerRemove(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CalendarApiCalendarControllerRotateRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerRotate(requestParameters: CalendarApiCalendarControllerRotateRequest, options?: RawAxiosRequestConfig): AxiosPromise<CreatedCalendarFeedResponse> {
+            return localVarFp.calendarControllerRotate(requestParameters.calendarFeedDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CalendarApiCalendarControllerUpdateRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calendarControllerUpdate(requestParameters: CalendarApiCalendarControllerUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<CalendarFeedResponse> {
+            return localVarFp.calendarControllerUpdate(requestParameters.calendarFeedDto, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for calendarControllerFeed operation in CalendarApi.
+ * @export
+ * @interface CalendarApiCalendarControllerFeedRequest
+ */
+export interface CalendarApiCalendarControllerFeedRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof CalendarApiCalendarControllerFeed
+     */
+    readonly token: string
+}
+
+/**
+ * Request parameters for calendarControllerRotate operation in CalendarApi.
+ * @export
+ * @interface CalendarApiCalendarControllerRotateRequest
+ */
+export interface CalendarApiCalendarControllerRotateRequest {
+    /**
+     * 
+     * @type {CalendarFeedDto}
+     * @memberof CalendarApiCalendarControllerRotate
+     */
+    readonly calendarFeedDto: CalendarFeedDto
+}
+
+/**
+ * Request parameters for calendarControllerUpdate operation in CalendarApi.
+ * @export
+ * @interface CalendarApiCalendarControllerUpdateRequest
+ */
+export interface CalendarApiCalendarControllerUpdateRequest {
+    /**
+     * 
+     * @type {CalendarFeedDto}
+     * @memberof CalendarApiCalendarControllerUpdate
+     */
+    readonly calendarFeedDto: CalendarFeedDto
+}
+
+/**
+ * CalendarApi - object-oriented interface
+ * @export
+ * @class CalendarApi
+ * @extends {BaseAPI}
+ */
+export class CalendarApi extends BaseAPI {
+    /**
+     * 
+     * @summary The iCal feed behind a calendar address
+     * @param {CalendarApiCalendarControllerFeedRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CalendarApi
+     */
+    public calendarControllerFeed(requestParameters: CalendarApiCalendarControllerFeedRequest, options?: RawAxiosRequestConfig) {
+        return CalendarApiFp(this.configuration).calendarControllerFeed(requestParameters.token, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CalendarApi
+     */
+    public calendarControllerGet(options?: RawAxiosRequestConfig) {
+        return CalendarApiFp(this.configuration).calendarControllerGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CalendarApi
+     */
+    public calendarControllerRemove(options?: RawAxiosRequestConfig) {
+        return CalendarApiFp(this.configuration).calendarControllerRemove(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CalendarApiCalendarControllerRotateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CalendarApi
+     */
+    public calendarControllerRotate(requestParameters: CalendarApiCalendarControllerRotateRequest, options?: RawAxiosRequestConfig) {
+        return CalendarApiFp(this.configuration).calendarControllerRotate(requestParameters.calendarFeedDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CalendarApiCalendarControllerUpdateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CalendarApi
+     */
+    public calendarControllerUpdate(requestParameters: CalendarApiCalendarControllerUpdateRequest, options?: RawAxiosRequestConfig) {
+        return CalendarApiFp(this.configuration).calendarControllerUpdate(requestParameters.calendarFeedDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

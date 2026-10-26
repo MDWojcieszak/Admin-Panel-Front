@@ -102,6 +102,10 @@ docs/BomStatus.md
 docs/BomSummaryResponse.md
 docs/BuildMode.md
 docs/BuildsApi.md
+docs/CalendarApi.md
+docs/CalendarFeedDto.md
+docs/CalendarFeedResponse.md
+docs/CalendarScope.md
 docs/CalloutVariant.md
 docs/Category.md
 docs/CategoryKind.md
@@ -182,6 +186,7 @@ docs/CreateServerTransferDto.md
 docs/CreateShareLinkDto.md
 docs/CreateTaskDto.md
 docs/CreatedBlockRefResponse.md
+docs/CreatedCalendarFeedResponse.md
 docs/CreatedShareLinkResponse.md
 docs/DailyPointDto.md
 docs/DashboardApi.md
