@@ -429,7 +429,7 @@ export const ProjectDetail = () => {
                     onClick={() => shareModal.show({ projectId: project.id, onLeft: () => navigate(projectsRoot) })}
                   >
                     {people.length > 1 ? (
-                      people.slice(0, 4).map((u) => <Avatar key={u.id} user={u} size={26} />)
+                      people.slice(0, 4).map((u) => <Avatar key={u.id} user={u} size={24} />)
                     ) : (
                       <FiUsers size={16} />
                     )}
@@ -627,8 +627,9 @@ const useStyles = mkUseStyles((t) => ({
     display: 'inline-flex',
     alignItems: 'center',
     gap: t.spacing.xs,
-    // Matches the panel Button next to it: 12px padding around a 24px line.
-    height: 48,
+    // As tall as the panel Button beside it, whatever its line height comes to:
+    // stretched to the row the two share instead of a fixed guess.
+    alignSelf: 'stretch',
     padding: `0 ${t.spacing.sm}px 0 ${t.spacing.s}px`,
     border: 'none',
     borderRadius: t.borderRadius.large,
