@@ -1,4 +1,4 @@
-import { DragEvent, useState } from 'react';
+import { DragEvent, TouchEvent, useEffect, useRef, useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { CreateTaskDto, ProjectStatusResponse, StatusCategory, TaskResponse } from '~/api/api';
 import { QuickAdd } from '~/routes/Projects/components/QuickAdd';
@@ -7,6 +7,25 @@ import { TaskMeta } from '~/routes/Projects/components/TaskMeta';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type DropTarget = { statusId: string; index: number; beforeId: string | null };
+
+/** A finger has to rest this long on a card to pick it up; moving sooner scrolls. */
+const LONG_PRESS_MS = 350;
+const MOVE_TOLERANCE = 8;
+/** Near the board's side edges a carried card scrolls the board, to reach the next column. */
+const EDGE = 48;
+const EDGE_STEP = 14;
+
+/** Where in a column a point falls: the index among the cards not being moved. */
+const placeIn = (column: HTMLElement, statusId: string, y: number, moving: string): DropTarget => {
+  const others = Array.from(column.querySelectorAll<HTMLElement>('[data-task-card]')).filter(
+    (el) => el.dataset.taskCard !== moving,
+  );
+  const index = others.filter((el) => {
+    const r = el.getBoundingClientRect();
+    return r.top + r.height / 2 < y;
+  }).length;
+  return { statusId, index, beforeId: others[index]?.dataset.taskCard ?? null };
+};
 
 type TaskBoardProps = {
   statuses: ProjectStatusResponse[];
@@ -26,21 +45,91 @@ export const TaskBoard = (p: TaskBoardProps) => {
   const [dragging, setDragging] = useState<string>();
   const [target, setTarget] = useState<DropTarget>();
   const [addingTo, setAddingTo] = useState<string>();
+  const boardRef = useRef<HTMLDivElement>(null);
+
+  const aim = (next: DropTarget | undefined) =>
+    setTarget((prev) =>
+      prev?.statusId === next?.statusId && prev?.index === next?.index && prev?.beforeId === next?.beforeId
+        ? prev
+        : next,
+    );
 
   const dragOver = (e: DragEvent<HTMLDivElement>, statusId: string) => {
     if (!dragging) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    const others = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('[data-task-card]')).filter(
-      (el) => el.dataset.taskCard !== dragging,
-    );
-    const index = others.filter((el) => {
-      const r = el.getBoundingClientRect();
-      return r.top + r.height / 2 < e.clientY;
-    }).length;
-    const beforeId = others[index]?.dataset.taskCard ?? null;
-    if (target?.statusId !== statusId || target.index !== index) setTarget({ statusId, index, beforeId });
+    aim(placeIn(e.currentTarget, statusId, e.clientY, dragging));
   };
+
+  // Touch has no HTML5 drag and drop: a long press picks the card up, the
+  // finger carries it, lifting it drops it. The latest values live in a ref,
+  // since the document's listeners outlive any one render.
+  const touch = useRef<{ id: string; x: number; y: number; timer?: number; carrying: boolean; target?: DropTarget }>();
+  const suppressClick = useRef(false);
+  const onMove = useRef(p.onMove);
+  onMove.current = p.onMove;
+
+  const touchStart = (e: TouchEvent, taskId: string) => {
+    if (!p.editable || e.touches.length !== 1) return;
+    const { clientX: x, clientY: y } = e.touches[0];
+    const pending = { id: taskId, x, y, carrying: false };
+    touch.current = {
+      ...pending,
+      timer: window.setTimeout(() => {
+        if (touch.current?.id !== taskId) return;
+        touch.current.carrying = true;
+        suppressClick.current = true;
+        navigator.vibrate?.(10);
+        setDragging(taskId);
+      }, LONG_PRESS_MS),
+    };
+  };
+
+  useEffect(() => {
+    const move = (e: globalThis.TouchEvent) => {
+      const t = touch.current;
+      if (!t) return;
+      const { clientX: x, clientY: y } = e.touches[0];
+      if (!t.carrying) {
+        // Moved before the press was long: a scroll, not a pick-up.
+        if (Math.hypot(x - t.x, y - t.y) > MOVE_TOLERANCE) {
+          window.clearTimeout(t.timer);
+          touch.current = undefined;
+        }
+        return;
+      }
+      e.preventDefault();
+      const board = boardRef.current;
+      if (board) {
+        const r = board.getBoundingClientRect();
+        if (x < r.left + EDGE) board.scrollLeft -= EDGE_STEP;
+        else if (x > r.right - EDGE) board.scrollLeft += EDGE_STEP;
+      }
+      const column = document.elementFromPoint(x, y)?.closest<HTMLElement>('[data-status-column]');
+      t.target = column ? placeIn(column, column.dataset.statusColumn!, y, t.id) : undefined;
+      aim(t.target);
+    };
+    const end = () => {
+      const t = touch.current;
+      if (!t) return;
+      window.clearTimeout(t.timer);
+      touch.current = undefined;
+      if (!t.carrying) return;
+      if (t.target) onMove.current(t.id, t.target.statusId, t.target.index);
+      setDragging(undefined);
+      setTarget(undefined);
+      // The click a long press ends with must not open the task.
+      window.setTimeout(() => (suppressClick.current = false), 50);
+    };
+    document.addEventListener('touchmove', move, { passive: false });
+    document.addEventListener('touchend', end);
+    document.addEventListener('touchcancel', end);
+    return () => {
+      document.removeEventListener('touchmove', move);
+      document.removeEventListener('touchend', end);
+      document.removeEventListener('touchcancel', end);
+    };
+  }, []);
 
   const drop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -50,7 +139,7 @@ export const TaskBoard = (p: TaskBoardProps) => {
   };
 
   return (
-    <div style={styles.board}>
+    <div ref={boardRef} style={styles.board}>
       {p.statuses.map((status) => {
         const tasks = p.tasks.filter((t) => t.status.id === status.id);
         const isTarget = target?.statusId === status.id;
@@ -58,6 +147,7 @@ export const TaskBoard = (p: TaskBoardProps) => {
         return (
           <div
             key={status.id}
+            data-status-column={status.id}
             style={{ ...styles.column, ...(isTarget ? styles.columnTarget : {}) }}
             onDragOver={(e) => dragOver(e, status.id)}
             onDragLeave={(e) => {
@@ -96,7 +186,8 @@ export const TaskBoard = (p: TaskBoardProps) => {
                     task={task}
                     draggable={p.editable}
                     dimmed={dragging === task.id}
-                    onOpen={() => p.onOpen(task.id)}
+                    onOpen={() => !suppressClick.current && p.onOpen(task.id)}
+                    onTouchStart={(e) => touchStart(e, task.id)}
                     onDragStart={() => setDragging(task.id)}
                     onDragEnd={() => {
                       setDragging(undefined);
@@ -122,6 +213,7 @@ const TaskCard = ({
   draggable,
   dimmed,
   onOpen,
+  onTouchStart,
   onDragStart,
   onDragEnd,
 }: {
@@ -129,6 +221,7 @@ const TaskCard = ({
   draggable: boolean;
   dimmed: boolean;
   onOpen: () => void;
+  onTouchStart: (e: TouchEvent) => void;
   onDragStart: () => void;
   onDragEnd: () => void;
 }) => {
@@ -148,6 +241,7 @@ const TaskCard = ({
         onDragStart();
       }}
       onDragEnd={onDragEnd}
+      onTouchStart={onTouchStart}
       onClick={onOpen}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -230,6 +324,8 @@ const useStyles = mkUseStyles((t) => ({
     backgroundColor: t.colors.gray01 + t.colorOpacity(0.55),
     border: `1px solid ${t.colors.white + t.colorOpacity(0.05)}`,
     userSelect: 'none',
+    // A long press picks the card up; no text callout or image menu over it.
+    WebkitTouchCallout: 'none',
     transition: 'background-color 0.12s ease',
   },
   cardHover: { backgroundColor: t.colors.gray01 + t.colorOpacity(0.85) },
