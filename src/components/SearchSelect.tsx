@@ -15,6 +15,8 @@ export type SearchSelectOption = {
   group?: string;
   /** Extra words the search matches: synonyms, another language, part numbers. */
   keywords?: string;
+  /** Muted, at the row's right edge: a code or count that tells similar options apart. */
+  hint?: string;
 };
 
 type SearchSelectProps = {
@@ -248,6 +250,13 @@ export const SearchSelect = (p: SearchSelectProps) => {
                           <Icon size={ICON_SIZE} color={isActive ? theme.colors.white : theme.colors.blue04} />
                         ) : null}
                         <span style={styles.optionLabel}>{option.label}</span>
+                        {option.hint ? (
+                          <span
+                            style={{ ...styles.optionHint, color: isActive ? theme.colors.white : theme.colors.dark05 }}
+                          >
+                            {option.hint}
+                          </span>
+                        ) : null}
                       </div>
                     </div>
                   );
@@ -356,5 +365,6 @@ const useStyles = mkUseStyles((t) => ({
     fontSize: 14,
   },
   optionLabel: { minWidth: 0 },
+  optionHint: { marginLeft: 'auto', flexShrink: 0, fontSize: 12, fontWeight: 600, letterSpacing: 0.4 },
   empty: { padding: t.spacing.s, fontSize: 13, color: t.colors.dark05 },
 }));

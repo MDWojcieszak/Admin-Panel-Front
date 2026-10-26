@@ -52,6 +52,7 @@ export const projectOptions = (projects: ProjectSummaryResponse[]): SearchSelect
       icon: p.isInbox ? FiInbox : TYPE_ICON[p.type],
       group: p.isInbox ? undefined : TYPE_GROUP[p.type],
       keywords: p.key,
+      hint: p.isInbox ? undefined : p.key,
     }));
 
 export const TYPE_DESCRIPTION: Record<ProjectType, string> = {
