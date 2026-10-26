@@ -203,6 +203,12 @@ export const Settings = () => {
           label: 'Task reminders (email)',
           description: 'Email me when a reminder set on a task comes due, for tasks assigned to me or my own.',
         },
+        {
+          key: 'dailyDigestEmail',
+          label: 'Morning digest (email)',
+          description:
+            'At 7:00: what is late, what is due today, the parts still to buy and what is left on shopping lists. Nothing on an empty day.',
+        },
       ],
     },
     {
