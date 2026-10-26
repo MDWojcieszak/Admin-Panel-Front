@@ -2,7 +2,9 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   FiArrowLeft,
+  FiArrowRight,
   FiBookOpen,
+  FiCheckCircle,
   FiCamera,
   FiColumns,
   FiFolder,
@@ -17,8 +19,10 @@ import {
   CreateTaskDto,
   ProjectDetailResponse,
   ProjectRole,
+  ProjectStatus,
   ProjectType,
   StatusCategory,
+  TaskPriority,
   TaskResponse,
 } from '~/api/api';
 import { Badge } from '~/components/Badge';
@@ -87,6 +91,23 @@ const VIEW_HINT: Partial<Record<View, string>> = {
   [View.JOURNAL]: 'The build, step by step: its documentation.',
   [View.DOCS]: 'Files pinned to the project and anything in it.',
   [View.COMMENTS]: 'Talk about the project as a whole.',
+};
+
+const PRIORITY_RANK: Record<TaskPriority, number> = { URGENT: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
+
+/**
+ * One thing to do next, so an open project never asks "where was I": what is
+ * already in progress, else the to-do due soonest, then the most pressing,
+ * then the first on the board.
+ */
+const nextStep = (tasks: TaskResponse[]) => {
+  const started = tasks.find((t) => t.status.category === StatusCategory.InProgress);
+  if (started) return started;
+  const todo = tasks.filter((t) => t.status.category === StatusCategory.Todo);
+  const due = (t: TaskResponse) => (t.dueDate ? Date.parse(t.dueDate) : Infinity);
+  return [...todo].sort(
+    (a, b) => due(a) - due(b) || PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] || a.order - b.order,
+  )[0];
 };
 
 /** Projects are listed at /projects; the panel opens a task with ?task=<id>. */
@@ -281,6 +302,28 @@ export const ProjectDetail = () => {
   };
 
   const { progress } = project;
+  const finishable =
+    editable &&
+    !project.isInbox &&
+    !project.isTemplate &&
+    !project.archivedAt &&
+    project.status !== ProjectStatus.Done &&
+    project.status !== ProjectStatus.Cancelled;
+  const allDone = finishable && progress.total > 0 && progress.done === progress.total;
+  // A shopping list is ticked in any order; the inbox is sorted, not worked.
+  const next = !shopping && !project.isInbox && !project.isTemplate ? nextStep(tasks) : undefined;
+  const startStatus = project.statuses.find((st) => st.category === StatusCategory.InProgress);
+
+  const finish = (archived: boolean) =>
+    run(async () => {
+      if (!projectsApi) return;
+      await projectsApi.projectControllerUpdate({
+        id: project.id,
+        updateProjectDto: { status: ProjectStatus.Done, ...(archived ? { archived: true } : {}) },
+      });
+      toast(archived ? 'Done and archived. Well done.' : 'Marked done. Well done.', 'success');
+      if (archived) navigate(projectsRoot);
+    }, 'Could not finish the project.');
   // The owner comes first in `members`.
   const people = project.members.map((m) => m.user);
 
@@ -430,6 +473,60 @@ export const ProjectDetail = () => {
           {project.description ? (
             <span style={{ ...shared.muted, ...styles.description }}>{project.description}</span>
           ) : null}
+          {/* Whatever the view, so switching views never moves the tabs. */}
+          {allDone ? (
+            <div style={{ ...styles.nudge, ...styles.nudgeDone, ...(isMobile ? styles.nudgeStacked : null) }}>
+              <FiCheckCircle size={16} style={{ flexShrink: 0 }} />
+              {/* On a phone the question gets its own line and the buttons share the next. */}
+              <span style={isMobile ? { ...styles.nudgeText, ...styles.nudgeTextWrap } : styles.nudgeText}>
+                {shopping ? 'Everything is ticked off.' : `All ${progress.total} done.`}{' '}
+                {shopping ? 'Archive the list?' : 'Finish the project?'}
+              </span>
+              {shopping ? null : (
+                <Button
+                  label='Mark done'
+                  variant='secondary'
+                  style={isMobile ? styles.nudgeButton : undefined}
+                  onClick={() => finish(false)}
+                />
+              )}
+              <Button
+                label={shopping ? 'Archive' : 'Done & archive'}
+                style={isMobile ? styles.nudgeButton : undefined}
+                onClick={() => finish(true)}
+              />
+            </div>
+          ) : next ? (
+            <div style={styles.nudge}>
+              <span style={styles.nudgeLabel}>Next</span>
+              <span
+                style={{ ...styles.nudgeText, cursor: 'pointer' }}
+                title={next.title}
+                onClick={() => openTask(next.id)}
+              >
+                <span style={shared.key}>{next.key}</span> {next.title}
+                {next.dueDate ? <span style={shared.muted}> · due {dueLabel(next.dueDate)}</span> : null}
+              </span>
+              {editable && startStatus && next.status.category === StatusCategory.Todo ? (
+                <Button
+                  label={isMobile ? '' : 'Start'}
+                  title='Move it to in progress'
+                  variant='secondary'
+                  icon={<FiArrowRight size={14} />}
+                  onClick={() => moveTask(next.id, startStatus.id, 0)}
+                />
+              ) : (
+                // Already under way (or not yours to start): a way in rather than a bare line.
+                <Button
+                  label={isMobile ? '' : 'Open'}
+                  title='Open the task'
+                  variant='secondary'
+                  icon={<FiArrowRight size={14} />}
+                  onClick={() => openTask(next.id)}
+                />
+              )}
+            </div>
+          ) : null}
           <div style={isMobile ? styles.toolbarMobile : styles.toolbar}>
             {/* Always present and always taking the rest of the line, whatever it
                 holds, so the tabs beside it never move between views. */}
@@ -491,6 +588,30 @@ const useStyles = mkUseStyles((t) => ({
   // on its left: switching views must not move the tabs under the cursor.
   tabs: { marginLeft: 'auto', flexShrink: 0 },
   comments: { maxWidth: 760 },
+  // A single line, as tall as the toolbar's field, so it never pushes by more than itself.
+  nudge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.sm,
+    minHeight: COMPACT_FIELD_HEIGHT,
+    padding: `${t.spacing.xs}px ${t.spacing.xs}px ${t.spacing.xs}px ${t.spacing.m}px`,
+    borderRadius: t.borderRadius.large,
+    fontSize: 13,
+    backgroundColor: t.colors.blue04 + t.colorOpacity(0.08),
+  },
+  nudgeDone: { color: t.colors.lightGreen, backgroundColor: t.colors.lightGreen + t.colorOpacity(0.1) },
+  nudgeLabel: {
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+    color: t.colors.blue04,
+    flexShrink: 0,
+  },
+  nudgeText: { flex: 1, minWidth: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+  nudgeStacked: { flexWrap: 'wrap', paddingTop: t.spacing.s, paddingBottom: t.spacing.s, paddingRight: t.spacing.s },
+  nudgeTextWrap: { flex: '1 1 calc(100% - 40px)', whiteSpace: 'normal' },
+  nudgeButton: { flex: 1 },
   template: {
     flexDirection: 'row',
     alignItems: 'center',

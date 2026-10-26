@@ -13,6 +13,7 @@ import { ServerNavigation } from '~/navigation/ServerNavigation';
 import { DeployNavigation } from '~/navigation/DeployNavigation';
 import { ProjectsNavigation } from '~/navigation/ProjectsNavigation';
 import { Documents } from '~/routes/Documents/Documents';
+import { useQuickCapture } from '~/routes/Projects/hooks/useQuickCapture';
 import {
   BlogNavigationRoute,
   DeployNavigationRoute,
@@ -164,6 +165,7 @@ export const MainNavigation = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const [menuOpen, setMenuOpen] = useState(false);
+  const quickCapture = useQuickCapture();
 
   // Picking a page in the drawer is also closing it.
   useEffect(() => setMenuOpen(false), [location.pathname]);
@@ -197,7 +199,7 @@ export const MainNavigation = () => {
     // Phone layout: a top bar instead of the sidebar, which slides in as a drawer.
     return (
       <div style={styles.mobileColumn}>
-        <MobileTopBar items={allRoutes} onMenu={() => setMenuOpen(true)} />
+        <MobileTopBar items={allRoutes} onMenu={() => setMenuOpen(true)} onCapture={quickCapture} />
         {routes}
         <AnimatePresence>
           {menuOpen ? (

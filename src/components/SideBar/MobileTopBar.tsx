@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useLayoutEffect, useRef } from 'react';
+import { FiPlus } from 'react-icons/fi';
 import { MdMenu } from 'react-icons/md';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { hasAccess } from '~/acl/permissions';
@@ -12,6 +13,8 @@ type MobileTopBarProps = {
   /** Every route the bar may have to name — the sidebar's items and the footer pages. */
   items: MainRouteType[];
   onMenu: () => void;
+  /** Quick capture into the inbox: the phone's stand-in for the `N` key. */
+  onCapture?: () => void;
 };
 
 /**
@@ -19,7 +22,7 @@ type MobileTopBarProps = {
  * the sidebar would list sub-pages under the active item — those sub-pages as
  * a row of tabs, so moving between them does not mean opening the menu.
  */
-export const MobileTopBar = ({ items, onMenu }: MobileTopBarProps) => {
+export const MobileTopBar = ({ items, onMenu, onCapture }: MobileTopBarProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const location = useLocation();
@@ -46,6 +49,11 @@ export const MobileTopBar = ({ items, onMenu }: MobileTopBarProps) => {
           {unread > 0 && current !== MainNavigationRoute.INQUIRIES ? <span style={styles.dot} /> : null}
         </button>
         <span style={styles.title}>{section?.label ?? 'Applogy'}</span>
+        {onCapture ? (
+          <button type='button' style={styles.menu} onClick={onCapture} aria-label='Quick capture'>
+            <FiPlus size={22} />
+          </button>
+        ) : null}
         <img src='/logo.png' alt='' style={styles.logo} />
       </div>
 

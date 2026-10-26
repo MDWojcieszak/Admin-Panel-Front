@@ -10,6 +10,9 @@ export const ModalManagerProvider = ({ children }: PropsWithChildren) => {
   const resolveHideRef = useRef<{ resolve: F0; id: string }[]>([]);
   // Each opening starts from what the modal was registered with.
   const defaultsRef = useRef<Record<string, object>>({});
+  const collectionRef = useRef(collection);
+  collectionRef.current = collection;
+  const isAnyVisible = useCallback(() => collectionRef.current.some((modal) => modal.visible), []);
 
   const register = useCallback<ModalManager['register']>((id, component, config, defaultProps) => {
     if (!(id in defaultsRef.current)) defaultsRef.current[id] = (defaultProps as object) || {};
@@ -103,8 +106,8 @@ export const ModalManagerProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   const value: ModalManager = useMemo(
-    () => ({ register, remove, show, hide, resolveShow, resolveHide, updateConfig }),
-    [register, remove, show, hide, resolveShow, resolveHide, updateConfig],
+    () => ({ register, remove, show, hide, resolveShow, resolveHide, updateConfig, isAnyVisible }),
+    [register, remove, show, hide, resolveShow, resolveHide, updateConfig, isAnyVisible],
   );
 
   return (

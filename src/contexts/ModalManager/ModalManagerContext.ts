@@ -15,6 +15,8 @@ export type ModalManager = {
   resolveShow: F1<string>;
   resolveHide: F1<string>;
   updateConfig: F2<string, ModalConfig>;
+  /** Read at the moment of asking, so it never re-renders whoever holds the context. */
+  isAnyVisible: () => boolean;
 };
 
 export const ERRORS = {

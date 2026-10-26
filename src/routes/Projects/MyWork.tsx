@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { FiInbox } from 'react-icons/fi';
+import { FiCalendar, FiCheckCircle, FiInbox, FiZap } from 'react-icons/fi';
 import { MdOutlineTaskAlt } from 'react-icons/md';
-import { MyTasksView, TaskResponse } from '~/api/api';
+import { MyTasksView, MyTaskStatsResponse, TaskResponse } from '~/api/api';
 import { EmptyState } from '~/components/EmptyState';
 import { Loader } from '~/components/Loader';
 import { PageHeader } from '~/components/PageHeader';
@@ -53,7 +53,17 @@ export const MyWork = () => {
     return data;
   }, [tasksApi, view]);
 
-  useProjectEvents(() => query.reload());
+  // Your progress: a reason to tick one more off. Your own ticks reload it too.
+  const stats = useAsync<MyTaskStatsResponse>(async () => {
+    if (!tasksApi) return undefined;
+    const { data } = await tasksApi.taskControllerStats();
+    return data;
+  }, [tasksApi]);
+
+  useProjectEvents(() => {
+    query.reload();
+    stats.reload();
+  });
 
   const taskModal = useModal('my-work-task', TaskPanel, { title: 'Task', type: 'side' });
 
@@ -80,6 +90,7 @@ export const MyWork = () => {
       header={
         <>
           <PageHeader title='My work' meta={tasks.length ? `${tasks.length} open` : undefined} />
+          {stats.data ? <StatsStrip stats={stats.data} /> : null}
           <div style={styles.toolbar}>
             <div style={styles.quickAdd}>
               <QuickAdd
@@ -152,7 +163,48 @@ export const MyWork = () => {
   );
 };
 
+const StatsStrip = ({ stats }: { stats: MyTaskStatsResponse }) => {
+  const styles = useStyles();
+  const shared = useProjectStyles();
+  const theme = useTheme();
+  const streak = stats.streakDays;
+  return (
+    <div style={styles.stats}>
+      <span style={shared.row}>
+        <FiCheckCircle size={14} color={stats.doneToday ? theme.colors.lightGreen : theme.colors.dark05} />
+        <b>{stats.doneToday}</b>
+        <span style={shared.muted}>done today</span>
+      </span>
+      <span style={shared.row}>
+        <FiCalendar size={14} color={theme.colors.blue04} />
+        <b>{stats.doneThisWeek}</b>
+        <span style={shared.muted}>this week</span>
+      </span>
+      <span style={shared.row}>
+        <FiZap size={14} color={streak ? theme.colors.yellow : theme.colors.dark05} />
+        {streak ? (
+          <>
+            <b>{streak}</b>
+            <span style={shared.muted}>{streak === 1 ? 'day' : 'days'} in a row</span>
+          </>
+        ) : (
+          <span style={shared.muted}>Tick one off to start a streak</span>
+        )}
+      </span>
+    </div>
+  );
+};
+
 const useStyles = mkUseStyles((t) => ({
+  // One line on a desk, wrapping on a phone.
+  stats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.l,
+    rowGap: t.spacing.xs,
+    flexWrap: 'wrap',
+    fontSize: 13,
+  },
   toolbar: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m, flexWrap: 'wrap' },
   quickAdd: { flex: '1 1 280px', maxWidth: 640 },
   main: { flex: 1, minWidth: 0, gap: 2 },
