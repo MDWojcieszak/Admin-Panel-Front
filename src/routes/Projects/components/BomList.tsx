@@ -252,9 +252,13 @@ export const BomList = ({ project }: { project: ProjectDetailResponse }) => {
 
   return (
     <div style={styles.container}>
-      {summary && summary.total ? (
+      {/* Shown on an empty list too (for editors), so Import is there before the first part. */}
+      {summary && (summary.total || editable) ? (
         <div style={styles.summary}>
-          <span style={shared.row}>
+          {!summary.total ? (
+            <span style={shared.muted}>No parts yet — add them one by one below, or import a whole list.</span>
+          ) : null}
+          <span style={summary.total ? shared.row : { display: 'none' }}>
             {(['NEEDED', 'ORDERED', 'HAVE', 'USED'] as BomStatus[]).map((status) => (
               <span key={status} style={{ ...shared.row, gap: 6, ...shared.muted }}>
                 <StatusDot color={BOM_STATUS_COLOR[status]} />
@@ -282,6 +286,7 @@ export const BomList = ({ project }: { project: ProjectDetailResponse }) => {
                 onClick={() =>
                   importModal.show({
                     projectId: project.id,
+                    projectTitle: project.title,
                     defaultCurrency: currency.trim().toUpperCase() || null,
                     onDone: () => query.reload(),
                   })
@@ -303,12 +308,14 @@ export const BomList = ({ project }: { project: ProjectDetailResponse }) => {
                 }
               />
             ) : null}
-            <Button
-              label='Export CSV'
-              variant='secondary'
-              icon={<FiDownload size={14} />}
-              onClick={() => query.data && downloadBomCsv(query.data, project.title)}
-            />
+            {summary.total ? (
+              <Button
+                label='Export CSV'
+                variant='secondary'
+                icon={<FiDownload size={14} />}
+                onClick={() => query.data && downloadBomCsv(query.data, project.title)}
+              />
+            ) : null}
           </span>
         </div>
       ) : null}

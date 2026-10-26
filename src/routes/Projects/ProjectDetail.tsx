@@ -4,8 +4,8 @@ import {
   FiArrowLeft,
   FiArrowRight,
   FiBookOpen,
-  FiCheckCircle,
   FiCamera,
+  FiCheckCircle,
   FiColumns,
   FiFolder,
   FiInbox,
@@ -13,6 +13,7 @@ import {
   FiMessageSquare,
   FiPackage,
   FiSettings,
+  FiUpload,
   FiUsers,
 } from 'react-icons/fi';
 import {
@@ -52,6 +53,7 @@ import { DuplicateProjectModal } from '~/routes/Projects/modals/DuplicateProject
 import { InboxTriageModal } from '~/routes/Projects/modals/InboxTriageModal';
 import { ProjectSettingsModal } from '~/routes/Projects/modals/ProjectSettingsModal';
 import { ShareModal } from '~/routes/Projects/modals/ShareModal';
+import { TaskImportModal } from '~/routes/Projects/modals/TaskImportModal';
 import { TaskPanel } from '~/routes/Projects/modals/TaskPanel';
 import {
   canCheck,
@@ -156,6 +158,7 @@ export const ProjectDetail = () => {
 
   const taskModal = useModal('project-task', TaskPanel, { title: 'Task', type: 'side' });
   const shareModal = useModal('project-share', ShareModal, { title: 'Share' });
+  const importModal = useModal('project-task-import', TaskImportModal, { title: 'Import tasks' });
   const settingsModal = useModal('project-settings', ProjectSettingsModal, { title: 'Project settings', type: 'side' });
   const useTemplateModal = useModal('project-from-template', DuplicateProjectModal, { title: 'New from template' });
   const triageModal = useModal('project-inbox-triage', InboxTriageModal, { title: 'Process inbox' });
@@ -535,10 +538,21 @@ export const ProjectDetail = () => {
                 <span style={shared.muted}>{VIEW_HINT[view]}</span>
               ) : editable ? (
                 <div style={styles.quickAdd}>
-                  <QuickAdd
-                    placeholder={QUICK_ADD_PLACEHOLDER[project.type]}
-                    withQuantity={shopping}
-                    onAdd={(dto) => addTask(dto)}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <QuickAdd
+                      placeholder={QUICK_ADD_PLACEHOLDER[project.type]}
+                      withQuantity={shopping}
+                      onAdd={(dto) => addTask(dto)}
+                    />
+                  </div>
+                  {/* Many at once: a plan from a chat or rows from a spreadsheet, with a preview. */}
+                  <Button
+                    label={isMobile ? '' : 'Import'}
+                    title={shopping ? 'Import items' : 'Import tasks'}
+                    variant='secondary'
+                    icon={<FiUpload size={14} />}
+                    style={styles.importButton}
+                    onClick={() => importModal.show({ project, onDone: () => reload() })}
                   />
                 </div>
               ) : (
@@ -583,7 +597,8 @@ const useStyles = mkUseStyles((t) => ({
   // As tall as the quick-add field whether it holds that field or a one-line
   // hint, so the row — and the tabs and content under it — keep their place.
   toolbarStart: { flex: '1 1 0px', minWidth: 0, minHeight: COMPACT_FIELD_HEIGHT, justifyContent: 'center' },
-  quickAdd: { width: '100%', maxWidth: 640 },
+  quickAdd: { flexDirection: 'row', alignItems: 'stretch', gap: t.spacing.s, width: '100%', maxWidth: 760 },
+  importButton: { flexShrink: 0 },
   // Always at the right edge, whether the add field, a hint or nothing sits
   // on its left: switching views must not move the tabs under the cursor.
   tabs: { marginLeft: 'auto', flexShrink: 0 },
