@@ -13,6 +13,8 @@ type PillSelectProps = {
   disabled?: boolean;
   /** Accessible name — the pill only shows the value. */
   label: string;
+  /** Smaller, for a line of facts under a title. */
+  small?: boolean;
 };
 
 const MENU_WIDTH = 180;
@@ -22,7 +24,7 @@ const MENU_WIDTH = 180;
  * a short menu. A full-size select in every row made the list tall and loud.
  * Clicks stay inside, so picking does not also open the row.
  */
-export const PillSelect = ({ value, options, onChange, disabled, label }: PillSelectProps) => {
+export const PillSelect = ({ value, options, onChange, disabled, label, small }: PillSelectProps) => {
   const styles = useStyles();
   const theme = useTheme();
   const pillRef = useRef<HTMLButtonElement>(null);
@@ -81,6 +83,7 @@ export const PillSelect = ({ value, options, onChange, disabled, label }: PillSe
         }}
         style={{
           ...styles.pill,
+          ...(small ? styles.pillSmall : null),
           color: theme.colors.white,
           backgroundColor: color + theme.colorOpacity(0.14),
           borderColor: color + theme.colorOpacity(open ? 0.8 : 0.35),
@@ -89,7 +92,7 @@ export const PillSelect = ({ value, options, onChange, disabled, label }: PillSe
       >
         <span style={{ ...styles.dot, backgroundColor: color }} />
         <span style={styles.pillLabel}>{current?.label}</span>
-        {disabled ? null : <FiChevronDown size={13} style={{ opacity: 0.7, flexShrink: 0 }} />}
+        {disabled ? null : <FiChevronDown size={small ? 11 : 13} style={{ opacity: 0.7, flexShrink: 0 }} />}
       </button>
 
       {createPortal(
@@ -152,6 +155,7 @@ const useStyles = mkUseStyles((t) => ({
     whiteSpace: 'nowrap',
     transition: 'border-color 0.12s ease',
   },
+  pillSmall: { height: 22, gap: 5, padding: '0 8px', fontSize: 11 },
   pillLabel: { overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0 },
   dot: { width: 8, height: 8, borderRadius: 4, flexShrink: 0 },
   menu: {
