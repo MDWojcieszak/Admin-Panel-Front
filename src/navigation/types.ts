@@ -49,8 +49,8 @@ export enum ProjectsNavigationRoute {
 }
 
 export enum DeployNavigationRoute {
-  CONTAINERS = '',
   APPLICATIONS = 'applications',
+  CONTAINERS = 'containers',
   VARIABLES = 'variables',
   GIT = 'git',
 }

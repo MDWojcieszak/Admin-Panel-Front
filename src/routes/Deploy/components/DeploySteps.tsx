@@ -37,7 +37,16 @@ const StepIcon = ({ step }: { step: DeployStep }) => {
 };
 
 /** build → pull → up → health, each ticked, crossed, running or grey when it never ran. */
-export const DeploySteps = ({ processId, releaseStatus }: { processId: string; releaseStatus?: ReleaseStatus }) => {
+export const DeploySteps = ({
+  processId,
+  releaseStatus,
+  compact,
+}: {
+  processId: string;
+  releaseStatus?: ReleaseStatus;
+  /** Tighter, for a tile: short connectors, small labels, one line. */
+  compact?: boolean;
+}) => {
   const styles = useStyles();
   const theme = useTheme();
   const { steps, loading } = useDeploySteps(processId, releaseStatus);
@@ -51,21 +60,28 @@ export const DeploySteps = ({ processId, releaseStatus }: { processId: string; r
   }
 
   return (
-    <div style={styles.row}>
+    <div style={compact ? { ...styles.row, ...styles.rowCompact } : styles.row}>
       {steps.map((step, i) => (
         <Fragment key={step.key}>
           {i > 0 ? (
             <span
               style={{
                 ...styles.connector,
+                ...(compact ? styles.connectorCompact : null),
                 backgroundColor:
                   step.state === 'idle' ? theme.colors.white + theme.colorOpacity(0.08) : theme.colors.dark04,
               }}
             />
           ) : null}
-          <div style={styles.step}>
+          <div style={compact ? { ...styles.step, gap: 5 } : styles.step}>
             <StepIcon step={step} />
-            <span style={{ ...styles.label, color: step.state === 'idle' ? theme.colors.dark04 : theme.colors.white }}>
+            <span
+              style={{
+                ...styles.label,
+                ...(compact ? styles.labelCompact : null),
+                color: step.state === 'idle' ? theme.colors.dark04 : theme.colors.white,
+              }}
+            >
               {step.label}
             </span>
           </div>
@@ -97,4 +113,7 @@ const useStyles = mkUseStyles((t) => ({
   },
   label: { fontSize: 13, fontWeight: 600 },
   connector: { width: 28, height: 2, borderRadius: 1 },
+  rowCompact: { gap: 6, flexWrap: 'nowrap', minHeight: 26 },
+  connectorCompact: { width: 10, flexShrink: 1, minWidth: 4 },
+  labelCompact: { fontSize: 12 },
 }));

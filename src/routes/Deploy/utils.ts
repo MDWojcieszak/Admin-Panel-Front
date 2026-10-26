@@ -1,4 +1,4 @@
-import { CommandRuntimeStatus, ContainerOrigin, ReleaseStatus, ReleaseTrigger } from '~/api/api';
+import { CommandRuntimeStatus, ContainerOrigin, ReleaseResponse, ReleaseStatus, ReleaseTrigger } from '~/api/api';
 import { BadgeTone } from '~/components/Badge';
 
 export const ORIGIN_LABEL: Record<ContainerOrigin, string> = {
@@ -146,3 +146,17 @@ export const diffLines = (before: string, after: string): DiffLine[] => {
 export const ENV_KEY_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 export const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/;
+
+/**
+ * Who started it: the user, or — for a webhook, a schedule or an automatic
+ * update — what the backend recorded in words. The trigger itself is already
+ * on the line above, so its name is not repeated here.
+ */
+export const startedBy = (release: ReleaseResponse): string | null => {
+  if (release.triggeredBy) return release.triggeredBy.email;
+  const label = release.triggeredByLabel?.trim();
+  if (!label) return null;
+  const trigger = TRIGGER_LABEL[release.trigger].toLowerCase();
+  if (label.toLowerCase() === trigger) return null;
+  return label.toLowerCase().startsWith(`${trigger} · `) ? label.slice(trigger.length + 3) : label;
+};

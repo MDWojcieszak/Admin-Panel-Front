@@ -127,8 +127,8 @@ export const mainNavigationRoutes: MainRouteType[] = [
     nested: true,
     permission: 'deploy.read',
     subItems: [
-      { path: DeployNavigationRoute.CONTAINERS, label: 'Containers' },
       { path: DeployNavigationRoute.APPLICATIONS, label: 'Applications' },
+      { path: DeployNavigationRoute.CONTAINERS, label: 'Containers' },
       { path: DeployNavigationRoute.VARIABLES, label: 'Variables' },
       { path: DeployNavigationRoute.GIT, label: 'Git', permission: 'deploy.git' },
     ],
