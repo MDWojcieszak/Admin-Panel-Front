@@ -9,6 +9,7 @@ import { useApi } from '~/hooks/useApi';
 import { useAuth } from '~/hooks/useAuth';
 import { useCan } from '~/hooks/usePermissions';
 import { useToast } from '~/hooks/useToast';
+import { CalendarFeedSection } from '~/routes/Settings/CalendarFeedSection';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type SettingKey = keyof PatchUserSettingsDto;
@@ -250,6 +251,8 @@ export const Settings = () => {
             ))
           )}
         </div>
+
+        <CalendarFeedSection />
 
         <div style={styles.block}>
           <span style={styles.blockTitle}>Send a test email</span>

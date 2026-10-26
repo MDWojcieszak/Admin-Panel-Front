@@ -23,6 +23,7 @@ import {
   DocumentsApi,
   BuildsApi,
   CommentsApi,
+  CalendarApi,
   TasksApi,
   FileApi,
   GalleriesApi,
@@ -64,6 +65,7 @@ type ApiContextType = {
   documentsApi: DocumentsApi | false;
   buildsApi: BuildsApi | false;
   commentsApi: CommentsApi | false;
+  calendarApi: CalendarApi | false;
   tasksApi: TasksApi | false;
   dashboardApi: DashboardApi | false;
   blogPostsApi: BlogPostsApi | false;
