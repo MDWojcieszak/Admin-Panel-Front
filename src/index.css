@@ -76,3 +76,20 @@ h4 {
   width: 100% !important;
   box-sizing: border-box;
 }
+
+/* A native scrollbar in the panel's colours, for areas that scroll without the
+   Scrollbar component (a side panel's body). */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(146, 164, 177, 0.35) transparent;
+}
+.thin-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgba(146, 164, 177, 0.35);
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

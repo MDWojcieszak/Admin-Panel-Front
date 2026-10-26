@@ -56,7 +56,7 @@ const SidePanel = (p: ModalProps) => {
               <HiX size={24} onClick={p.handleClose} style={styles.icon} />
             </div>
           )}
-          <div style={styles.sideBody}>
+          <div style={styles.sideBody} className='thin-scrollbar'>
             <SidePanelReadyContext.Provider value={ready}>{p.children}</SidePanelReadyContext.Provider>
           </div>
         </GlassCard>
@@ -310,7 +310,13 @@ const useStyles = mkUseStyles((t) => ({
     borderTop: `1px solid ${t.colors.blue02 + t.colorOpacity(0.3)}`,
     boxShadow: '0 -12px 40px rgba(0, 0, 0, 0.45)',
   },
-  sheetHeader: { flexShrink: 0, touchAction: 'none', paddingLeft: t.spacing.m, paddingRight: t.spacing.m, paddingBottom: t.spacing.s },
+  sheetHeader: {
+    flexShrink: 0,
+    touchAction: 'none',
+    paddingLeft: t.spacing.m,
+    paddingRight: t.spacing.m,
+    paddingBottom: t.spacing.s,
+  },
   sheetHandle: {
     width: 38,
     height: 5,
@@ -330,9 +336,14 @@ const useStyles = mkUseStyles((t) => ({
     paddingRight: t.spacing.m,
     paddingBottom: `calc(${t.spacing.m}px + env(safe-area-inset-bottom, 0px))`,
   },
+  // A panel that brings its own full-height Scrollbar never overflows this;
+  // one that does not (a plain form) scrolls here instead of running off the screen.
   sideBody: {
     flex: 1,
     minHeight: 0,
     minWidth: 0,
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    overscrollBehavior: 'contain',
   },
 }));
