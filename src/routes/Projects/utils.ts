@@ -11,10 +11,12 @@ import {
   ProjectUserResponse,
   StatusCategory,
   TaskPriority,
+  TaskResponse,
 } from '~/api/api';
 import { BadgeTone } from '~/components/Badge';
 import { SearchSelectOption } from '~/components/SearchSelect';
 import { MainNavigationRoute } from '~/navigation/types';
+import { Theme } from '~/utils/theme';
 
 export const projectPath = (id: string) => `/${MainNavigationRoute.PROJECTS}/${id}`;
 
@@ -161,3 +163,53 @@ export const formatMoney = (value: number, currency?: string | null) => {
 
 /** Typed by another member: only plain web links become clickable. */
 export const SAFE_URL = /^https?:\/\//i;
+
+/** A task's priority as a colour of the theme: the card's edge and its chip. */
+export const PRIORITY_COLOR: Record<TaskPriority, keyof Theme['colors']> = {
+  LOW: 'dark05',
+  MEDIUM: 'blue',
+  HIGH: 'yellow',
+  URGENT: 'red',
+};
+
+/** Most pressing first. */
+export const PRIORITY_RANK: Record<TaskPriority, number> = { URGENT: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
+
+/** How the tasks in a column or a group are ordered. */
+export type TaskSort = 'manual' | 'priority' | 'due';
+
+export const TASK_SORT_LABEL: Record<TaskSort, string> = {
+  manual: 'Manual order',
+  priority: 'By priority',
+  due: 'By due date',
+};
+
+/** For a phone, where the select shares a line with the add field. */
+export const TASK_SORT_SHORT: Record<TaskSort, string> = {
+  manual: 'Manual',
+  priority: 'Priority',
+  due: 'Due date',
+};
+
+const dueTime = (task: TaskResponse) => (task.dueDate ? Date.parse(task.dueDate) : Infinity);
+
+/** Tasks in the chosen order; ties fall back to the board's own order. */
+export const sortTasks = (tasks: TaskResponse[], sort: TaskSort): TaskResponse[] => {
+  if (sort === 'manual') return tasks;
+  return [...tasks].sort((a, b) =>
+    sort === 'priority'
+      ? PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] || dueTime(a) - dueTime(b) || a.order - b.order
+      : dueTime(a) - dueTime(b) || PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority] || a.order - b.order,
+  );
+};
+
+/** Top-level tasks, and each one's subtasks by its id (the list comes flat, with parentTaskId). */
+export const splitSubtasks = (tasks: TaskResponse[]) => {
+  const subtasks = new Map<string, TaskResponse[]>();
+  const top: TaskResponse[] = [];
+  tasks.forEach((task) => {
+    if (task.parentTaskId) subtasks.set(task.parentTaskId, [...(subtasks.get(task.parentTaskId) ?? []), task]);
+    else top.push(task);
+  });
+  return { top, subtasks };
+};

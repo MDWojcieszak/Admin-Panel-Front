@@ -10,10 +10,13 @@ import { useTheme } from '~/utils/theme';
 export const TaskMeta = ({
   task,
   hideQuantity,
+  hidePriority,
   style,
 }: {
   task: TaskResponse;
   hideQuantity?: boolean;
+  /** For rows that show the priority on their own. */
+  hidePriority?: boolean;
   style?: CSSProperties;
 }) => {
   const shared = useProjectStyles();
@@ -56,7 +59,7 @@ export const TaskMeta = ({
           {task.subtaskCount}
         </span>
       ) : null}
-      {task.priority === TaskPriority.High || task.priority === TaskPriority.Urgent ? (
+      {!hidePriority && (task.priority === TaskPriority.High || task.priority === TaskPriority.Urgent) ? (
         <Badge label={PRIORITY_LABEL[task.priority]} tone={PRIORITY_TONE[task.priority]} style={{ fontSize: 11 }} />
       ) : null}
       {task.assignee ? <Avatar user={task.assignee} size={20} /> : null}

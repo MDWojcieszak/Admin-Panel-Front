@@ -140,8 +140,7 @@ export const MyWork = () => {
                   <span
                     style={{
                       fontSize: 14,
-                      color: done ? theme.colors.dark05 : theme.colors.white,
-                      textDecoration: done ? 'line-through' : undefined,
+                      color: theme.colors.white,
                       wordBreak: 'break-word',
                     }}
                   >

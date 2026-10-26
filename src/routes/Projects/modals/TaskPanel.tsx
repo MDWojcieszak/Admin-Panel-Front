@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { FiCornerLeftUp, FiCornerUpRight, FiTrash2, FiX } from 'react-icons/fi';
+import { FiCornerLeftUp, FiCornerUpRight, FiPlus, FiTrash2, FiX } from 'react-icons/fi';
 import {
   ProjectDetailResponse,
   ProjectRole,
@@ -310,70 +310,99 @@ export const TaskPanel = (p: TaskPanelProps) => {
         />
 
         <div style={styles.section}>
-          <span style={shared.fieldLabel}>
-            Checklist{task.checklist.total ? ` · ${task.checklist.done}/${task.checklist.total}` : ''}
-          </span>
-          {task.checklistItems.length ? (
-            <div style={shared.list}>
-              {task.checklistItems.map((item) => (
-                <div key={item.id} style={shared.listRow}>
-                  <Checkbox
-                    checked={item.done}
-                    disabled={!checkable}
-                    size={18}
-                    onChange={() =>
-                      run(async () => {
-                        if (!tasksApi) return;
-                        const { data } = await tasksApi.taskControllerUpdateChecklistItem({
-                          id: task.id,
-                          itemId: item.id,
-                          updateChecklistItemDto: { done: !item.done },
-                        });
-                        setChecklist(data);
-                      }, 'Could not tick the item.')
-                    }
-                  />
+          <div style={styles.sectionHead}>
+            <span style={shared.fieldLabel}>Checklist</span>
+            {task.checklist.total ? (
+              <>
+                <span style={styles.bar}>
                   <span
                     style={{
-                      flex: 1,
-                      fontSize: 14,
-                      color: item.done ? theme.colors.dark05 : theme.colors.white,
-                      textDecoration: item.done ? 'line-through' : undefined,
+                      ...styles.barFill,
+                      width: `${Math.round((task.checklist.done / task.checklist.total) * 100)}%`,
+                    }}
+                  />
+                </span>
+                <span style={shared.muted}>
+                  {task.checklist.done}/{task.checklist.total}
+                </span>
+              </>
+            ) : null}
+          </div>
+          {task.checklistItems.length ? (
+            <div style={shared.list}>
+              {task.checklistItems.map((item) => {
+                // The whole row ticks: a small box alone was hard to hit.
+                const tick = () =>
+                  run(async () => {
+                    if (!tasksApi) return;
+                    // Ticked on screen at once; the answer settles it.
+                    setChecklist(task.checklistItems.map((i) => (i.id === item.id ? { ...i, done: !i.done } : i)));
+                    const { data } = await tasksApi.taskControllerUpdateChecklistItem({
+                      id: task.id,
+                      itemId: item.id,
+                      updateChecklistItemDto: { done: !item.done },
+                    });
+                    setChecklist(data);
+                  }, 'Could not tick the item.');
+                return (
+                  <div
+                    key={item.id}
+                    role='checkbox'
+                    aria-checked={item.done}
+                    tabIndex={checkable ? 0 : -1}
+                    style={{ ...shared.listRow, ...styles.checkRow, cursor: checkable ? 'pointer' : 'default' }}
+                    onClick={() => checkable && tick()}
+                    onKeyDown={(e) => {
+                      if (checkable && (e.key === ' ' || e.key === 'Enter')) {
+                        e.preventDefault();
+                        tick();
+                      }
                     }}
                   >
-                    {item.content}
-                  </span>
-                  {editable ? (
-                    <button
-                      type='button'
-                      title='Remove'
-                      style={shared.iconButton}
-                      onClick={() =>
-                        run(async () => {
-                          if (!tasksApi) return;
-                          const { data } = await tasksApi.taskControllerRemoveChecklistItem({
-                            id: task.id,
-                            itemId: item.id,
-                          });
-                          setChecklist(data);
-                        }, 'Could not remove the item.')
-                      }
+                    <Checkbox checked={item.done} disabled={!checkable} size={20} onChange={tick} />
+                    <span
+                      style={{
+                        flex: 1,
+                        minWidth: 0,
+                        fontSize: 14,
+                        lineHeight: 1.4,
+                        wordBreak: 'break-word',
+                        color: theme.colors.white,
+                      }}
                     >
-                      <FiX size={14} />
-                    </button>
-                  ) : null}
-                </div>
-              ))}
+                      {item.content}
+                    </span>
+                    {editable ? (
+                      <button
+                        type='button'
+                        title='Remove'
+                        style={{ ...shared.iconButton, width: 36, height: 36 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          run(async () => {
+                            if (!tasksApi) return;
+                            const { data } = await tasksApi.taskControllerRemoveChecklistItem({
+                              id: task.id,
+                              itemId: item.id,
+                            });
+                            setChecklist(data);
+                          }, 'Could not remove the item.');
+                        }}
+                      >
+                        <FiX size={15} />
+                      </button>
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
           ) : null}
           {editable ? (
-            <input
-              style={shared.textInput}
-              value={newItem}
-              placeholder='Add an item, Enter to save'
-              onChange={(e) => setNewItem(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key !== 'Enter' || !newItem.trim()) return;
+            <form
+              style={styles.addRow}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!newItem.trim()) return;
                 const content = newItem.trim();
                 setNewItem('');
                 run(async () => {
@@ -385,7 +414,15 @@ export const TaskPanel = (p: TaskPanelProps) => {
                   setChecklist(data);
                 }, 'Could not add the item.');
               }}
-            />
+            >
+              <input
+                style={{ ...shared.textInput, flex: 1, minWidth: 0 }}
+                value={newItem}
+                placeholder='Add an item'
+                onChange={(e) => setNewItem(e.target.value)}
+              />
+              <Button type='submit' label='Add' variant='secondary' icon={<FiPlus size={14} />} />
+            </form>
           ) : null}
         </div>
 
@@ -396,14 +433,32 @@ export const TaskPanel = (p: TaskPanelProps) => {
               <div style={shared.list}>
                 {task.subtasks.map((sub) => (
                   <div key={sub.id} style={{ ...shared.listRow, cursor: 'pointer' }} onClick={() => setTaskId(sub.id)}>
-                    <Checkbox
-                      checked={sub.status.category === StatusCategory.Done}
-                      disabled={!checkable}
-                      size={18}
-                      onChange={() => toggle(sub.id)}
-                    />
+                    <span
+                      style={styles.tick}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (checkable) toggle(sub.id);
+                      }}
+                    >
+                      <Checkbox
+                        checked={sub.status.category === StatusCategory.Done}
+                        disabled={!checkable}
+                        size={20}
+                        onChange={() => toggle(sub.id)}
+                      />
+                    </span>
                     <StatusDot color={sub.status.color} />
-                    <span style={{ flex: 1, fontSize: 14, color: theme.colors.white, minWidth: 0 }}>{sub.title}</span>
+                    <span
+                      style={{
+                        flex: 1,
+                        fontSize: 14,
+                        minWidth: 0,
+                        wordBreak: 'break-word',
+                        color: theme.colors.white,
+                      }}
+                    >
+                      {sub.title}
+                    </span>
                     <span style={shared.key}>{sub.key}</span>
                     <TaskMeta task={sub} />
                   </div>
@@ -584,6 +639,29 @@ const useStyles = mkUseStyles((t) => ({
     lineHeight: 1.3,
   },
   section: { gap: t.spacing.s },
+  sectionHead: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm },
+  bar: {
+    display: 'flex',
+    flex: 1,
+    maxWidth: 160,
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
+    backgroundColor: t.colors.white + t.colorOpacity(0.08),
+  },
+  barFill: { display: 'block', height: '100%', borderRadius: 2, backgroundColor: t.colors.lightGreen },
+  // 52 px a row with its padding: a comfortable tap, still a compact list.
+  checkRow: { minHeight: 36, outline: 'none' },
+  tick: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 36,
+    height: 36,
+    margin: '-4px -6px',
+    flexShrink: 0,
+  },
+  addRow: { display: 'flex', flexDirection: 'row', alignItems: 'stretch', gap: t.spacing.s },
   // Two fields sharing one cell of the grid: repeat + its interval, quantity + unit.
   pair: { flexDirection: 'row', gap: t.spacing.s, minWidth: 0 },
   pairGrid: {

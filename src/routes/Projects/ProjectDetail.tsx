@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   FiArrowLeft,
@@ -23,7 +23,6 @@ import {
   ProjectStatus,
   ProjectType,
   StatusCategory,
-  TaskPriority,
   TaskResponse,
 } from '~/api/api';
 import { Badge } from '~/components/Badge';
@@ -44,7 +43,13 @@ import { Comments } from '~/routes/Projects/components/Comments';
 import { Journal } from '~/routes/Projects/components/Journal';
 import { ProjectDocuments } from '~/routes/Projects/components/ProjectDocuments';
 import { QuickAdd } from '~/routes/Projects/components/QuickAdd';
-import { Avatar, COMPACT_FIELD_HEIGHT, ProjectsPage, useProjectStyles } from '~/routes/Projects/components/shared';
+import {
+  Avatar,
+  COMPACT_FIELD_HEIGHT,
+  PlainSelect,
+  ProjectsPage,
+  useProjectStyles,
+} from '~/routes/Projects/components/shared';
 import { TaskBoard } from '~/routes/Projects/components/TaskBoard';
 import { TripPacking } from '~/routes/Projects/components/TripPacking';
 import { TaskList } from '~/routes/Projects/components/TaskList';
@@ -60,10 +65,15 @@ import {
   canEdit,
   donePercent,
   dueLabel,
+  PRIORITY_RANK,
   ROLE_LABEL,
   ROLE_TONE,
   STATUS_LABEL,
+  splitSubtasks,
   STATUS_TONE,
+  TASK_SORT_LABEL,
+  TASK_SORT_SHORT,
+  TaskSort,
   TYPE_LABEL,
   userName,
 } from '~/routes/Projects/utils';
@@ -95,7 +105,17 @@ const VIEW_HINT: Partial<Record<View, string>> = {
   [View.COMMENTS]: 'Talk about the project as a whole.',
 };
 
-const PRIORITY_RANK: Record<TaskPriority, number> = { URGENT: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
+/** The board's order is remembered per project, in this browser. */
+const sortKey = (projectId: string) => `project-task-sort:${projectId}`;
+const readSort = (projectId?: string): TaskSort => {
+  if (!projectId) return 'manual';
+  try {
+    const stored = localStorage.getItem(sortKey(projectId));
+    return stored && stored in TASK_SORT_LABEL ? (stored as TaskSort) : 'manual';
+  } catch {
+    return 'manual';
+  }
+};
 
 /**
  * One thing to do next, so an open project never asks "where was I": what is
@@ -135,10 +155,22 @@ export const ProjectDetail = () => {
 
   const tasksQuery = useAsync<TaskResponse[]>(async () => {
     if (!projectsApi || !project) return undefined;
-    const { data } = await projectsApi.projectControllerListTasks({ id: project.id });
+    // Subtasks too, as rows with their parent's id: the board shows them on the parent's card.
+    const { data } = await projectsApi.projectControllerListTasks({ id: project.id, withSubtasks: true });
     return data;
   }, [projectsApi, project?.id]);
-  const tasks = tasksQuery.data ?? [];
+  const { top: tasks, subtasks } = useMemo(() => splitSubtasks(tasksQuery.data ?? []), [tasksQuery.data]);
+
+  const [sort, setSortState] = useState<TaskSort>(() => readSort(routeId));
+  useEffect(() => setSortState(readSort(routeId)), [routeId]);
+  const setSort = (next: TaskSort) => {
+    setSortState(next);
+    try {
+      if (routeId) localStorage.setItem(sortKey(routeId), next);
+    } catch {
+      // Only remembered when the browser lets it.
+    }
+  };
 
   const reload = () => {
     projectQuery.reload();
@@ -257,7 +289,8 @@ export const ProjectDetail = () => {
       const moving = prev?.find((t) => t.id === taskId);
       if (!prev || !moving || !status) return prev;
       const others = prev.filter((t) => t.id !== taskId);
-      const column = others.filter((t) => t.status.id === statusId);
+      // The index counts the column's cards: top-level tasks, as the board shows them.
+      const column = others.filter((t) => !t.parentTaskId && t.status.id === statusId);
       const moved = {
         ...moving,
         status: { id: status.id, name: status.name, color: status.color, category: status.category },
@@ -304,6 +337,28 @@ export const ProjectDetail = () => {
     }, 'Could not change the task.');
   };
 
+  /** A new status at once, as with a tick; the reload after the call settles it. */
+  const setTaskStatus = (task: TaskResponse, statusId: string) => {
+    const status = project.statuses.find((st) => st.id === statusId);
+    if (!status) return;
+    tasksQuery.setData(
+      (prev) =>
+        prev?.map((t) =>
+          t.id === task.id
+            ? {
+                ...t,
+                status: { id: status.id, name: status.name, color: status.color, category: status.category },
+                completedAt: status.category === StatusCategory.Done ? new Date().toISOString() : null,
+              }
+            : t,
+        ),
+    );
+    return run(async () => {
+      if (!tasksApi) return;
+      await tasksApi.taskControllerUpdate({ id: task.id, updateTaskDto: { statusId } });
+    }, 'Could not change the status.');
+  };
+
   const { progress } = project;
   const finishable =
     editable &&
@@ -347,9 +402,14 @@ export const ProjectDetail = () => {
       <TaskBoard
         statuses={project.statuses}
         tasks={tasks}
+        subtasks={subtasks}
+        sort={sort}
         editable={editable}
+        checkable={checkable}
         withQuantity={shopping}
         onOpen={openTask}
+        onToggle={toggleTask}
+        onStatus={setTaskStatus}
         onMove={moveTask}
         onAdd={(statusId, dto) => addTask(dto, statusId)}
       />
@@ -357,6 +417,8 @@ export const ProjectDetail = () => {
       <TaskList
         statuses={project.statuses}
         tasks={tasks}
+        subtasks={subtasks}
+        sort={sort}
         checkable={checkable}
         shopping={shopping}
         onOpen={openTask}
@@ -534,32 +596,46 @@ export const ProjectDetail = () => {
             {/* Always present and always taking the rest of the line, whatever it
                 holds, so the tabs beside it never move between views. */}
             <div style={styles.toolbarStart}>
-              {view !== View.BOARD && view !== View.LIST ? (
-                <span style={shared.muted}>{VIEW_HINT[view]}</span>
-              ) : editable ? (
-                <div style={styles.quickAdd}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <QuickAdd
-                      placeholder={QUICK_ADD_PLACEHOLDER[project.type]}
-                      withQuantity={shopping}
-                      onAdd={(dto) => addTask(dto)}
+              <div style={styles.toolbarRow}>
+                {view !== View.BOARD && view !== View.LIST ? (
+                  <span style={shared.muted}>{VIEW_HINT[view]}</span>
+                ) : editable ? (
+                  <div style={styles.quickAdd}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <QuickAdd
+                        placeholder={QUICK_ADD_PLACEHOLDER[project.type]}
+                        withQuantity={shopping}
+                        onAdd={(dto) => addTask(dto)}
+                      />
+                    </div>
+                    {/* Many at once: a plan from a chat or rows from a spreadsheet, with a preview. */}
+                    <Button
+                      label={isMobile ? '' : 'Import'}
+                      title={shopping ? 'Import items' : 'Import tasks'}
+                      variant='secondary'
+                      icon={<FiUpload size={14} />}
+                      style={styles.importButton}
+                      onClick={() => importModal.show({ project, onDone: () => reload() })}
                     />
                   </div>
-                  {/* Many at once: a plan from a chat or rows from a spreadsheet, with a preview. */}
-                  <Button
-                    label={isMobile ? '' : 'Import'}
-                    title={shopping ? 'Import items' : 'Import tasks'}
-                    variant='secondary'
-                    icon={<FiUpload size={14} />}
-                    style={styles.importButton}
-                    onClick={() => importModal.show({ project, onDone: () => reload() })}
-                  />
-                </div>
-              ) : (
-                <span style={shared.muted}>
-                  {checkable ? 'You can tick things off here.' : 'You can look, not change.'}
-                </span>
-              )}
+                ) : (
+                  <span style={{ ...shared.muted, flex: 1 }}>
+                    {checkable ? 'You can tick things off here.' : 'You can look, not change.'}
+                  </span>
+                )}
+                {view === View.BOARD || view === View.LIST ? (
+                  <span style={isMobile ? styles.sortMobile : styles.sort} title='Order of the tasks'>
+                    <PlainSelect
+                      value={sort}
+                      options={(Object.keys(TASK_SORT_LABEL) as TaskSort[]).map((value) => ({
+                        value,
+                        label: (isMobile ? TASK_SORT_SHORT : TASK_SORT_LABEL)[value],
+                      }))}
+                      onChange={(value) => setSort(value as TaskSort)}
+                    />
+                  </span>
+                ) : null}
+              </div>
             </div>
             <SegmentedTabs
               items={tabs}
@@ -597,7 +673,11 @@ const useStyles = mkUseStyles((t) => ({
   // As tall as the quick-add field whether it holds that field or a one-line
   // hint, so the row — and the tabs and content under it — keep their place.
   toolbarStart: { flex: '1 1 0px', minWidth: 0, minHeight: COMPACT_FIELD_HEIGHT, justifyContent: 'center' },
-  quickAdd: { flexDirection: 'row', alignItems: 'stretch', gap: t.spacing.s, width: '100%', maxWidth: 760 },
+  toolbarRow: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, minWidth: 0 },
+  quickAdd: { flex: 1, flexDirection: 'row', alignItems: 'stretch', gap: t.spacing.s, minWidth: 0, maxWidth: 760 },
+  // Wide enough for its longest option, never squeezed by the add field.
+  sort: { display: 'flex', flexShrink: 0, width: 168 },
+  sortMobile: { display: 'flex', flexShrink: 0, width: 124 },
   importButton: { flexShrink: 0 },
   // Always at the right edge, whether the add field, a hint or nothing sits
   // on its left: switching views must not move the tabs under the cursor.
