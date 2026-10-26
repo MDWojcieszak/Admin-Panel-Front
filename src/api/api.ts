@@ -13128,6 +13128,12 @@ export interface PatchUserSettingsDto {
      * @memberof PatchUserSettingsDto
      */
     'taskEmailNotifications'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchUserSettingsDto
+     */
+    'dailyDigestEmail'?: boolean;
 }
 /**
  * 
@@ -23824,6 +23830,12 @@ export interface UserSettingsResponseDto {
      * @memberof UserSettingsResponseDto
      */
     'taskEmailNotifications': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserSettingsResponseDto
+     */
+    'dailyDigestEmail': boolean;
 }
 /**
  * 

@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **tripEmailNotifications** | **boolean** |  | [optional] [default to undefined]
 **inquiryEmailNotifications** | **boolean** |  | [optional] [default to undefined]
 **taskEmailNotifications** | **boolean** |  | [optional] [default to undefined]
+**dailyDigestEmail** | **boolean** |  | [optional] [default to undefined]
 
 ## Example
 
@@ -30,6 +31,7 @@ const instance: PatchUserSettingsDto = {
     tripEmailNotifications,
     inquiryEmailNotifications,
     taskEmailNotifications,
+    dailyDigestEmail,
 };
 ```
 

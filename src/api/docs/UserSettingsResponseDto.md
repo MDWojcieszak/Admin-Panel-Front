@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **tripEmailNotifications** | **boolean** |  | [default to undefined]
 **inquiryEmailNotifications** | **boolean** |  | [default to undefined]
 **taskEmailNotifications** | **boolean** |  | [default to undefined]
+**dailyDigestEmail** | **boolean** |  | [default to undefined]
 
 ## Example
 
@@ -32,6 +33,7 @@ const instance: UserSettingsResponseDto = {
     tripEmailNotifications,
     inquiryEmailNotifications,
     taskEmailNotifications,
+    dailyDigestEmail,
 };
 ```
 
