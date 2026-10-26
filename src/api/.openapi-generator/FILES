@@ -367,6 +367,7 @@ docs/MoveToGitDto.md
 docs/MovedTaskResponse.md
 docs/MultiUploadResponseDto.md
 docs/MyPermissionsResponseDto.md
+docs/MyTaskStatsResponse.md
 docs/MyTasksView.md
 docs/NightResponse.md
 docs/NotificationsApi.md

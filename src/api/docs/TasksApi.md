@@ -12,6 +12,7 @@ All URIs are relative to *http://localhost*
 |[**taskControllerRemove**](#taskcontrollerremove) | **DELETE** /tasks/{id} | |
 |[**taskControllerRemoveChecklistItem**](#taskcontrollerremovechecklistitem) | **DELETE** /tasks/{id}/checklist/{itemId} | |
 |[**taskControllerReorderChecklist**](#taskcontrollerreorderchecklist) | **PUT** /tasks/{id}/checklist/order | |
+|[**taskControllerStats**](#taskcontrollerstats) | **GET** /tasks/stats | |
 |[**taskControllerToggle**](#taskcontrollertoggle) | **POST** /tasks/{id}/toggle | |
 |[**taskControllerUpdate**](#taskcontrollerupdate) | **PATCH** /tasks/{id} | |
 |[**taskControllerUpdateChecklistItem**](#taskcontrollerupdatechecklistitem) | **PATCH** /tasks/{id}/checklist/{itemId} | |
@@ -425,6 +426,49 @@ const { status, data } = await apiInstance.taskControllerReorderChecklist(
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+|**200** |  |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **taskControllerStats**
+> MyTaskStatsResponse taskControllerStats()
+
+
+### Example
+
+```typescript
+import {
+    TasksApi,
+    Configuration
+} from './api';
+
+const configuration = new Configuration();
+const apiInstance = new TasksApi(configuration);
+
+const { status, data } = await apiInstance.taskControllerStats();
+```
+
+### Parameters
+This endpoint does not have any parameters.
+
+
+### Return type
+
+**MyTaskStatsResponse**
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 

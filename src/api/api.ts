@@ -11548,6 +11548,37 @@ export interface MyPermissionsResponseDto {
 /**
  * 
  * @export
+ * @interface MyTaskStatsResponse
+ */
+export interface MyTaskStatsResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof MyTaskStatsResponse
+     */
+    'doneToday': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof MyTaskStatsResponse
+     */
+    'doneThisWeek': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof MyTaskStatsResponse
+     */
+    'streakDays': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof MyTaskStatsResponse
+     */
+    'open': number;
+}
+/**
+ * 
+ * @export
  * @enum {string}
  */
 
@@ -66300,6 +66331,39 @@ export const TasksApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        taskControllerStats: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/tasks/stats`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -66538,6 +66602,17 @@ export const TasksApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async taskControllerStats(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MyTaskStatsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.taskControllerStats(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TasksApi.taskControllerStats']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -66656,6 +66731,14 @@ export const TasksApiFactory = function (configuration?: Configuration, basePath
          */
         taskControllerReorderChecklist(requestParameters: TasksApiTaskControllerReorderChecklistRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<ChecklistItemResponse>> {
             return localVarFp.taskControllerReorderChecklist(requestParameters.id, requestParameters.reorderIdsDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        taskControllerStats(options?: RawAxiosRequestConfig): AxiosPromise<MyTaskStatsResponse> {
+            return localVarFp.taskControllerStats(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -66990,6 +67073,16 @@ export class TasksApi extends BaseAPI {
      */
     public taskControllerReorderChecklist(requestParameters: TasksApiTaskControllerReorderChecklistRequest, options?: RawAxiosRequestConfig) {
         return TasksApiFp(this.configuration).taskControllerReorderChecklist(requestParameters.id, requestParameters.reorderIdsDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TasksApi
+     */
+    public taskControllerStats(options?: RawAxiosRequestConfig) {
+        return TasksApiFp(this.configuration).taskControllerStats(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
