@@ -1,15 +1,19 @@
 import { format, isToday, isTomorrow } from 'date-fns';
+import { IconType } from 'react-icons';
+import { FiCheckSquare, FiFolder, FiInbox, FiMap, FiTool } from 'react-icons/fi';
 import {
   BomStatus,
   ProjectProgressResponse,
   ProjectRole,
   ProjectStatus,
+  ProjectSummaryResponse,
   ProjectType,
   ProjectUserResponse,
   StatusCategory,
   TaskPriority,
 } from '~/api/api';
 import { BadgeTone } from '~/components/Badge';
+import { SearchSelectOption } from '~/components/SearchSelect';
 import { MainNavigationRoute } from '~/navigation/types';
 
 export const projectPath = (id: string) => `/${MainNavigationRoute.PROJECTS}/${id}`;
@@ -20,6 +24,35 @@ export const TYPE_LABEL: Record<ProjectType, string> = {
   TRIP: 'Trip',
   DIY: 'Build',
 };
+
+export const TYPE_ICON: Record<ProjectType, IconType> = {
+  GENERAL: FiFolder,
+  LIST: FiCheckSquare,
+  TRIP: FiMap,
+  DIY: FiTool,
+};
+
+const TYPE_GROUP: Record<ProjectType, string> = {
+  GENERAL: 'Projects',
+  LIST: 'Lists',
+  TRIP: 'Trips',
+  DIY: 'Builds',
+};
+const TYPE_ORDER: ProjectType[] = [ProjectType.General, ProjectType.Diy, ProjectType.Trip, ProjectType.List];
+
+/** Projects to pick from a search: the inbox first, then grouped by type; the key finds one too. */
+export const projectOptions = (projects: ProjectSummaryResponse[]): SearchSelectOption[] =>
+  [...projects]
+    .sort((a, b) =>
+      a.isInbox !== b.isInbox ? (a.isInbox ? -1 : 1) : TYPE_ORDER.indexOf(a.type) - TYPE_ORDER.indexOf(b.type),
+    )
+    .map((p) => ({
+      value: p.id,
+      label: p.isInbox ? 'Inbox' : p.title,
+      icon: p.isInbox ? FiInbox : TYPE_ICON[p.type],
+      group: p.isInbox ? undefined : TYPE_GROUP[p.type],
+      keywords: p.key,
+    }));
 
 export const TYPE_DESCRIPTION: Record<ProjectType, string> = {
   GENERAL: 'Tasks on a board, statuses like Jira',

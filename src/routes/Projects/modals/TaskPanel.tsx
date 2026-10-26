@@ -16,6 +16,7 @@ import { Button } from '~/components/Button';
 import { ConfirmModal } from '~/components/ConfirmModal';
 import { DateField, DateTimeField, TextAreaField, TextField } from '~/components/ControlledFields';
 import { Loader } from '~/components/Loader';
+import { SearchSelect } from '~/components/SearchSelect';
 import { useSidePanelReady } from '~/components/Modal';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
@@ -28,7 +29,15 @@ import { QuickAdd } from '~/routes/Projects/components/QuickAdd';
 import { Checkbox, PlainSelect, StatusDot, useProjectStyles } from '~/routes/Projects/components/shared';
 import { TaskMeta } from '~/routes/Projects/components/TaskMeta';
 import { useProjectEvents } from '~/routes/Projects/hooks/useProjectEvents';
-import { canCheck, canEdit, fromDateInput, PRIORITY_LABEL, toDateInput, userName } from '~/routes/Projects/utils';
+import {
+  canCheck,
+  canEdit,
+  fromDateInput,
+  PRIORITY_LABEL,
+  projectOptions,
+  toDateInput,
+  userName,
+} from '~/routes/Projects/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -529,12 +538,11 @@ const MoveToProject = ({ task, onMoved }: { task: TaskDetailResponse; onMoved: (
     <div style={styles.section}>
       <span style={shared.fieldLabel}>Move to another project</span>
       <div style={styles.moveRow}>
-        <PlainSelect
+        <SearchSelect
+          bare
           value={target}
-          options={[
-            { value: '', label: 'Choose a project…' },
-            ...targets.map((p) => ({ value: p.id, label: p.isInbox ? 'Inbox' : `${p.key} · ${p.title}` })),
-          ]}
+          options={projectOptions(targets)}
+          placeholder='Choose a project…'
           onChange={setTarget}
           style={styles.moveSelect}
         />

@@ -3,11 +3,13 @@ import { FiCheck, FiCornerUpRight, FiSkipForward, FiTrash2 } from 'react-icons/f
 import { ProjectRole, ProjectSummaryResponse, StatusCategory, TaskResponse } from '~/api/api';
 import { Button } from '~/components/Button';
 import { Loader } from '~/components/Loader';
+import { SearchSelect } from '~/components/SearchSelect';
 import { InternalModalProps } from '~/contexts/ModalManager/types';
 import { useApi } from '~/hooks/useApi';
 import { useToast } from '~/hooks/useToast';
-import { PlainSelect, useProjectStyles } from '~/routes/Projects/components/shared';
+import { useProjectStyles } from '~/routes/Projects/components/shared';
 import { TaskMeta } from '~/routes/Projects/components/TaskMeta';
+import { projectOptions } from '~/routes/Projects/utils';
 import { getApiErrorMessage } from '~/utils/apiError';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
@@ -55,13 +57,7 @@ export const InboxTriageModal = (p: InboxTriageModalProps) => {
       .catch(() => setProjects([]));
   }, [projectsApi, p.inboxId]);
 
-  const options = useMemo(
-    () => [
-      { value: '', label: 'Move to…' },
-      ...projects.map((pr) => ({ value: pr.id, label: `${pr.key} · ${pr.title}` })),
-    ],
-    [projects],
-  );
+  const options = useMemo(() => projectOptions(projects), [projects]);
 
   if (!tasks) return <Loader />;
   const task = tasks[index];
@@ -135,9 +131,11 @@ export const InboxTriageModal = (p: InboxTriageModalProps) => {
         <TaskMeta task={task} />
       </div>
       <div style={styles.moveRow}>
-        <PlainSelect
+        <SearchSelect
+          bare
           value={target && projects.some((pr) => pr.id === target) ? target : ''}
           options={options}
+          placeholder='Move to…'
           onChange={setTarget}
           style={styles.select}
         />
