@@ -11,6 +11,7 @@ import { ServerOverview } from '~/routes/Servers/components/ServerOverview';
 import { useServerDetails } from '~/routes/Servers/hooks/useServerDetails';
 import { ProcessCreatedPayload } from '~/routes/Servers/types';
 import { mkUseStyles } from '~/utils/theme';
+import { Scrollbar } from '~/components/Scrollbar';
 
 type Tab = 'overview' | 'commands' | 'processes';
 
@@ -70,23 +71,34 @@ export const ManageServer = () => {
       />
 
       <div style={styles.content}>
-        {activeTab === 'overview' ? <ServerOverview server={serverDetails} /> : null}
+        {/* Overview and Commands are plain pages and scroll; Processes lays out its own panes. */}
+        {activeTab === 'overview' ? (
+          <Scrollbar style={styles.scroll} horizontal={false}>
+            <div style={styles.scrollContent}>
+              <ServerOverview server={serverDetails} />
+            </div>
+          </Scrollbar>
+        ) : null}
         {activeTab === 'commands' ? (
-          <CommandsTab
-            serverId={serverId}
-            categories={categories}
-            serverOnline={serverDetails?.properties.isOnline}
-            onCategoryChanged={refresh}
-            onCommandRun={(commandId, name) => {
-              commandNamesRef.current[commandId] = name;
-              // Jump to the terminal immediately; the spawned process auto-selects on process.created.
-              if (canReadProcess) {
-                setActiveProcess(undefined);
-                setStarting(true);
-                setActiveTab('processes');
-              }
-            }}
-          />
+          <Scrollbar style={styles.scroll} horizontal={false}>
+            <div style={styles.scrollContent}>
+              <CommandsTab
+                serverId={serverId}
+                categories={categories}
+                serverOnline={serverDetails?.properties.isOnline}
+                onCategoryChanged={refresh}
+                onCommandRun={(commandId, name) => {
+                  commandNamesRef.current[commandId] = name;
+                  // Jump to the terminal immediately; the spawned process auto-selects on process.created.
+                  if (canReadProcess) {
+                    setActiveProcess(undefined);
+                    setStarting(true);
+                    setActiveTab('processes');
+                  }
+                }}
+              />
+            </div>
+          </Scrollbar>
         ) : null}
         {activeTab === 'processes' ? (
           <ProcessesTab
@@ -120,5 +132,9 @@ const useStyles = mkUseStyles((t) => ({
     minHeight: 0,
     minWidth: 0,
     overflow: 'hidden',
+    position: 'relative',
   },
+  scroll: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+  // Room for the scrollbar track; on a phone the Scrollbar drops it.
+  scrollContent: { paddingRight: t.spacing.m, paddingBottom: t.spacing.m },
 }));

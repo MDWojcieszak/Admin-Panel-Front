@@ -5,10 +5,13 @@ import { useApi } from '~/hooks/useApi';
 import useWebSocket from '~/hooks/useWebSocket';
 import { ServerStatusPayload } from '~/routes/Servers/types';
 
+/** What the servers page reads from useServers. */
+export type ServersQuery = ReturnType<typeof useServers>;
+
 export const useServers = () => {
   const [servers, setServers] = useState<ServerListResponseDto['servers']>();
   const [count, setCount] = useState(1);
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 15 });
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 200 });
 
   const [loading, setLoading] = useState(false);
   const { serverApi } = useApi();
