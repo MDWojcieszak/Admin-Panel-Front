@@ -132,7 +132,7 @@ export const MyWork = () => {
             return (
               <div
                 key={task.id}
-                style={{ ...shared.listRow, cursor: 'pointer' }}
+                style={{ ...shared.listRow, ...styles.row }}
                 onClick={() => taskModal.show({ taskId: task.id })}
               >
                 <Checkbox checked={done} onChange={() => toggle(task)} />
@@ -153,7 +153,7 @@ export const MyWork = () => {
                     <span style={shared.key}>{task.key}</span>
                   </span>
                 </div>
-                <TaskMeta task={task} />
+                <TaskMeta task={task} style={styles.meta} />
               </div>
             );
           })}
@@ -207,5 +207,8 @@ const useStyles = mkUseStyles((t) => ({
   },
   toolbar: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.m, flexWrap: 'wrap' },
   quickAdd: { flex: '1 1 280px', maxWidth: 640 },
-  main: { flex: 1, minWidth: 0, gap: 2 },
+  // Wraps as in a project's list: on a narrow screen the facts drop under the title, to the right.
+  row: { cursor: 'pointer', flexWrap: 'wrap' },
+  main: { flex: '1 1 160px', minWidth: 0, gap: 2 },
+  meta: { marginLeft: 'auto', justifyContent: 'flex-end' },
 }));
