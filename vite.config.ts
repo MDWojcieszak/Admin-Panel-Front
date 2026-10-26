@@ -1,9 +1,26 @@
 import react from '@vitejs/plugin-react';
+import { execSync } from 'child_process';
 import { defineConfig } from 'vite';
+
+// Shown on the About page. The Docker build has no .git (see .dockerignore),
+// so the commit is there only for builds made from a checkout.
+const commit = (() => {
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString()
+      .trim();
+  } catch {
+    return '';
+  }
+})();
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: {
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    __BUILD_COMMIT__: JSON.stringify(commit),
+  },
   resolve: {
     alias: {
       '~/': `${process.cwd()}/src/`,
