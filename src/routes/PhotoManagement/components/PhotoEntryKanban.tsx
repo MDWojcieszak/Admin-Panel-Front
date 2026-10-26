@@ -1,9 +1,8 @@
-import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PhotoEntryResponse } from '~/api/api';
-import { Scrollbar } from '~/components/Scrollbar';
+import { KanbanBoard } from '~/components/KanbanBoard';
 import { PhotoEntryKanbanCard } from '~/routes/PhotoManagement/components/PhotoEntryKanbanCard';
-import { PhotoEntryKanbanColumnHeader } from '~/routes/PhotoManagement/components/PhotoEntryKanbanColumnHeader';
 import { getKanbanColumnColors } from '~/routes/PhotoManagement/utils/colors';
 import { buildNameQualifiers } from '~/routes/PhotoManagement/utils/entryNames';
 import {
@@ -158,114 +157,55 @@ export const PhotoEntryKanban = ({
   };
 
   return (
-    <LayoutGroup>
-      <div style={styles.wrapper}>
-        <div style={styles.boardHeaders}>
-          {KANBAN_COLUMNS.map((column) => {
-            const { columnColors, columnEntries, isDraggedSource, draggedCanMoveHere, shouldDim, shouldHighlight } =
-              describeLane(column);
-
-            return (
-              <motion.div
-                key={column.id}
-                layout
-                animate={{
-                  opacity: shouldDim ? 0.35 : 1,
-                  border: shouldHighlight ? `1px solid ${columnColors.accent}` : `1px solid ${columnColors.border}`,
-                  borderBottom: 'none',
-                  backgroundColor: dragState
-                    ? draggedCanMoveHere
-                      ? columnColors.background
-                      : columnColors.border
-                    : columnColors.activeBackground,
-                }}
-                transition={{ type: 'spring', stiffness: 320, damping: 30 }}
-                style={{
-                  ...styles.columnHeaderShell,
-                  backgroundColor: columnColors.background,
-                  zIndex: isDraggedSource ? 20 : 1,
-                }}
-              >
-                <PhotoEntryKanbanColumnHeader
-                  title={column.title}
-                  count={columnEntries.length}
+    <KanbanBoard
+      dragging={Boolean(dragState)}
+      lanes={KANBAN_COLUMNS.map((column) => {
+        const { columnColors, columnEntries, isDraggedSource, draggedCanMoveHere, shouldDim, shouldHighlight } =
+          describeLane(column);
+        return {
+          id: column.id,
+          title: column.title,
+          count: columnEntries.length,
+          palette: columnColors,
+          highlight: shouldHighlight,
+          dimmed: shouldDim,
+          blocked: !draggedCanMoveHere,
+          raised: isDraggedSource,
+          bodyRef: (node) => {
+            columnRefs.current[column.id] = node;
+          },
+          children: (
+            <AnimatePresence initial={false}>
+              {columnEntries.map((entry) => (
+                <PhotoEntryKanbanCard
+                  key={entry.id}
+                  entry={entry}
+                  qualifier={nameQualifiers.get(entry.id)}
                   accentColor={columnColors.accent}
-                  shouldHighlight={shouldHighlight}
+                  pending={pendingEntryId === entry.id}
+                  isDragging={dragState?.entryId === entry.id}
+                  onCardClick={onCardClick}
+                  onDragStart={(dragged) => {
+                    const fromColumn = getEntryColumn(dragged);
+                    if (!fromColumn) return;
+
+                    setDragState({
+                      entryId: dragged.id,
+                      fromColumn,
+                      hoverColumn: fromColumn,
+                    });
+                  }}
+                  onDragMove={handleDragMove}
+                  onDragEnd={handleDragEnd}
                   styles={styles}
                 />
-              </motion.div>
-            );
-          })}
-        </div>
-
-        <div style={styles.boardContent}>
-          <Scrollbar style={styles.boardScroll}>
-            <div style={styles.boardCards}>
-              {KANBAN_COLUMNS.map((column) => {
-                const { columnColors, columnEntries, isDraggedSource, draggedCanMoveHere, shouldDim, shouldHighlight } =
-                  describeLane(column);
-
-                return (
-                  <motion.div
-                    key={column.id}
-                    ref={(node) => {
-                      columnRefs.current[column.id] = node;
-                    }}
-                    layout
-                    animate={{
-                      opacity: shouldDim ? 0.35 : 1,
-                      border: shouldHighlight ? `1px solid ${columnColors.accent}` : `1px solid ${columnColors.border}`,
-                      backgroundColor: dragState
-                        ? draggedCanMoveHere
-                          ? columnColors.background
-                          : columnColors.border
-                        : columnColors.activeBackground,
-
-                      borderTop: 'none',
-                    }}
-                    transition={{ type: 'spring', stiffness: 320, damping: 30 }}
-                    style={{
-                      ...styles.columnBodyShell,
-                      backgroundColor: columnColors.background,
-                      zIndex: isDraggedSource ? 20 : 1,
-                    }}
-                  >
-                    <div style={styles.cards}>
-                      <AnimatePresence initial={false}>
-                        {columnEntries.map((entry) => (
-                          <PhotoEntryKanbanCard
-                            key={entry.id}
-                            entry={entry}
-                            qualifier={nameQualifiers.get(entry.id)}
-                            accentColor={columnColors.accent}
-                            pending={pendingEntryId === entry.id}
-                            isDragging={dragState?.entryId === entry.id}
-                            onCardClick={onCardClick}
-                            onDragStart={(dragged) => {
-                              const fromColumn = getEntryColumn(dragged);
-                              if (!fromColumn) return;
-
-                              setDragState({
-                                entryId: dragged.id,
-                                fromColumn,
-                                hoverColumn: fromColumn,
-                              });
-                            }}
-                            onDragMove={handleDragMove}
-                            onDragEnd={handleDragEnd}
-                            styles={styles}
-                          />
-                        ))}
-                      </AnimatePresence>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </Scrollbar>
-        </div>
-
-        {cancelledEntries.length ? (
+              ))}
+            </AnimatePresence>
+          ),
+        };
+      })}
+      footer={
+        cancelledEntries.length ? (
           <div style={styles.cancelledStrip}>
             <div
               role='button'
@@ -317,85 +257,13 @@ export const PhotoEntryKanban = ({
               ) : null}
             </AnimatePresence>
           </div>
-        ) : null}
-      </div>
-    </LayoutGroup>
+        ) : null
+      }
+    />
   );
 };
 
 const useStyles = mkUseStyles((t) => ({
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    height: '100%',
-    minWidth: 0,
-    minHeight: 0,
-  },
-  boardHeaders: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
-    gap: t.spacing.m,
-    alignItems: 'start',
-    width: 'calc(100% - 28px)',
-    minWidth: 0,
-    flexShrink: 0,
-  },
-  boardContent: {
-    flex: 1,
-    minHeight: 0,
-    minWidth: 0,
-  },
-  boardScroll: {
-    height: '100%',
-    minHeight: 0,
-  },
-  boardCards: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
-    gap: t.spacing.m,
-    alignItems: 'start',
-    width: '100%',
-    minWidth: 0,
-    minHeight: '100%',
-    boxSizing: 'border-box',
-    paddingRight: t.spacing.l + t.spacing.xs,
-  },
-  columnHeaderShell: {
-    width: '100%',
-    minWidth: 0,
-    borderRadius: '16px 16px 0 0',
-    padding: t.spacing.m,
-    boxSizing: 'border-box',
-    position: 'relative',
-  },
-  columnBodyShell: {
-    width: '100%',
-    minWidth: 0,
-    borderRadius: '0 0 16px 16px',
-    padding: t.spacing.m,
-    minHeight: 420,
-    boxSizing: 'border-box',
-    position: 'relative',
-  },
-  columnHeader: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.s,
-  },
-  columnAccent: {
-    width: 10,
-    height: 10,
-    borderRadius: '50%',
-    flexShrink: 0,
-  },
-  columnTitle: {
-    color: colors.white,
-    fontWeight: '700',
-    flex: 1,
-    minWidth: 0,
-  },
   columnCount: {
     color: colors.dark05,
     backgroundColor: 'rgba(255,255,255,0.08)',
@@ -403,14 +271,6 @@ const useStyles = mkUseStyles((t) => ({
     borderRadius: 999,
     fontSize: 12,
     flexShrink: 0,
-  },
-  cards: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: t.spacing.s,
-    minHeight: 120,
-    width: '100%',
-    minWidth: 0,
   },
   card: {
     backgroundColor: 'rgba(30, 32, 37, 0.92)',
