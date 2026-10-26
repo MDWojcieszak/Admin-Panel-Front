@@ -1,31 +1,37 @@
-import { PaginationState } from '@tanstack/react-table';
 import { useEffect, useState } from 'react';
 import { ServerListResponseDto, ServerStatus } from '~/api/api';
 import { useApi } from '~/hooks/useApi';
 import useWebSocket from '~/hooks/useWebSocket';
 import { ServerStatusPayload } from '~/routes/Servers/types';
 
+/** The backend pages servers by at most 20 (a larger take is a 400). */
+const PAGE = 20;
+
 /** What the servers page reads from useServers. */
 export type ServersQuery = ReturnType<typeof useServers>;
 
 export const useServers = () => {
   const [servers, setServers] = useState<ServerListResponseDto['servers']>();
-  const [count, setCount] = useState(1);
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 200 });
-
+  const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const { serverApi } = useApi();
 
+  // Every server, page by page: the tiles show them all at once.
   const handleGet = async () => {
+    if (!serverApi) return;
+    setLoading(true);
     try {
-      if (!serverApi) throw new Error('Server api not avaliable');
-      serverApi
-        .serverControllerGetAll({ take: pagination.pageSize, skip: pagination.pageIndex * pagination.pageSize })
-        .then((s) => {
-          setServers(s.data.servers);
-          setCount(s.data.total);
-        });
+      const first = await serverApi.serverControllerGetAll({ take: PAGE, skip: 0 });
+      const rest = [];
+      for (let skip = PAGE; skip < first.data.total; skip += PAGE) {
+        rest.push(serverApi.serverControllerGetAll({ take: PAGE, skip }));
+      }
+      const pages = await Promise.all(rest);
+      setServers([...first.data.servers, ...pages.flatMap((page) => page.data.servers)]);
+      setCount(first.data.total);
     } catch (e) {
+      console.error('Error loading servers:', e);
+    } finally {
       setLoading(false);
     }
   };
@@ -60,13 +66,8 @@ export const useServers = () => {
 
   useEffect(() => {
     handleGet();
-  }, [pagination]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverApi]);
 
-  return {
-    servers,
-    loading,
-    pagination,
-    count,
-    setPagination,
-  };
+  return { servers, loading, count };
 };
