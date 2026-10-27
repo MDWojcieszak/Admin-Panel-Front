@@ -1,9 +1,9 @@
 import { CSSProperties } from 'react';
 import { FiCalendar, FiCheckSquare, FiGitBranch, FiMessageSquare, FiPaperclip } from 'react-icons/fi';
-import { StatusCategory, TaskPriority, TaskResponse } from '~/api/api';
+import { StatusCategory, TaskResponse } from '~/api/api';
 import { Badge } from '~/components/Badge';
 import { Avatar, useProjectStyles } from '~/routes/Projects/components/shared';
-import { dueLabel, PRIORITY_LABEL, PRIORITY_TONE, quantityLabel } from '~/routes/Projects/utils';
+import { dueLabel, isPressing, PRIORITY_LABEL, PRIORITY_TONE, quantityLabel } from '~/routes/Projects/utils';
 import { useTheme } from '~/utils/theme';
 
 /** The small facts under a task's title: due, checklist, subtasks, priority, who. */
@@ -59,7 +59,7 @@ export const TaskMeta = ({
           {task.subtaskCount}
         </span>
       ) : null}
-      {!hidePriority && (task.priority === TaskPriority.High || task.priority === TaskPriority.Urgent) ? (
+      {!hidePriority && isPressing(task.priority) ? (
         <Badge label={PRIORITY_LABEL[task.priority]} tone={PRIORITY_TONE[task.priority]} style={{ fontSize: 11 }} />
       ) : null}
       {task.assignee ? <Avatar user={task.assignee} size={20} /> : null}

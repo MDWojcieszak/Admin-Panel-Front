@@ -1,6 +1,16 @@
 import { format, isToday, isTomorrow } from 'date-fns';
 import { IconType } from 'react-icons';
-import { FiCheckSquare, FiFolder, FiInbox, FiMap, FiTool } from 'react-icons/fi';
+import {
+  FiCheckSquare,
+  FiChevronDown,
+  FiChevronsUp,
+  FiChevronUp,
+  FiFolder,
+  FiInbox,
+  FiMap,
+  FiMinus,
+  FiTool,
+} from 'react-icons/fi';
 import {
   BomStatus,
   ProjectProgressResponse,
@@ -9,6 +19,7 @@ import {
   ProjectSummaryResponse,
   ProjectType,
   ProjectUserResponse,
+  RepeatType,
   StatusCategory,
   TaskPriority,
   TaskResponse,
@@ -164,12 +175,45 @@ export const formatMoney = (value: number, currency?: string | null) => {
 /** Typed by another member: only plain web links become clickable. */
 export const SAFE_URL = /^https?:\/\//i;
 
-/** A task's priority as a colour of the theme: the card's edge and its chip. */
+/** A task's priority as a colour of the theme: calm green to red, each its own. */
 export const PRIORITY_COLOR: Record<TaskPriority, keyof Theme['colors']> = {
-  LOW: 'dark05',
+  LOW: 'mainGreen',
   MEDIUM: 'blue',
   HIGH: 'yellow',
   URGENT: 'red',
+};
+
+/** Arrows as in a tracker: how far up the task is. */
+export const PRIORITY_ICON: Record<TaskPriority, IconType> = {
+  LOW: FiChevronDown,
+  MEDIUM: FiMinus,
+  HIGH: FiChevronUp,
+  URGENT: FiChevronsUp,
+};
+
+/** How often a task comes back, short enough for a line of facts. */
+export const REPEAT_SHORT: Record<RepeatType, string> = {
+  NONE: '',
+  DAILY: 'Daily',
+  WEEKLY: 'Weekly',
+  MONTHLY: 'Monthly',
+  YEARLY: 'Yearly',
+  CUSTOM: 'Repeats',
+};
+
+/** High and urgent: worth a mark where room is short, a subtask's row or a badge among facts. */
+export const isPressing = (priority: TaskPriority) => priority === TaskPriority.High || priority === TaskPriority.Urgent;
+
+/**
+ * Why a task wants a look now, as the colour of its edge: red when late or
+ * urgent, yellow when due today or high, green when done. The rest get none,
+ * so the few that light up stand out on a full board.
+ */
+export const attentionColor = (task: TaskResponse): keyof Theme['colors'] | undefined => {
+  if (task.status.category === StatusCategory.Done) return 'lightGreen';
+  if (task.overdue || task.priority === TaskPriority.Urgent) return 'red';
+  if ((task.dueDate && isToday(new Date(task.dueDate))) || task.priority === TaskPriority.High) return 'yellow';
+  return undefined;
 };
 
 /** Most pressing first. */

@@ -1,10 +1,18 @@
 import { useState } from 'react';
-import { FiChevronDown, FiChevronRight, FiFlag } from 'react-icons/fi';
+import { FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import { ProjectStatusResponse, StatusCategory, TaskResponse } from '~/api/api';
 import { useIsMobile } from '~/hooks/useBreakpoint';
 import { Checkbox, StatusDot, useProjectStyles } from '~/routes/Projects/components/shared';
 import { TaskMeta } from '~/routes/Projects/components/TaskMeta';
-import { PRIORITY_COLOR, PRIORITY_LABEL, quantityLabel, sortTasks, TaskSort } from '~/routes/Projects/utils';
+import {
+  attentionColor,
+  PRIORITY_COLOR,
+  PRIORITY_ICON,
+  PRIORITY_LABEL,
+  quantityLabel,
+  sortTasks,
+  TaskSort,
+} from '~/routes/Projects/utils';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 type TaskListProps = {
@@ -85,8 +93,11 @@ const TaskRow = ({ task, nested, ...p }: TaskListProps & { task: TaskResponse; n
   const done = task.status.category === StatusCategory.Done;
   const amount = quantityLabel(task.quantity, task.unit);
   const priority = theme.colors[PRIORITY_COLOR[task.priority]];
+  const PriorityIcon = PRIORITY_ICON[task.priority];
   // A list is ticked in any order: priority would only be noise on it.
   const showPriority = !p.shopping && !done;
+  // The edge only for what wants a look now, as on the board's cards.
+  const edge = showPriority && !nested ? attentionColor(task) : undefined;
 
   return (
     <div
@@ -94,7 +105,7 @@ const TaskRow = ({ task, nested, ...p }: TaskListProps & { task: TaskResponse; n
         ...shared.listRow,
         ...styles.row,
         ...(nested ? styles.nested : null),
-        boxShadow: showPriority && !nested ? `inset 3px 0 0 ${priority}` : undefined,
+        boxShadow: edge ? `inset 3px 0 0 ${theme.colors[edge]}` : undefined,
       }}
       onClick={() => p.onOpen(task.id)}
     >
@@ -120,7 +131,7 @@ const TaskRow = ({ task, nested, ...p }: TaskListProps & { task: TaskResponse; n
       </span>
       {showPriority ? (
         <span style={{ ...styles.priority, color: priority }} title={`${PRIORITY_LABEL[task.priority]} priority`}>
-          <FiFlag size={11} />
+          <PriorityIcon size={13} />
           {isMobile ? null : PRIORITY_LABEL[task.priority]}
         </span>
       ) : null}

@@ -1,27 +1,36 @@
-import { isToday } from 'date-fns';
+import { format, isToday } from 'date-fns';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, TouchEvent, useState } from 'react';
 import {
   FiAlertCircle,
+  FiAlignLeft,
   FiBell,
   FiCalendar,
-  FiCheck,
+  FiCheckCircle,
   FiCheckSquare,
   FiChevronDown,
-  FiFlag,
+  FiClock,
   FiGitBranch,
   FiMessageSquare,
   FiPaperclip,
   FiRepeat,
 } from 'react-icons/fi';
-import { ProjectStatusResponse, RepeatType, StatusCategory, TaskPriority, TaskResponse } from '~/api/api';
+import { ProjectStatusResponse, RepeatType, StatusCategory, TaskResponse } from '~/api/api';
 import { PillSelect } from '~/components/PillSelect';
 import { Avatar, Checkbox, useProjectStyles } from '~/routes/Projects/components/shared';
-import { dueLabel, PRIORITY_COLOR, PRIORITY_LABEL, quantityLabel } from '~/routes/Projects/utils';
+import {
+  attentionColor,
+  dueLabel,
+  isPressing,
+  PRIORITY_COLOR,
+  PRIORITY_ICON,
+  PRIORITY_LABEL,
+  quantityLabel,
+  REPEAT_SHORT,
+} from '~/routes/Projects/utils';
 import { mkUseStyles, useTheme } from '~/utils/theme';
 
 const isDone = (task: TaskResponse) => task.status.category === StatusCategory.Done;
-const pressing = (task: TaskResponse) => task.priority === TaskPriority.High || task.priority === TaskPriority.Urgent;
 
 type TaskCardProps = {
   task: TaskResponse;
@@ -44,10 +53,12 @@ type TaskCardProps = {
 };
 
 /**
- * A task on the board: its priority on the edge and in a chip, its facts in
- * one line (checklist and subtasks as small progress pills among them), and
- * its subtasks unfolding under it as the tasks they are, each with a status
- * that can be changed from here.
+ * A task on the board, laid out as the photo entries are: the title, one quiet
+ * line of what kind of task it is (priority in its colour, key, repeat), chips
+ * for when it is due or reminds, and under a hairline what it holds (checklist,
+ * subtasks, notes, files, comments) and whose it is. The edge lights only when
+ * the task wants a look. Subtasks unfold under it as the tasks they are, with
+ * a status that can be changed from here and their due date.
  */
 export const TaskCard = (p: TaskCardProps) => {
   const { task, subtasks } = p;
@@ -57,12 +68,30 @@ export const TaskCard = (p: TaskCardProps) => {
   const [hover, setHover] = useState(false);
   const done = isDone(task);
   const priority = theme.colors[PRIORITY_COLOR[task.priority]];
+  const PriorityIcon = PRIORITY_ICON[task.priority];
+  const edge = attentionColor(task);
   const quantity = p.withQuantity ? quantityLabel(task.quantity, task.unit) : undefined;
   // The rows come with the board; the count is the backend's, for when they don't.
   const subtaskTotal = subtasks.length || task.subtaskCount;
-  const overdue = task.overdue && !done;
-  const dueToday = !overdue && !done && task.dueDate && isToday(new Date(task.dueDate));
   const statusOptions = p.statuses.map((s) => ({ value: s.id, label: s.name, color: s.color || theme.colors.dark05 }));
+
+  const chips: ReactNode[] = [];
+  if (task.dueDate && !done) chips.push(<DueChip key='due' task={task} />);
+  if (task.reminderAt && !done) {
+    chips.push(
+      <Chip key='reminder' icon={<FiBell size={12} />} color={theme.colors.blue04} title='Reminder'>
+        {dueLabel(task.reminderAt)} {format(new Date(task.reminderAt), 'HH:mm')}
+      </Chip>,
+    );
+  }
+
+  const hasFooter =
+    task.checklist.total ||
+    subtaskTotal ||
+    task.notes ||
+    task.documentCount ||
+    task.commentCount ||
+    task.assignee;
 
   return (
     <div
@@ -81,95 +110,91 @@ export const TaskCard = (p: TaskCardProps) => {
       style={{
         ...styles.card,
         ...(hover ? styles.cardHover : null),
-        borderLeftColor: done ? theme.colors.lightGreen : priority,
+        borderLeftColor: edge ? theme.colors[edge] : 'transparent',
         opacity: p.dimmed ? 0.4 : 1,
         cursor: p.draggable ? 'grab' : 'pointer',
       }}
     >
-      <div style={styles.top}>
-        {/* Done says so in green where the priority was; the text stays as readable as ever. */}
-        {done ? (
-          <span style={{ ...styles.priority, ...styles.done }}>
-            <FiCheck size={11} strokeWidth={3} />
-            Done
-          </span>
-        ) : (
-          <span
-            title={`${PRIORITY_LABEL[task.priority]} priority`}
-            style={{ ...styles.priority, color: priority, backgroundColor: priority + theme.colorOpacity(0.14) }}
-          >
-            <FiFlag size={10} strokeWidth={2.6} />
-            {PRIORITY_LABEL[task.priority]}
-          </span>
-        )}
-        <span style={{ ...shared.key, marginLeft: 'auto' }}>{task.key}</span>
-      </div>
-
       <span style={styles.title}>
         {quantity ? <span style={styles.quantity}>{quantity} </span> : null}
         {task.title}
       </span>
 
-      <div style={styles.facts}>
-        {task.checklist.total ? (
-          <ProgressPill
-            icon={<FiCheckSquare size={11} />}
-            label='Checklist'
-            done={task.checklist.done}
-            total={task.checklist.total}
-          />
-        ) : null}
-        {subtaskTotal ? (
-          <ProgressPill
-            icon={<FiGitBranch size={11} />}
-            label='Subtasks'
-            done={subtasks.filter(isDone).length}
-            total={subtaskTotal}
-            open={subtasks.length ? p.expanded : undefined}
-            onClick={subtasks.length ? p.onExpand : undefined}
-          />
-        ) : null}
-        {task.dueDate ? (
+      <div style={styles.meta}>
+        {/* Done says so in green where the priority was; the title stays as readable as ever. */}
+        {done ? (
+          <span style={{ ...styles.metaItem, ...styles.metaStrong, color: theme.colors.lightGreen }}>
+            <FiCheckCircle size={12} strokeWidth={2.6} />
+            Done{task.completedAt ? ` · ${dueLabel(task.completedAt)}` : ''}
+          </span>
+        ) : (
           <span
-            style={{
-              ...styles.fact,
-              color: overdue ? theme.colors.red : dueToday ? theme.colors.yellow : undefined,
-              fontWeight: overdue || dueToday ? 600 : undefined,
-            }}
-            title={overdue ? 'Overdue' : 'Due'}
+            title={`${PRIORITY_LABEL[task.priority]} priority`}
+            style={{ ...styles.metaItem, ...styles.metaStrong, color: priority }}
           >
-            {overdue ? <FiAlertCircle size={12} /> : <FiCalendar size={12} />}
-            {dueLabel(task.dueDate)}
+            <PriorityIcon size={14} strokeWidth={2.6} />
+            {PRIORITY_LABEL[task.priority]}
           </span>
-        ) : null}
-        {task.reminderAt && !done ? (
-          <span style={styles.fact} title='A reminder is set'>
-            <FiBell size={12} />
-          </span>
-        ) : null}
+        )}
+        <span style={styles.separator}>·</span>
+        <span style={shared.key}>{task.key}</span>
         {task.repeat !== RepeatType.None ? (
-          <span style={styles.fact} title='Repeats'>
-            <FiRepeat size={12} />
-          </span>
-        ) : null}
-        {task.documentCount ? (
-          <span style={styles.fact} title='Files'>
-            <FiPaperclip size={12} />
-            {task.documentCount}
-          </span>
-        ) : null}
-        {task.commentCount ? (
-          <span style={styles.fact} title='Comments'>
-            <FiMessageSquare size={12} />
-            {task.commentCount}
-          </span>
-        ) : null}
-        {task.assignee ? (
-          <span style={styles.assignee}>
-            <Avatar user={task.assignee} size={22} />
-          </span>
+          <>
+            <span style={styles.separator}>·</span>
+            <span style={styles.metaItem} title='Repeats'>
+              <FiRepeat size={11} />
+              {REPEAT_SHORT[task.repeat]}
+            </span>
+          </>
         ) : null}
       </div>
+
+      {chips.length ? <div style={styles.chips}>{chips}</div> : null}
+
+      {hasFooter ? (
+        <div style={styles.footer}>
+          {task.checklist.total ? (
+            <ProgressPill
+              icon={<FiCheckSquare size={11} />}
+              label='Checklist'
+              done={task.checklist.done}
+              total={task.checklist.total}
+            />
+          ) : null}
+          {subtaskTotal ? (
+            <ProgressPill
+              icon={<FiGitBranch size={11} />}
+              label='Subtasks'
+              done={subtasks.filter(isDone).length}
+              total={subtaskTotal}
+              open={subtasks.length ? p.expanded : undefined}
+              onClick={subtasks.length ? p.onExpand : undefined}
+            />
+          ) : null}
+          {task.notes ? (
+            <span style={styles.counter} title='Has notes'>
+              <FiAlignLeft size={13} />
+            </span>
+          ) : null}
+          {task.documentCount ? (
+            <span style={styles.counter} title='Files'>
+              <FiPaperclip size={13} />
+              {task.documentCount}
+            </span>
+          ) : null}
+          {task.commentCount ? (
+            <span style={styles.counter} title='Comments'>
+              <FiMessageSquare size={13} />
+              {task.commentCount}
+            </span>
+          ) : null}
+          {task.assignee ? (
+            <span style={styles.assignee}>
+              <Avatar user={task.assignee} size={22} />
+            </span>
+          ) : null}
+        </div>
+      ) : null}
 
       <AnimatePresence initial={false}>
         {p.expanded && subtasks.length ? (
@@ -186,6 +211,7 @@ export const TaskCard = (p: TaskCardProps) => {
             <div style={styles.tree}>
               {subtasks.map((sub) => {
                 const subDone = isDone(sub);
+                const SubPriorityIcon = PRIORITY_ICON[sub.priority];
                 // Whose it is shows only where it differs from the parent's.
                 const otherAssignee = sub.assignee && sub.assignee.id !== task.assignee?.id ? sub.assignee : null;
                 return (
@@ -218,6 +244,8 @@ export const TaskCard = (p: TaskCardProps) => {
                           disabled={!p.editable}
                           onChange={(statusId) => p.onStatus(sub, statusId)}
                         />
+                        {/* Read as the parent's is; a done one keeps its day, quietly. */}
+                        <DueChip task={sub} small />
                         {sub.checklist.total ? (
                           <ProgressPill
                             icon={<FiCheckSquare size={11} />}
@@ -226,18 +254,12 @@ export const TaskCard = (p: TaskCardProps) => {
                             total={sub.checklist.total}
                           />
                         ) : null}
-                        {pressing(sub) && !subDone ? (
+                        {isPressing(sub.priority) && !subDone ? (
                           <span
-                            style={{ ...styles.fact, color: theme.colors[PRIORITY_COLOR[sub.priority]] }}
+                            style={{ ...styles.counter, color: theme.colors[PRIORITY_COLOR[sub.priority]] }}
                             title={`${PRIORITY_LABEL[sub.priority]} priority`}
                           >
-                            <FiFlag size={11} />
-                          </span>
-                        ) : null}
-                        {sub.dueDate && !subDone ? (
-                          <span style={{ ...styles.fact, color: sub.overdue ? theme.colors.red : undefined }}>
-                            <FiCalendar size={11} />
-                            {dueLabel(sub.dueDate)}
+                            <SubPriorityIcon size={14} strokeWidth={2.6} />
                           </span>
                         ) : null}
                         {otherAssignee ? (
@@ -255,6 +277,67 @@ export const TaskCard = (p: TaskCardProps) => {
         ) : null}
       </AnimatePresence>
     </div>
+  );
+};
+
+/** A tinted, outlined chip with an icon: when the task is due, when it reminds. */
+const Chip = ({
+  icon,
+  color,
+  title,
+  small,
+  children,
+}: {
+  icon: ReactNode;
+  color: string;
+  title: string;
+  /** Among a subtask's pills, at their size. */
+  small?: boolean;
+  children: ReactNode;
+}) => {
+  const styles = useStyles();
+  const theme = useTheme();
+  return (
+    <span
+      title={title}
+      style={{
+        ...styles.chip,
+        fontSize: small ? 11 : 12,
+        color,
+        backgroundColor: color + theme.colorOpacity(0.1),
+        borderColor: color + theme.colorOpacity(0.24),
+      }}
+    >
+      {icon}
+      {children}
+    </span>
+  );
+};
+
+/** When a task is due: red once it is late, yellow on the day, quiet otherwise and once done. */
+const DueChip = ({ task, small }: { task: TaskResponse; small?: boolean }) => {
+  const theme = useTheme();
+  if (!task.dueDate) return null;
+  const done = isDone(task);
+  const label = dueLabel(task.dueDate);
+  if (task.overdue && !done) {
+    return (
+      <Chip small={small} icon={<FiAlertCircle size={small ? 11 : 12} />} color={theme.colors.red} title='Overdue'>
+        Overdue · {label}
+      </Chip>
+    );
+  }
+  if (!done && isToday(new Date(task.dueDate))) {
+    return (
+      <Chip small={small} icon={<FiClock size={small ? 11 : 12} />} color={theme.colors.yellow} title='Due today'>
+        Due today
+      </Chip>
+    );
+  }
+  return (
+    <Chip small={small} icon={<FiCalendar size={small ? 11 : 12} />} color={theme.colors.dark05} title='Due'>
+      {label}
+    </Chip>
   );
 };
 
@@ -322,8 +405,8 @@ const ProgressPill = ({
 
 const useStyles = mkUseStyles((t) => ({
   card: {
-    gap: t.spacing.s,
-    padding: `${t.spacing.sm}px ${t.spacing.sm}px ${t.spacing.sm}px ${t.spacing.sm + 2}px`,
+    gap: t.spacing.xs,
+    padding: `${t.spacing.sm + 2}px ${t.spacing.m}px ${t.spacing.sm}px ${t.spacing.m - 1}px`,
     borderRadius: 14,
     borderLeft: '3px solid transparent',
     backgroundColor: t.colors.gray03,
@@ -335,35 +418,54 @@ const useStyles = mkUseStyles((t) => ({
     flexShrink: 0,
   },
   cardHover: { backgroundColor: t.colors.gray02 },
-  top: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.s, minWidth: 0 },
-  priority: {
+  title: { fontSize: 14, fontWeight: 600, lineHeight: 1.35, color: t.colors.white, wordBreak: 'break-word' },
+  quantity: { color: t.colors.blue04, fontWeight: 700 },
+  // What kind of task it is: one quiet line, as the photo entries' type and dates.
+  meta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 6,
+    fontSize: 12,
+    color: t.colors.dark05,
+    minWidth: 0,
+  },
+  metaItem: { display: 'inline-flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' },
+  metaStrong: { fontWeight: 700 },
+  separator: { opacity: 0.45 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 },
+  chip: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 4,
-    padding: '2px 8px',
+    gap: 5,
+    height: 22,
+    padding: '0 8px',
+    boxSizing: 'border-box',
     borderRadius: 999,
-    fontSize: 10,
-    fontWeight: 700,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    fontWeight: 600,
+    lineHeight: 1,
     whiteSpace: 'nowrap',
   },
-  title: { fontSize: 14, fontWeight: 600, lineHeight: 1.35, color: t.colors.white, wordBreak: 'break-word' },
-  done: { color: t.colors.lightGreen, backgroundColor: t.colors.lightGreen + t.colorOpacity(0.14) },
-  quantity: { color: t.colors.blue04, fontWeight: 700 },
-  facts: {
+  // What the task holds, under a hairline, as the photo entries' counters.
+  footer: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
     columnGap: t.spacing.sm,
     rowGap: 6,
+    marginTop: 6,
+    paddingTop: t.spacing.s,
+    borderTop: `1px solid ${t.colors.white + t.colorOpacity(0.07)}`,
     minHeight: 22,
   },
-  fact: {
+  counter: {
     display: 'inline-flex',
     alignItems: 'center',
     gap: 4,
     fontSize: 12,
+    fontWeight: 600,
     color: t.colors.dark05,
     whiteSpace: 'nowrap',
   },
@@ -386,7 +488,7 @@ const useStyles = mkUseStyles((t) => ({
   // A tree hanging off the card, not a second checklist: a line on the left, rows without boxes.
   tree: {
     gap: 2,
-    marginTop: 2,
+    marginTop: 4,
     marginLeft: 6,
     paddingLeft: t.spacing.xs,
     borderLeft: `2px solid ${t.colors.white + t.colorOpacity(0.08)}`,
